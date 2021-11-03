@@ -10,7 +10,6 @@ namespace Circle.Game.Beatmap
     {
         private readonly Storage storage;
 
-
         public BeatmapStorage(Storage storage)
         {
             this.storage = storage?.GetStorageForDirectory("beatmaps");
@@ -43,7 +42,6 @@ namespace Circle.Game.Beatmap
         public Color4 BackgroundColour;
         public string BackgroundTexture;
         public Easing PlanetEasing;
-
     }
 
     public struct Actions
