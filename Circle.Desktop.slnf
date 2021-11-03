@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "Circle.sln",
+    "projects": [
+      "Circle.Desktop\\Circle.Desktop.csproj",
+      "Circle.Game\\Circle.Game.csproj",
+      "Circle.Game.Tests\\Circle.Game.Tests.csproj",
+      "Circle.Resources\\Circle.Resources.csproj"
+    ]
+  }
+}
