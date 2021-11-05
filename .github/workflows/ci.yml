@@ -12,6 +12,7 @@ jobs:
        matrix:
           os:
             - { prettyname: Windows, fullname: windows-latest }
+            - { prettyname: macOS, fullname: macos-latest }
           threadingMode: ['SingleThread', 'MultiThreaded']
     timeout-minutes: 60
     steps:
