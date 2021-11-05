@@ -6,7 +6,7 @@ jobs:
     name: Test
     runs-on: ${{matrix.os.fullname}}
     env:
-      OSU_EXECUTION_MODE: ${{matrix.threadingMode}}
+      CIRCLE_EXECUTION_MODE: ${{matrix.threadingMode}}
     strategy:
        fail-fast: false
        matrix:
@@ -42,9 +42,9 @@ jobs:
           name: Circle-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
           path: ${{github.workspace}}/TestResults/TestResults-${{matrix.os.prettyname}}-${{matrix.threadingMode}}.trx
 
-  build-only-android:
-    name: Build only (Android)
-    runs-on: windows-latest
+  build-only-ios:
+    name: Build only (iOS)
+    runs-on: macos-latest
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -55,11 +55,8 @@ jobs:
         with:
           dotnet-version: "5.0.x"
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
-
       - name: Build
-        run: msbuild Circle.Android.slnf /restore /p:Configuration=Debug
+        run: msbuild Circle.iOS/Circle.iOS.csproj /restore /p:Configuration=Debug
 
   inspect-code:
     name: Code Quality
