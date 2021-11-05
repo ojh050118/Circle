@@ -26,10 +26,6 @@ namespace Circle.Game
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
                     Font = FontUsage.Default.With(size: 40)
-                },
-                new SpinningBox
-                {
-                    Anchor = Anchor.Centre,
                 }
             };
         }
