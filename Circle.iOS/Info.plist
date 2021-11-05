@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>sh.ppy.template</string>
+	<string>junho.circle</string>
 	<key>CFBundleName</key>
 	<string>FlappyOsu</string>
 	<key>CFBundleDisplayName</key>
-	<string>osu!template</string>
+	<string>Circle</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.1</string>
 	<key>CFBundleVersion</key>

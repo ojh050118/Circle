@@ -5,7 +5,7 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class BoxButton : CircleButton
     {
-        private SpriteText sprite;
+        private readonly SpriteText sprite;
 
         public string Text
         {

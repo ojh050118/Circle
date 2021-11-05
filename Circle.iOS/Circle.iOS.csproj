@@ -129,7 +129,7 @@
       <Name>Circle.Resources</Name>
     </ProjectReference>
   </ItemGroup>
-    <ItemGroup>
+  <ItemGroup>
     <NativeReference Include="$(OutputPath)\libbass.a;$(OutputPath)\libbass_fx.a">
       <Kind>Static</Kind>
       <SmartLink>False</SmartLink>
@@ -150,11 +150,13 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup Label="Package References">
-    <PackageReference Include="ppy.osu.Framework.iOS" Version="2021.830.0" />
+    <PackageReference Include="ppy.osu.Framework.iOS" Version="2021.1104.0" />
   </ItemGroup>
   <ItemGroup Label="Transitive Dependencies">
-    <PackageReference Include="ppy.osu.Framework" Version="2021.830.0" />
-    <PackageReference Include="ppy.osu.Framework.NativeLibs" Version="2019.1104.0" ExcludeAssets="all" />
+    <PackageReference Include="ppy.osu.Framework" Version="2021.1104.0" />
+    <PackageReference Include="ppy.osu.Framework.NativeLibs" Version="2021.805.0" ExcludeAssets="all">
+      <IncludeAssets>none</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

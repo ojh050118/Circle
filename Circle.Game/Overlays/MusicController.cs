@@ -46,7 +46,7 @@ namespace Circle.Game.Overlays
         public MusicController(Storage storage)
         {
             this.storage = storage?.GetStorageForDirectory("tracks");
-            TrackList = this.storage.GetFiles(string.Empty).ToList();
+            TrackList = this.storage?.GetFiles(string.Empty).ToList();
         }
 
         [BackgroundDependencyLoader]

@@ -9,8 +9,7 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class CircleButton : ClickableContainer
     {
-        private Box background;
-        private Box hover;
+        private readonly Box hover;
 
         protected new Container Content;
 
@@ -28,7 +27,7 @@ namespace Circle.Game.Graphics.UserInterface
                 CornerRadius = CornerRadius,
                 Children = new Drawable[]
                 {
-                    background = new Box
+                    new Box
                     {
                         RelativeSizeAxes = Axes.Both,
                         Colour = Color4.Black,
