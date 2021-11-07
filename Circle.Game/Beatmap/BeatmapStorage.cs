@@ -22,24 +22,21 @@ namespace Circle.Game.Beatmap
     {
         public List<int> Angles;
         public Settings Settings;
-        public Actions Actions;
+        public List<Actions> Actions;
     }
 
     public struct Settings
     {
-        public int Version;
         public string Artist;
         public string Track;
         public string Author;
         public bool SeparateCountdownTime;
-        public string PreviewTexture;
         public int PreviewTrackStart;
         public string BeatmapDesc;
         public int BeatmapDifficulty;
         public double BPM;
         public double Offset;
         public double Pitch;
-        public Color4 BackgroundColour;
         public string BackgroundTexture;
         public Easing PlanetEasing;
     }
@@ -47,5 +44,20 @@ namespace Circle.Game.Beatmap
     public struct Actions
     {
         public int Floor;
+        public Event Event;
+    }
+
+    public struct Event
+    {
+        public EventType EventType;
+        public double ToBPM;
+        public bool IsRelativeTile;
+    }
+
+    public enum EventType
+    {
+        Twirl,
+        SetSpeed,
+        MoveCamera
     }
 }
