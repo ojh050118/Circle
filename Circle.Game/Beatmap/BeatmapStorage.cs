@@ -2,7 +2,6 @@
 using System.IO;
 using osu.Framework.Graphics;
 using osu.Framework.Platform;
-using osuTK.Graphics;
 
 namespace Circle.Game.Beatmap
 {

@@ -9,7 +9,6 @@ namespace Circle.Game
 {
     public class CircleGameBase : osu.Framework.Game
     {
-
         protected override Container<Drawable> Content { get; }
 
         protected CircleGameBase()
