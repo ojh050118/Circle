@@ -5,9 +5,6 @@ namespace Circle.Game.Tests.Visual
 {
     public class TestSceneCircleGame : CircleTestScene
     {
-        // Add visual tests to ensure correct behaviour of your game: https://github.com/ppy/osu-framework/wiki/Development-and-Testing
-        // You can make changes to classes associated with the tests and they will recompile and update immediately.
-
         private CircleGame game;
 
         [BackgroundDependencyLoader]
@@ -16,7 +13,7 @@ namespace Circle.Game.Tests.Visual
             game = new CircleGame();
             game.SetHost(host);
 
-            Add(game);
+            AddGame(game);
         }
     }
 }
