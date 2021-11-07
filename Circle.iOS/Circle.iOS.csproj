@@ -18,6 +18,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Circle.iOS</RootNamespace>
     <AssemblyName>Circle</AssemblyName>
+    <ProvisioningType>manual</ProvisioningType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -107,6 +108,9 @@
     <OutputPath>bin\iPhone\Release</OutputPath>
     <MtouchArch>ARM64</MtouchArch>
     <MtouchExtraArgs>--nolinkaway -gcc_flags "-lstdc++ -lbz2 -framework AudioToolbox -framework AVFoundation -framework CoreMedia -framework VideoToolbox -framework SystemConfiguration -framework CFNetwork -framework Accelerate"</MtouchExtraArgs>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
+    <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
