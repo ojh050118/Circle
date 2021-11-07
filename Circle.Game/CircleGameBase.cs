@@ -4,12 +4,18 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.IO.Stores;
 using osuTK;
 using Circle.Resources;
+using osu.Framework.Graphics.Textures;
 
 namespace Circle.Game
 {
     public class CircleGameBase : osu.Framework.Game
     {
         protected override Container<Drawable> Content { get; }
+
+        private DependencyContainer dependencies;
+
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
+            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         protected CircleGameBase()
         {
@@ -22,7 +28,13 @@ namespace Circle.Game
         [BackgroundDependencyLoader]
         private void load()
         {
+            var largeStore = new LargeTextureStore(Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
+
             Resources.AddStore(new DllResourceStore(typeof(CircleResources).Assembly));
+            largeStore.AddStore(Host.CreateTextureLoaderStore(new OnlineStore()));
+
+            dependencies.CacheAs(largeStore);
+            dependencies.CacheAs(this);
         }
     }
 }

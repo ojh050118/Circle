@@ -1,4 +1,5 @@
-﻿using osu.Framework.Allocation;
+﻿using Circle.Game.Screens;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 
@@ -18,7 +19,7 @@ namespace Circle.Game
         {
             base.LoadComplete();
 
-            screenStack.Push(new MainScreen());
+            screenStack.Push(new Loader());
         }
     }
 }
