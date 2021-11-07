@@ -1,10 +1,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
-using osu.Framework.Screens;
-using osuTK.Graphics;
 
 namespace Circle.Game.Screens
 {

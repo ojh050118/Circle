@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using osu.Framework.Graphics;
 using osu.Framework.Screens;
-using osu.Framework.Graphics;
 
 namespace Circle.Game.Screens
 {

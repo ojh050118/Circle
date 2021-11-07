@@ -1,10 +1,10 @@
+using Circle.Resources;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 using osuTK;
-using Circle.Resources;
-using osu.Framework.Graphics.Textures;
 
 namespace Circle.Game
 {

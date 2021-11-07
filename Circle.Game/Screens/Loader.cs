@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Bindables;
-using osu.Framework.Screens;
-using osu.Framework.Threading;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Screens;
+using osu.Framework.Threading;
 
 namespace Circle.Game.Screens
 {

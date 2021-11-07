@@ -1,6 +1,6 @@
-﻿using osu.Framework.Platform;
+﻿using Circle.Game;
 using osu.Framework;
-using Circle.Game;
+using osu.Framework.Platform;
 
 namespace Circle.Desktop
 {
