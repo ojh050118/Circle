@@ -10,7 +10,7 @@ using osu.Framework.Graphics.Textures;
 using osuTK;
 using osuTK.Graphics;
 
-namespace Circle.Game.Graphics
+namespace Circle.Game.Graphics.UserInterface
 {
     public class Background : CompositeDrawable
     {

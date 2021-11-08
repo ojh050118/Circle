@@ -1,4 +1,3 @@
-using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -63,7 +62,7 @@ namespace Circle.Game.Screens
 
         private class IconWithTextButton : CircularContainer
         {
-            private SpriteIcon icon;
+            private readonly SpriteIcon icon;
 
             public IconUsage Icon
             {
@@ -82,6 +81,7 @@ namespace Circle.Game.Screens
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
+                    Alpha = 0.6f,
                     RelativeSizeAxes = Axes.Y,
                     AutoSizeAxes = Axes.X,
                     Direction = FillDirection.Horizontal,
@@ -118,7 +118,6 @@ namespace Circle.Game.Screens
                         })
                     }
                 };
-                Child.Alpha = 0.6f;
             }
 
             protected override bool OnHover(HoverEvent e)
