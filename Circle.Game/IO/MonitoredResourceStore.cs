@@ -25,9 +25,9 @@ namespace Circle.Game.IO
 
         public IEnumerable<string> GetAvailableResources()
             => UnderlyingStorage
-            .GetDirectories(string.Empty)
-            .Append(string.Empty)
-            .SelectMany(d => UnderlyingStorage.GetFiles(d));
+               .GetDirectories(string.Empty)
+               .Append(string.Empty)
+               .SelectMany(d => UnderlyingStorage.GetFiles(d));
 
         public Stream GetStream(string name)
             => UnderlyingStore.GetStream(name);
