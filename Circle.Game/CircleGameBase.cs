@@ -1,4 +1,5 @@
 using Circle.Game.Configuration;
+using Circle.Game.IO;
 using Circle.Resources;
 using osu.Framework.Allocation;
 using osu.Framework.Development;
@@ -48,13 +49,21 @@ namespace Circle.Game
         [BackgroundDependencyLoader]
         private void load()
         {
+            var files = Storage.GetStorageForDirectory("files");
+            var tracks = new ResourceStore<byte[]>();
             var largeStore = new LargeTextureStore(Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
+            var monitoredLargeStore = new MonitoredLargeTextureStore(Host, files.GetStorageForDirectory("backgrounds"));
 
             Resources.AddStore(new DllResourceStore(typeof(CircleResources).Assembly));
             largeStore.AddStore(Host.CreateTextureLoaderStore(new OnlineStore()));
+            tracks.AddStore(new TrackStore(files));
 
             dependencies.CacheAs(largeStore);
             dependencies.CacheAs(this);
+
+            var externalAudioManager = new ExternalAudioManager(Host.AudioThread, tracks, new ResourceStore<byte[]>());
+            dependencies.CacheAs(externalAudioManager);
+            dependencies.CacheAs(monitoredLargeStore);
 
             dependencies.CacheAs(Storage);
 
