@@ -71,7 +71,7 @@ namespace Circle.Game.Screens
                 set => icon.Icon = value;
             }
 
-            public Action Action { get; set; }
+            // public Action Action { get; set; }
 
             public IconWithTextButton(string text = @"")
             {
@@ -138,7 +138,7 @@ namespace Circle.Game.Screens
             protected override bool OnClick(ClickEvent e)
             {
                 Child.FlashColour(Color4.DarkGray, 250, Easing.InQuad);
-                Action?.Invoke();
+                // Action?.Invoke();
 
                 return base.OnClick(e);
             }

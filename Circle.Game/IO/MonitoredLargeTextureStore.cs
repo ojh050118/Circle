@@ -6,7 +6,7 @@ namespace Circle.Game.IO
 {
     public class MonitoredLargeTextureStore : MonitoredResourceStore
     {
-        private LargeTextureStore largeTextureStore;
+        private readonly LargeTextureStore largeTextureStore;
 
         public MonitoredLargeTextureStore(GameHost host, Storage underlyingStorage)
             : base(underlyingStorage)

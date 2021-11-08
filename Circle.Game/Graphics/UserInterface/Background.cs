@@ -23,7 +23,7 @@ namespace Circle.Game.Graphics
 
         public Vector2 BlurSigma { get; set; }
 
-        private TextureSource source;
+        private readonly TextureSource source;
 
         private LargeTextureStore largeTexture;
         private MonitoredLargeTextureStore monitoredLargeTexture;
@@ -49,12 +49,7 @@ namespace Circle.Game.Graphics
             monitoredLargeTexture = monitoredTextures;
 
             if (!string.IsNullOrEmpty(textureName))
-            {
-                if (source == TextureSource.Internal)
-                    Sprite.Texture = textures.Get(textureName);
-                else
-                    Sprite.Texture = monitoredTextures.Get(textureName);
-            }
+                Sprite.Texture = source == TextureSource.Internal ? textures.Get(textureName) : monitoredTextures.Get(textureName);
 
             if (BlurSigma != Vector2.Zero)
                 BlurTo(BlurSigma);
