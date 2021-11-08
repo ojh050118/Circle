@@ -1,5 +1,4 @@
-﻿using Circle.Game;
-using osu.Framework;
+﻿using osu.Framework;
 using osu.Framework.Platform;
 
 namespace Circle.Desktop

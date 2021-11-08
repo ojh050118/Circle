@@ -11,10 +11,8 @@ namespace Circle.Game.IO
     {
         protected IResourceStore<byte[]> UnderlyingStore;
 
-        private string[] filters;
-
-        public MonitoredResourceStore(Storage underlyingStorage, string filters = null)
-            : base(underlyingStorage, filters)
+        public MonitoredResourceStore(Storage underlyingStorage)
+            : base(underlyingStorage)
         {
             UnderlyingStore = new StorageBackedResourceStore(underlyingStorage);
         }
@@ -29,8 +27,7 @@ namespace Circle.Game.IO
             => UnderlyingStorage
                 .GetDirectories(string.Empty)
                 .Append(string.Empty)
-                .SelectMany(d => UnderlyingStorage.GetFiles(d))
-                .Where(p => filters?.Contains(Path.GetExtension(p)) ?? false);
+                .SelectMany(d => UnderlyingStorage.GetFiles(d));
 
         public Stream GetStream(string name)
             => UnderlyingStore.GetStream(name);

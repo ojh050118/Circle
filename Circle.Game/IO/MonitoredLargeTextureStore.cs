@@ -8,8 +8,8 @@ namespace Circle.Game.IO
     {
         private LargeTextureStore largeTextureStore;
 
-        public MonitoredLargeTextureStore(GameHost host, Storage underlyingStorage, string filters = null)
-            : base(underlyingStorage, filters)
+        public MonitoredLargeTextureStore(GameHost host, Storage underlyingStorage)
+            : base(underlyingStorage)
         {
             largeTextureStore = new LargeTextureStore(host.CreateTextureLoaderStore(UnderlyingStore));
         }

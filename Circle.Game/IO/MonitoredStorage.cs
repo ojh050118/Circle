@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using osu.Framework.Bindables;
 using osu.Framework.Platform;
@@ -28,7 +27,7 @@ namespace Circle.Game.IO
 
         private readonly FileSystemWatcher watcher;
 
-        public MonitoredStorage(Storage underlyingStorage, string filter = null)
+        public MonitoredStorage(Storage underlyingStorage)
             : base(underlyingStorage)
         {
             watcher = new FileSystemWatcher
@@ -36,11 +35,6 @@ namespace Circle.Game.IO
                 Path = GetFullPath(string.Empty, true),
                 NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size,
             };
-
-            if (filter != null)
-            {
-                watcher.Filter = filter;
-            }
 
             watcher.Created += (_, e) => OnFileCreated(e.Name);
             watcher.Deleted += (_, e) => OnFileDeleted(e.Name);
