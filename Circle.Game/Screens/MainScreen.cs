@@ -14,8 +14,6 @@ namespace Circle.Game.Screens
 {
     public class MainScreen : CircleScreen
     {
-        private BufferedContainer header;
-
         [BackgroundDependencyLoader]
         private void load(LargeTextureStore textures)
         {
@@ -27,7 +25,7 @@ namespace Circle.Game.Screens
                     Texture = textures.Get("Duelyst"),
                     FillMode = FillMode.Fill
                 },
-                header = new SpriteText
+                new SpriteText
                 {
                     Text = "Circle",
                     Margin = new MarginPadding { Top = 60, Left = 60 },
@@ -66,7 +64,6 @@ namespace Circle.Game.Screens
         private class IconWithTextButton : CircularContainer
         {
             private SpriteIcon icon;
-            private BufferedContainer text;
 
             public IconUsage Icon
             {
@@ -96,7 +93,7 @@ namespace Circle.Game.Screens
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Margin = new MarginPadding { Left = 10 },
-                            Size = new Vector2(17)
+                            Size = new Vector2(17),
                         },
                         new Box
                         {
@@ -107,11 +104,12 @@ namespace Circle.Game.Screens
                             Width = 3,
                             RelativeSizeAxes = Axes.Y
                         },
-                        this.text = new SpriteText
+                        new SpriteText
                         {
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
-                            Text = text
+                            Text = text,
+                            Font = FontUsage.Default.With(size: 24)
                         }.WithEffect(new GlowEffect
                         {
                             BlurSigma = new Vector2(5),
