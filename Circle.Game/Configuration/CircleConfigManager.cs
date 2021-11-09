@@ -12,9 +12,19 @@ namespace Circle.Game.Configuration
             : base(storage, defaultOverrides)
         {
         }
+
+        protected override void InitialiseDefaults()
+        {
+            SetDefault(CircleSetting.Scale, 1f, 0.8f, 2f);
+            SetDefault(CircleSetting.FpsDisplay, false);
+            SetDefault(CircleSetting.Offset, 0);
+        }
     }
 
     public enum CircleSetting
     {
+        Scale,
+        FpsDisplay,
+        Offset,
     }
 }
