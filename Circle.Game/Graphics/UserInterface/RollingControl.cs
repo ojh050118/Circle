@@ -155,7 +155,7 @@ namespace Circle.Game.Graphics.UserInterface
             if (direction == Direction.Forward)
                 SetCurrent(currentIdx + 1 >= Item.Length ? Item[0].Value : Item[currentIdx + 1].Value);
             else
-                SetCurrent(currentIdx <= 0 ? Item[Item.Length - 1].Value : Item[currentIdx - 1].Value);
+                SetCurrent(currentIdx <= 0 ? Item[^1].Value : Item[currentIdx - 1].Value);
         }
 
         private enum Direction

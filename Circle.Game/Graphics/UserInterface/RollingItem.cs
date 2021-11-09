@@ -61,14 +61,14 @@ namespace Circle.Game.Graphics.UserInterface
         {
             Value = value;
             Action = () => localConfig.SetValue(lookup, value);
-            Text = text != null ? text : value.ToString();
+            Text = text ?? value.ToString();
         }
 
         public RollingItem(T value, FrameworkSetting lookup, string text = null)
         {
             Value = value;
             Action = () => config.SetValue(lookup, value);
-            Text = text != null ? text : value.ToString();
+            Text = text ?? value.ToString();
         }
     }
 }

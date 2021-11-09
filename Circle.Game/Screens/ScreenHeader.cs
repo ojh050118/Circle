@@ -28,7 +28,7 @@ namespace Circle.Game.Screens
                         Size = new Vector2(30),
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft,
-                        Action = () => screen.OnExit()
+                        Action = screen.OnExit
                     },
                     new SpriteText
                     {
