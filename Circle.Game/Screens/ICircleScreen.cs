@@ -1,5 +1,4 @@
-﻿using System;
-using osu.Framework.Screens;
+﻿using osu.Framework.Screens;
 
 namespace Circle.Game.Screens
 {

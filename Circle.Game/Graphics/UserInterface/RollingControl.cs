@@ -1,5 +1,4 @@
 ﻿using System;
-using Circle.Game.Configuration;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;

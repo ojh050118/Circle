@@ -1,5 +1,4 @@
-﻿using System;
-using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
