@@ -37,7 +37,6 @@ namespace Circle.Game.Graphics.UserInterface
         /// </summary>
         /// <param name="value">값.</param>
         /// <param name="action"></param>
-        [Obsolete]
         public RollingItem(T value, Action action = null)
         {
             Value = value;
@@ -51,7 +50,6 @@ namespace Circle.Game.Graphics.UserInterface
         /// <param name="value">값.</param>
         /// <param name="text">임의로 표시할 내용</param>
         /// <param name="action"></param>
-        [Obsolete]
         public RollingItem(T value, string text, Action action = null)
         {
             Value = value;

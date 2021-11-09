@@ -19,7 +19,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 Anchor = Anchor.TopCentre,
                 Origin = Anchor.TopCentre,
                 Text = "Rolling Control",
-                Item = new RollingItem<int>[]
+                Item = new[]
                 {
                     new RollingItem<int>(1),
                     new RollingItem<int>(2),
@@ -31,23 +31,23 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 Text = "Rolling Control",
-                Item = new RollingItem<string>[]
+                Item = new[]
                 {
                     new RollingItem<string>("value1"),
                     new RollingItem<string>("value2"),
                     new RollingItem<string>("value3"),
                 }
             });
-            Add(new RollingControl<testEnum>
+            Add(new RollingControl<TestEnum>
             {
                 Anchor = Anchor.BottomCentre,
                 Origin = Anchor.BottomCentre,
                 Text = "Rolling Control",
-                Item = new RollingItem<testEnum>[]
+                Item = new[]
                 {
-                    new RollingItem<testEnum>(testEnum.Enum1),
-                    new RollingItem<testEnum>(testEnum.Enum2),
-                    new RollingItem<testEnum>(testEnum.Enum3),
+                    new RollingItem<TestEnum>(TestEnum.Enum1),
+                    new RollingItem<TestEnum>(TestEnum.Enum2),
+                    new RollingItem<TestEnum>(TestEnum.Enum3),
                 }
             });
         }
@@ -59,7 +59,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
             control.SetCurrent("value1");
         }
 
-        private enum testEnum
+        private enum TestEnum
         {
             Enum1,
             Enum2,

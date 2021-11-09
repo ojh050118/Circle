@@ -1,6 +1,5 @@
 ﻿using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
-using Crcle.Game.Overlays.Settings;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;

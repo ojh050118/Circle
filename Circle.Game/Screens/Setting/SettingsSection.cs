@@ -6,7 +6,7 @@ using osu.Framework.Graphics.Sprites;
 using osuTK;
 using osuTK.Graphics;
 
-namespace Crcle.Game.Overlays.Settings
+namespace Circle.Game.Screens.Setting
 {
     public abstract class SettingsSection : Container
     {

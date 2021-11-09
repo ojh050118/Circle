@@ -86,7 +86,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Icon = FontAwesome.Solid.AngleLeft,
-                            Action = () => changeCurrent(direction.Backward),
+                            Action = () => changeCurrent(Direction.Backward),
                             Size = new Vector2(32)
                         },
                         new IconButton
@@ -94,7 +94,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Anchor = Anchor.CentreRight,
                             Origin = Anchor.CentreRight,
                             Icon = FontAwesome.Solid.AngleRight,
-                            Action = () => changeCurrent(direction.Forward),
+                            Action = () => changeCurrent(Direction.Forward),
                             Size = new Vector2(32)
                         },
                         text = new SpriteText
@@ -122,7 +122,7 @@ namespace Circle.Game.Graphics.UserInterface
                 if (i.Value.Equals(toValue))
                 {
                     isExist = true;
-                    currentIdx = Array.FindIndex(Item, i => i.Value.Equals(toValue));
+                    currentIdx = Array.FindIndex(Item, r => r.Value.Equals(toValue));
                     break;
                 }
             }
@@ -144,7 +144,7 @@ namespace Circle.Game.Graphics.UserInterface
         /// 방향으로 Item 인덱스를 바꾸고 SetCurrent()를 실행합니다.
         /// </summary>
         /// <param name="direction">방향.</param>
-        private void changeCurrent(direction direction)
+        private void changeCurrent(Direction direction)
         {
             // 아이템들이 없거나 할당이 되어있지 않다면 아래 코드를 실행하지 않습니다.
             if (Item is null)
@@ -152,23 +152,13 @@ namespace Circle.Game.Graphics.UserInterface
             else if (Item.Length == 0)
                 return;
 
-            if (direction == direction.Forward)
-            {
-                if (currentIdx + 1 >= Item.Length)
-                    SetCurrent(Item[0].Value);
-                else
-                    SetCurrent(Item[currentIdx + 1].Value);
-            }
+            if (direction == Direction.Forward)
+                SetCurrent(currentIdx + 1 >= Item.Length ? Item[0].Value : Item[currentIdx + 1].Value);
             else
-            {
-                if (currentIdx <= 0)
-                    SetCurrent(Item[Item.Length - 1].Value);
-                else
-                    SetCurrent(Item[currentIdx - 1].Value);
-            }
+                SetCurrent(currentIdx <= 0 ? Item[Item.Length - 1].Value : Item[currentIdx - 1].Value);
         }
 
-        private enum direction
+        private enum Direction
         {
             Forward,
             Backward
