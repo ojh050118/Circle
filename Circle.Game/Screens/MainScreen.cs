@@ -1,3 +1,5 @@
+using System;
+using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -6,6 +8,7 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
+using osu.Framework.Screens;
 using osuTK;
 using osuTK.Graphics;
 
@@ -13,6 +16,10 @@ namespace Circle.Game.Screens
 {
     public class MainScreen : CircleScreen
     {
+        public override string Header => "Circle";
+
+        public override bool BlockExit => true;
+
         [BackgroundDependencyLoader]
         private void load(LargeTextureStore textures)
         {
@@ -26,7 +33,7 @@ namespace Circle.Game.Screens
                 },
                 new SpriteText
                 {
-                    Text = "Circle",
+                    Text = Header,
                     Margin = new MarginPadding { Top = 60, Left = 60 },
                     Font = FontUsage.Default.With(size: 40)
                 }.WithEffect(new GlowEffect
@@ -49,7 +56,8 @@ namespace Circle.Game.Screens
                         },
                         new IconWithTextButton("settings")
                         {
-                            Icon = FontAwesome.Solid.Cog
+                            Icon = FontAwesome.Solid.Cog,
+                            Action = () => this.Push(new SettingsScreen())
                         },
                         new IconWithTextButton("exit")
                         {
@@ -70,7 +78,7 @@ namespace Circle.Game.Screens
                 set => icon.Icon = value;
             }
 
-            // public Action Action { get; set; }
+            public Action Action { get; set; }
 
             public IconWithTextButton(string text = @"")
             {
@@ -137,7 +145,7 @@ namespace Circle.Game.Screens
             protected override bool OnClick(ClickEvent e)
             {
                 Child.FlashColour(Color4.DarkGray, 250, Easing.InQuad);
-                // Action?.Invoke();
+                Action?.Invoke();
 
                 return base.OnClick(e);
             }
