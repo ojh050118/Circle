@@ -20,42 +20,38 @@ namespace Circle.Game.Screens.Setting
         {
             InternalChildren = new Drawable[]
             {
-                new SpriteText
-                {
-                    Margin = new MarginPadding(60),
-                    Text = Header,
-                    Font = FontUsage.Default.With(size: 40)
-                }.WithEffect(new GlowEffect
-                {
-                    BlurSigma = new Vector2(10),
-                    PadExtent = true,
-                }),
+                new ScreenHeader(this),
                 new Container
                 {
-                    Margin = new MarginPadding { Top = 130, Left = 80 },
-                    Size = new Vector2(500, Y),
+                    Margin = new MarginPadding { Left = 80 },
+                    Padding = new MarginPadding { Vertical = 130 },
+                    Width = 500,
                     RelativeSizeAxes = Axes.Y,
-                    Masking = true,
-                    CornerRadius = 7,
-                    Children = new Drawable[]
+                    Child = new Container
                     {
-                        new Box
+                        RelativeSizeAxes = Axes.Both,
+                        Masking = true,
+                        CornerRadius = 5,
+                        Children = new Drawable[]
                         {
-                            Colour = Color4.White.Opacity(0.2f),
-                            RelativeSizeAxes = Axes.Both
-                        },
-                        new CircleScrollContainer
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Child = new FillFlowContainer
+                            new Box
                             {
-                                Direction = FillDirection.Vertical,
-                                Spacing = new Vector2(10),
-                                AutoSizeAxes = Axes.Y,
-                                RelativeSizeAxes = Axes.X,
-                                Children = new Drawable[]
+                                Colour = Color4.White.Opacity(0.2f),
+                                RelativeSizeAxes = Axes.Both
+                            },
+                            new CircleScrollContainer
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Child = new FillFlowContainer
                                 {
-                                    new DebugSection()
+                                    Direction = FillDirection.Vertical,
+                                    Spacing = new Vector2(10),
+                                    AutoSizeAxes = Axes.Y,
+                                    RelativeSizeAxes = Axes.X,
+                                    Children = new Drawable[]
+                                    {
+                                        new DebugSection()
+                                    }
                                 }
                             }
                         }

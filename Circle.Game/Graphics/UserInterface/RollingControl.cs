@@ -109,13 +109,6 @@ namespace Circle.Game.Graphics.UserInterface
             };
         }
 
-        private void setAction()
-        {
-            foreach (var item in Item)
-            {
-            }
-        }
-
         /// <summary>
         /// 값을 설정하고 동작을 실행합니다.
         /// </summary>

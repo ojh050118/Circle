@@ -11,30 +11,32 @@ namespace Circle.Game.Screens
 {
     public class ScreenHeader : CompositeDrawable
     {
-        public const int MARGIN = 60;
+        public const int MARGIN = 30;
 
-        public float DrawnHeight { get; }
-
-        public ScreenHeader(string name)
+        public ScreenHeader(CircleScreen screen)
         {
-            Margin = new MarginPadding { Top = MARGIN, Bottom = 10 };
+            Margin = new MarginPadding { Top = MARGIN, Left = 30, Bottom = 10 };
+            AutoSizeAxes = Axes.Both;
             InternalChild = new FillFlowContainer
             {
                 Direction = FillDirection.Horizontal,
-                Spacing = new Vector2(10),
-                AutoSizeAxes = Axes.Y,
-                RelativeSizeAxes = Axes.X,
+                AutoSizeAxes = Axes.Both,
                 Children = new Drawable[]
                 {
                     new IconButton
                     {
                         Icon = FontAwesome.Solid.AngleLeft,
-                        Size = new Vector2(30)
+                        Size = new Vector2(30),
+                        Anchor = Anchor.CentreLeft,
+                        Origin = Anchor.CentreLeft,
+                        Action = () => screen.OnExit()
                     },
                     new SpriteText
                     {
-                        Text = name,
-                        Font = FontUsage.Default.With(size: 40)
+                        Text = screen.Header,
+                        Font = FontUsage.Default.With(size: 40),
+                        Anchor = Anchor.CentreLeft,
+                        Origin = Anchor.CentreLeft
                     }.WithEffect(new GlowEffect
                     {
                         PadExtent = true,
@@ -43,8 +45,6 @@ namespace Circle.Game.Screens
                     })
                 }
             };
-
-            DrawnHeight = MARGIN + DrawHeight + 10;
         }
     }
 }

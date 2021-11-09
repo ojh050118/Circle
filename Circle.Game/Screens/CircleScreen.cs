@@ -58,6 +58,6 @@ namespace Circle.Game.Screens
             return base.OnKeyDown(e);
         }
 
-        protected virtual void OnExit() => this.Exit();
+        public virtual void OnExit() => this.Exit();
     }
 }
