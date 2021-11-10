@@ -77,7 +77,7 @@ namespace Circle.Game.Graphics.UserInterface
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
                     RelativeSizeAxes = Axes.X,
-                    Height = 50,
+                    Height = 40,
                     Width = 0.4f,
                     Children = new Drawable[]
                     {
@@ -87,7 +87,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Origin = Anchor.CentreLeft,
                             Icon = FontAwesome.Solid.AngleLeft,
                             Action = () => changeCurrent(Direction.Backward),
-                            Size = new Vector2(32)
+                            Size = new Vector2(30)
                         },
                         new IconButton
                         {
@@ -95,7 +95,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Origin = Anchor.CentreRight,
                             Icon = FontAwesome.Solid.AngleRight,
                             Action = () => changeCurrent(Direction.Forward),
-                            Size = new Vector2(32)
+                            Size = new Vector2(30)
                         },
                         text = new SpriteText
                         {

@@ -14,12 +14,6 @@ namespace Circle.Game.Graphics.UserInterface
             set => icon.Icon = value;
         }
 
-        public Vector2 IconScale
-        {
-            get => icon.Scale;
-            set => icon.Scale = value;
-        }
-
         private readonly SpriteIcon icon;
 
         public IconButton(bool useBackground = true)

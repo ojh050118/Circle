@@ -13,18 +13,21 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected new Container Content;
 
-        public new float CornerRadius { get; set; } = 5;
+        public new float CornerRadius
+        {
+            get => Content.CornerRadius;
+            set => Content.CornerRadius = value;
+        }
 
         public CircleButton(bool useBackground = true)
         {
-            Masking = true;
             Child = Content = new Container
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
                 Masking = true,
-                CornerRadius = CornerRadius,
+                CornerRadius = 5,
                 Children = new Drawable[]
                 {
                     new Box
