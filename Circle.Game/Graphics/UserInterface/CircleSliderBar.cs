@@ -111,7 +111,7 @@ namespace Circle.Game.Graphics.UserInterface
                 };
                 EdgeEffect = new EdgeEffectParameters
                 {
-                    Colour = Color4.DarkGray.Opacity(0.5f),
+                    Colour = Color4.Black.Opacity(0.2f),
                     Type = EdgeEffectType.Shadow,
                     Radius = 8,
                     Roundness = 5
