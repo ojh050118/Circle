@@ -9,11 +9,9 @@ namespace Circle.Game.Tests.Visual.UserInterface
 {
     public class TestSceneSettingsSlider : CircleTestScene
     {
-        private BindableNumber<float> value;
-
         public TestSceneSettingsSlider()
         {
-            value = new BindableNumber<float>()
+            var value = new BindableNumber<float>
             {
                 MinValue = 0,
                 MaxValue = 100,

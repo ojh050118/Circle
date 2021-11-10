@@ -18,6 +18,7 @@ namespace Circle.Game.Screens.Setting
             get => text.Text.ToString();
             set => text.Text = value;
         }
+
         private CircleSliderBar<T> circleSliderBar { get; }
 
         public BindableNumber<T> Current
@@ -107,7 +108,6 @@ namespace Circle.Game.Screens.Setting
                                 RelativeSizeAxes = Axes.X,
                             }
                         }
-                        
                     }
                 }
             };

@@ -6,17 +6,15 @@ namespace Circle.Game.Tests.Visual.UserInterface
 {
     public class TestSceneCircleSliderBar : CircleTestScene
     {
-        private BindableNumber<float> value;
-
         public TestSceneCircleSliderBar()
         {
-            value = new BindableNumber<float>()
+            var value = new BindableNumber<float>
             {
                 MinValue = 0,
                 MaxValue = 100,
             };
 
-            Add(new CircleSliderBar<float>()
+            Add(new CircleSliderBar<float>
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
