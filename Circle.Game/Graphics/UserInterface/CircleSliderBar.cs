@@ -21,7 +21,7 @@ namespace Circle.Game.Graphics.UserInterface
         public CircleSliderBar()
         {
             Height = 30;
-            RangePadding = 30 / 2;
+            RangePadding = 15;
             Children = new Drawable[]
             {
                 new Container
