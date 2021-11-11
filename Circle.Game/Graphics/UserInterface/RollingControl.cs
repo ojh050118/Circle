@@ -1,6 +1,8 @@
 ﻿using System;
+using Circle.Game.Configuration;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
+using osu.Framework.Configuration.Tracking;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -16,6 +18,12 @@ namespace Circle.Game.Graphics.UserInterface
     /// <typeparam name="T">바꿀 값.</typeparam>
     public class RollingControl<T> : Container
     {
+        [Resolved]
+        private CircleConfigManager localConfig { get; set; }
+
+        [Resolved]
+        private TrackedSettings trackedSettings { get; set; }
+
         /// <summary>
         /// 이 설정이 무엇인지 표시합니다.
         /// </summary>
@@ -46,6 +54,8 @@ namespace Circle.Game.Graphics.UserInterface
         /// </summary>
         public RollingControl()
         {
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
             CornerRadius = 5;
         }
 
@@ -101,11 +111,17 @@ namespace Circle.Game.Graphics.UserInterface
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
-                            Font = FontUsage.Default.With(size: 22)
+                            Font = FontUsage.Default.With(size: 22),
                         }
                     }
+                },
+                new Container
+                {
+                    Children = Item
                 }
             };
+
+            SetCurrent(Current.Value);
         }
 
         /// <summary>
@@ -138,6 +154,8 @@ namespace Circle.Game.Graphics.UserInterface
             // 동작을 실행합니다.
             if (Item[currentIdx].Action != null)
                 Item[currentIdx].Action.Invoke();
+
+            localConfig.LoadInto(trackedSettings);
         }
 
         /// <summary>

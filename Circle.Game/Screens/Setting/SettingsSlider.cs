@@ -1,6 +1,9 @@
 ﻿using System;
+using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
+using osu.Framework.Configuration.Tracking;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -21,9 +24,9 @@ namespace Circle.Game.Screens.Setting
 
         private CircleSliderBar<T> circleSliderBar { get; }
 
-        public BindableNumber<T> Current
+        public Bindable<T> Current
         {
-            get => (BindableNumber<T>)circleSliderBar.Current;
+            get => circleSliderBar.Current;
             set => circleSliderBar.Current = value;
         }
 
@@ -31,6 +34,12 @@ namespace Circle.Game.Screens.Setting
         {
             get => circleSliderBar.KeyboardStep;
             set => circleSliderBar.KeyboardStep = value;
+        }
+
+        public bool TransferValueOnCommit
+        {
+            get => circleSliderBar.TransferValueOnCommit;
+            set => circleSliderBar.TransferValueOnCommit = value;
         }
 
         public IconUsage LeftIcon
@@ -48,6 +57,12 @@ namespace Circle.Game.Screens.Setting
         private readonly SpriteIcon leftIcon;
         private readonly SpriteIcon rightIcon;
         private readonly SpriteText text;
+
+        [Resolved]
+        private CircleConfigManager localConfig { get; set; }
+
+        [Resolved]
+        private TrackedSettings trackedSettings { get; set; }
 
         public SettingsSlider()
         {
@@ -86,13 +101,13 @@ namespace Circle.Game.Screens.Setting
                         {
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
-                            Size = new Vector2(30),
+                            Size = new Vector2(25),
                         },
                         rightIcon = new SpriteIcon
                         {
                             Anchor = Anchor.CentreRight,
                             Origin = Anchor.CentreRight,
-                            Size = new Vector2(30),
+                            Size = new Vector2(25),
                         },
                         new Container
                         {
@@ -111,6 +126,13 @@ namespace Circle.Game.Screens.Setting
                     }
                 }
             };
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            circleSliderBar.Current.ValueChanged += _ => localConfig.LoadInto(trackedSettings);
         }
     }
 }

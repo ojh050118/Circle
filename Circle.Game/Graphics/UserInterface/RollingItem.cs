@@ -2,6 +2,7 @@
 using Circle.Game.Configuration;
 using osu.Framework.Allocation;
 using osu.Framework.Configuration;
+using osu.Framework.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -9,7 +10,7 @@ namespace Circle.Game.Graphics.UserInterface
     ///
     /// </summary>
     /// <typeparam name="T">CS0453</typeparam>
-    public class RollingItem<T>
+    public class RollingItem<T> : Component
     {
         /// <summary>
         /// 값을 올바르게 할당해야합니다. 값이 같은 아이템이 있으면 올바른 작동을 하지 않을 수 있습니다.
@@ -32,39 +33,21 @@ namespace Circle.Game.Graphics.UserInterface
         [Resolved]
         private FrameworkConfigManager config { get; set; }
 
-        /// <summary>
-        /// 값과 액션을 포함하는 아이템.
-        /// </summary>
-        /// <param name="value">값.</param>
-        /// <param name="action"></param>
-        public RollingItem(T value, Action action = null)
+        public RollingItem(T value, Action action = null, string text = null)
         {
             Value = value;
             Action = action;
-            Text = Value.ToString();
+            Text = text ?? value.ToString();
         }
 
-        /// <summary>
-        /// 값과 액션을 포함하는 아이템.
-        /// </summary>
-        /// <param name="value">값.</param>
-        /// <param name="text">임의로 표시할 내용</param>
-        /// <param name="action"></param>
-        public RollingItem(T value, string text, Action action = null)
-        {
-            Value = value;
-            Text = text;
-            Action = action;
-        }
-
-        public RollingItem(T value, CircleSetting lookup, string text = null)
+        public RollingItem(CircleSetting lookup, T value, string text = null)
         {
             Value = value;
             Action = () => localConfig.SetValue(lookup, value);
             Text = text ?? value.ToString();
         }
 
-        public RollingItem(T value, FrameworkSetting lookup, string text = null)
+        public RollingItem(FrameworkSetting lookup, T value, string text = null)
         {
             Value = value;
             Action = () => config.SetValue(lookup, value);

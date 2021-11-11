@@ -1,8 +1,6 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
@@ -13,7 +11,6 @@ namespace Circle.Game.Tests.Visual.UserInterface
         [BackgroundDependencyLoader]
         private void load()
         {
-            Add(new Box { RelativeSizeAxes = Axes.Both, Colour = Color4.DarkGray });
             Add(new RollingControl<int>
             {
                 Anchor = Anchor.TopCentre,

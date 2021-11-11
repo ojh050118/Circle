@@ -1,7 +1,5 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
@@ -9,7 +7,6 @@ namespace Circle.Game.Tests.Visual.UserInterface
     {
         public TestSceneBoxButton()
         {
-            Add(new Box { RelativeSizeAxes = Axes.Both, Colour = Color4.DarkGray });
             Add(new BoxButton
             {
                 Anchor = Anchor.TopCentre,
