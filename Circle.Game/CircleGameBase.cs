@@ -63,7 +63,6 @@ namespace Circle.Game
             tracks.AddStore(new TrackStore(files));
 
             dependencies.CacheAs(largeStore);
-            
 
             var externalAudioManager = new ExternalAudioManager(Host.AudioThread, tracks, new ResourceStore<byte[]>());
             dependencies.CacheAs(externalAudioManager);
@@ -113,6 +112,7 @@ namespace Circle.Game
                     ContentContainer.ScaleTo((float)description.RawValue, 1000, Easing.OutPow10);
                     ContentContainer.ResizeTo(new Vector2((float)((float)description.RawValue / Math.Pow((float)description.RawValue, 2))), 1000, Easing.OutPow10);
                     break;
+
                 case "FpsDisplay":
                     FrameStatistics.Value = (bool)description.RawValue ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
                     break;

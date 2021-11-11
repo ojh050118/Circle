@@ -1,10 +1,7 @@
-﻿using System;
-using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
-using osu.Framework.Configuration.Tracking;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Performance;
 using osu.Framework.Screens;
 using osuTK;
 

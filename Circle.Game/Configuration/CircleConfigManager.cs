@@ -26,21 +26,21 @@ namespace Circle.Game.Configuration
             return new TrackedSettings
             {
                 new TrackedSetting<float>(CircleSetting.Scale, scale => new SettingDescription(
-                    rawValue: scale,
-                    name: "Scale",
-                    value: $"{scale}x"
+                        rawValue: scale,
+                        name: "Scale",
+                        value: $"{scale}x"
                     )
                 ),
                 new TrackedSetting<bool>(CircleSetting.FpsDisplay, visibility => new SettingDescription(
-                    rawValue: visibility,
-                    name: "FpsDisplay",
-                    value: $"{(visibility ? "On" : "Off")}"
+                        rawValue: visibility,
+                        name: "FpsDisplay",
+                        value: $"{(visibility ? "On" : "Off")}"
                     )
                 ),
                 new TrackedSetting<int>(CircleSetting.Offset, offset => new SettingDescription(
-                    rawValue: offset,
-                    name: "Offset",
-                    value: $"{offset}"
+                        rawValue: offset,
+                        name: "Offset",
+                        value: $"{offset}"
                     )
                 ),
             };

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Circle.Game.Configuration;
+﻿using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Configuration;

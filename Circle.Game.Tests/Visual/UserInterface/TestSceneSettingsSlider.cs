@@ -1,9 +1,6 @@
 ﻿using Circle.Game.Screens.Setting;
 using osu.Framework.Bindables;
-using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {

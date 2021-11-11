@@ -33,11 +33,6 @@ namespace Circle.Game.Graphics.UserInterface
         [Resolved]
         private FrameworkConfigManager config { get; set; }
 
-        /// <summary>
-        /// 값과 액션을 포함하는 아이템.
-        /// </summary>
-        /// <param name="value">값.</param>
-        /// <param name="action"></param>
         public RollingItem(T value, Action action = null, string text = null)
         {
             Value = value;
