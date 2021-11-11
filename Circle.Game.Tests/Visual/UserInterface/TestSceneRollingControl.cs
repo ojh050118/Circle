@@ -13,7 +13,6 @@ namespace Circle.Game.Tests.Visual.UserInterface
         [BackgroundDependencyLoader]
         private void load()
         {
-            Add(new Box { RelativeSizeAxes = Axes.Both, Colour = Color4.DarkGray });
             Add(new RollingControl<int>
             {
                 Anchor = Anchor.TopCentre,

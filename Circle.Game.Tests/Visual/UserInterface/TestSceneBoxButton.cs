@@ -9,7 +9,6 @@ namespace Circle.Game.Tests.Visual.UserInterface
     {
         public TestSceneBoxButton()
         {
-            Add(new Box { RelativeSizeAxes = Axes.Both, Colour = Color4.DarkGray });
             Add(new BoxButton
             {
                 Anchor = Anchor.TopCentre,

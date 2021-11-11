@@ -17,7 +17,6 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 MaxValue = 100,
             };
 
-            Add(new Box { RelativeSizeAxes = Axes.Both, Colour = Color4.DarkGray });
             Add(new SettingsSlider<float>
             {
                 LeftIcon = FontAwesome.Solid.VolumeDown,

@@ -22,7 +22,7 @@ namespace Circle.Game.Screens.Setting
                 {
                     Margin = new MarginPadding { Left = 80 },
                     Padding = new MarginPadding { Vertical = 130 },
-                    Width = 500,
+                    Width = 600,
                     RelativeSizeAxes = Axes.Y,
                     Child = new Container
                     {
@@ -47,6 +47,7 @@ namespace Circle.Game.Screens.Setting
                                     RelativeSizeAxes = Axes.X,
                                     Children = new Drawable[]
                                     {
+                                        new GraphicsSection(),
                                         new DebugSection()
                                     }
                                 }

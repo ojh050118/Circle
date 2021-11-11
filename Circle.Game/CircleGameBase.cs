@@ -1,7 +1,9 @@
+using System;
 using Circle.Game.Configuration;
 using Circle.Game.IO;
 using Circle.Resources;
 using osu.Framework.Allocation;
+using osu.Framework.Configuration.Tracking;
 using osu.Framework.Development;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -20,6 +22,8 @@ namespace Circle.Game
         public bool IsDevelopmentBuild { get; }
 
         protected CircleConfigManager LocalConfig { get; private set; }
+
+        protected TrackedSettings TrackedSettings { get; set; }
 
         protected Storage Storage { get; set; }
 
@@ -59,7 +63,7 @@ namespace Circle.Game
             tracks.AddStore(new TrackStore(files));
 
             dependencies.CacheAs(largeStore);
-            dependencies.CacheAs(this);
+            
 
             var externalAudioManager = new ExternalAudioManager(Host.AudioThread, tracks, new ResourceStore<byte[]>());
             dependencies.CacheAs(externalAudioManager);
@@ -68,6 +72,9 @@ namespace Circle.Game
             dependencies.CacheAs(Storage);
 
             dependencies.CacheAs(LocalConfig);
+            dependencies.CacheAs(TrackedSettings);
+
+            dependencies.CacheAs(this);
 
             ContentContainer = new DrawSizePreservingFillContainer
             {
@@ -79,20 +86,16 @@ namespace Circle.Game
             base.Content.Add(ContentContainer);
         }
 
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            LocalConfig.GetBindable<bool>(CircleSetting.FpsDisplay).ValueChanged += value => FrameStatistics.Value = value.NewValue ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
-            LocalConfig.GetBindable<float>(CircleSetting.Scale).ValueChanged += value => ContentContainer.Size = new Vector2(X * value.NewValue, Y * value.NewValue);
-        }
-
         public override void SetHost(GameHost host)
         {
             base.SetHost(host);
 
             Storage ??= host.Storage;
             LocalConfig ??= new CircleConfigManager(Storage);
+            TrackedSettings = LocalConfig.CreateTrackedSettings();
+            LocalConfig.LoadInto(TrackedSettings);
+
+            TrackedSettings.SettingChanged += setTeackedSettingChange;
         }
 
         protected override void Dispose(bool isDisposing)
@@ -100,6 +103,20 @@ namespace Circle.Game
             base.Dispose(isDisposing);
 
             LocalConfig?.Dispose();
+        }
+
+        private void setTeackedSettingChange(SettingDescription description)
+        {
+            switch (description.Name.ToString())
+            {
+                case "Scale":
+                    ContentContainer.ScaleTo((float)description.RawValue, 1000, Easing.OutPow10);
+                    ContentContainer.ResizeTo(new Vector2((float)((float)description.RawValue / Math.Pow((float)description.RawValue, 2))), 1000, Easing.OutPow10);
+                    break;
+                case "FpsDisplay":
+                    FrameStatistics.Value = (bool)description.RawValue ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
+                    break;
+            }
         }
     }
 }
