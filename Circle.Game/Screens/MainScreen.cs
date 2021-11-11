@@ -1,4 +1,5 @@
 using System;
+using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -20,8 +21,11 @@ namespace Circle.Game.Screens
 
         public override bool BlockExit => true;
 
+        [Resolved]
+        private CircleGameBase game { get; set; }
+
         [BackgroundDependencyLoader]
-        private void load(LargeTextureStore textures)
+        private void load(LargeTextureStore textures, Background background, CircleGame game)
         {
             InternalChildren = new Drawable[]
             {
@@ -61,7 +65,13 @@ namespace Circle.Game.Screens
                         },
                         new IconWithTextButton("exit")
                         {
-                            Icon = FontAwesome.Solid.DoorOpen
+                            Icon = FontAwesome.Solid.DoorOpen,
+                            Action = () =>
+                            {
+                                this.Exit();
+                                background.FadeOut(2000, Easing.In);
+                                game.Exit();
+                            }
                         }
                     }
                 }
