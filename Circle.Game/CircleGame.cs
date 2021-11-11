@@ -25,7 +25,7 @@ namespace Circle.Game
                 Background = new Background(textureName: "Duelyst")
                 {
                     Alpha = 0.3f,
-                    BlurSigma = new Vector2(10)
+                    BlurSigma = new osu.Framework.Bindables.Bindable<Vector2>(new Vector2(10))
                 },
                 screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both }
             };
