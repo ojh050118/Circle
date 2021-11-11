@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Circle.Game.Configuration;
 using Circle.Game.IO;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -21,7 +22,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         private readonly string textureName;
 
-        public Vector2 BlurSigma { get; set; }
+        public Bindable<Vector2> BlurSigma { get; set; } = new Bindable<Vector2>();
 
         private readonly TextureSource source;
 
@@ -51,8 +52,8 @@ namespace Circle.Game.Graphics.UserInterface
             if (!string.IsNullOrEmpty(textureName))
                 Sprite.Texture = source == TextureSource.Internal ? textures.Get(textureName) : monitoredTextures.Get(textureName);
 
-            if (BlurSigma != Vector2.Zero)
-                BlurTo(BlurSigma);
+            BlurSigma.ValueChanged += v => BlurTo(v.NewValue);
+            BlurSigma.TriggerChange();
         }
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
@@ -77,33 +78,6 @@ namespace Circle.Game.Graphics.UserInterface
             {
                 bufferedContainer.BlurTo(newBlurSigma, duration, easing);
                 newBufferedContainer?.BlurTo(newBlurSigma, duration, easing);
-                BlurSigma = newBlurSigma;
-            }
-        }
-
-        public void BlurTo(float newBlurSigma, double duration = 0, Easing easing = Easing.None)
-        {
-            if (bufferedContainer == null && new Vector2(newBlurSigma) != Vector2.Zero)
-            {
-                RemoveInternal(Sprite);
-
-                AddInternal(bufferedContainer = new BufferedContainer
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    RelativeSizeAxes = Axes.Both,
-                    CacheDrawnFrameBuffer = true,
-                    RedrawOnScale = false,
-                    Child = Sprite,
-                    Masking = true,
-                });
-            }
-
-            if (bufferedContainer != null)
-            {
-                bufferedContainer.BlurTo(new Vector2(newBlurSigma), duration, easing);
-                newBufferedContainer?.BlurTo(new Vector2(newBlurSigma), duration, easing);
-                BlurSigma = new Vector2(newBlurSigma);
             }
         }
 
@@ -164,7 +138,7 @@ namespace Circle.Game.Graphics.UserInterface
                 {
                     AddInternal(newContainer);
                     newBufferedContainer = newContainer;
-                    newContainer.BlurTo(BlurSigma);
+                    newContainer.BlurTo(BlurSigma.Value);
                     newContainer.FadeIn(duration, easing);
                     Scheduler.AddDelayed(() => bufferedContainer = newContainer, duration);
                 }));
@@ -185,7 +159,7 @@ namespace Circle.Game.Graphics.UserInterface
                 {
                     AddInternal(newContainer);
                     newBufferedContainer = newContainer;
-                    newContainer.BlurTo(BlurSigma);
+                    newContainer.BlurTo(BlurSigma.Value);
                     newContainer.FadeIn(duration, easing);
                     Scheduler.AddDelayed(() => bufferedContainer = newContainer, duration);
                 }));
