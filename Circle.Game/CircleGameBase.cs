@@ -97,6 +97,14 @@ namespace Circle.Game
             TrackedSettings.SettingChanged += setTeackedSettingChange;
         }
 
+        public void GracefullyExit()
+        {
+            if (!OnExiting())
+                Exit();
+            else
+                Scheduler.AddDelayed(GracefullyExit, 2000);
+        }
+
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
