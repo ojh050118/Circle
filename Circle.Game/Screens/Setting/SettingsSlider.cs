@@ -125,7 +125,7 @@ namespace Circle.Game.Screens.Setting
                         }
                     }
                 }
-            };  
+            };
         }
 
         protected override void LoadComplete()
