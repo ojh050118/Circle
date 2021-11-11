@@ -47,6 +47,7 @@ namespace Circle.Game.Screens.Setting
                                     RelativeSizeAxes = Axes.X,
                                     Children = new Drawable[]
                                     {
+                                        new AudioSection(),
                                         new GraphicsSection(),
                                         new DebugSection()
                                     }

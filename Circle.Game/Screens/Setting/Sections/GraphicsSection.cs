@@ -63,7 +63,7 @@ namespace Circle.Game.Screens.Setting.Sections
                 },
                 new SettingsSlider<float>
                 {
-                    Text = "Scale",
+                    Text = "UI scaling",
                     Current = localConfig.GetBindable<float>(CircleSetting.Scale),
                     LeftIcon = FontAwesome.Solid.Compress,
                     RightIcon = FontAwesome.Solid.Expand,
