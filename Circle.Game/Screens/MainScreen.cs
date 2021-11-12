@@ -79,6 +79,7 @@ namespace Circle.Game.Screens
         {
             dialog.Title = "Exit";
             dialog.Description = "Are you sure exit game?";
+
             if (dialog.Buttons == null)
             {
                 dialog.Buttons = new[]
@@ -98,8 +99,6 @@ namespace Circle.Game.Screens
             }
             else
                 dialog.Show();
-
-
         }
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)
