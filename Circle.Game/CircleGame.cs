@@ -1,7 +1,11 @@
 ﻿using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Input;
+using Circle.Game.Overlays;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Input.Bindings;
+using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 using osuTK;
 
@@ -15,22 +19,25 @@ namespace Circle.Game
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         private ScreenStack screenStack;
-        public Background Background;
+        private Background background;
+        private DialogOverlay dialog;
 
         [BackgroundDependencyLoader]
         private void load()
         {
             Children = new Drawable[]
             {
-                Background = new Background(textureName: "Duelyst")
+                background = new Background(textureName: "Duelyst")
                 {
                     Alpha = 0.3f,
                     BlurSigma = new osu.Framework.Bindables.Bindable<Vector2>(new Vector2(10))
                 },
-                screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both }
+                screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
+                dialog = new DialogOverlay()
             };
 
-            dependencies.CacheAs(Background);
+            dependencies.CacheAs(background);
+            dependencies.CacheAs(dialog);
             dependencies.CacheAs(this);
         }
 

@@ -1,5 +1,6 @@
 using System;
 using Circle.Game.Configuration;
+using Circle.Game.Input;
 using Circle.Game.IO;
 using Circle.Resources;
 using osu.Framework.Allocation;
@@ -83,6 +84,7 @@ namespace Circle.Game
             };
 
             base.Content.Add(ContentContainer);
+            base.Content.Add(new CircleKeyBindingContainer(this));
         }
 
         public override void SetHost(GameHost host)
