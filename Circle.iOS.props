@@ -1,0 +1,69 @@
+﻿<Project>
+  <PropertyGroup>
+    <LangVersion>8.0</LangVersion>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+    <MtouchI18n>cjk,mideast,other,rare,west</MtouchI18n>
+    <OptimizePNGs>false</OptimizePNGs>
+    <MtouchExtraArgs>--nolinkaway</MtouchExtraArgs>
+    <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
+    <MtouchVerbosity></MtouchVerbosity>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'iPhoneSimulator'">
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'iPhone'">
+    <MtouchFloat32>true</MtouchFloat32>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <MtouchFastDev>true</MtouchFastDev>
+    <IOSDebuggerPort>25823</IOSDebuggerPort>
+    <DeviceSpecificBuild>false</DeviceSpecificBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <IOSDebuggerPort>28126</IOSDebuggerPort>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup Label="Package References">
+    <PackageReference Include="ppy.osu.Framework.iOS" Version="2021.1111.0" />
+  </ItemGroup>
+  <!-- See https://github.com/dotnet/runtime/issues/35988 (can be removed after Xamarin uses net5.0 / net6.0) -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1605</NoWarn>
+  </PropertyGroup>
+  <ItemGroup Label="Transitive Dependencies">
+    <PackageReference Include="ppy.osu.Framework" Version="2021.1111.0" />
+    <PackageReference Include="ppy.osu.Framework.NativeLibs" Version="2021.805.0" ExcludeAssets="all" />
+  </ItemGroup>
+</Project>
