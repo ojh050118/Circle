@@ -3,7 +3,6 @@ using osu.Framework.Graphics;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
-using osuTK.Input;
 
 namespace Circle.Game.Screens
 {

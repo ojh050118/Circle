@@ -4,7 +4,6 @@ using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
@@ -99,8 +98,8 @@ namespace Circle.Game.Screens
             }
             else
                 dialog.Show();
-            
-            
+
+
         }
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)

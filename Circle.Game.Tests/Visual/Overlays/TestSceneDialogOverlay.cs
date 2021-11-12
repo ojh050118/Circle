@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
-using osu.Framework.Bindables;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
     public class TestSceneDialogOverlay : CircleTestScene
     {
-        private DialogOverlay dialog;
-
         public TestSceneDialogOverlay()
         {
+            DialogOverlay dialog;
             Add(dialog = new DialogOverlay
             {
                 Title = "Title",

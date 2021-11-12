@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Input.Events;
-using osu.Framework.Logging;
 using osuTK;
 using osuTK.Graphics;
 
@@ -35,8 +30,8 @@ namespace Circle.Game.Overlays
         /// </summary>
         public IReadOnlyList<DialogButton> Buttons;
 
-        private SpriteText title;
-        private SpriteText description;
+        private readonly SpriteText title;
+        private readonly SpriteText description;
         private FillFlowContainer buttonContainer;
 
         public DialogOverlay()
@@ -141,7 +136,7 @@ namespace Circle.Game.Overlays
             };
         }
 
-        private DialogButton[] computeWidth(IReadOnlyList<DialogButton>  buttons)
+        private DialogButton[] computeWidth(IReadOnlyList<DialogButton> buttons)
         {
             var result = new List<DialogButton>();
 

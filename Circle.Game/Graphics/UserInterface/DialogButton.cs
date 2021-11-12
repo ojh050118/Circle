@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using osu.Framework.Graphics;
+﻿using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -33,19 +30,19 @@ namespace Circle.Game.Graphics.UserInterface
             Height = 50;
             Children = new Drawable[]
             {
-                    hover = new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Alpha = 0,
-                        Colour = Color4.Black
-                    },
-                    sprite = new SpriteText
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Font = FontUsage.Default.With(size: 28),
-                        Colour = Color4.DodgerBlue
-                    }
+                hover = new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Alpha = 0,
+                    Colour = Color4.Black
+                },
+                sprite = new SpriteText
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Font = FontUsage.Default.With(size: 28),
+                    Colour = Color4.DodgerBlue
+                }
             };
         }
 

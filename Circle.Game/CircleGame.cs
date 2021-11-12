@@ -1,11 +1,8 @@
 ﻿using Circle.Game.Graphics.UserInterface;
-using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Input.Bindings;
-using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 using osuTK;
 
