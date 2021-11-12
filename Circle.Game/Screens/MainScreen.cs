@@ -1,5 +1,7 @@
 using System;
 using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Input;
+using Circle.Game.Overlays;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -22,10 +24,10 @@ namespace Circle.Game.Screens
         public override bool BlockExit => true;
 
         [Resolved]
-        private CircleGameBase game { get; set; }
+        private DialogOverlay dialog { get; set; }
 
-        [BackgroundDependencyLoader]
-        private void load(LargeTextureStore textures, Background background, CircleGame game)
+        [BackgroundDependencyLoader(true)]
+        private void load(LargeTextureStore textures, CircleGameBase game, Background background = null)
         {
             InternalChildren = new Drawable[]
             {
@@ -66,16 +68,48 @@ namespace Circle.Game.Screens
                         new IconWithTextButton("exit")
                         {
                             Icon = FontAwesome.Solid.DoorOpen,
-                            Action = () =>
-                            {
-                                this.Exit();
-                                background.FadeOut(2000, Easing.In);
-                                game.Exit();
-                            }
+                            Action = onExit
                         }
                     }
                 }
             };
+        }
+
+        private void onExit()
+        {
+            dialog.Title = "Exit";
+            dialog.Description = "Are you sure exit game?";
+
+            if (dialog.Buttons == null)
+            {
+                dialog.Buttons = new[]
+                {
+                    new DialogButton
+                    {
+                        Text = "Cancel",
+                        Action = dialog.Hide
+                    },
+                    new DialogButton
+                    {
+                        Text = "OK",
+                        Action = Game.Exit
+                    }
+                };
+                dialog.Push();
+            }
+            else
+                dialog.Show();
+        }
+
+        public override bool OnPressed(KeyBindingPressEvent<InputAction> e)
+        {
+            if (e.Action == InputAction.Back)
+            {
+                onExit();
+                return true;
+            }
+
+            return base.OnPressed(e);
         }
 
         private class IconWithTextButton : CircularContainer

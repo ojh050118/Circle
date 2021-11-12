@@ -1,11 +1,12 @@
-﻿using osu.Framework.Graphics;
+﻿using Circle.Game.Input;
+using osu.Framework.Graphics;
+using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
-using osuTK.Input;
 
 namespace Circle.Game.Screens
 {
-    public class CircleScreen : Screen, ICircleScreen
+    public class CircleScreen : Screen, ICircleScreen, IKeyBindingHandler<InputAction>
     {
         public virtual bool BlockExit => false;
 
@@ -47,15 +48,19 @@ namespace Circle.Game.Screens
             this.MoveToX(DrawWidth, 1000, Easing.OutPow10);
         }
 
-        protected override bool OnKeyDown(KeyDownEvent e)
+        public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
         {
-            if (e.Key == Key.Escape && !e.Repeat && !BlockExit)
+            if (e.Action == InputAction.Back && !BlockExit)
             {
                 OnExit();
                 return true;
             }
 
-            return base.OnKeyDown(e);
+            return false;
+        }
+
+        public void OnReleased(KeyBindingReleaseEvent<InputAction> e)
+        {
         }
 
         public virtual void OnExit() => this.Exit();
