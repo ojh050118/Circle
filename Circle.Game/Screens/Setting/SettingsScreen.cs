@@ -15,7 +15,7 @@ namespace Circle.Game.Screens.Setting
 
         public SettingsScreen()
         {
-            InternalChildren = new Drawable[]
+            AddRangeInternal(new Drawable[]
             {
                 new ScreenHeader(this),
                 new Container
@@ -56,7 +56,7 @@ namespace Circle.Game.Screens.Setting
                         }
                     }
                 },
-            };
+            });
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Circle.Game.Configuration;
 using Circle.Game.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osuTK;
@@ -17,6 +17,7 @@ namespace Circle.Game.Graphics.UserInterface
     {
         private BufferedContainer bufferedContainer;
         private BufferedContainer newBufferedContainer;
+        private Box dim;
 
         public readonly Sprite Sprite;
 
@@ -34,17 +35,25 @@ namespace Circle.Game.Graphics.UserInterface
             this.source = source;
             this.textureName = textureName;
             RelativeSizeAxes = Axes.Both;
-            AddInternal(Sprite = new Sprite
+            AddInternal(bufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
             {
-                RelativeSizeAxes = Axes.Both,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                FillMode = FillMode.Fill,
+                RelativeSizeAxes = Axes.Both,
+                RedrawOnScale = false,
+                Masking = true,
+                Child = Sprite = new Sprite
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    FillMode = FillMode.Fill,
+                },
             });
         }
 
         [BackgroundDependencyLoader]
-        private void load(LargeTextureStore textures, MonitoredLargeTextureStore monitoredTextures, CircleConfigManager config)
+        private void load(LargeTextureStore textures, MonitoredLargeTextureStore monitoredTextures)
         {
             largeTexture = textures;
             monitoredLargeTexture = monitoredTextures;
@@ -58,31 +67,28 @@ namespace Circle.Game.Graphics.UserInterface
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
         {
-            if (bufferedContainer == null && newBlurSigma != Vector2.Zero)
-            {
-                RemoveInternal(Sprite);
+            bufferedContainer.BlurTo(newBlurSigma, duration, easing);
+            newBufferedContainer?.BlurTo(newBlurSigma, duration, easing);
+        }
 
-                AddInternal(bufferedContainer = new BufferedContainer
+        public void ColorTo(Color4 color4, double duration = 0, Easing easing = Easing.None)
+        {
+            bufferedContainer.FadeColour(color4, duration, easing);
+        }
+
+        public void DimTo(float newAlpha, double duration = 0, Easing easing = Easing.None)
+        {
+            if (dim == null)
+            {
+                AddInternal(dim = new Box
                 {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
-                    RedrawOnScale = false,
-                    Child = Sprite,
-                    Masking = true,
+                    Colour = Color4.Black,
+                    Alpha = 0
                 });
             }
 
-            if (bufferedContainer != null)
-            {
-                bufferedContainer.BlurTo(newBlurSigma, duration, easing);
-                newBufferedContainer?.BlurTo(newBlurSigma, duration, easing);
-            }
-        }
-
-        public void ColorTo(Color4 color4, double duration, Easing easing = Easing.None)
-        {
-            bufferedContainer.FadeColour(color4, duration, easing);
+            dim?.FadeTo(newAlpha, duration, easing);
         }
 
         private async Task<Sprite> loadTexture(TextureSource source, string textureName)
@@ -111,7 +117,7 @@ namespace Circle.Game.Graphics.UserInterface
             }
         }
 
-        public void TextureFadeTo(TextureSource source, string textureName, double duration, Easing easing = Easing.None)
+        public void FadeTextureTo(TextureSource source, string textureName, double duration, Easing easing = Easing.None)
         {
             if (Sprite is null)
                 return;
@@ -123,7 +129,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             if (source == TextureSource.Internal)
             {
-                Schedule(() => LoadComponentAsync(newContainer = new BufferedContainer
+                LoadComponentAsync(newContainer = new BufferedContainer(cachedFrameBuffer: true)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -139,11 +145,11 @@ namespace Circle.Game.Graphics.UserInterface
                     newContainer.BlurTo(BlurSigma.Value);
                     newContainer.FadeIn(duration, easing);
                     Scheduler.AddDelayed(() => bufferedContainer = newContainer, duration);
-                }));
+                });
             }
             else
             {
-                Schedule(() => LoadComponentAsync(newContainer = new BufferedContainer
+                LoadComponentAsync(newContainer = new BufferedContainer(cachedFrameBuffer: true)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -159,7 +165,7 @@ namespace Circle.Game.Graphics.UserInterface
                     newContainer.BlurTo(BlurSigma.Value);
                     newContainer.FadeIn(duration, easing);
                     Scheduler.AddDelayed(() => bufferedContainer = newContainer, duration);
-                }));
+                });
             }
         }
     }

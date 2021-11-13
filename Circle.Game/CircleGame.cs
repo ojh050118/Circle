@@ -2,10 +2,8 @@
 using Circle.Game.Overlays;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
-using osuTK;
 
 namespace Circle.Game
 {
@@ -25,11 +23,7 @@ namespace Circle.Game
         {
             Children = new Drawable[]
             {
-                background = new Background(textureName: "Duelyst")
-                {
-                    Alpha = 0.3f,
-                    BlurSigma = new Bindable<Vector2>(new Vector2(10))
-                },
+                background = new Background(textureName: "Duelyst"),
                 screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
                 dialog = new DialogOverlay()
             };
