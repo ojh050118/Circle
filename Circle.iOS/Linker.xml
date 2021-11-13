@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<linker>
+    <assembly fullname="System.Linq.Queryable">
+        <type fullname="*" />
+    </assembly>
+    <assembly fullname="osu.Framework">
+        <type fullname="*" />
+    </assembly>
+    <assembly fullname="osu.Framework.iOS">
+        <type fullname="*" />
+    </assembly>
+    <assembly fullname="Circle.Game.Resources">
+        <type fullname="*" />
+    </assembly>
+</linker>
