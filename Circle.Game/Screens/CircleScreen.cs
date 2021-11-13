@@ -1,7 +1,6 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
@@ -25,7 +24,6 @@ namespace Circle.Game.Screens
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
-
         }
 
         public override void OnEntering(IScreen last)

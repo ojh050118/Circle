@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Circle.Game.Configuration;
 using Circle.Game.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -50,7 +49,6 @@ namespace Circle.Game.Graphics.UserInterface
                     Origin = Anchor.Centre,
                     FillMode = FillMode.Fill,
                 },
-                
             });
         }
 
@@ -71,7 +69,6 @@ namespace Circle.Game.Graphics.UserInterface
         {
             bufferedContainer.BlurTo(newBlurSigma, duration, easing);
             newBufferedContainer?.BlurTo(newBlurSigma, duration, easing);
-
         }
 
         public void ColorTo(Color4 color4, double duration = 0, Easing easing = Easing.None)
@@ -91,8 +88,7 @@ namespace Circle.Game.Graphics.UserInterface
                 });
             }
 
-            if (dim != null)
-                dim.FadeTo(newAlpha, duration, easing);
+            dim?.FadeTo(newAlpha, duration, easing);
         }
 
         private async Task<Sprite> loadTexture(TextureSource source, string textureName)

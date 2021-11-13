@@ -20,7 +20,6 @@ namespace Circle.Game.Tests.Visual.UserInterface
             AddStep("Scale to 1", () => background.Scale = new Vector2(1));
             AddStep("BlurTo 10", () => background.BlurTo(new Vector2(10), 500));
             AddStep("BlurTo 0", () => background.BlurTo(Vector2.Zero, 500));
-
         }
     }
 }
