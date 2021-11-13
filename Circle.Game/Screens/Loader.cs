@@ -7,9 +7,9 @@ using osu.Framework.Threading;
 
 namespace Circle.Game.Screens
 {
-    public class Loader : CircleScreen
+    public class Loader : Screen
     {
-        private Screen mainScreen;
+        private CircleScreen mainScreen;
 
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;

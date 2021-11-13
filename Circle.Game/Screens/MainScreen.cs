@@ -23,20 +23,16 @@ namespace Circle.Game.Screens
 
         public override bool BlockExit => true;
 
+        public override bool FadeBackground => false;
+
         [Resolved]
         private DialogOverlay dialog { get; set; }
 
-        [BackgroundDependencyLoader(true)]
-        private void load(LargeTextureStore textures, CircleGameBase game, Background background = null)
+        [BackgroundDependencyLoader]
+        private void load()
         {
             InternalChildren = new Drawable[]
             {
-                new Sprite
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Texture = textures.Get("Duelyst"),
-                    FillMode = FillMode.Fill
-                },
                 new SpriteText
                 {
                     Text = Header,

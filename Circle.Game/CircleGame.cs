@@ -25,11 +25,7 @@ namespace Circle.Game
         {
             Children = new Drawable[]
             {
-                background = new Background(textureName: "Duelyst")
-                {
-                    Alpha = 0.3f,
-                    BlurSigma = new Bindable<Vector2>(new Vector2(10))
-                },
+                background = new Background(textureName: "Duelyst"),
                 screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
                 dialog = new DialogOverlay()
             };
