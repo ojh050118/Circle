@@ -15,26 +15,22 @@ namespace Circle.Game.Tests
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            dependencies.CacheAs(new Background());
-            dependencies.CacheAs(new DialogOverlay());
-        }
-
         protected override void LoadComplete()
         {
             base.LoadComplete();
 
+            Background background;
+            DialogOverlay dialog;
+
             AddRange(new Drawable[]
             {
-                new Background(textureName: "Duelyst")
-                {
-                    Alpha = 0.4f,
-                },
+                background = new Background(textureName: "Duelyst"),
                 new TestBrowser("Circle"),
+                dialog = new DialogOverlay(),
                 new CursorContainer()
             });
+            dependencies.CacheAs(background);
+            dependencies.CacheAs(dialog);
         }
 
         public override void SetHost(GameHost host)
