@@ -15,9 +15,6 @@ namespace Circle.Game.Tests
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
-        private Background background;
-        private DialogOverlay dialog;
-
         protected override void LoadComplete()
         {
             base.LoadComplete();
