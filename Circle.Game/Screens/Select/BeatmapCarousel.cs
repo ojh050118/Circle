@@ -7,6 +7,7 @@ using Circle.Game.Graphics.Containers;
 using Circle.Game.Screens.Select.Carousel;
 using osuTK;
 using Circle.Game.Beatmap;
+using Circle.Game.Graphics.UserInterface;
 
 namespace Circle.Game.Screens.Select
 {
@@ -41,7 +42,7 @@ namespace Circle.Game.Screens.Select
         }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps)
+        private void load(BeatmapStorage beatmaps, Background background)
         {
             foreach (var beatmap in beatmaps.GetBeatmaps())
             {
@@ -60,6 +61,11 @@ namespace Circle.Game.Screens.Select
                     if (v.NewValue == CarouselItemState.Selected)
                     {
                         Scroll.ScrollTo(item.Y + item.Height / 2);
+
+                        if (item.BeatmapInfo.Settings.BackgroundTexture != string.Empty)
+                            background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BackgroundTexture, 1000, Easing.OutPow10);
+                        else
+                            background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
 
                         foreach (var item2 in Scroll.Child.Children)
                         {

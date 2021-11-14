@@ -1,8 +1,6 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Circle.Game.IO;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -23,7 +21,17 @@ namespace Circle.Game.Graphics.UserInterface
 
         private readonly string textureName;
 
-        public Bindable<Vector2> BlurSigma { get; set; } = new Bindable<Vector2>();
+        public Vector2 BlurSigma
+        {
+            get
+            {
+                if (bufferedContainer == null)
+                    return newBufferedContainer.BlurSigma;
+                else
+                    return bufferedContainer.BlurSigma;
+            }
+            set => bufferedContainer.BlurSigma = value;
+        }
 
         private readonly TextureSource source;
 
@@ -60,15 +68,12 @@ namespace Circle.Game.Graphics.UserInterface
 
             if (!string.IsNullOrEmpty(textureName))
                 Sprite.Texture = source == TextureSource.Internal ? textures.Get(textureName) : monitoredTextures.Get(textureName);
-
-            BlurSigma.ValueChanged += v => BlurTo(v.NewValue);
-            BlurSigma.TriggerChange();
         }
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
         {
-            bufferedContainer.BlurTo(newBlurSigma, duration, easing);
-            newBufferedContainer?.BlurTo(newBlurSigma, duration, easing);
+            bufferedContainer?.BlurTo(newBlurSigma, duration, easing);
+            Schedule(() => newBufferedContainer?.BlurTo(newBlurSigma, duration, easing));
         }
 
         public void ColorTo(Color4 color4, double duration = 0, Easing easing = Easing.None)
@@ -91,7 +96,7 @@ namespace Circle.Game.Graphics.UserInterface
             dim?.FadeTo(newAlpha, duration, easing);
         }
 
-        private async Task<Sprite> loadTexture(TextureSource source, string textureName)
+        private Sprite loadTexture(TextureSource source, string textureName)
         {
             if (source == TextureSource.Internal)
             {
@@ -101,7 +106,7 @@ namespace Circle.Game.Graphics.UserInterface
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     FillMode = FillMode.Fill,
-                    Texture = await largeTexture.GetAsync(textureName)
+                    Texture = largeTexture.Get(textureName)
                 };
             }
             else
@@ -112,24 +117,19 @@ namespace Circle.Game.Graphics.UserInterface
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     FillMode = FillMode.Fill,
-                    Texture = await monitoredLargeTexture.GetAsync(textureName)
+                    Texture = monitoredLargeTexture.Get(textureName)
                 };
             }
         }
 
-        public void FadeTextureTo(TextureSource source, string textureName, double duration, Easing easing = Easing.None)
+        public void FadeTextureTo(TextureSource source, string textureName, double duration = 0, Easing easing = Easing.None)
         {
             if (Sprite is null)
                 return;
 
-            BufferedContainer newContainer;
-
-            Schedule(() => InternalChildren.First().FadeOut(duration, easing));
-            Scheduler.AddDelayed(() => RemoveInternal(InternalChildren.First()), duration);
-
             if (source == TextureSource.Internal)
             {
-                LoadComponentAsync(newContainer = new BufferedContainer(cachedFrameBuffer: true)
+                LoadComponentAsync(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -137,19 +137,22 @@ namespace Circle.Game.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                     RedrawOnScale = false,
                     Masking = true,
-                    Child = loadTexture(source, textureName).GetAwaiter().GetResult(),
+                    Child = loadTexture(source, textureName),
                 }, _ =>
                 {
-                    AddInternal(newContainer);
-                    newBufferedContainer = newContainer;
-                    newContainer.BlurTo(BlurSigma.Value);
-                    newContainer.FadeIn(duration, easing);
-                    Scheduler.AddDelayed(() => bufferedContainer = newContainer, duration);
+                    AddInternal(newBufferedContainer);
+                    ChangeInternalChildDepth(dim, -1);
+                    newBufferedContainer.BlurSigma = BlurSigma;
+                    newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
+                    {
+                        RemoveInternal(InternalChildren.First());
+                        bufferedContainer = newBufferedContainer;
+                    });
                 });
             }
             else
             {
-                LoadComponentAsync(newContainer = new BufferedContainer(cachedFrameBuffer: true)
+                LoadComponentAsync(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -157,14 +160,17 @@ namespace Circle.Game.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                     RedrawOnScale = false,
                     Masking = true,
-                    Child = loadTexture(source, textureName).GetAwaiter().GetResult(),
+                    Child = loadTexture(source, textureName),
                 }, _ =>
                 {
-                    AddInternal(newContainer);
-                    newBufferedContainer = newContainer;
-                    newContainer.BlurTo(BlurSigma.Value);
-                    newContainer.FadeIn(duration, easing);
-                    Scheduler.AddDelayed(() => bufferedContainer = newContainer, duration);
+                    AddInternal(newBufferedContainer);
+                    ChangeInternalChildDepth(dim, -1);
+                    newBufferedContainer.BlurSigma = BlurSigma;
+                    newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
+                    {
+                        RemoveInternal(InternalChildren.First());
+                        bufferedContainer = newBufferedContainer;
+                    });
                 });
             }
         }
