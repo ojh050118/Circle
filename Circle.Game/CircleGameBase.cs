@@ -1,7 +1,9 @@
 using System;
+using Circle.Game.Beatmap;
 using Circle.Game.Configuration;
 using Circle.Game.Input;
 using Circle.Game.IO;
+using Circle.Game.Overlays;
 using Circle.Resources;
 using osu.Framework.Allocation;
 using osu.Framework.Configuration.Tracking;
@@ -30,6 +32,8 @@ namespace Circle.Game
 
         protected override Container<Drawable> Content => ContentContainer;
 
+        protected MusicController MusicController { get; private set; }
+
         private DependencyContainer dependencies;
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
@@ -40,7 +44,6 @@ namespace Circle.Game
             get
             {
                 var version = typeof(osu.Framework.Game).Assembly.GetName().Version;
-
                 return $"{version.Major}.{version.Minor}.{version.Build}";
             }
         }
@@ -63,16 +66,24 @@ namespace Circle.Game
             largeStore.AddStore(Host.CreateTextureLoaderStore(new OnlineStore()));
             tracks.AddStore(new TrackStore(files));
 
+            AddFont(Resources, @"Fonts/OpenSans-Regular");
+            AddFont(Resources, @"Fonts/OpenSans-Light");
+            AddFont(Resources, @"Fonts/OpenSans-Bold");
+            AddFont(Resources, @"Fonts/OpenSans-SemiBold");
+
             dependencies.CacheAs(largeStore);
 
             var externalAudioManager = new ExternalAudioManager(Host.AudioThread, tracks, new ResourceStore<byte[]>());
             dependencies.CacheAs(externalAudioManager);
             dependencies.CacheAs(monitoredLargeStore);
+            dependencies.CacheAs(new BeatmapStorage(files));
 
             dependencies.CacheAs(Storage);
 
             dependencies.CacheAs(LocalConfig);
             dependencies.CacheAs(TrackedSettings);
+
+            dependencies.CacheAs(MusicController = new MusicController());
 
             dependencies.CacheAs(this);
 

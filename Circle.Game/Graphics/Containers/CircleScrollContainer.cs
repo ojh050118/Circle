@@ -8,7 +8,7 @@ using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
 
-namespace Circle.Game.Graphics.UserInterface
+namespace Circle.Game.Graphics.Containers
 {
     public class CircleScrollContainer : CircleScrollContainer<Drawable>
     {

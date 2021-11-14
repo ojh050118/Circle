@@ -66,7 +66,7 @@ namespace Circle.Game.Overlays
                             {
                                 Anchor = Anchor.TopCentre,
                                 Origin = Anchor.TopCentre,
-                                Font = FontUsage.Default.With(size: 28),
+                                Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
                                 Colour = Color4.Black,
                                 Margin = new MarginPadding { Vertical = 10 },
                             },

@@ -24,6 +24,12 @@ namespace Circle.Game.Graphics.UserInterface
             set => sprite.Colour = value;
         }
 
+        public FontUsage Font
+        {
+            get => sprite.Font;
+            set => sprite.Font = value;
+        }
+
         public DialogButton()
         {
             RelativeSizeAxes = Axes.X;

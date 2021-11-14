@@ -2,6 +2,7 @@ using System;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
+using Circle.Game.Screens.Select;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -53,7 +54,12 @@ namespace Circle.Game.Screens
                     {
                         new IconWithTextButton("play")
                         {
-                            Icon = FontAwesome.Solid.Play
+                            Icon = FontAwesome.Solid.Play,
+                            Action = () => this.Push(new SongSelectScreen())
+                        },
+                        new IconWithTextButton("edit")
+                        {
+                            Icon = FontAwesome.Solid.Edit,
                         },
                         new IconWithTextButton("settings")
                         {
@@ -87,6 +93,7 @@ namespace Circle.Game.Screens
                     new DialogButton
                     {
                         Text = "OK",
+                        Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
                         Action = Game.Exit
                     }
                 };
@@ -156,7 +163,7 @@ namespace Circle.Game.Screens
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Text = text,
-                            Font = FontUsage.Default.With(size: 24)
+                            Font = FontUsage.Default.With(size: 26)
                         }.WithEffect(new GlowEffect
                         {
                             BlurSigma = new Vector2(5),
