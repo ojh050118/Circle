@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
-using osu.Framework.Caching;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Pooling;
-using osu.Framework.Input.Bindings;
-using osu.Framework.Input.Events;
-using osu.Framework.Layout;
-using osu.Framework.Threading;
-using osu.Framework.Utils;
-using Circle.Game.Configuration;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Screens.Select.Carousel;
 using osuTK;
-using osuTK.Input;
+using Circle.Game.Beatmap;
 
 namespace Circle.Game.Screens.Select
 {
@@ -46,18 +35,21 @@ namespace Circle.Game.Screens.Select
                         Origin = Anchor.Centre,
                         Spacing = new Vector2(10),
                         Direction = FillDirection.Vertical,
-                        Children = new[]
-                        {
-                            new CarouselItem(),
-                            new CarouselItem(),
-                            new CarouselItem(),
-                            new CarouselItem(),
-                            new CarouselItem(),
-                            new CarouselItem(),
-                        }
                     }
                 }
             };
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(BeatmapStorage beatmaps)
+        {
+            foreach (var beatmap in beatmaps.GetBeatmaps())
+            {
+                Scroll.Child.Add(new CarouselItem
+                {
+                    BeatmapInfo = beatmap
+                });
+            }
 
             foreach (var item in Scroll.Child.Children)
             {
@@ -85,11 +77,6 @@ namespace Circle.Game.Screens.Select
 
             var idx = new Random().Next(0, Scroll.Child.Children.Count);
             Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
-        }
-
-        protected override void Update()
-        {
-            base.Update();
         }
 
         protected override void UpdateAfterChildren()
@@ -140,13 +127,6 @@ namespace Circle.Game.Screens.Select
                 ScrollContent.AutoSizeAxes = Axes.None;
                 Masking = false;
             }
-        }
-
-        private enum PendingScrollOperation
-        {
-            None,
-            Standard,
-            Immediate,
         }
     }
 }

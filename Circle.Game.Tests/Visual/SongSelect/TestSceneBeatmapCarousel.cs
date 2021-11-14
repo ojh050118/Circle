@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Circle.Game.Screens.Select;
-using Circle.Game.Screens.Select.Carousel;
+﻿using Circle.Game.Screens.Select;
 using osu.Framework.Graphics.Shapes;
 using osuTK.Graphics;
 using osu.Framework.Graphics;
@@ -15,7 +9,7 @@ namespace Circle.Game.Tests.Visual.SongSelect
     {
         public TestSceneBeatmapCarousel()
         {
-            Add(new Box()
+            Add(new Box
             {
                 Colour = Color4.Black,
                 Alpha = 0.7f,

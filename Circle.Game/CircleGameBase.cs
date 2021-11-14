@@ -35,6 +35,7 @@ namespace Circle.Game
         protected MusicController MusicController { get; private set; }
 
         private DependencyContainer dependencies;
+
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
@@ -82,7 +83,7 @@ namespace Circle.Game
             dependencies.CacheAs(LocalConfig);
             dependencies.CacheAs(TrackedSettings);
 
-            dependencies.CacheAs(MusicController = new MusicController(files));
+            dependencies.CacheAs(MusicController = new MusicController());
 
             dependencies.CacheAs(this);
 

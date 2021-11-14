@@ -1,11 +1,4 @@
-﻿using Circle.Game.Graphics.UserInterface;
-using Circle.Game.Screens.Setting.Sections;
-using osu.Framework.Extensions.Color4Extensions;
-using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
-using osuTK;
-using osuTK.Graphics;
+﻿using osu.Framework.Graphics;
 
 namespace Circle.Game.Screens.Select
 {
