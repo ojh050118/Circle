@@ -102,7 +102,14 @@ namespace Circle.Game.Screens.Select
                 return;
             }
 
-            Scroll.Child.Children.FirstOrDefault(i => i.BeatmapInfo.Settings.Track.Equals(working.Value.Settings.Track)).State.Value = CarouselItemState.Selected;
+            foreach (var item in Scroll.Child.Children)
+            {
+                if (item.BeatmapInfo.Settings.Track == working.Value.Settings.Track)
+                {
+                    item.State.Value = CarouselItemState.Selected;
+                    return;
+                }
+            }
         }
 
         protected override void UpdateAfterChildren()

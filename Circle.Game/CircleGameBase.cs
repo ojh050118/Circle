@@ -31,7 +31,7 @@ namespace Circle.Game
 
         protected Storage Storage { get; set; }
 
-        protected Bindable<BeatmapInfo> WorkingBeatmap { get; set; } = null;
+        protected Bindable<BeatmapInfo> WorkingBeatmap { get; set; }
 
         protected override Container<Drawable> Content => ContentContainer;
 
