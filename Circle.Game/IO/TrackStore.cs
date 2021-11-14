@@ -28,7 +28,21 @@ namespace Circle.Game.IO
             }
         }
 
-        public Stream GetStream(string name) => File.OpenRead($"{storage.GetFullPath(string.Empty)}/{name}");
+        public Stream GetStream(string name)
+        {
+            FileStream fs;
+
+            try
+            {
+                fs = File.OpenRead($"{storage.GetFullPath(string.Empty)}/{name}.mp3");
+            }
+            catch
+            {
+                fs = File.OpenRead($"{storage.GetFullPath(string.Empty)}/{name}.ogg");
+            }
+
+            return fs;
+        }
 
         public Task<byte[]> GetAsync(string name) => null;
 
