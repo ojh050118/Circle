@@ -8,6 +8,8 @@ using Circle.Game.Screens.Select.Carousel;
 using osuTK;
 using Circle.Game.Beatmap;
 using Circle.Game.Graphics.UserInterface;
+using osu.Framework.Bindables;
+using Circle.Game.Overlays;
 
 namespace Circle.Game.Screens.Select
 {
@@ -18,6 +20,9 @@ namespace Circle.Game.Screens.Select
         private CarouselItem selectedCarouselItem => Scroll?.Child.Children.FirstOrDefault(i => i.State.Value == CarouselItemState.Selected);
 
         private int oldScrollHeight;
+
+        [Resolved]
+        private Bindable<BeatmapInfo> working { get; set; }
 
         public BeatmapCarousel()
         {
@@ -42,7 +47,7 @@ namespace Circle.Game.Screens.Select
         }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps, Background background)
+        private void load(BeatmapStorage beatmaps, Background background, MusicController music)
         {
             foreach (var beatmap in beatmaps.GetBeatmaps())
             {
@@ -67,6 +72,12 @@ namespace Circle.Game.Screens.Select
                         else
                             background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
 
+                        if (working.Value.Settings.Track != item.BeatmapInfo.Settings.Track)
+                        {
+                            working.Value = item.BeatmapInfo;
+                            music.Play();
+                        }
+
                         foreach (var item2 in Scroll.Child.Children)
                         {
                             if (item2 != item)
@@ -81,8 +92,24 @@ namespace Circle.Game.Screens.Select
         {
             base.LoadComplete();
 
-            var idx = new Random().Next(0, Scroll.Child.Children.Count);
-            Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
+            if (Scroll.Child.Children.Count == 0)
+                return;
+
+            if (working.Value.Settings.Track == string.Empty || working.Value.Settings.Track is null)
+            {
+                var idx = new Random().Next(0, Scroll.Child.Children.Count);
+                Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
+                return;
+            }
+
+            foreach (var item in Scroll.Child.Children)
+            {
+                if (item.BeatmapInfo.Settings.Track == working.Value.Settings.Track)
+                {
+                    item.State.Value = CarouselItemState.Selected;
+                    return;
+                }
+            }
         }
 
         protected override void UpdateAfterChildren()

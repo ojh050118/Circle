@@ -6,6 +6,7 @@ using Circle.Game.IO;
 using Circle.Game.Overlays;
 using Circle.Resources;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Configuration.Tracking;
 using osu.Framework.Development;
 using osu.Framework.Graphics;
@@ -29,6 +30,8 @@ namespace Circle.Game
         protected TrackedSettings TrackedSettings { get; set; }
 
         protected Storage Storage { get; set; }
+
+        protected Bindable<BeatmapInfo> WorkingBeatmap { get; set; }
 
         protected override Container<Drawable> Content => ContentContainer;
 
@@ -83,6 +86,8 @@ namespace Circle.Game
             dependencies.CacheAs(LocalConfig);
             dependencies.CacheAs(TrackedSettings);
 
+            dependencies.CacheAs(WorkingBeatmap = new Bindable<BeatmapInfo>());
+
             dependencies.CacheAs(MusicController = new MusicController());
 
             dependencies.CacheAs(this);
@@ -94,6 +99,7 @@ namespace Circle.Game
                 Origin = Anchor.Centre
             };
 
+            AddInternal(MusicController);
             base.Content.Add(ContentContainer);
             base.Content.Add(new CircleKeyBindingContainer(this));
         }
