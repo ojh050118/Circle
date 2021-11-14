@@ -1,4 +1,4 @@
-﻿using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Graphics.Containers;
 using Circle.Game.Screens.Setting.Sections;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -22,8 +22,8 @@ namespace Circle.Game.Screens.Setting
                 {
                     Margin = new MarginPadding { Left = 80 },
                     Padding = new MarginPadding { Vertical = 130 },
-                    Width = 600,
-                    RelativeSizeAxes = Axes.Y,
+                    RelativeSizeAxes = Axes.Both,
+                    Width = 0.5f,
                     Child = new Container
                     {
                         RelativeSizeAxes = Axes.Both,
