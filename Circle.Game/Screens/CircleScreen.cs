@@ -1,6 +1,8 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using osu.Framework.Allocation;
+using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
@@ -17,6 +19,8 @@ namespace Circle.Game.Screens
 
         public virtual bool FadeBackground => true;
 
+        private Sample sampleBack;
+
         [Resolved]
         private Background background { get; set; }
 
@@ -24,6 +28,12 @@ namespace Circle.Game.Screens
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(AudioManager audio)
+        {
+            sampleBack = audio.Samples.Get("screen-back");
         }
 
         public override void OnEntering(IScreen last)
@@ -48,6 +58,8 @@ namespace Circle.Game.Screens
                 background.DimTo(0, 1000, Easing.OutPow10);
                 background.BlurTo(Vector2.Zero, 1000, Easing.OutPow10);
             }
+
+            sampleBack?.Play();
 
             return base.OnExiting(next);
         }

@@ -94,7 +94,7 @@ namespace Circle.Game.Screens.Setting
                     RelativeSizeAxes = Axes.X,
                     AutoSizeAxes = Axes.Y,
                     Margin = new MarginPadding { Right = 20 },
-                    Width = 0.4f,
+                    Width = 0.5f,
                     Children = new Drawable[]
                     {
                         leftIcon = new SpriteIcon
