@@ -100,7 +100,7 @@ namespace Circle.Game.Screens.Select.Carousel
                         new SpriteText
                         {
                             Text = BeatmapInfo.Settings.Track,
-                            Font = FontUsage.Default.With("OpenSans-Bold", size: 28)
+                            Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
                         },
                         new SpriteText
                         {
@@ -144,11 +144,18 @@ namespace Circle.Game.Screens.Select.Carousel
                         Roundness = 10,
                     };
                     break;
+
+                case CarouselItemState.PlayRequested:
+                    BorderContainer.FlashColour(Color4.White, 1000, Easing.OutPow10);
+                    break;
             }
         }
 
         protected override bool OnClick(ClickEvent e)
         {
+            if (State.Value == CarouselItemState.Selected)
+                State.Value = CarouselItemState.PlayRequested;
+
             State.Value = CarouselItemState.Selected;
 
             return base.OnClick(e);

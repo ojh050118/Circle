@@ -11,7 +11,7 @@ namespace Circle.Game.Screens.Setting
 {
     public class SettingsScreen : CircleScreen
     {
-        public override string Header => "settings";
+        public override string Header => "Settings";
 
         public SettingsScreen()
         {
