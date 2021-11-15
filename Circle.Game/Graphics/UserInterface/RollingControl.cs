@@ -88,7 +88,7 @@ namespace Circle.Game.Graphics.UserInterface
                     Origin = Anchor.CentreRight,
                     RelativeSizeAxes = Axes.X,
                     Height = 40,
-                    Width = 0.4f,
+                    Width = 0.5f,
                     Children = new Drawable[]
                     {
                         new IconButton

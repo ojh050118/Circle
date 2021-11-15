@@ -5,6 +5,8 @@ using Circle.Game.Overlays;
 using Circle.Game.Screens.Select;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
+using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
@@ -52,16 +54,16 @@ namespace Circle.Game.Screens
                     Margin = new MarginPadding { Top = 120, Left = 100 },
                     Children = new Drawable[]
                     {
-                        new IconWithTextButton("play")
+                        new IconWithTextButton("play", "button-play-select")
                         {
                             Icon = FontAwesome.Solid.Play,
                             Action = () => this.Push(new SongSelectScreen())
                         },
-                        new IconWithTextButton("edit")
+                        new IconWithTextButton("edit", "button-edit-select")
                         {
                             Icon = FontAwesome.Solid.Edit,
                         },
-                        new IconWithTextButton("settings")
+                        new IconWithTextButton("settings", "button-settings-select")
                         {
                             Icon = FontAwesome.Solid.Cog,
                             Action = () => this.Push(new SettingsScreen())
@@ -118,6 +120,9 @@ namespace Circle.Game.Screens
         {
             private readonly SpriteIcon icon;
 
+            private Sample sampleSelect;
+            private string sampleName;
+
             public IconUsage Icon
             {
                 get => icon.Icon;
@@ -126,8 +131,9 @@ namespace Circle.Game.Screens
 
             public Action Action { get; set; }
 
-            public IconWithTextButton(string text = @"")
+            public IconWithTextButton(string text = @"", string sample = @"")
             {
+                sampleName = sample;
                 Masking = true;
                 AutoSizeAxes = Axes.X;
                 Height = 40;
@@ -174,6 +180,12 @@ namespace Circle.Game.Screens
                 };
             }
 
+            [BackgroundDependencyLoader]
+            private void load(AudioManager audio)
+            {
+                sampleSelect = audio.Samples.Get(sampleName);
+            }
+
             protected override bool OnHover(HoverEvent e)
             {
                 Child.FadeTo(1).Then().FadeTo(0.8f, 250, Easing.In);
@@ -192,6 +204,7 @@ namespace Circle.Game.Screens
             {
                 Child.FlashColour(Color4.DarkGray, 250, Easing.InQuad);
                 Action?.Invoke();
+                sampleSelect?.Play();
 
                 return base.OnClick(e);
             }
