@@ -13,7 +13,7 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Background background { get; set; }
 
-        private BeatmapCarousel carousel;
+        private readonly BeatmapCarousel carousel;
 
         public SongSelectScreen()
         {

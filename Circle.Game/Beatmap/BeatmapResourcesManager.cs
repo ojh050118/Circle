@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Graphics.Textures;
@@ -72,9 +68,9 @@ namespace Circle.Game.Beatmap
             try
             {
                 return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.ogg"))
-                    ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.mp3"));
+                       ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.mp3"));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Error(e, "BeatmapTrack failed to load");
                 return null;
@@ -91,7 +87,7 @@ namespace Circle.Game.Beatmap
             try
             {
                 return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.ogg"))
-                    ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.mp3"));
+                       ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.mp3"));
             }
             catch (Exception e)
             {

@@ -63,7 +63,6 @@ namespace Circle.Game.Screens.Select
             {
                 item.State.ValueChanged += v =>
                 {
-
                     if (v.NewValue == CarouselItemState.PlayRequested)
                         PlayRequested.Value = true;
 
