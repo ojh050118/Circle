@@ -4,6 +4,7 @@
     {
         Collapsed,
         NotSelected,
-        Selected
+        Selected,
+        PlayRequested
     }
 }

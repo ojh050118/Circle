@@ -1,4 +1,5 @@
 ﻿using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Screens.Play;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
@@ -12,12 +13,14 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Background background { get; set; }
 
+        private readonly BeatmapCarousel carousel;
+
         public SongSelectScreen()
         {
             InternalChildren = new Drawable[]
             {
                 new ScreenHeader(this),
-                new BeatmapCarousel
+                carousel = new BeatmapCarousel
                 {
                     Width = 0.4f,
                     Anchor = Anchor.CentreRight,
@@ -26,11 +29,37 @@ namespace Circle.Game.Screens.Select
             };
         }
 
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            carousel.PlayRequested.ValueChanged += v =>
+            {
+                if (v.NewValue)
+                    this.Push(new PlayerLoader());
+            };
+        }
+
         public override bool OnExiting(IScreen next)
         {
             background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
 
             return base.OnExiting(next);
+        }
+
+        public override void OnSuspending(IScreen next)
+        {
+            base.OnSuspending(next);
+
+            carousel.FadeOut(500, Easing.OutPow10);
+        }
+
+        public override void OnResuming(IScreen last)
+        {
+            base.OnResuming(last);
+
+            carousel.FadeIn(1000, Easing.OutPow10);
+            carousel.PlayRequested.Value = false;
         }
     }
 }

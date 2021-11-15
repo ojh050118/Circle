@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Circle.Game.Beatmap;
-using Circle.Game.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
@@ -19,13 +18,10 @@ namespace Circle.Game.Overlays
         public DrawableTrack CurrentTrack { get; private set; } = new DrawableTrack(new TrackVirtual(1000));
 
         [Resolved]
-        private ExternalAudioManager audio { get; set; }
-
-        [Resolved]
         private Bindable<BeatmapInfo> workingBeatmap { get; set; }
 
         [Resolved]
-        private FrameworkConfigManager config { get; set; }
+        private BeatmapResourcesManager beatmapResources { get; set; }
 
         public bool IsPlaying => CurrentTrack.IsRunning;
 
@@ -39,15 +35,6 @@ namespace Circle.Game.Overlays
         private void load(FrameworkConfigManager config)
         {
             workingBeatmap.ValueChanged += info => changeTrack(info.NewValue);
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            // 성능에 큰 영향을 미칩니다.
-            // 좋은 방법을 찾기 전까지 이걸 사용합니다.
-            audio.Volume.Value = config.Get<double>(FrameworkSetting.VolumeMusic) * config.Get<double>(FrameworkSetting.VolumeUniversal);
         }
 
         public void Play(bool restart = false)
@@ -80,7 +67,7 @@ namespace Circle.Game.Overlays
 
             var lastTrack = CurrentTrack;
 
-            var queuedTrack = new DrawableTrack(audio.Tracks.Get(info.Settings.Track));
+            var queuedTrack = new DrawableTrack(beatmapResources.GetBeatmapTrack(info));
 
             CurrentTrack = queuedTrack;
 

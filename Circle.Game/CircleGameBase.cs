@@ -2,7 +2,6 @@ using System;
 using Circle.Game.Beatmap;
 using Circle.Game.Configuration;
 using Circle.Game.Input;
-using Circle.Game.IO;
 using Circle.Game.Overlays;
 using Circle.Resources;
 using osu.Framework.Allocation;
@@ -39,6 +38,8 @@ namespace Circle.Game
 
         private DependencyContainer dependencies;
 
+        protected BeatmapResourcesManager BeatmapResourceStore { get; set; }
+
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
@@ -61,13 +62,10 @@ namespace Circle.Game
         private void load()
         {
             var files = Storage.GetStorageForDirectory("files");
-            var tracks = new ResourceStore<byte[]>();
             var largeStore = new LargeTextureStore(Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
-            var monitoredLargeStore = new MonitoredLargeTextureStore(Host, files.GetStorageForDirectory("backgrounds"));
 
             Resources.AddStore(new DllResourceStore(typeof(CircleResources).Assembly));
             largeStore.AddStore(Host.CreateTextureLoaderStore(new OnlineStore()));
-            tracks.AddStore(new TrackStore(files));
 
             AddFont(Resources, @"Fonts/OpenSans-Regular");
             AddFont(Resources, @"Fonts/OpenSans-Light");
@@ -76,10 +74,8 @@ namespace Circle.Game
 
             dependencies.CacheAs(largeStore);
 
-            var externalAudioManager = new ExternalAudioManager(Host.AudioThread, tracks, new ResourceStore<byte[]>());
-            dependencies.CacheAs(externalAudioManager);
-            dependencies.CacheAs(monitoredLargeStore);
             dependencies.CacheAs(new BeatmapStorage(files));
+            dependencies.CacheAs(BeatmapResourceStore = new BeatmapResourcesManager(files, Audio, Host));
 
             dependencies.CacheAs(Storage);
 

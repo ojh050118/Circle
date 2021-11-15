@@ -24,6 +24,8 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Bindable<BeatmapInfo> working { get; set; }
 
+        public Bindable<bool> PlayRequested { get; set; } = new Bindable<bool>(false);
+
         public BeatmapCarousel()
         {
             RelativeSizeAxes = Axes.Both;
@@ -61,10 +63,12 @@ namespace Circle.Game.Screens.Select
             {
                 item.State.ValueChanged += v =>
                 {
-                    updateItemScale();
+                    if (v.NewValue == CarouselItemState.PlayRequested)
+                        PlayRequested.Value = true;
 
                     if (v.NewValue == CarouselItemState.Selected)
                     {
+                        updateItemScale(item);
                         Scroll.ScrollTo(item.Y + item.Height / 2);
 
                         if (item.BeatmapInfo.Settings.BackgroundTexture != string.Empty)
@@ -131,9 +135,9 @@ namespace Circle.Game.Screens.Select
             }
         }
 
-        private void updateItemScale()
+        private void updateItemScale(CarouselItem item)
         {
-            var idx = Scroll.Child.Children.ToList().FindIndex(i => i.Equals(selectedCarouselItem));
+            var idx = Scroll.Child.Children.ToList().FindIndex(i => i.Equals(item));
             float nextScale = 1;
 
             for (int i = idx; i < Scroll.Child.Children.Count; i++)

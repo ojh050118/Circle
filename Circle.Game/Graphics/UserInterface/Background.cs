@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Circle.Game.IO;
+using Circle.Game.Beatmap;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -35,8 +35,11 @@ namespace Circle.Game.Graphics.UserInterface
 
         private readonly TextureSource source;
 
-        private LargeTextureStore largeTexture;
-        private MonitoredLargeTextureStore monitoredLargeTexture;
+        [Resolved]
+        private LargeTextureStore largeTexture { get; set; }
+
+        [Resolved]
+        private BeatmapResourcesManager beatmapResources { get; set; }
 
         public Background(TextureSource source = TextureSource.Internal, string textureName = @"")
         {
@@ -61,18 +64,15 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader]
-        private void load(LargeTextureStore textures, MonitoredLargeTextureStore monitoredTextures)
+        private void load()
         {
-            largeTexture = textures;
-            monitoredLargeTexture = monitoredTextures;
-
             if (!string.IsNullOrEmpty(textureName))
-                Sprite.Texture = source == TextureSource.Internal ? textures.Get(textureName) : monitoredTextures.Get(textureName);
+                Sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapResources.GetBackground(textureName);
         }
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
         {
-            bufferedContainer?.BlurTo(newBlurSigma, duration, easing);
+            Schedule(() => bufferedContainer?.BlurTo(newBlurSigma, duration, easing));
             Schedule(() => newBufferedContainer?.BlurTo(newBlurSigma, duration, easing));
         }
 
@@ -98,28 +98,14 @@ namespace Circle.Game.Graphics.UserInterface
 
         private Sprite loadTexture(TextureSource source, string textureName)
         {
-            if (source == TextureSource.Internal)
+            return new Sprite
             {
-                return new Sprite
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    FillMode = FillMode.Fill,
-                    Texture = largeTexture.Get(textureName)
-                };
-            }
-            else
-            {
-                return new Sprite
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    FillMode = FillMode.Fill,
-                    Texture = monitoredLargeTexture.Get(textureName)
-                };
-            }
+                RelativeSizeAxes = Axes.Both,
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                FillMode = FillMode.Fill,
+                Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapResources.GetBackground(textureName)
+            };
         }
 
         public void FadeTextureTo(TextureSource source, string textureName, double duration = 0, Easing easing = Easing.None)
@@ -127,52 +113,28 @@ namespace Circle.Game.Graphics.UserInterface
             if (Sprite is null)
                 return;
 
-            if (source == TextureSource.Internal)
+            LoadComponentAsync(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
             {
-                LoadComponentAsync(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Alpha = 0,
-                    RelativeSizeAxes = Axes.Both,
-                    RedrawOnScale = false,
-                    Masking = true,
-                    Child = loadTexture(source, textureName),
-                }, _ =>
-                {
-                    AddInternal(newBufferedContainer);
-                    ChangeInternalChildDepth(dim, -1);
-                    newBufferedContainer.BlurSigma = BlurSigma;
-                    newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
-                    {
-                        RemoveInternal(InternalChildren.First());
-                        bufferedContainer = newBufferedContainer;
-                    });
-                });
-            }
-            else
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Alpha = 0,
+                RelativeSizeAxes = Axes.Both,
+                RedrawOnScale = false,
+                Masking = true,
+                Child = loadTexture(source, textureName),
+            }, _ =>
             {
-                LoadComponentAsync(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Alpha = 0,
-                    RelativeSizeAxes = Axes.Both,
-                    RedrawOnScale = false,
-                    Masking = true,
-                    Child = loadTexture(source, textureName),
-                }, _ =>
-                {
-                    AddInternal(newBufferedContainer);
+                AddInternal(newBufferedContainer);
+                if (dim != null)
                     ChangeInternalChildDepth(dim, -1);
-                    newBufferedContainer.BlurSigma = BlurSigma;
-                    newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
-                    {
-                        RemoveInternal(InternalChildren.First());
-                        bufferedContainer = newBufferedContainer;
-                    });
+
+                newBufferedContainer.BlurSigma = BlurSigma;
+                newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
+                {
+                    RemoveInternal(InternalChildren.First());
+                    bufferedContainer = newBufferedContainer;
                 });
-            }
+            });
         }
     }
 
