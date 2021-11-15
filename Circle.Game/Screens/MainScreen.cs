@@ -121,7 +121,7 @@ namespace Circle.Game.Screens
             private readonly SpriteIcon icon;
 
             private Sample sampleSelect;
-            private string sampleName;
+            private readonly string sampleName;
 
             public IconUsage Icon
             {
