@@ -53,6 +53,7 @@ namespace Circle.Game.Screens.Select
         {
             base.OnEntering(last);
 
+            details.RotateTo(-45).Then().RotateTo(0, 1000, Easing.OutPow10);
             details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
         }
 
@@ -68,6 +69,7 @@ namespace Circle.Game.Screens.Select
             base.OnSuspending(next);
 
             carousel.FadeOut(500, Easing.OutPow10);
+            details.MoveToX(-500, 500, Easing.OutPow10);
         }
 
         public override void OnResuming(IScreen last)
@@ -76,6 +78,7 @@ namespace Circle.Game.Screens.Select
 
             carousel.FadeIn(1000, Easing.OutPow10);
             carousel.PlayRequested.Value = false;
+            details.MoveToX(0, 500, Easing.OutPow10);
         }
     }
 }

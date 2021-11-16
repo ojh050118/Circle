@@ -100,6 +100,13 @@ namespace Circle.Game
             base.Content.Add(new CircleKeyBindingContainer(this));
         }
 
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            applySettings();
+        }
+
         public override void SetHost(GameHost host)
         {
             base.SetHost(host);
@@ -125,6 +132,16 @@ namespace Circle.Game
             base.Dispose(isDisposing);
 
             LocalConfig?.Dispose();
+        }
+
+        private void applySettings()
+        {
+            var scale = LocalConfig.Get<float>(CircleSetting.Scale);
+            var fpsDisplay = LocalConfig.Get<bool>(CircleSetting.FpsDisplay);
+
+            ContentContainer.ScaleTo(scale);
+            ContentContainer.ResizeTo(new Vector2(scale / (scale * scale)));
+            FrameStatistics.Value = fpsDisplay ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
         }
 
         private void setTeackedSettingChange(SettingDescription description)

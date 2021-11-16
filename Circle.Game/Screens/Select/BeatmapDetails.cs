@@ -39,7 +39,7 @@ namespace Circle.Game.Screens.Select
             {
                 RelativeSizeAxes = Axes.Both,
                 Masking = true,
-                CornerRadius = 5,
+                CornerRadius = 10,
                 Children = new Drawable[]
                 {
                     new Box
