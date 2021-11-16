@@ -47,7 +47,7 @@ namespace Circle.Game.Screens.Select.Carousel
         [BackgroundDependencyLoader]
         private void load()
         {
-            background = BeatmapInfo.Settings.BackgroundTexture == string.Empty
+            background = string.IsNullOrEmpty(BeatmapInfo.Settings.BackgroundTexture)
                 ? new Background(textureName: "Duelyst")
                 : new Background(TextureSource.External, BeatmapInfo.Settings.BackgroundTexture);
 

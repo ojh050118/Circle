@@ -16,7 +16,7 @@ namespace Circle.Game.Configuration
 
         protected override void InitialiseDefaults()
         {
-            SetDefault(CircleSetting.Scale, 1f, 0.8f, 2f);
+            SetDefault(CircleSetting.Scale, 1f, 0.8f, 1.6f);
             SetDefault(CircleSetting.FpsDisplay, false);
             SetDefault(CircleSetting.Offset, 0);
         }

@@ -32,7 +32,7 @@ namespace Circle.Game.Overlays
         private ScheduledDelegate seekDelegate;
 
         [BackgroundDependencyLoader]
-        private void load(FrameworkConfigManager config)
+        private void load()
         {
             workingBeatmap.ValueChanged += info => changeTrack(info.NewValue);
         }
