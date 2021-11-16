@@ -12,6 +12,7 @@ using Circle.Game.Beatmap;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Graphics.Textures;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
@@ -25,7 +26,7 @@ namespace Circle.Game.Screens.Select.Carousel
 
         public BeatmapInfo BeatmapInfo { get; set; }
 
-        private Background background;
+        private Sprite sprite;
 
         public CarouselItem()
         {
@@ -45,15 +46,22 @@ namespace Circle.Game.Screens.Select.Carousel
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(LargeTextureStore largeTexture, BeatmapResourcesManager beatmapResources)
         {
-            background = string.IsNullOrEmpty(BeatmapInfo.Settings.BackgroundTexture)
-                ? new Background(textureName: "Duelyst")
-                : new Background(TextureSource.External, BeatmapInfo.Settings.BackgroundTexture);
+            sprite = new Sprite
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                RelativeSizeAxes = Axes.Both,
+                FillMode = FillMode.Fill,
+                Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BackgroundTexture)
+                        ? largeTexture.Get("Duelyst")
+                        : beatmapResources.GetBackground(BeatmapInfo)
+            };
 
             BorderContainer.Children = new Drawable[]
             {
-                background,
+                sprite,
                 new FillFlowContainer
                 {
                     RelativeSizeAxes = Axes.Both,
