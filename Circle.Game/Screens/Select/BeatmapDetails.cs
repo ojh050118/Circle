@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmap;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
@@ -14,7 +11,6 @@ using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
-using osu.Framework.Logging;
 using osuTK;
 using osuTK.Graphics;
 
@@ -31,10 +27,10 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private BeatmapResourcesManager beatmapResources { get; set; }
 
-        private Background background;
-        private FillFlowContainer details;
-        private SpriteText title;
-        private SpriteText artist;
+        private readonly Background background;
+        private readonly FillFlowContainer details;
+        private readonly SpriteText title;
+        private readonly SpriteText artist;
 
         public BeatmapDetails()
         {
