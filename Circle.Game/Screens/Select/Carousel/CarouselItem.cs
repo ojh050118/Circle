@@ -2,7 +2,6 @@
 using osu.Framework.Graphics;
 using osuTK.Graphics;
 using osu.Framework.Graphics.Effects;
-using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Bindables;
 using osuTK;
@@ -55,8 +54,8 @@ namespace Circle.Game.Screens.Select.Carousel
                 RelativeSizeAxes = Axes.Both,
                 FillMode = FillMode.Fill,
                 Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BackgroundTexture)
-                        ? largeTexture.Get("Duelyst")
-                        : beatmapResources.GetBackground(BeatmapInfo)
+                    ? largeTexture.Get("Duelyst")
+                    : beatmapResources.GetBackground(BeatmapInfo)
             };
 
             BorderContainer.Children = new Drawable[]
