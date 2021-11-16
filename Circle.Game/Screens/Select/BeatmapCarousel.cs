@@ -24,6 +24,9 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Bindable<BeatmapInfo> working { get; set; }
 
+        [Resolved]
+        private BeatmapResourcesManager beatmapResources { get; set; }
+
         public Bindable<bool> PlayRequested { get; set; } = new Bindable<bool>(false);
 
         public BeatmapCarousel()
@@ -71,7 +74,7 @@ namespace Circle.Game.Screens.Select
                         updateItemScale(item);
                         Scroll.ScrollTo(item.Y + item.Height / 2);
 
-                        if (item.BeatmapInfo.Settings.BackgroundTexture != string.Empty)
+                        if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BackgroundTexture))
                             background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BackgroundTexture, 1000, Easing.OutPow10);
                         else
                             background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);

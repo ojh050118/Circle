@@ -21,7 +21,7 @@ namespace Circle.Game.Screens.Setting
                 new Container
                 {
                     Margin = new MarginPadding { Left = 80 },
-                    Padding = new MarginPadding { Vertical = 130 },
+                    Padding = new MarginPadding { Top = 130, Bottom = 65 },
                     RelativeSizeAxes = Axes.Both,
                     Width = 0.5f,
                     Child = new Container

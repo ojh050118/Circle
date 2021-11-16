@@ -4,7 +4,6 @@ using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Bindables;
-using osu.Framework.Configuration;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
@@ -32,7 +31,7 @@ namespace Circle.Game.Overlays
         private ScheduledDelegate seekDelegate;
 
         [BackgroundDependencyLoader]
-        private void load(FrameworkConfigManager config)
+        private void load()
         {
             workingBeatmap.ValueChanged += info => changeTrack(info.NewValue);
         }

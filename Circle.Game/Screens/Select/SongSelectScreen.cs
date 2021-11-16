@@ -14,12 +14,21 @@ namespace Circle.Game.Screens.Select
         private Background background { get; set; }
 
         private readonly BeatmapCarousel carousel;
+        private readonly BeatmapDetails details;
 
         public SongSelectScreen()
         {
             InternalChildren = new Drawable[]
             {
                 new ScreenHeader(this),
+                details = new BeatmapDetails
+                {
+                    Anchor = Anchor.CentreLeft,
+                    Origin = Anchor.CentreLeft,
+                    Padding = new MarginPadding { Top = 130, Bottom = 65 },
+                    Margin = new MarginPadding { Left = 80 },
+                    Width = 0.5f
+                },
                 carousel = new BeatmapCarousel
                 {
                     Width = 0.4f,
@@ -38,6 +47,13 @@ namespace Circle.Game.Screens.Select
                 if (v.NewValue)
                     this.Push(new PlayerLoader());
             };
+        }
+
+        public override void OnEntering(IScreen last)
+        {
+            base.OnEntering(last);
+
+            details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
         }
 
         public override bool OnExiting(IScreen next)
