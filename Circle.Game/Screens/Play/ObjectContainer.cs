@@ -119,21 +119,21 @@ namespace Circle.Game.Screens.Play
 
         private float[] convertAngles(BeatmapInfo info)
         {
-            List<float> angleData = new List<float>();
+            List<float> newAngleData = new List<float>();
 
-            for (int i = 0; i < info.Angles.Count; i++)
+            for (int i = 0; i < info.Angles.Length; i++)
             {
                 if (info.Angles[i] == 0 || info.Angles[i] == 999)
                 {
-                    angleData.Add(info.Angles[i]);
+                    newAngleData.Add(info.Angles[i]);
 
                     continue;
                 }
 
-                angleData.Add(360 - info.Angles[i]);
+                newAngleData.Add(360 - info.Angles[i]);
             }
 
-            return angleData.ToArray();
+            return newAngleData.ToArray();
         }
     }
 }

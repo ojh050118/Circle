@@ -46,7 +46,7 @@ namespace Circle.Game.Beatmap
 
     public struct BeatmapInfo
     {
-        public List<int> Angles;
+        public float[] Angles;
         public Settings Settings;
         public List<Actions> Actions;
     }
