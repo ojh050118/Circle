@@ -7,7 +7,6 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Events;
-using osu.Framework.Logging;
 using osuTK;
 
 namespace Circle.Game.Screens.Play
@@ -64,7 +63,6 @@ namespace Circle.Game.Screens.Play
 
             // 행성이 처음에 있어야 하는 위치는 (0, 0) 입니다.
             planetPositions = new List<Vector2> { Vector2.Zero };
-            Logger.Log("planet Position[0] = (0, 0)");
 
             for (int i = 0; i < info.Angles.Count; i++)
             {
@@ -82,7 +80,7 @@ namespace Circle.Game.Screens.Play
                         });
                         // 실제로 행성이 이 위치에 있으면 안됩니다.
                         planetPositions.Add(tilePosition);
-                        Logger.Log($"planet Position[{i + 1}] = {tilePosition}");
+
                         continue;
                     }
                 }
@@ -101,7 +99,7 @@ namespace Circle.Game.Screens.Play
                         var y = (float)Math.Sin(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
                         tilePosition += new Vector2(x, y);
                         planetPositions.Add(tilePosition);
-                        Logger.Log($"planet Position[{i + 1}] = {tilePosition}");
+
                         continue;
                     }
                 }
@@ -116,7 +114,6 @@ namespace Circle.Game.Screens.Play
                 var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
                 tilePosition += new Vector2(nextX, nextY);
                 planetPositions.Add(tilePosition);
-                Logger.Log($"planet Position[{i + 1}] = {tilePosition}");
             }
         }
 
