@@ -27,7 +27,7 @@ namespace Circle.Game.Screens.Play
 
         private int current;
 
-        private BeatmapInfo beatmap;
+        private float[] angleData;
 
         // Todo: 행성이 있어야 할 위치(tilePositions) 수정과 각 타일의 각도를 담는 리스트가 있어야 함.
         // Todo: 새로운 방법 제안: 행성이 회전할 때 현재 회전정도에서 타일의 각도를 더해서 회전을 시키는 것.
@@ -41,8 +41,8 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load(Bindable<BeatmapInfo> beatmap)
         {
-            this.beatmap = convertAngles(beatmap.Value);
-            createTiles(this.beatmap);
+            angleData = convertAngles(beatmap.Value);
+            createTiles(angleData);
         }
 
         protected override bool OnKeyDown(KeyDownEvent e)
@@ -56,27 +56,27 @@ namespace Circle.Game.Screens.Play
             return base.OnKeyDown(e);
         }
 
-        private void createTiles(BeatmapInfo info)
+        private void createTiles(float[] angleData)
         {
-            if (info.Angles.Count == 0)
+            if (angleData.Length == 0)
                 return;
 
             // 행성이 처음에 있어야 하는 위치는 (0, 0) 입니다.
             planetPositions = new List<Vector2> { Vector2.Zero };
 
-            for (int i = 0; i < info.Angles.Count; i++)
+            for (int i = 0; i < angleData.Length; i++)
             {
-                if (info.Angles[i] == 999 || i + 1 > info.Angles.Count)
+                if (angleData[i] == 999 || i + 1 > angleData.Length)
                     continue;
 
-                if (i + 1 < info.Angles.Count)
+                if (i + 1 < angleData.Length)
                 {
-                    if (info.Angles[i + 1] == 999)
+                    if (angleData[i + 1] == 999)
                     {
-                        Add(new MidspinTile(info.Angles[i])
+                        Add(new MidspinTile(angleData[i])
                         {
                             Position = tilePosition,
-                            Rotation = info.Angles[i],
+                            Rotation = angleData[i],
                         });
                         // 실제로 행성이 이 위치에 있으면 안됩니다.
                         planetPositions.Add(tilePosition);
@@ -87,16 +87,16 @@ namespace Circle.Game.Screens.Play
 
                 if (i - 1 >= 0)
                 {
-                    if (Math.Abs(info.Angles[i] - info.Angles[i - 1]) == 180)
+                    if (Math.Abs(angleData[i] - angleData[i - 1]) == 180)
                     {
-                        Add(new CircularTile(info.Angles[i])
+                        Add(new CircularTile(angleData[i])
                         {
                             Position = tilePosition,
-                            Rotation = info.Angles[i],
+                            Rotation = angleData[i],
                         });
 
-                        var x = (float)Math.Cos(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
-                        var y = (float)Math.Sin(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
+                        var x = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
+                        var y = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
                         tilePosition += new Vector2(x, y);
                         planetPositions.Add(tilePosition);
 
@@ -104,30 +104,36 @@ namespace Circle.Game.Screens.Play
                     }
                 }
 
-                Add(new BasicTile(info.Angles[i])
+                Add(new BasicTile(angleData[i])
                 {
                     Position = tilePosition,
-                    Rotation = info.Angles[i],
+                    Rotation = angleData[i],
                 });
 
-                var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
-                var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
+                var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
+                var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
                 tilePosition += new Vector2(nextX, nextY);
                 planetPositions.Add(tilePosition);
             }
         }
 
-        private BeatmapInfo convertAngles(BeatmapInfo info)
+        private float[] convertAngles(BeatmapInfo info)
         {
-            for (int i = 0; i < info.Angles.Count; i++)
+            List<float> newAngleData = new List<float>();
+
+            for (int i = 0; i < info.Angles.Length; i++)
             {
                 if (info.Angles[i] == 0 || info.Angles[i] == 999)
-                    continue;
+                {
+                    newAngleData.Add(info.Angles[i]);
 
-                info.Angles[i] = 360 - info.Angles[i];
+                    continue;
+                }
+
+                newAngleData.Add(360 - info.Angles[i]);
             }
 
-            return info;
+            return newAngleData.ToArray();
         }
     }
 }
