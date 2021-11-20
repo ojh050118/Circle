@@ -28,7 +28,7 @@ namespace Circle.Game.Rulesets.Objects
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Text = angle.ToString(CultureInfo.InvariantCulture),
+                        Text = angle.ToString(CultureInfo.CurrentCulture),
                         Colour = Color4.Black
                     }
                 },

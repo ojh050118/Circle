@@ -1,4 +1,5 @@
-﻿using osu.Framework.Graphics.Containers;
+﻿using System.Globalization;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics;
 using osuTK.Graphics;
 using osu.Framework.Graphics.Sprites;
@@ -12,7 +13,7 @@ namespace Circle.Game.Rulesets.Objects
     public class CircularTile : Tile
     {
         public CircularTile(float angle)
-            : base (angle)
+            : base(angle)
         {
             Size = new Vector2(HEIGHT);
             Child = new CircularContainer
@@ -29,7 +30,7 @@ namespace Circle.Game.Rulesets.Objects
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Text = angle.ToString(),
+                        Text = angle.ToString(CultureInfo.CurrentCulture),
                         Colour = Color4.Black
                     }
                 },
