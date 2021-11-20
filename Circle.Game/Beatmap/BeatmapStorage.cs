@@ -69,7 +69,7 @@ namespace Circle.Game.Beatmap
 
     public struct Actions
     {
-        public int Floor;
+        public float Floor;
         public Event Event;
     }
 
@@ -78,6 +78,7 @@ namespace Circle.Game.Beatmap
         public EventType EventType;
         public double ToBPM;
         public bool IsRelativeTile;
+        public bool IsTwirl;
     }
 
     public enum EventType
