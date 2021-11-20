@@ -14,7 +14,7 @@ namespace Circle.Game.Overlays
     public class MusicController : CompositeDrawable
     {
         [NotNull]
-        public DrawableTrack CurrentTrack { get; private set; } = new DrawableTrack(new TrackVirtual(1000));
+        public DrawableTrack CurrentTrack { get; set; } = new DrawableTrack(new TrackVirtual(1000));
 
         [Resolved]
         private Bindable<BeatmapInfo> workingBeatmap { get; set; }
@@ -81,9 +81,7 @@ namespace Circle.Game.Overlays
                     queuedTrack.VolumeTo(0).Then().VolumeTo(1, 300, Easing.Out);
                 }
                 else
-                {
                     queuedTrack.Dispose();
-                }
             });
         }
 

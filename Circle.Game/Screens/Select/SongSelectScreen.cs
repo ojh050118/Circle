@@ -45,7 +45,7 @@ namespace Circle.Game.Screens.Select
             carousel.PlayRequested.ValueChanged += v =>
             {
                 if (v.NewValue)
-                    this.Push(new PlayerLoader());
+                    this.Push(new Player());
             };
         }
 
