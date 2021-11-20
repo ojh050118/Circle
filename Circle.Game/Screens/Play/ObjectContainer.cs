@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Circle.Game.Beatmap;
-using Circle.Game.Overlays;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -65,7 +64,7 @@ namespace Circle.Game.Screens.Play
 
             // 행성이 처음에 있어야 하는 위치는 (0, 0) 입니다.
             planetPositions = new List<Vector2> { Vector2.Zero };
-            Logger.Log($"planet Position[0] = (0, 0)");
+            Logger.Log("planet Position[0] = (0, 0)");
 
             for (int i = 0; i < info.Angles.Count; i++)
             {
@@ -98,9 +97,9 @@ namespace Circle.Game.Screens.Play
                             Rotation = info.Angles[i],
                         });
 
-                        var X = (float)Math.Cos(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
-                        var Y = (float)Math.Sin(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
-                        tilePosition += new Vector2(X, Y);
+                        var x = (float)Math.Cos(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
+                        var y = (float)Math.Sin(MathHelper.DegreesToRadians(info.Angles[i])) * 100;
+                        tilePosition += new Vector2(x, y);
                         planetPositions.Add(tilePosition);
                         Logger.Log($"planet Position[{i + 1}] = {tilePosition}");
                         continue;

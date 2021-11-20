@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Globalization;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics;
 using osuTK.Graphics;
@@ -30,7 +28,7 @@ namespace Circle.Game.Rulesets.Objects
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Text = angle.ToString(),
+                        Text = angle.ToString(CultureInfo.InvariantCulture),
                         Colour = Color4.Black
                     }
                 },

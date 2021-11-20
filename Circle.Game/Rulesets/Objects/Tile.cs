@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using osu.Framework.Bindables;
+﻿using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
 using osuTK;
-using osuTK.Graphics;
-using osu.Framework.Graphics.Effects;
 
 namespace Circle.Game.Rulesets.Objects
 {
@@ -22,7 +15,7 @@ namespace Circle.Game.Rulesets.Objects
         public const float WIDTH = 150;
         public const float HEIGHT = 50;
 
-        public Tile(float angle)
+        protected Tile(float angle)
         {
             Size = new Vector2(WIDTH, HEIGHT);
             Alpha = 0.6f;

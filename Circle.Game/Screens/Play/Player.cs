@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmap;
 using Circle.Game.Overlays;
-using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
-using osuTK;
 using osuTK.Input;
 using System.Linq;
 using osu.Framework.Audio;
-using osu.Framework.Graphics.Effects;
-using osuTK.Graphics;
-using osu.Framework.Extensions.Color4Extensions;
 
 namespace Circle.Game.Screens.Play
 {
@@ -25,7 +16,7 @@ namespace Circle.Game.Screens.Play
 
         private GamePlayState playState = GamePlayState.NotPlaying;
 
-        private Key[] blockedKeys =
+        private readonly Key[] blockedKeys =
         {
             Key.AltLeft,
             Key.AltRight,
@@ -64,12 +55,12 @@ namespace Circle.Game.Screens.Play
             base.LoadComplete();
 
             musicController.CurrentTrack.VolumeTo(0, 500, Easing.Out)
-                .Then()
-                .Schedule(() =>
-                {
-                    musicController.Stop();
-                    musicController.SeekTo(beatmap.Value.Settings.Offset);
-                });
+                           .Then()
+                           .Schedule(() =>
+                           {
+                               musicController.Stop();
+                               musicController.SeekTo(beatmap.Value.Settings.Offset);
+                           });
 
             playState = GamePlayState.Ready;
         }
