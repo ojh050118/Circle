@@ -6,7 +6,6 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Input.Events;
 using osuTK;
 
 namespace Circle.Game.Screens.Play
@@ -23,9 +22,9 @@ namespace Circle.Game.Screens.Play
         /// 지금은 미드스핀 타일 위치까지 포함하고 있습니다.
         /// 나중에 제외해야 합니다.
         /// </summary>
-        private List<Vector2> planetPositions;
+        public List<Vector2> PlanetPositions;
 
-        private int current;
+        public int Current;
 
         private float[] angleData;
 
@@ -45,15 +44,13 @@ namespace Circle.Game.Screens.Play
             createTiles(angleData);
         }
 
-        protected override bool OnKeyDown(KeyDownEvent e)
+        public void MoveCamera()
         {
-            if (current + 1 < planetPositions.Count)
+            if (Current + 1 < PlanetPositions.Count)
             {
-                current++;
-                this.MoveTo(-planetPositions[current], 250, Easing.OutSine);
+                Current++;
+                this.MoveTo(-PlanetPositions[Current], 250, Easing.OutSine);
             }
-
-            return base.OnKeyDown(e);
         }
 
         private void createTiles(float[] angleData)
@@ -62,7 +59,7 @@ namespace Circle.Game.Screens.Play
                 return;
 
             // 행성이 처음에 있어야 하는 위치는 (0, 0) 입니다.
-            planetPositions = new List<Vector2> { Vector2.Zero };
+            PlanetPositions = new List<Vector2> { Vector2.Zero };
 
             for (int i = 0; i < angleData.Length; i++)
             {
@@ -79,7 +76,7 @@ namespace Circle.Game.Screens.Play
                             Rotation = angleData[i],
                         });
                         // 실제로 행성이 이 위치에 있으면 안됩니다.
-                        planetPositions.Add(tilePosition);
+                        PlanetPositions.Add(tilePosition);
 
                         continue;
                     }
@@ -98,7 +95,7 @@ namespace Circle.Game.Screens.Play
                         var x = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
                         var y = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
                         tilePosition += new Vector2(x, y);
-                        planetPositions.Add(tilePosition);
+                        PlanetPositions.Add(tilePosition);
 
                         continue;
                     }
@@ -113,7 +110,7 @@ namespace Circle.Game.Screens.Play
                 var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
                 var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
                 tilePosition += new Vector2(nextX, nextY);
-                planetPositions.Add(tilePosition);
+                PlanetPositions.Add(tilePosition);
             }
         }
 
