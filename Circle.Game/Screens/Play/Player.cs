@@ -36,7 +36,9 @@ namespace Circle.Game.Screens.Play
             Key.PageUp,
             Key.PrintScreen,
             Key.ScrollLock,
-            Key.Pause
+            Key.Pause,
+            Key.LWin,
+            Key.RWin
         };
 
         [Resolved]
@@ -64,7 +66,7 @@ namespace Circle.Game.Screens.Play
             };
 
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            bluePlanet.Rotation = -90;
+            bluePlanet.Rotation = -180;
             planetState = new Bindable<PlanetState>(PlanetState.Ice);
         }
 
@@ -107,13 +109,17 @@ namespace Circle.Game.Screens.Play
             return base.OnKeyDown(e);
         }
 
+        /// <summary>
+        /// 게임 플레이 상태가 준비되었을때 클릭하면 이 메서드가 호출됩니다.
+        /// 회전은 먼저 파란 행성이 사작하며, -180도에서 회전과 행성간 거리를 확장하며 사작합니다.
+        /// </summary>
         private void startPlay()
         {
             playState = GamePlayState.Playing;
             musicController.CurrentTrack.VolumeTo(1);
 
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
-            bluePlanet.RotateTo(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle + 90, 60000 / beatmap.Value.Settings.BPM)
+            bluePlanet.RotateTo(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle + 180, 60000 / beatmap.Value.Settings.BPM)
                       .Then()
                       .Schedule(() =>
                       {
@@ -124,22 +130,28 @@ namespace Circle.Game.Screens.Play
             Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.Value.Settings.BPM);
         }
 
+        /// <summary>
+        /// 행성이 회전을 마쳤을 때 메서드가 호출됩니다.
+        /// 
+        /// </summary>
         private void movePlanet()
         {
+            tiles.Current++;
             if (tiles.Current >= tiles.Children.Count)
                 return;
 
-            tiles.Current++;
+            var currentAngle = tiles.Children[tiles.Current].Angle;
+            //var nextAngle = tiles.Children[tiles.Current + 1].Angle;
 
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 1;
-                redPlanet.RotateTo(redPlanet.Rotation + tiles.Children[tiles.Current].Angle + 90, 60000 / beatmap.Value.Settings.BPM)
+                redPlanet.Rotation -= 180;
+                redPlanet.RotateTo(redPlanet.Rotation + currentAngle, 60000 / beatmap.Value.Settings.BPM)
                          .Then()
                          .Schedule(() =>
                          {
                              redPlanet.Expansion = 0;
-                             bluePlanet.Position = tiles.Children[tiles.Current].Position;
                              redPlanet.Position = tiles.Children[tiles.Current].Position;
                              planetState.Value = PlanetState.Ice;
                          });
@@ -147,13 +159,12 @@ namespace Circle.Game.Screens.Play
             else
             {
                 bluePlanet.Expansion = 1;
-                bluePlanet.RotateTo(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle + 90, 60000 / beatmap.Value.Settings.BPM)
+                bluePlanet.RotateTo(bluePlanet.Rotation + currentAngle, 60000 / beatmap.Value.Settings.BPM)
                           .Then()
                           .Schedule(() =>
                           {
                               bluePlanet.Expansion = 0;
                               bluePlanet.Position = tiles.Children[tiles.Current].Position;
-                              redPlanet.Position = tiles.Children[tiles.Current].Position;
                               planetState.Value = PlanetState.Fire;
                           });
             }
