@@ -132,7 +132,6 @@ namespace Circle.Game.Screens.Play
 
         /// <summary>
         /// 행성이 회전을 마쳤을 때 메서드가 호출됩니다.
-        /// 
         /// </summary>
         private void movePlanet()
         {

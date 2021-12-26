@@ -25,7 +25,7 @@ namespace Circle.Game.Screens.Play
 
         public Playfield()
         {
-            RelativeSizeAxes = Axes.Both;
+            AutoSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             Children = new Drawable[]
