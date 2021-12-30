@@ -6,6 +6,7 @@ using osu.Framework.Bindables;
 using Circle.Game.Beatmap;
 using osu.Framework.Allocation;
 using Circle.Game.Rulesets.Extensions;
+using System;
 
 namespace Circle.Game.Screens.Play
 {
@@ -36,7 +37,7 @@ namespace Circle.Game.Screens.Play
             };
 
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            bluePlanet.Rotation = -90;
+            bluePlanet.Rotation = -180;
             planetState = new Bindable<PlanetState>(PlanetState.Ice);
         }
 
@@ -50,12 +51,13 @@ namespace Circle.Game.Screens.Play
         public void StartPlaying()
         {
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
-            bluePlanet.RotateTo(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle + 90, 60000 / beatmap.Value.Settings.BPM)
+            bluePlanet.RotateTo(tiles.Children[tiles.Current].Angle, calculateDuration(tiles.Children[tiles.Current].Angle))
                       .Then()
                       .Schedule(() =>
                       {
                           bluePlanet.Expansion = 0;
                           planetState.Value = PlanetState.Fire;
+                          tiles.Current++;
                       });
         }
 
@@ -67,30 +69,36 @@ namespace Circle.Game.Screens.Play
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 1;
-                redPlanet.RotateTo(redPlanet.Rotation + tiles.Children[tiles.Current].Angle, 60000 / beatmap.Value.Settings.BPM)
+                redPlanet.RotateTo(redPlanet.Rotation + tiles.Children[tiles.Current].Angle, calculateDuration(redPlanet.Rotation + tiles.Children[tiles.Current].Angle))
                          .Then()
                          .Schedule(() =>
                          {
                              redPlanet.Expansion = 0;
                              redPlanet.Position = tiles.Children[tiles.Current].Position;
+                             tiles.Current++;
                              planetState.Value = PlanetState.Ice;
                          });
             }
             else
             {
                 bluePlanet.Expansion = 1;
-                bluePlanet.RotateTo(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle, 60000 / beatmap.Value.Settings.BPM)
+                bluePlanet.RotateTo(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle, calculateDuration(bluePlanet.Rotation + tiles.Children[tiles.Current].Angle))
                           .Then()
                           .Schedule(() =>
                           {
                               bluePlanet.Expansion = 0;
                               bluePlanet.Position = tiles.Children[tiles.Current].Position;
+                              tiles.Current++;
                               planetState.Value = PlanetState.Fire;
                           });
             }
 
-            //tiles.MoveCamera();
-            this.MoveTo(-tiles.PlanetPositions[tiles.Current], 250, Easing.OutSine);
+            this.MoveTo(-tiles.CameraPositions[tiles.Current], 250, Easing.OutSine);
+        }
+
+        private float calculateDuration(float newRotation)
+        {
+            return 60000 / (float)beatmap.Value.Settings.BPM * Math.Abs(planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation - newRotation) / 180;                                        
         }
     }
 }

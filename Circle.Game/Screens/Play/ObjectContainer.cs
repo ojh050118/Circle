@@ -13,7 +13,7 @@ namespace Circle.Game.Screens.Play
     public class ObjectContainer : Container<Tile>
     {
         /// <summary>
-        /// 다음 타일의 위치. (초기 값은 Vector2.Zero)
+        /// 다음 타일의 위치. (초기 값: Vector2.Zero)
         /// </summary>
         private Vector2 tilePosition = Vector2.Zero;
 
@@ -23,6 +23,8 @@ namespace Circle.Game.Screens.Play
         /// 나중에 제외해야 합니다.
         /// </summary>
         public List<Vector2> PlanetPositions;
+
+        public List<Vector2> CameraPositions;
 
         public int Current;
 
@@ -59,10 +61,11 @@ namespace Circle.Game.Screens.Play
                 return;
 
             // 행성이 처음에 있어야 하는 위치는 (0, 0) 입니다.
-            PlanetPositions = new List<Vector2> { Vector2.Zero };
+            PlanetPositions = CameraPositions = new List<Vector2> { Vector2.Zero };
 
             for (int i = 0; i < angleData.Length; i++)
             {
+                // 각도 값이 999일 때 스킵.
                 if (angleData[i] == 999 || i + 1 > angleData.Length)
                     continue;
 
@@ -75,13 +78,14 @@ namespace Circle.Game.Screens.Play
                             Position = tilePosition,
                             Rotation = angleData[i],
                         });
-                        // 실제로 행성이 이 위치에 있으면 안됩니다.
-                        PlanetPositions.Add(tilePosition);
+                        CameraPositions.Add(tilePosition);
 
                         continue;
                     }
                 }
 
+                var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
+                var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
                 if (i - 1 >= 0)
                 {
                     if (Math.Abs(angleData[i] - angleData[i - 1]) == 180)
@@ -92,10 +96,9 @@ namespace Circle.Game.Screens.Play
                             Rotation = angleData[i],
                         });
 
-                        var x = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
-                        var y = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
-                        tilePosition += new Vector2(x, y);
+                        tilePosition += new Vector2(nextX, nextY);
                         PlanetPositions.Add(tilePosition);
+                        CameraPositions.Add(tilePosition);
 
                         continue;
                     }
@@ -107,10 +110,10 @@ namespace Circle.Game.Screens.Play
                     Rotation = angleData[i],
                 });
 
-                var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
-                var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
+
                 tilePosition += new Vector2(nextX, nextY);
                 PlanetPositions.Add(tilePosition);
+                CameraPositions.Add(tilePosition);
             }
         }
 
@@ -123,7 +126,6 @@ namespace Circle.Game.Screens.Play
                 if (info.Angles[i] == 0 || info.Angles[i] == 999)
                 {
                     newAngleData.Add(info.Angles[i]);
-
                     continue;
                 }
 
