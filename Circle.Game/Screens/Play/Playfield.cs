@@ -24,6 +24,8 @@ namespace Circle.Game.Screens.Play
         /// </summary>
         private readonly Bindable<PlanetState> planetState;
 
+        private int currentFloor = 0;
+
         public Playfield()
         {
             AutoSizeAxes = Axes.Both;
@@ -44,75 +46,77 @@ namespace Circle.Game.Screens.Play
         {
             base.LoadComplete();
 
-            bluePlanet.Rotation = tiles.FilteredAngles[tiles.Current];
-            redPlanet.Rotation = tiles.FilteredAngles[tiles.Current];
+            bluePlanet.Rotation = tiles.FilteredAngles[currentFloor];
+            redPlanet.Rotation = tiles.FilteredAngles[currentFloor];
             planetState.ValueChanged += _ => movePlanet();
         }
 
         public void StartPlaying()
         {
-            tiles.Current++;
+            currentFloor++;
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
-            bluePlanet.RotateTo(tiles.FilteredAngles[tiles.Current], calculateDuration(tiles.FilteredAngles[tiles.Current]))
+            bluePlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
                       .Then()
                       .Schedule(() =>
                       {
                           bluePlanet.Expansion = 0;
-                          bluePlanet.Rotation += 180;
-                          tiles.Current++;
-                          bluePlanet.Position = tiles.PlanetPositions[tiles.Current];
+                          bluePlanet.Rotation = getSafeAngle(bluePlanet.Rotation);
+                          currentFloor++;
+                          bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                           planetState.Value = PlanetState.Fire;
                       });
         }
 
         private void movePlanet()
         {
-            if (tiles.Current >= tiles.Children.Count)
+            if (currentFloor >= tiles.PlanetPositions.Count)
                 return;
 
             float newRotation = planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation;
 
-            if (tiles.Current < tiles.PlanetPositions.Count - 1)
+            if (currentFloor < tiles.PlanetPositions.Count - 1)
             {
-                if (tiles.FilteredAngles[tiles.Current] == tiles.FilteredAngles[tiles.Current + 1])
+                if (tiles.FilteredAngles[currentFloor] == tiles.FilteredAngles[currentFloor + 1])
                     newRotation += 180;
                 else
-                    newRotation = tiles.FilteredAngles[tiles.Current];
+                    newRotation = tiles.FilteredAngles[currentFloor];
             }
 
 
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 1;
-                redPlanet.Position = tiles.PlanetPositions[tiles.Current];
+                redPlanet.Position = tiles.PlanetPositions[currentFloor];
                 redPlanet.RotateTo(newRotation, calculateDuration(newRotation))
                          .Then()
                          .Schedule(() =>
                          {
                              redPlanet.Expansion = 0;
-                             tiles.Current++;
+                             currentFloor++;
                              redPlanet.Rotation = getSafeAngle(redPlanet.Rotation);
-                             redPlanet.Position = tiles.PlanetPositions[tiles.Current];
+                             if (currentFloor < tiles.PlanetPositions.Count)
+                                 redPlanet.Position = tiles.PlanetPositions[currentFloor];
                              planetState.Value = PlanetState.Ice;
                          });
             }
             else
             {
                 bluePlanet.Expansion = 1;
-                bluePlanet.Position = tiles.PlanetPositions[tiles.Current];
+                bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                 bluePlanet.RotateTo(newRotation, calculateDuration(newRotation))
                           .Then()
                           .Schedule(() =>
                           {
                               bluePlanet.Expansion = 0;
-                              tiles.Current++;
+                              currentFloor++;
                               bluePlanet.Rotation = getSafeAngle(bluePlanet.Rotation);
-                              bluePlanet.Position = tiles.PlanetPositions[tiles.Current];
+                              if (currentFloor < tiles.PlanetPositions.Count)
+                                bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                               planetState.Value = PlanetState.Fire;
                           });
             }
 
-            this.MoveTo(-tiles.CameraPositions[tiles.Current], 250, Easing.OutSine);
+            this.MoveTo(-tiles.PlanetPositions[currentFloor], 250, Easing.OutSine);
         }
 
         private float calculateDuration(float newRotation)

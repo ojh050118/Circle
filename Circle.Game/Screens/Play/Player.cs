@@ -54,31 +54,11 @@ namespace Circle.Game.Screens.Play
 
         private Playfield playfield;
 
-        private BasicTextBox textBox;
-        private IconButton applyButton;
-
         public Player()
         {
             InternalChildren = new Drawable[]
             {
                 playfield = new Playfield(),
-                textBox = new BasicTextBox
-                {
-                    Anchor = Anchor.BottomLeft,
-                    Origin = Anchor.BottomLeft,
-                    Size = new Vector2(200, 30),
-                    PlaceholderText = "planet rotation",
-                    CornerRadius = 5,
-                    Masking = true
-                },
-                applyButton = new IconButton
-                {
-                    Icon = FontAwesome.Solid.Check,
-                    Anchor = Anchor.BottomLeft,
-                    Origin = Anchor.BottomRight,
-                    Position = new Vector2(200, 0),
-                    Size = new Vector2(30)
-                },
             };
         }
 
@@ -106,6 +86,8 @@ namespace Circle.Game.Screens.Play
             {
                 case GamePlayState.Ready:
                     playfield.StartPlaying();
+                    musicController.CurrentTrack.VolumeTo(1);
+                    musicController.Play();
                     playState = GamePlayState.Playing;
                     break;
 
