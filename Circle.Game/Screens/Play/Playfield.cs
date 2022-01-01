@@ -24,7 +24,7 @@ namespace Circle.Game.Screens.Play
         /// </summary>
         private readonly Bindable<PlanetState> planetState;
 
-        private int currentFloor = 0;
+        private int currentFloor;
 
         public Playfield()
         {
@@ -82,7 +82,6 @@ namespace Circle.Game.Screens.Play
                     newRotation = tiles.FilteredAngles[currentFloor];
             }
 
-
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 1;
@@ -111,7 +110,7 @@ namespace Circle.Game.Screens.Play
                               currentFloor++;
                               bluePlanet.Rotation = getSafeAngle(bluePlanet.Rotation);
                               if (currentFloor < tiles.PlanetPositions.Count)
-                                bluePlanet.Position = tiles.PlanetPositions[currentFloor];
+                                  bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                               planetState.Value = PlanetState.Fire;
                           });
             }
@@ -121,7 +120,7 @@ namespace Circle.Game.Screens.Play
 
         private float calculateDuration(float newRotation)
         {
-            return 60000 / (float)beatmap.Value.Settings.BPM * Math.Abs(planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation - newRotation) / 180;                                        
+            return 60000 / (float)beatmap.Value.Settings.BPM * Math.Abs(planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation - newRotation) / 180;
         }
 
         private float getSafeAngle(float angle)

@@ -1,20 +1,12 @@
-﻿using Circle.Game.Beatmap;
+﻿using System.Linq;
+using Circle.Game.Beatmap;
 using Circle.Game.Overlays;
 using osu.Framework.Allocation;
+using osu.Framework.Audio;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Events;
 using osuTK.Input;
-using System.Linq;
-using osu.Framework.Audio;
-using Circle.Game.Rulesets.Objects;
-using osuTK.Graphics;
-using Circle.Game.Rulesets.Extensions;
-using osu.Framework.Graphics.UserInterface;
-using osuTK;
-using Circle.Game.Graphics.UserInterface;
-using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.Shapes;
 
 namespace Circle.Game.Screens.Play
 {
@@ -52,7 +44,7 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private Bindable<BeatmapInfo> beatmap { get; set; }
 
-        private Playfield playfield;
+        private readonly Playfield playfield;
 
         public Player()
         {
