@@ -167,7 +167,10 @@ namespace Circle.Game.Screens.Play
                 }
             }
 
-            return filteredAngleData.ToList();
+            var list = filteredAngleData.ToList();
+            list.Reverse();
+
+            return list;
         }
     }
 }
