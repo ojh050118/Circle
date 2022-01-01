@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Circle.Game.Beatmap;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Logging;
 using osuTK;
 
 namespace Circle.Game.Screens.Play
@@ -18,13 +20,19 @@ namespace Circle.Game.Screens.Play
         private Vector2 tilePosition = Vector2.Zero;
 
         /// <summary>
-        /// 행성이 정지하는 위치 입니다.
-        /// 지금은 미드스핀 타일 위치까지 포함하고 있습니다.
-        /// 나중에 제외해야 합니다.
+        /// 행성이 정지해야 하는 위치.
         /// </summary>
-        public List<Vector2> PlanetPositions;
+        public List<Vector2> PlanetPositions { get; private set; }
 
-        public List<Vector2> CameraPositions;
+        /// <summary>
+        /// 카메라가 정지해야 하는 위치.
+        /// </summary>
+        public List<Vector2> CameraPositions { get; private set; }
+
+        /// <summary>
+        /// 미드스핀 타일를 구성하는 각도를 제외한 각도들.
+        /// </summary>
+        public List<float> FilteredAngles { get; private set; }
 
         public int Current;
 
@@ -43,6 +51,7 @@ namespace Circle.Game.Screens.Play
         private void load(Bindable<BeatmapInfo> beatmap)
         {
             angleData = convertAngles(beatmap.Value);
+            FilteredAngles = filterMidspinAngle(angleData);
             createTiles(angleData);
         }
 
@@ -60,16 +69,17 @@ namespace Circle.Game.Screens.Play
             if (angleData.Length == 0)
                 return;
 
-            // 행성이 처음에 있어야 하는 위치는 (0, 0) 입니다.
-            PlanetPositions = CameraPositions = new List<Vector2> { Vector2.Zero };
+            // 시작위치.
+            PlanetPositions = new List<Vector2> { Vector2.Zero };
+            CameraPositions = new List<Vector2> { Vector2.Zero };
 
             for (int i = 0; i < angleData.Length; i++)
             {
                 // 각도 값이 999일 때 스킵.
-                if (angleData[i] == 999 || i + 1 > angleData.Length)
+                if (angleData[i] == 999 || i > angleData.Length - 1)
                     continue;
 
-                if (i + 1 < angleData.Length)
+                if (i < angleData.Length - 1)
                 {
                     if (angleData[i + 1] == 999)
                     {
@@ -86,7 +96,7 @@ namespace Circle.Game.Screens.Play
 
                 var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
                 var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
-                if (i - 1 >= 0)
+                if (i >= 1)
                 {
                     if (Math.Abs(angleData[i] - angleData[i - 1]) == 180)
                     {
@@ -117,6 +127,11 @@ namespace Circle.Game.Screens.Play
             }
         }
 
+        /// <summary>
+        /// 반시계 방향으로 되어있는 각도데이터를 시계방향으로 변환합니다.
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns>시계방향으로 변환된 각도데이터.</returns>
         private float[] convertAngles(BeatmapInfo info)
         {
             List<float> newAngleData = new List<float>();
@@ -133,6 +148,26 @@ namespace Circle.Game.Screens.Play
             }
 
             return newAngleData.ToArray();
+        }
+
+        private List<float> filterMidspinAngle(float[] originAngleData)
+        {
+            Stack<float> filteredAngleData = new Stack<float>();
+
+            // 시작할 때 행성은 -180도에서 시작합니다.
+            filteredAngleData.Push(-180);
+            foreach (var angle in originAngleData)
+            {
+                filteredAngleData.Push(angle);
+
+                if (angle == 999)
+                {
+                    filteredAngleData.Pop();
+                    filteredAngleData.Pop();
+                }
+            }
+
+            return filteredAngleData.ToList();
         }
     }
 }

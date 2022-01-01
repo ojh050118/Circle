@@ -106,6 +106,7 @@ namespace Circle.Game.Screens.Play
             {
                 case GamePlayState.Ready:
                     playfield.StartPlaying();
+                    playState = GamePlayState.Playing;
                     break;
 
                 case GamePlayState.Playing:
