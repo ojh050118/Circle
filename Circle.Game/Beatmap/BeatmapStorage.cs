@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using osu.Framework.Graphics;
@@ -58,8 +57,6 @@ namespace Circle.Game.Beatmap
         public bool Equals(BeatmapInfo other) => Equals(Angles, other.Angles) && Settings.Equals(other.Settings) && Equals(Actions, other.Actions);
 
         public override bool Equals(object obj) => obj is BeatmapInfo other && Equals(other);
-
-        public override int GetHashCode() => HashCode.Combine(Angles, Settings, Actions);
     }
 
     public struct Settings
@@ -112,24 +109,6 @@ namespace Circle.Game.Beatmap
                                               PlanetEasing == other.PlanetEasing;
 
         public override bool Equals(object obj) => obj is Settings other && Equals(other);
-
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            hashCode.Add(Artist);
-            hashCode.Add(Track);
-            hashCode.Add(Author);
-            hashCode.Add(SeparateCountdownTime);
-            hashCode.Add(PreviewTrackStart);
-            hashCode.Add(BeatmapDesc);
-            hashCode.Add(BeatmapDifficulty);
-            hashCode.Add(BPM);
-            hashCode.Add(Offset);
-            hashCode.Add(Pitch);
-            hashCode.Add(BackgroundTexture);
-            hashCode.Add((int)PlanetEasing);
-            return hashCode.ToHashCode();
-        }
     }
 
     public struct Actions
