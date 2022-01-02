@@ -151,9 +151,6 @@ namespace Circle.Game.Screens.Play
         {
             Stack<float> filteredAngleData = new Stack<float>();
 
-            // 시작할 때 행성은 -180도에서 시작합니다.
-            filteredAngleData.Push(-180);
-
             foreach (var angle in originAngleData)
             {
                 filteredAngleData.Push(angle);

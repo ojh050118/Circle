@@ -48,19 +48,20 @@ namespace Circle.Game.Screens.Play
         {
             base.LoadComplete();
 
-            bluePlanet.Rotation = tiles.FilteredAngles[currentFloor];
+            bluePlanet.Rotation = tiles.FilteredAngles[0] - 180;
             planetState.ValueChanged += _ => movePlanet();
         }
 
         public void StartPlaying()
         {
-            currentFloor++;
+
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
             bluePlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
                       .Then()
                       .Schedule(() =>
                       {
                           bluePlanet.Expansion = 0;
+                          currentFloor++;
                           bluePlanet.Rotation = getSafeAngle(bluePlanet.Rotation);
                           bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                           prevAngle = bluePlanet.Rotation;
@@ -70,12 +71,13 @@ namespace Circle.Game.Screens.Play
 
         private void movePlanet()
         {
-            if (currentFloor >= tiles.PlanetPositions.Count)
+            if (currentFloor >= tiles.FilteredAngles.Count)
+            {
+                this.MoveTo(-tiles.PlanetPositions[currentFloor], 250, Easing.OutSine);
                 return;
+            }
 
-            float fixedRotation = 0;
-
-            fixedRotation = tiles.FilteredAngles[currentFloor] - 180;
+            float fixedRotation = prevAngle - 180;
 
             
 
