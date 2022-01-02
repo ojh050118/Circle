@@ -50,13 +50,7 @@ namespace Circle.Game.Beatmap
         public Settings Settings;
         public Actions[] Actions;
 
-        public static bool operator ==(BeatmapInfo info1, BeatmapInfo info2) => info1.Angles.Length == info2.Angles.Length && info1.Settings == info2.Settings && info1.Actions == info2.Actions;
-
-        public static bool operator !=(BeatmapInfo info1, BeatmapInfo info2) => info1.Angles.Length != info2.Angles.Length || info1.Settings != info2.Settings || info1.Actions != info2.Actions;
-
-        public bool Equals(BeatmapInfo other) => Equals(Angles, other.Angles) && Settings.Equals(other.Settings) && Equals(Actions, other.Actions);
-
-        public override bool Equals(object obj) => obj is BeatmapInfo other && Equals(other);
+        public bool Equals(BeatmapInfo info) => Angles.Length == info.Angles.Length && Settings.Equals(info.Settings) && Actions == info.Actions;
     }
 
     public struct Settings
@@ -74,41 +68,18 @@ namespace Circle.Game.Beatmap
         public string BackgroundTexture;
         public Easing PlanetEasing;
 
-        public static bool operator ==(Settings s1, Settings s2) => s1.Artist == s2.Artist &&
-                                                                    s1.Track == s2.Track &&
-                                                                    s1.Author == s2.Author &&
-                                                                    s1.SeparateCountdownTime == s2.SeparateCountdownTime &&
-                                                                    s1.PreviewTrackStart == s2.PreviewTrackStart &&
-                                                                    s1.BeatmapDesc == s2.BeatmapDesc &&
-                                                                    s1.BeatmapDifficulty == s2.BeatmapDifficulty &&
-                                                                    s1.BPM == s2.BPM &&
-                                                                    s1.BackgroundTexture == s2.BackgroundTexture &&
-                                                                    s1.PlanetEasing == s2.PlanetEasing;
-
-        public static bool operator !=(Settings s1, Settings s2) => s1.Artist != s2.Artist ||
-                                                                    s1.Track != s2.Track ||
-                                                                    s1.Author != s2.Author ||
-                                                                    s1.SeparateCountdownTime != s2.SeparateCountdownTime ||
-                                                                    s1.PreviewTrackStart != s2.PreviewTrackStart ||
-                                                                    s1.BeatmapDesc != s2.BeatmapDesc ||
-                                                                    s1.BeatmapDifficulty != s2.BeatmapDifficulty ||
-                                                                    s1.BPM != s2.BPM ||
-                                                                    s1.BackgroundTexture != s2.BackgroundTexture ||
-                                                                    s1.PlanetEasing != s2.PlanetEasing;
-
-        public bool Equals(Settings other) => Artist == other.Artist &&
-                                              Track == other.Track &&
-                                              Author == other.Author &&
-                                              SeparateCountdownTime == other.SeparateCountdownTime &&
-                                              PreviewTrackStart == other.PreviewTrackStart &&
-                                              BeatmapDesc == other.BeatmapDesc &&
-                                              BeatmapDifficulty == other.BeatmapDifficulty &&
-                                              BPM.Equals(other.BPM) && Offset.Equals(other.Offset) &&
-                                              Pitch.Equals(other.Pitch) &&
-                                              BackgroundTexture == other.BackgroundTexture &&
-                                              PlanetEasing == other.PlanetEasing;
-
-        public override bool Equals(object obj) => obj is Settings other && Equals(other);
+        public bool Equals(Settings settings) => Artist == settings.Artist &&
+                                                 Track == settings.Track &&
+                                                 Author == settings.Author &&
+                                                 SeparateCountdownTime == settings.SeparateCountdownTime &&
+                                                 PreviewTrackStart == settings.PreviewTrackStart &&
+                                                 BeatmapDesc == settings.BeatmapDesc &&
+                                                 BeatmapDifficulty == settings.BeatmapDifficulty &&
+                                                 (int)BPM == (int)settings.BPM &&
+                                                 (int)Offset == (int)settings.Offset &&
+                                                 (int)Pitch == (int)settings.Pitch &&
+                                                 BackgroundTexture == settings.BackgroundTexture &&
+                                                 PlanetEasing == settings.PlanetEasing;
     }
 
     public struct Actions

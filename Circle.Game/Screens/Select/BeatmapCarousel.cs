@@ -81,7 +81,7 @@ namespace Circle.Game.Screens.Select
 
                         Schedule(() =>
                         {
-                            if (working.Value != item.BeatmapInfo)
+                            if (working.Value.Equals(item.BeatmapInfo))
                             {
                                 working.Value = item.BeatmapInfo;
                                 music.Play();
@@ -114,7 +114,7 @@ namespace Circle.Game.Screens.Select
 
             foreach (var item in Scroll.Child.Children)
             {
-                if (item.BeatmapInfo == working.Value)
+                if (item.BeatmapInfo.Equals(working.Value))
                 {
                     item.State.Value = CarouselItemState.Selected;
                     break;
