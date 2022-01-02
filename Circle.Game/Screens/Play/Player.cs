@@ -1,12 +1,12 @@
-﻿using Circle.Game.Beatmap;
+﻿using System.Linq;
+using Circle.Game.Beatmap;
 using Circle.Game.Overlays;
 using osu.Framework.Allocation;
+using osu.Framework.Audio;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Events;
 using osuTK.Input;
-using System.Linq;
-using osu.Framework.Audio;
 
 namespace Circle.Game.Screens.Play
 {
@@ -33,7 +33,9 @@ namespace Circle.Game.Screens.Play
             Key.PageUp,
             Key.PrintScreen,
             Key.ScrollLock,
-            Key.Pause
+            Key.Pause,
+            Key.LWin,
+            Key.RWin
         };
 
         [Resolved]
@@ -42,11 +44,13 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private Bindable<BeatmapInfo> beatmap { get; set; }
 
+        private readonly Playfield playfield;
+
         public Player()
         {
             InternalChildren = new Drawable[]
             {
-                new ObjectContainer(),
+                playfield = new Playfield(),
             };
         }
 
@@ -73,7 +77,10 @@ namespace Circle.Game.Screens.Play
             switch (playState)
             {
                 case GamePlayState.Ready:
-                    startPlay();
+                    startPlaying();
+                    break;
+
+                case GamePlayState.Playing:
                     break;
 
                 case GamePlayState.Complete:
@@ -84,11 +91,18 @@ namespace Circle.Game.Screens.Play
             return base.OnKeyDown(e);
         }
 
-        private void startPlay()
+        private void startPlaying()
         {
-            playState = GamePlayState.Playing;
+            playfield.StartPlaying();
             musicController.CurrentTrack.VolumeTo(1);
-            musicController.Play();
+            Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.Value.Settings.BPM);
+            playState = GamePlayState.Playing;
         }
+    }
+
+    public enum PlanetState
+    {
+        Fire,
+        Ice
     }
 }
