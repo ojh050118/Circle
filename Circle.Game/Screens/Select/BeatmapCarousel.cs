@@ -81,7 +81,7 @@ namespace Circle.Game.Screens.Select
 
                         Schedule(() =>
                         {
-                            if (working.Value.Equals(item.BeatmapInfo))
+                            if (!working.Value.Equals(item.BeatmapInfo))
                             {
                                 working.Value = item.BeatmapInfo;
                                 music.Play();

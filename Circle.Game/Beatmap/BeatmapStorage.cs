@@ -50,7 +50,7 @@ namespace Circle.Game.Beatmap
         public Settings Settings;
         public Actions[] Actions;
 
-        public bool Equals(BeatmapInfo info) => Angles.Length == info.Angles.Length && Settings.Equals(info.Settings) && Actions == info.Actions;
+        public bool Equals(BeatmapInfo info) => Angles?.Length == info.Angles?.Length && Settings.Equals(info.Settings) && Actions == info.Actions;
     }
 
     public struct Settings
