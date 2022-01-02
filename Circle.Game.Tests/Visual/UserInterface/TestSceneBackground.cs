@@ -32,7 +32,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 PlaceholderText = "External texture name",
                 Size = new Vector2(200, 30)
             });
-            
+
             AddLabel("Scale");
             AddStep("Scale to 0.6", () => background.Scale = new Vector2(0.6f));
             AddStep("Scale to 1", () => background.Scale = new Vector2(1));
