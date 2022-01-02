@@ -52,15 +52,6 @@ namespace Circle.Game.Rulesets.Objects
                                 Colour = planetColor
                             }
                         }
-                    },
-                    new Box
-                    {
-                        Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft,
-                        RelativeSizeAxes = Axes.X,
-                        Height = 15,
-                        Colour = planetColor,
-                        Alpha = 0.75f
                     }
                 }
             };

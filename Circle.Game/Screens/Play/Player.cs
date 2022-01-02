@@ -77,10 +77,7 @@ namespace Circle.Game.Screens.Play
             switch (playState)
             {
                 case GamePlayState.Ready:
-                    playfield.StartPlaying();
-                    musicController.CurrentTrack.VolumeTo(1);
-                    musicController.Play();
-                    playState = GamePlayState.Playing;
+                    startPlaying();
                     break;
 
                 case GamePlayState.Playing:
@@ -92,6 +89,14 @@ namespace Circle.Game.Screens.Play
             }
 
             return base.OnKeyDown(e);
+        }
+
+        private void startPlaying()
+        {
+            playfield.StartPlaying();
+            musicController.CurrentTrack.VolumeTo(1);
+            Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.Value.Settings.BPM);
+            playState = GamePlayState.Playing;
         }
     }
 

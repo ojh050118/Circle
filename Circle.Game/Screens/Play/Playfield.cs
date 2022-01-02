@@ -28,6 +28,8 @@ namespace Circle.Game.Screens.Play
 
         private float prevAngle;
 
+        private RotationDirection rotationDirection;
+
         public Playfield()
         {
             AutoSizeAxes = Axes.Both;
@@ -54,7 +56,6 @@ namespace Circle.Game.Screens.Play
 
         public void StartPlaying()
         {
-
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
             bluePlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
                       .Then()
@@ -78,15 +79,18 @@ namespace Circle.Game.Screens.Play
             }
 
             float fixedRotation = prevAngle - 180;
+            float newRotation = tiles.FilteredAngles[currentFloor] > 180 ? tiles.FilteredAngles[currentFloor] - 360 : tiles.FilteredAngles[currentFloor];
 
-            
+            // 반시계방향으로 회전할 여지가 있는지 확인하고 수정함.
+            if (rotationDirection == RotationDirection.Clockwise)
+                newRotation = fixedRotation > newRotation ? 360 + newRotation : newRotation;
 
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 1;
                 redPlanet.Position = tiles.PlanetPositions[currentFloor];
                 redPlanet.Rotation = fixedRotation;
-                redPlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
+                redPlanet.RotateTo(newRotation, calculateDuration(newRotation))
                          .Then()
                          .Schedule(() =>
                          {
@@ -104,7 +108,7 @@ namespace Circle.Game.Screens.Play
                 bluePlanet.Expansion = 1;
                 bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                 bluePlanet.Rotation = fixedRotation;
-                bluePlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
+                bluePlanet.RotateTo(newRotation, calculateDuration(newRotation))
                           .Then()
                           .Schedule(() =>
                           {
@@ -123,7 +127,7 @@ namespace Circle.Game.Screens.Play
 
         private float calculateDuration(float newRotation)
         {
-            return 60000 / (float)beatmap.Value.Settings.BPM * Math.Abs(planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation - newRotation) / 180;
+            return 60000 / (float)beatmap.Value.Settings.BPM * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
         }
 
         private float getSafeAngle(float angle)
