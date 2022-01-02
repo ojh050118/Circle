@@ -24,11 +24,6 @@ namespace Circle.Game.Screens.Play
         public List<Vector2> PlanetPositions { get; private set; }
 
         /// <summary>
-        /// 카메라가 정지해야 하는 위치.
-        /// </summary>
-        public List<Vector2> CameraPositions { get; private set; }
-
-        /// <summary>
         /// 미드스핀 타일를 구성하는 각도를 제외한 각도들.
         /// </summary>
         public List<float> FilteredAngles { get; private set; }
@@ -68,7 +63,6 @@ namespace Circle.Game.Screens.Play
 
             // 시작위치.
             PlanetPositions = new List<Vector2> { Vector2.Zero };
-            CameraPositions = new List<Vector2> { Vector2.Zero };
 
             for (int i = 0; i < angleData.Length; i++)
             {
@@ -85,7 +79,6 @@ namespace Circle.Game.Screens.Play
                             Position = tilePosition,
                             Rotation = angleData[i],
                         });
-                        CameraPositions.Add(tilePosition);
 
                         continue;
                     }
@@ -106,7 +99,6 @@ namespace Circle.Game.Screens.Play
 
                         tilePosition += new Vector2(nextX, nextY);
                         PlanetPositions.Add(tilePosition);
-                        CameraPositions.Add(tilePosition);
 
                         continue;
                     }
@@ -120,7 +112,6 @@ namespace Circle.Game.Screens.Play
 
                 tilePosition += new Vector2(nextX, nextY);
                 PlanetPositions.Add(tilePosition);
-                CameraPositions.Add(tilePosition);
             }
         }
 

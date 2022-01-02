@@ -28,7 +28,7 @@ namespace Circle.Game.Screens.Play
 
         private float prevAngle;
 
-        private RotationDirection rotationDirection;
+        private readonly RotationDirection rotationDirection;
 
         public Playfield()
         {
@@ -44,6 +44,7 @@ namespace Circle.Game.Screens.Play
 
             redPlanet.Expansion = bluePlanet.Expansion = 0;
             planetState = new Bindable<PlanetState>(PlanetState.Ice);
+            rotationDirection = RotationDirection.Clockwise;
         }
 
         protected override void LoadComplete()
