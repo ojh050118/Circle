@@ -13,6 +13,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Performance;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osuTK;
 
@@ -105,6 +106,8 @@ namespace Circle.Game
             base.LoadComplete();
 
             applySettings();
+            WorkingBeatmap.ValueChanged += value =>
+                Logger.Log($"Beatmap changed: {value.OldValue.Settings.Author} - {value.OldValue.Settings.Track} ¡æ {value.NewValue.Settings.Author} - {value.NewValue.Settings.Track}.");
         }
 
         public override void SetHost(GameHost host)
@@ -116,7 +119,7 @@ namespace Circle.Game
             TrackedSettings = LocalConfig.CreateTrackedSettings();
             LocalConfig.LoadInto(TrackedSettings);
 
-            TrackedSettings.SettingChanged += setTeackedSettingChange;
+            TrackedSettings.SettingChanged += setTrackedSettingChange;
         }
 
         public void GracefullyExit()
@@ -144,7 +147,7 @@ namespace Circle.Game
             FrameStatistics.Value = fpsDisplay ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
         }
 
-        private void setTeackedSettingChange(SettingDescription description)
+        private void setTrackedSettingChange(SettingDescription description)
         {
             switch (description.Name.ToString())
             {

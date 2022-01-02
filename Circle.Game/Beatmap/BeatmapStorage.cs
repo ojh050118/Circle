@@ -48,7 +48,9 @@ namespace Circle.Game.Beatmap
     {
         public float[] Angles;
         public Settings Settings;
-        public List<Actions> Actions;
+        public Actions[] Actions;
+
+        public bool Equals(BeatmapInfo info) => Angles?.Length == info.Angles?.Length && Settings.Equals(info.Settings) && Actions == info.Actions;
     }
 
     public struct Settings
@@ -65,6 +67,19 @@ namespace Circle.Game.Beatmap
         public double Pitch;
         public string BackgroundTexture;
         public Easing PlanetEasing;
+
+        public bool Equals(Settings settings) => Artist == settings.Artist &&
+                                                 Track == settings.Track &&
+                                                 Author == settings.Author &&
+                                                 SeparateCountdownTime == settings.SeparateCountdownTime &&
+                                                 PreviewTrackStart == settings.PreviewTrackStart &&
+                                                 BeatmapDesc == settings.BeatmapDesc &&
+                                                 BeatmapDifficulty == settings.BeatmapDifficulty &&
+                                                 (int)BPM == (int)settings.BPM &&
+                                                 (int)Offset == (int)settings.Offset &&
+                                                 (int)Pitch == (int)settings.Pitch &&
+                                                 BackgroundTexture == settings.BackgroundTexture &&
+                                                 PlanetEasing == settings.PlanetEasing;
     }
 
     public struct Actions
@@ -76,9 +91,10 @@ namespace Circle.Game.Beatmap
     public struct Event
     {
         public EventType EventType;
-        public double ToBPM;
-        public bool IsRelativeTile;
-        public bool IsTwirl;
+        public SpeedType? SpeedType;
+        public float? BeatsPerMinute;
+        public float? BpmMultiplier;
+        public RelativeTo? RelativeTo;
     }
 
     public enum EventType
@@ -86,5 +102,19 @@ namespace Circle.Game.Beatmap
         Twirl,
         SetSpeed,
         MoveCamera
+    }
+
+    public enum SpeedType
+    {
+        Multiplier,
+        Bpm
+    }
+
+    public enum RelativeTo
+    {
+        Tile,
+        Player,
+        Global,
+        LastPosition
     }
 }
