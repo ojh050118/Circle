@@ -26,6 +26,8 @@ namespace Circle.Game.Screens.Play
 
         private int currentFloor;
 
+        private float prevAngle;
+
         public Playfield()
         {
             AutoSizeAxes = Axes.Both;
@@ -47,7 +49,6 @@ namespace Circle.Game.Screens.Play
             base.LoadComplete();
 
             bluePlanet.Rotation = tiles.FilteredAngles[currentFloor];
-            redPlanet.Rotation = tiles.FilteredAngles[currentFloor];
             planetState.ValueChanged += _ => movePlanet();
         }
 
@@ -61,8 +62,8 @@ namespace Circle.Game.Screens.Play
                       {
                           bluePlanet.Expansion = 0;
                           bluePlanet.Rotation = getSafeAngle(bluePlanet.Rotation);
-                          currentFloor++;
                           bluePlanet.Position = tiles.PlanetPositions[currentFloor];
+                          prevAngle = bluePlanet.Rotation;
                           planetState.Value = PlanetState.Fire;
                       });
         }
@@ -72,27 +73,25 @@ namespace Circle.Game.Screens.Play
             if (currentFloor >= tiles.PlanetPositions.Count)
                 return;
 
-            float newRotation = planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation;
+            float fixedRotation = 0;
 
-            if (currentFloor < tiles.PlanetPositions.Count - 1)
-            {
-                if (tiles.FilteredAngles[currentFloor] == tiles.FilteredAngles[currentFloor + 1])
-                    newRotation += 180;
-                else
-                    newRotation = tiles.FilteredAngles[currentFloor];
-            }
+            fixedRotation = tiles.FilteredAngles[currentFloor] - 180;
+
+            
 
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 1;
                 redPlanet.Position = tiles.PlanetPositions[currentFloor];
-                redPlanet.RotateTo(newRotation, calculateDuration(newRotation))
+                redPlanet.Rotation = fixedRotation;
+                redPlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
                          .Then()
                          .Schedule(() =>
                          {
                              redPlanet.Expansion = 0;
                              currentFloor++;
                              redPlanet.Rotation = getSafeAngle(redPlanet.Rotation);
+                             prevAngle = redPlanet.Rotation;
                              if (currentFloor < tiles.PlanetPositions.Count)
                                  redPlanet.Position = tiles.PlanetPositions[currentFloor];
                              planetState.Value = PlanetState.Ice;
@@ -102,13 +101,15 @@ namespace Circle.Game.Screens.Play
             {
                 bluePlanet.Expansion = 1;
                 bluePlanet.Position = tiles.PlanetPositions[currentFloor];
-                bluePlanet.RotateTo(newRotation, calculateDuration(newRotation))
+                bluePlanet.Rotation = fixedRotation;
+                bluePlanet.RotateTo(tiles.FilteredAngles[currentFloor], calculateDuration(tiles.FilteredAngles[currentFloor]))
                           .Then()
                           .Schedule(() =>
                           {
                               bluePlanet.Expansion = 0;
                               currentFloor++;
                               bluePlanet.Rotation = getSafeAngle(bluePlanet.Rotation);
+                              prevAngle = bluePlanet.Rotation;
                               if (currentFloor < tiles.PlanetPositions.Count)
                                   bluePlanet.Position = tiles.PlanetPositions[currentFloor];
                               planetState.Value = PlanetState.Fire;

@@ -37,8 +37,6 @@ namespace Circle.Game.Screens.Play
 
         private float[] angleData;
 
-        // Todo: 행성이 있어야 할 위치(tilePositions) 수정과 각 타일의 각도를 담는 리스트가 있어야 함.
-        // Todo: 새로운 방법 제안: 행성이 회전할 때 현재 회전정도에서 타일의 각도를 더해서 회전을 시키는 것.
         public ObjectContainer()
         {
             Anchor = Anchor.Centre;
@@ -95,6 +93,7 @@ namespace Circle.Game.Screens.Play
 
                 var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
                 var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
+
                 if (i >= 1)
                 {
                     if (Math.Abs(angleData[i] - angleData[i - 1]) == 180)
@@ -118,7 +117,6 @@ namespace Circle.Game.Screens.Play
                     Position = tilePosition,
                     Rotation = angleData[i],
                 });
-
 
                 tilePosition += new Vector2(nextX, nextY);
                 PlanetPositions.Add(tilePosition);
@@ -155,6 +153,7 @@ namespace Circle.Game.Screens.Play
 
             // 시작할 때 행성은 -180도에서 시작합니다.
             filteredAngleData.Push(-180);
+
             foreach (var angle in originAngleData)
             {
                 filteredAngleData.Push(angle);

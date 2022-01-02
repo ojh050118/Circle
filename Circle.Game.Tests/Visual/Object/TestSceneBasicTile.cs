@@ -5,23 +5,19 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.Object
 {
-    public class TestScenePlanet : CircleTestScene
+    public class TestSceneBasicTile : CircleTestScene
     {
-        public TestScenePlanet()
+        public TestSceneBasicTile()
         {
-            Planet planet;
-
             Add(new Box
             {
                 RelativeSizeAxes = Axes.Both,
                 Colour = Color4.Black
             });
-            Add(planet = new Planet(Color4.DeepSkyBlue)
+            Add(new BasicTile(0)
             {
                 Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
             });
-            AddStep("Toggle Expansion", () => planet.Expansion = planet.Expansion == 1 ? 0 : 1);
         }
     }
 }
