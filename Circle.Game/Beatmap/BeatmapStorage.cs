@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using osu.Framework.Graphics;
@@ -48,7 +49,17 @@ namespace Circle.Game.Beatmap
     {
         public float[] Angles;
         public Settings Settings;
-        public List<Actions> Actions;
+        public Actions[] Actions;
+
+        public static bool operator ==(BeatmapInfo info1, BeatmapInfo info2) => info1.Angles.Length == info2.Angles.Length && info1.Settings == info2.Settings && info1.Actions == info2.Actions;
+
+        public static bool operator !=(BeatmapInfo info1, BeatmapInfo info2) => info1.Angles.Length != info2.Angles.Length || info1.Settings != info2.Settings || info1.Actions != info2.Actions;
+
+        public bool Equals(BeatmapInfo other) => Equals(Angles, other.Angles) && Settings.Equals(other.Settings) && Equals(Actions, other.Actions);
+
+        public override bool Equals(object obj) => obj is BeatmapInfo other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(Angles, Settings, Actions);
     }
 
     public struct Settings
@@ -65,6 +76,60 @@ namespace Circle.Game.Beatmap
         public double Pitch;
         public string BackgroundTexture;
         public Easing PlanetEasing;
+
+        public static bool operator ==(Settings s1, Settings s2) => s1.Artist == s2.Artist &&
+                                                                    s1.Track == s2.Track &&
+                                                                    s1.Author == s2.Author &&
+                                                                    s1.SeparateCountdownTime == s2.SeparateCountdownTime &&
+                                                                    s1.PreviewTrackStart == s2.PreviewTrackStart &&
+                                                                    s1.BeatmapDesc == s2.BeatmapDesc &&
+                                                                    s1.BeatmapDifficulty == s2.BeatmapDifficulty &&
+                                                                    s1.BPM == s2.BPM &&
+                                                                    s1.BackgroundTexture == s2.BackgroundTexture &&
+                                                                    s1.PlanetEasing == s2.PlanetEasing;
+
+        public static bool operator !=(Settings s1, Settings s2) => s1.Artist != s2.Artist ||
+                                                                    s1.Track != s2.Track ||
+                                                                    s1.Author != s2.Author ||
+                                                                    s1.SeparateCountdownTime != s2.SeparateCountdownTime ||
+                                                                    s1.PreviewTrackStart != s2.PreviewTrackStart ||
+                                                                    s1.BeatmapDesc != s2.BeatmapDesc ||
+                                                                    s1.BeatmapDifficulty != s2.BeatmapDifficulty ||
+                                                                    s1.BPM != s2.BPM ||
+                                                                    s1.BackgroundTexture != s2.BackgroundTexture ||
+                                                                    s1.PlanetEasing != s2.PlanetEasing;
+
+        public bool Equals(Settings other) => Artist == other.Artist &&
+                                              Track == other.Track &&
+                                              Author == other.Author &&
+                                              SeparateCountdownTime == other.SeparateCountdownTime &&
+                                              PreviewTrackStart == other.PreviewTrackStart &&
+                                              BeatmapDesc == other.BeatmapDesc &&
+                                              BeatmapDifficulty == other.BeatmapDifficulty &&
+                                              BPM.Equals(other.BPM) && Offset.Equals(other.Offset) &&
+                                              Pitch.Equals(other.Pitch) &&
+                                              BackgroundTexture == other.BackgroundTexture &&
+                                              PlanetEasing == other.PlanetEasing;
+
+        public override bool Equals(object obj) => obj is Settings other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+            hashCode.Add(Artist);
+            hashCode.Add(Track);
+            hashCode.Add(Author);
+            hashCode.Add(SeparateCountdownTime);
+            hashCode.Add(PreviewTrackStart);
+            hashCode.Add(BeatmapDesc);
+            hashCode.Add(BeatmapDifficulty);
+            hashCode.Add(BPM);
+            hashCode.Add(Offset);
+            hashCode.Add(Pitch);
+            hashCode.Add(BackgroundTexture);
+            hashCode.Add((int)PlanetEasing);
+            return hashCode.ToHashCode();
+        }
     }
 
     public struct Actions
@@ -76,9 +141,10 @@ namespace Circle.Game.Beatmap
     public struct Event
     {
         public EventType EventType;
-        public double ToBPM;
-        public bool IsRelativeTile;
-        public bool IsTwirl;
+        public SpeedType? SpeedType;
+        public float? BeatsPerMinute;
+        public float? BpmMultiplier;
+        public RelativeTo? RelativeTo;
     }
 
     public enum EventType
@@ -86,5 +152,19 @@ namespace Circle.Game.Beatmap
         Twirl,
         SetSpeed,
         MoveCamera
+    }
+
+    public enum SpeedType
+    {
+        Multiplier,
+        Bpm
+    }
+
+    public enum RelativeTo
+    {
+        Tile,
+        Player,
+        Global,
+        LastPosition
     }
 }

@@ -131,7 +131,6 @@ namespace Circle.Game.Screens.Select.Carousel
             switch (state.NewValue)
             {
                 case CarouselItemState.NotSelected:
-                case CarouselItemState.Collapsed:
                     BorderContainer.BorderThickness = 0;
                     BorderContainer.EdgeEffect = new EdgeEffectParameters
                     {

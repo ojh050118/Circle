@@ -113,7 +113,7 @@ namespace Circle.Game.Graphics.UserInterface
             if (Sprite is null)
                 return;
 
-            LoadComponentAsync(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
+            AddInternal(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -122,18 +122,15 @@ namespace Circle.Game.Graphics.UserInterface
                 RedrawOnScale = false,
                 Masking = true,
                 Child = loadTexture(source, textureName),
-            }, _ =>
-            {
-                AddInternal(newBufferedContainer);
-                if (dim != null)
-                    ChangeInternalChildDepth(dim, -1);
+            });
+            if (dim != null)
+                ChangeInternalChildDepth(dim, -1);
 
-                newBufferedContainer.BlurSigma = BlurSigma;
-                newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
-                {
-                    RemoveInternal(InternalChildren.First());
-                    bufferedContainer = newBufferedContainer;
-                });
+            newBufferedContainer.BlurSigma = BlurSigma;
+            newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
+            {
+                RemoveInternal(InternalChildren.First());
+                bufferedContainer = newBufferedContainer;
             });
         }
     }

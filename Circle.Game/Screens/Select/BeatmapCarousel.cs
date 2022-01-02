@@ -15,7 +15,7 @@ namespace Circle.Game.Screens.Select
 {
     public class BeatmapCarousel : CompositeDrawable
     {
-        protected readonly CarouselScrollContiner Scroll;
+        protected readonly CarouselScrollContainer Scroll;
 
         private CarouselItem selectedCarouselItem => Scroll?.Child.Children.FirstOrDefault(i => i.State.Value == CarouselItemState.Selected);
 
@@ -34,7 +34,7 @@ namespace Circle.Game.Screens.Select
             RelativeSizeAxes = Axes.Both;
             InternalChildren = new Drawable[]
             {
-                Scroll = new CarouselScrollContiner
+                Scroll = new CarouselScrollContainer
                 {
                     RelativeSizeAxes = Axes.Both,
                     Masking = false,
@@ -79,16 +79,19 @@ namespace Circle.Game.Screens.Select
                         else
                             background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
 
-                        if (working.Value.Settings.Track != item.BeatmapInfo.Settings.Track)
+                        Schedule(() =>
                         {
-                            working.Value = item.BeatmapInfo;
-                            music.Play();
-                        }
+                            if (working.Value != item.BeatmapInfo)
+                            {
+                                working.Value = item.BeatmapInfo;
+                                music.Play();
+                            }
+                        });
 
                         foreach (var item2 in Scroll.Child.Children)
                         {
                             if (item2 != item)
-                                item2.State.Value = CarouselItemState.Collapsed;
+                                item2.State.Value = CarouselItemState.NotSelected;
                         }
                     }
                 };
@@ -102,7 +105,7 @@ namespace Circle.Game.Screens.Select
             if (Scroll.Child.Children.Count == 0)
                 return;
 
-            if (working.Value.Settings.Track == string.Empty || working.Value.Settings.Track is null)
+            if (string.IsNullOrEmpty(working.Value.Settings.Track))
             {
                 var idx = new Random().Next(0, Scroll.Child.Children.Count);
                 Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
@@ -111,10 +114,10 @@ namespace Circle.Game.Screens.Select
 
             foreach (var item in Scroll.Child.Children)
             {
-                if (item.BeatmapInfo.Settings.Track == working.Value.Settings.Track)
+                if (item.BeatmapInfo == working.Value)
                 {
                     item.State.Value = CarouselItemState.Selected;
-                    return;
+                    break;
                 }
             }
         }
@@ -160,9 +163,9 @@ namespace Circle.Game.Screens.Select
             }
         }
 
-        protected class CarouselScrollContiner : CircleScrollContainer<FillFlowContainer<CarouselItem>>
+        protected class CarouselScrollContainer : CircleScrollContainer<FillFlowContainer<CarouselItem>>
         {
-            public CarouselScrollContiner()
+            public CarouselScrollContainer()
             {
                 ScrollContent.AutoSizeAxes = Axes.None;
                 Masking = false;
