@@ -85,6 +85,11 @@ namespace Circle.Game.Screens.Play
             if (tiles.Children[currentFloor].Reverse.Value)
                 isClockwise = !isClockwise;
 
+            if (tiles.Children[currentFloor].Bpm.Value != 0)
+                currentBpm = tiles.Children[currentFloor].Bpm.Value;
+            else if (tiles.Children[currentFloor].BpmMultiplier.Value != -1)
+                currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
+
             float fixedRotation = prevAngle - 180;
             float newRotation = tiles.FilteredAngles[currentFloor] > 180 ? tiles.FilteredAngles[currentFloor] - 360 : tiles.FilteredAngles[currentFloor];
 

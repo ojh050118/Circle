@@ -35,7 +35,7 @@ namespace Circle.Game.Rulesets.Objects
             Angle = angle;
             Reverse = new Bindable<bool>(false);
             Bpm = new Bindable<float>(0);
-            BpmMultiplier = new Bindable<float>(1);
+            BpmMultiplier = new Bindable<float>(-1);
             icon = new SpriteIcon
             {
                 Size = new Vector2(35),
