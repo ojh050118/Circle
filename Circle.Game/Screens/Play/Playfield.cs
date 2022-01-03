@@ -92,7 +92,7 @@ namespace Circle.Game.Screens.Play
             if (isClockwise)
                 newRotation = fixedRotation > newRotation ? 360 + newRotation : newRotation;
             else
-                newRotation -= 360;
+                newRotation = fixedRotation < newRotation ? newRotation - 360 : newRotation;
 
             if (planetState.Value == PlanetState.Fire)
             {
