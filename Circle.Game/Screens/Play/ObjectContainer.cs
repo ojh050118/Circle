@@ -32,6 +32,8 @@ namespace Circle.Game.Screens.Play
 
         private float[] angleData;
 
+        private BeatmapInfo beatmapInfo;
+
         public ObjectContainer()
         {
             Anchor = Anchor.Centre;
@@ -42,9 +44,11 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load(Bindable<BeatmapInfo> beatmap)
         {
+            beatmapInfo = beatmap.Value;
             angleData = convertAngles(beatmap.Value);
             FilteredAngles = filterMidspinAngle(angleData);
             createTiles(angleData);
+            addActionsToTile();
         }
 
         public void MoveCamera()
@@ -79,7 +83,6 @@ namespace Circle.Game.Screens.Play
                             Position = tilePosition,
                             Rotation = angleData[i],
                         });
-
                         continue;
                     }
                 }
@@ -112,6 +115,42 @@ namespace Circle.Game.Screens.Play
 
                 tilePosition += new Vector2(nextX, nextY);
                 PlanetPositions.Add(tilePosition);
+            }
+        }
+
+        private void addActionsToTile()
+        {
+            if (beatmapInfo.Actions is null)
+                return;
+
+            foreach (var action in beatmapInfo.Actions)
+            {
+                for (int i = 0; i < Children.Count; i++)
+                {
+                    if (i == action.Floor)
+                    {
+                        switch (action.Event.EventType)
+                        {
+                            case EventType.Twirl:
+                                Children[i].Reverse.Value = true;
+                                break;
+                            case EventType.SetSpeed:
+                                switch (action.Event.SpeedType)
+                                {
+                                    case SpeedType.Multiplier:
+                                        Children[i].BpmMultiplier.Value = action.Event.BpmMultiplier;
+                                        break;
+                                    case SpeedType.Bpm:
+                                        Children[i].Bpm.Value = action.Event.BeatsPerMinute;
+                                        break;
+                                }
+                                break;
+                            case EventType.MoveCamera:
+                                // Todo: 카메라 기능 추가
+                                break;
+                        }
+                    }
+                }
             }
         }
 

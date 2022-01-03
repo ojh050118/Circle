@@ -1,12 +1,12 @@
-﻿using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics;
-using Circle.Game.Rulesets.Objects;
-using osuTK.Graphics;
-using osu.Framework.Bindables;
+﻿using System;
 using Circle.Game.Beatmap;
-using osu.Framework.Allocation;
 using Circle.Game.Rulesets.Extensions;
-using System;
+using Circle.Game.Rulesets.Objects;
+using osu.Framework.Allocation;
+using osu.Framework.Bindables;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Play
 {
@@ -28,7 +28,9 @@ namespace Circle.Game.Screens.Play
 
         private float prevAngle;
 
-        private readonly RotationDirection rotationDirection;
+        private bool isClockwise;
+
+        private float currentBpm;
 
         public Playfield()
         {
@@ -44,7 +46,7 @@ namespace Circle.Game.Screens.Play
 
             redPlanet.Expansion = bluePlanet.Expansion = 0;
             planetState = new Bindable<PlanetState>(PlanetState.Ice);
-            rotationDirection = RotationDirection.Clockwise;
+            isClockwise = true;
         }
 
         protected override void LoadComplete()
@@ -53,6 +55,7 @@ namespace Circle.Game.Screens.Play
 
             bluePlanet.Rotation = tiles.FilteredAngles[0] - 180;
             planetState.ValueChanged += _ => movePlanet();
+            currentBpm = beatmap.Value.Settings.BPM;
         }
 
         public void StartPlaying()
@@ -75,16 +78,21 @@ namespace Circle.Game.Screens.Play
         {
             if (currentFloor >= tiles.FilteredAngles.Count)
             {
-                this.MoveTo(-tiles.PlanetPositions[currentFloor], 250, Easing.OutSine);
+                this.MoveTo(-tiles.PlanetPositions[currentFloor], 500, Easing.OutSine);
                 return;
             }
+
+            if (tiles.Children[currentFloor].Reverse.Value)
+                isClockwise = !isClockwise;
 
             float fixedRotation = prevAngle - 180;
             float newRotation = tiles.FilteredAngles[currentFloor] > 180 ? tiles.FilteredAngles[currentFloor] - 360 : tiles.FilteredAngles[currentFloor];
 
             // 반시계방향으로 회전할 여지가 있는지 확인하고 수정함.
-            if (rotationDirection == RotationDirection.Clockwise)
+            if (isClockwise)
                 newRotation = fixedRotation > newRotation ? 360 + newRotation : newRotation;
+            else
+                newRotation -= 360;
 
             if (planetState.Value == PlanetState.Fire)
             {
@@ -123,12 +131,12 @@ namespace Circle.Game.Screens.Play
                           });
             }
 
-            this.MoveTo(-tiles.PlanetPositions[currentFloor], 250, Easing.OutSine);
+            this.MoveTo(-tiles.PlanetPositions[currentFloor], 500, Easing.OutSine);
         }
 
         private float calculateDuration(float newRotation)
         {
-            return 60000 / (float)beatmap.Value.Settings.BPM * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
+            return 60000 / currentBpm * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
         }
 
         private float getSafeAngle(float angle)

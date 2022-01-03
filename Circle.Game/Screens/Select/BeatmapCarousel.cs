@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
+using Circle.Game.Beatmap;
+using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Overlays;
+using Circle.Game.Screens.Select.Carousel;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using Circle.Game.Graphics.Containers;
-using Circle.Game.Screens.Select.Carousel;
 using osuTK;
-using Circle.Game.Beatmap;
-using Circle.Game.Graphics.UserInterface;
-using osu.Framework.Bindables;
-using Circle.Game.Overlays;
 
 namespace Circle.Game.Screens.Select
 {

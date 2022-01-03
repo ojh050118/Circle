@@ -1,17 +1,17 @@
-﻿using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics;
-using osuTK.Graphics;
-using osu.Framework.Graphics.Effects;
-using osu.Framework.Extensions.Color4Extensions;
-using osu.Framework.Bindables;
-using osuTK;
-using osu.Framework.Input.Events;
+﻿using Circle.Game.Beatmap;
 using osu.Framework.Allocation;
-using Circle.Game.Beatmap;
-using osu.Framework.Graphics.Shapes;
+using osu.Framework.Bindables;
+using osu.Framework.Extensions.Color4Extensions;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Effects;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
+using osu.Framework.Input.Events;
+using osuTK;
+using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
