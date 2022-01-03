@@ -21,12 +21,6 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Bindable<BeatmapInfo> workingBeatmap { get; set; }
 
-        [Resolved]
-        private LargeTextureStore largeTexture { get; set; }
-
-        [Resolved]
-        private BeatmapResourcesManager beatmapResources { get; set; }
-
         private readonly Background background;
         private readonly FillFlowContainer details;
         private readonly SpriteText title;

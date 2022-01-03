@@ -24,9 +24,6 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Bindable<BeatmapInfo> working { get; set; }
 
-        [Resolved]
-        private BeatmapResourcesManager beatmapResources { get; set; }
-
         public Bindable<bool> PlayRequested { get; set; } = new Bindable<bool>(false);
 
         public BeatmapCarousel()
