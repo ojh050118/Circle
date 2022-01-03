@@ -10,7 +10,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.Textures;
 using osuTK;
 using osuTK.Graphics;
 
@@ -20,12 +19,6 @@ namespace Circle.Game.Screens.Select
     {
         [Resolved]
         private Bindable<BeatmapInfo> workingBeatmap { get; set; }
-
-        [Resolved]
-        private LargeTextureStore largeTexture { get; set; }
-
-        [Resolved]
-        private BeatmapResourcesManager beatmapResources { get; set; }
 
         private readonly Background background;
         private readonly FillFlowContainer details;
