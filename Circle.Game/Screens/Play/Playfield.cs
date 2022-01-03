@@ -88,7 +88,7 @@ namespace Circle.Game.Screens.Play
             float fixedRotation = prevAngle - 180;
             float newRotation = tiles.FilteredAngles[currentFloor] > 180 ? tiles.FilteredAngles[currentFloor] - 360 : tiles.FilteredAngles[currentFloor];
 
-            // 반시계방향으로 회전할 여지가 있는지 확인하고 수정함.
+            // 회전방향에 따라 새로운 각도 계산
             if (isClockwise)
                 newRotation = fixedRotation > newRotation ? 360 + newRotation : newRotation;
             else

@@ -70,7 +70,7 @@ namespace Circle.Game.Screens.Play
 
             for (int i = 0; i < angleData.Length; i++)
             {
-                // 각도 값이 999일 때 스킵.
+                // 각도 값이 999인것은 미드스핀 타일이기 때문에 건너뜀
                 if (angleData[i] == 999 || i > angleData.Length - 1)
                     continue;
 
@@ -129,19 +129,19 @@ namespace Circle.Game.Screens.Play
                 {
                     if (i == action.Floor)
                     {
-                        switch (action.Event.EventType)
+                        switch (action.EventType)
                         {
                             case EventType.Twirl:
                                 Children[i].Reverse.Value = true;
                                 break;
                             case EventType.SetSpeed:
-                                switch (action.Event.SpeedType)
+                                switch (action.SpeedType)
                                 {
                                     case SpeedType.Multiplier:
-                                        Children[i].BpmMultiplier.Value = action.Event.BpmMultiplier;
+                                        Children[i].BpmMultiplier.Value = action.BpmMultiplier;
                                         break;
                                     case SpeedType.Bpm:
-                                        Children[i].Bpm.Value = action.Event.BeatsPerMinute;
+                                        Children[i].Bpm.Value = action.BeatsPerMinute;
                                         break;
                                 }
                                 break;
