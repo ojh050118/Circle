@@ -14,6 +14,8 @@ namespace Circle.Game.Rulesets.Objects
         public Bindable<float> Bpm;
         public Bindable<float> BpmMultiplier;
         public Easing Easing;
+
+        public readonly TileType TileType;
         public readonly float Angle;
         public Color4 IconColour
         {
@@ -26,12 +28,13 @@ namespace Circle.Game.Rulesets.Objects
         public const float WIDTH = 150;
         public const float HEIGHT = 50;
 
-        protected Tile(float angle)
+        protected Tile(TileType type, float angle)
         {
             Size = new Vector2(WIDTH, HEIGHT);
             Alpha = 0.6f;
             Anchor = Anchor.Centre;
             OriginPosition = new Vector2(25);
+            TileType = type;
             Angle = angle;
             Reverse = new Bindable<bool>(false);
             Bpm = new Bindable<float>(0);

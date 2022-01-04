@@ -1,24 +1,26 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osuTK;
 using osuTK.Graphics;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public class CircularTile : Tile
+    public class ShortTile : Tile
     {
-        public CircularTile(float angle)
+        public ShortTile(float angle)
             : base(TileType.Normal, angle)
         {
-            Size = new Vector2(HEIGHT);
             Child = new CircularContainer
             {
                 RelativeSizeAxes = Axes.Both,
+                Width = 0.6f,
                 Masking = true,
                 Children = new Drawable[]
                 {
