@@ -58,7 +58,6 @@ namespace Circle.Game.Screens.Play
                         {
                             Position = tilePosition,
                             Rotation = angleData[i],
-                            Width = 0.6f
                         });
 
                         i++;
