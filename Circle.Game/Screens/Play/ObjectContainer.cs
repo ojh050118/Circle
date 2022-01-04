@@ -48,7 +48,7 @@ namespace Circle.Game.Screens.Play
                 if (i > angleData.Length - 1)
                     continue;
 
-                var newtilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
+                var newTilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
 
                 if (i < angleData.Length - 1)
                 {
@@ -74,7 +74,7 @@ namespace Circle.Game.Screens.Play
                     });
 
                     i++;
-                    newtilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
+                    newTilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
                 }
 
                 if (i >= 1)
@@ -87,7 +87,7 @@ namespace Circle.Game.Screens.Play
                             Rotation = angleData[i],
                         });
 
-                        tilePosition += newtilePosition;
+                        tilePosition += newTilePosition;
 
                         continue;
                     }
@@ -99,7 +99,7 @@ namespace Circle.Game.Screens.Play
                     Rotation = angleData[i],
                 });
 
-                tilePosition += newtilePosition;
+                tilePosition += newTilePosition;
             }
         }
 
@@ -119,17 +119,21 @@ namespace Circle.Game.Screens.Play
                             case EventType.Twirl:
                                 Children[i].Reverse.Value = true;
                                 break;
+
                             case EventType.SetSpeed:
                                 switch (action.SpeedType)
                                 {
                                     case SpeedType.Multiplier:
                                         Children[i].BpmMultiplier.Value = action.BpmMultiplier;
                                         break;
+
                                     case SpeedType.Bpm:
                                         Children[i].Bpm.Value = action.BeatsPerMinute;
                                         break;
                                 }
+
                                 break;
+
                             case EventType.MoveCamera:
                                 // Todo: 카메라 기능 추가
                                 break;

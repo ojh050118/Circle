@@ -17,13 +17,14 @@ namespace Circle.Game.Rulesets.Objects
 
         public readonly TileType TileType;
         public readonly float Angle;
+
         public Color4 IconColour
         {
             get => icon.Colour;
             set => icon.Colour = value;
         }
 
-        private SpriteIcon icon;
+        private readonly SpriteIcon icon;
 
         public const float WIDTH = 150;
         public const float HEIGHT = 50;
@@ -51,19 +52,9 @@ namespace Circle.Game.Rulesets.Objects
         private void load()
         {
             Add(icon);
-            Reverse.ValueChanged += value => addTwirlIcon(value.NewValue);
-            Bpm.ValueChanged += _ => addSpeedIcon();
-            BpmMultiplier.ValueChanged += _ => addSpeedIcon();
-        }
-
-        private void addTwirlIcon(bool reverse)
-        {
-            icon.Icon = FontAwesome.Solid.UndoAlt;
-        }
-
-        private void addSpeedIcon()
-        {
-            icon.Icon = FontAwesome.Solid.TachometerAlt;
+            Reverse.ValueChanged += _ => icon.Icon = FontAwesome.Solid.UndoAlt;
+            Bpm.ValueChanged += _ => icon.Icon = FontAwesome.Solid.TachometerAlt;
+            BpmMultiplier.ValueChanged += _ => icon.Icon = FontAwesome.Solid.TachometerAlt;
         }
     }
 }

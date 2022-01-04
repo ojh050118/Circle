@@ -64,7 +64,7 @@ namespace Circle.Game.Screens.Play
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
             bluePlanet.RotateTo(tiles.Children[currentFloor].Angle, getRelativeDuration(tiles.Children[currentFloor].Angle))
                       .Then()
-                      .Schedule(() => changePlanetState());
+                      .Schedule(changePlanetState);
         }
 
         private void movePlanet()
@@ -76,7 +76,6 @@ namespace Circle.Game.Screens.Play
                 currentBpm = tiles.Children[currentFloor].Bpm.Value;
             else if (tiles.Children[currentFloor].BpmMultiplier.Value != -1)
                 currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
-
 
             float fixedRotation = prevAngle;
 
@@ -105,7 +104,7 @@ namespace Circle.Game.Screens.Play
                 redPlanet.Rotation = fixedRotation;
                 redPlanet.RotateTo(newRotation, getRelativeDuration(newRotation))
                          .Then()
-                         .Schedule(() => changePlanetState());
+                         .Schedule(changePlanetState);
             }
             else
             {
@@ -114,7 +113,7 @@ namespace Circle.Game.Screens.Play
                 bluePlanet.Rotation = fixedRotation;
                 bluePlanet.RotateTo(newRotation, getRelativeDuration(newRotation))
                           .Then()
-                          .Schedule(() => changePlanetState());
+                          .Schedule(changePlanetState);
             }
         }
 
@@ -127,6 +126,7 @@ namespace Circle.Game.Screens.Play
             }
 
             currentFloor++;
+
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 0;
