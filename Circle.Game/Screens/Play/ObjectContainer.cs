@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Circle.Game.Beatmap;
+using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -18,19 +18,9 @@ namespace Circle.Game.Screens.Play
         /// </summary>
         private Vector2 tilePosition = Vector2.Zero;
 
-        /// <summary>
-        /// 행성이 정지해야 하는 위치.
-        /// </summary>
-        public List<Vector2> PlanetPositions { get; private set; }
-
-        /// <summary>
-        /// 미드스핀 타일를 구성하는 각도를 제외한 각도들.
-        /// </summary>
-        public List<float> FilteredAngles { get; private set; }
-
-        public int Current;
-
         private float[] angleData;
+
+        private BeatmapInfo beatmapInfo;
 
         public ObjectContainer()
         {
@@ -42,18 +32,10 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load(Bindable<BeatmapInfo> beatmap)
         {
+            beatmapInfo = beatmap.Value;
             angleData = convertAngles(beatmap.Value);
-            FilteredAngles = filterMidspinAngle(angleData);
             createTiles(angleData);
-        }
-
-        public void MoveCamera()
-        {
-            if (Current + 1 < PlanetPositions.Count)
-            {
-                Current++;
-                this.MoveTo(-PlanetPositions[Current], 250, Easing.OutSine);
-            }
+            addActionsToTile();
         }
 
         private void createTiles(float[] angleData)
@@ -61,31 +43,38 @@ namespace Circle.Game.Screens.Play
             if (angleData.Length == 0)
                 return;
 
-            // 시작위치.
-            PlanetPositions = new List<Vector2> { Vector2.Zero };
-
             for (int i = 0; i < angleData.Length; i++)
             {
-                // 각도 값이 999일 때 스킵.
-                if (angleData[i] == 999 || i > angleData.Length - 1)
+                if (i > angleData.Length - 1)
                     continue;
+
+                var newTilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
 
                 if (i < angleData.Length - 1)
                 {
                     if (angleData[i + 1] == 999)
                     {
-                        Add(new MidspinTile(angleData[i])
+                        Add(new ShortTile(angleData[i])
                         {
                             Position = tilePosition,
                             Rotation = angleData[i],
                         });
 
-                        continue;
+                        i++;
                     }
                 }
 
-                var nextX = (float)Math.Cos(MathHelper.DegreesToRadians(angleData[i])) * 100;
-                var nextY = (float)Math.Sin(MathHelper.DegreesToRadians(angleData[i])) * 100;
+                if (angleData[i] == 999)
+                {
+                    Add(new MidspinTile(999)
+                    {
+                        Position = tilePosition,
+                        Rotation = angleData[i - 1]
+                    });
+
+                    i++;
+                    newTilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
+                }
 
                 if (i >= 1)
                 {
@@ -97,8 +86,7 @@ namespace Circle.Game.Screens.Play
                             Rotation = angleData[i],
                         });
 
-                        tilePosition += new Vector2(nextX, nextY);
-                        PlanetPositions.Add(tilePosition);
+                        tilePosition += newTilePosition;
 
                         continue;
                     }
@@ -110,8 +98,47 @@ namespace Circle.Game.Screens.Play
                     Rotation = angleData[i],
                 });
 
-                tilePosition += new Vector2(nextX, nextY);
-                PlanetPositions.Add(tilePosition);
+                tilePosition += newTilePosition;
+            }
+        }
+
+        private void addActionsToTile()
+        {
+            if (beatmapInfo.Actions is null)
+                return;
+
+            foreach (var action in beatmapInfo.Actions)
+            {
+                for (int i = 0; i < Children.Count; i++)
+                {
+                    if (i == action.Floor)
+                    {
+                        switch (action.EventType)
+                        {
+                            case EventType.Twirl:
+                                Children[i].Reverse.Value = true;
+                                break;
+
+                            case EventType.SetSpeed:
+                                switch (action.SpeedType)
+                                {
+                                    case SpeedType.Multiplier:
+                                        Children[i].BpmMultiplier.Value = action.BpmMultiplier;
+                                        break;
+
+                                    case SpeedType.Bpm:
+                                        Children[i].Bpm.Value = action.BeatsPerMinute;
+                                        break;
+                                }
+
+                                break;
+
+                            case EventType.MoveCamera:
+                                // Todo: 카메라 기능 추가
+                                break;
+                        }
+                    }
+                }
             }
         }
 
@@ -136,27 +163,6 @@ namespace Circle.Game.Screens.Play
             }
 
             return newAngleData.ToArray();
-        }
-
-        private List<float> filterMidspinAngle(float[] originAngleData)
-        {
-            Stack<float> filteredAngleData = new Stack<float>();
-
-            foreach (var angle in originAngleData)
-            {
-                filteredAngleData.Push(angle);
-
-                if (angle == 999)
-                {
-                    filteredAngleData.Pop();
-                    filteredAngleData.Pop();
-                }
-            }
-
-            var list = filteredAngleData.ToList();
-            list.Reverse();
-
-            return list;
         }
     }
 }

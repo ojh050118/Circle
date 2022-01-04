@@ -62,7 +62,7 @@ namespace Circle.Game.Beatmap
         public int PreviewTrackStart;
         public string BeatmapDesc;
         public int BeatmapDifficulty;
-        public double BPM;
+        public float BPM;
         public double Offset;
         public double Pitch;
         public string BackgroundTexture;
@@ -85,15 +85,10 @@ namespace Circle.Game.Beatmap
     public struct Actions
     {
         public float Floor;
-        public Event Event;
-    }
-
-    public struct Event
-    {
         public EventType EventType;
         public SpeedType? SpeedType;
-        public float? BeatsPerMinute;
-        public float? BpmMultiplier;
+        public float BeatsPerMinute;
+        public float BpmMultiplier;
         public RelativeTo? RelativeTo;
     }
 

@@ -1,36 +1,35 @@
-﻿using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics;
-using osuTK.Graphics;
+﻿using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Effects;
-using osu.Framework.Extensions.Color4Extensions;
-using osu.Framework.Graphics.Colour;
+using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
     public class MidspinTile : Tile
     {
         public MidspinTile(float angle)
-            : base(angle)
+            : base(TileType.Midspin, angle)
         {
-            Child = new CircularContainer
+            Child = new Container
             {
                 RelativeSizeAxes = Axes.Both,
                 Anchor = Anchor.CentreRight,
                 Origin = Anchor.CentreRight,
                 Masking = true,
-                CornerRadius = 5,
-                Child = new Box
+                Child = new Container
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = ColourInfo.GradientHorizontal(Color4.White.Opacity(0), Color4.White)
+                    Anchor = Anchor.CentreRight,
+                    Origin = Anchor.CentreRight,
+                    Size = new Vector2(HEIGHT),
+                    Masking = true,
+                    Child = new EquilateralTriangle
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        RelativeSizeAxes = Axes.Both,
+                        Rotation = 90,
+                    },
                 },
-                EdgeEffect = new EdgeEffectParameters
-                {
-                    Type = EdgeEffectType.Shadow,
-                    Radius = 5,
-                    Colour = Color4.Black.Opacity(0.5f),
-                }
             };
         }
     }
