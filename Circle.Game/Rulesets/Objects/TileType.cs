@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Circle.Game.Rulesets.Objects
+﻿namespace Circle.Game.Rulesets.Objects
 {
     public enum TileType
     {

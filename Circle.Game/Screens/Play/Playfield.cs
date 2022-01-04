@@ -122,7 +122,7 @@ namespace Circle.Game.Screens.Play
         {
             if (currentFloor + 1 >= tiles.Children.Count)
             {
-                this.MoveTo(- (tiles.Children[currentFloor].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor].Angle)), 500, Easing.OutSine);
+                this.MoveTo(-(tiles.Children[currentFloor].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor].Angle)), 500, Easing.OutSine);
                 return;
             }
 

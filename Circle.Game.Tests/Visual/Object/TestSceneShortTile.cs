@@ -1,7 +1,6 @@
 ﻿using Circle.Game.Rulesets.Objects;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
-using osuTK;
 using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.Object
