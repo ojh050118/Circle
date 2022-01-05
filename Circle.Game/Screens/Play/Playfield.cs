@@ -69,6 +69,9 @@ namespace Circle.Game.Screens.Play
 
         private void movePlanet()
         {
+            // 음수인 각도가 나올 수 있기때문에 각도 수정.
+            var currentAngle = CalculationExtensions.GetSafeAngle(tiles.Children[currentFloor].Angle);
+
             if (tiles.Children[currentFloor].Reverse.Value)
                 isClockwise = !isClockwise;
 
@@ -83,17 +86,17 @@ namespace Circle.Game.Screens.Play
             if (tiles.Children[currentFloor].Angle != 999 && tiles.Children[currentFloor - 1].Angle != 999)
                 fixedRotation -= 180;
 
-            float newRotation = tiles.Children[currentFloor].Angle > 180 ? tiles.Children[currentFloor].Angle - 360 : tiles.Children[currentFloor].Angle;
+            float newRotation = currentAngle > 180 ? currentAngle - 360 : currentAngle;
 
             // 회전방향에 따라 새로운 각도 계산
             if (isClockwise)
             {
-                if (fixedRotation > newRotation)
+                if (fixedRotation >= newRotation)
                     newRotation += 360;
             }
             else
             {
-                if (fixedRotation < newRotation)
+                if (fixedRotation <= newRotation)
                     newRotation -= 360;
             }
 
@@ -121,7 +124,9 @@ namespace Circle.Game.Screens.Play
         {
             if (currentFloor + 1 >= tiles.Children.Count)
             {
-                this.MoveTo(-(tiles.Children[currentFloor].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor].Angle)), 500, Easing.OutSine);
+                var lastPosition = tiles.Children[currentFloor].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor].Angle);
+                this.MoveTo(-lastPosition, 500, Easing.OutSine);
+
                 return;
             }
 

@@ -62,6 +62,19 @@ namespace Circle.Game.Screens.Play
 
                         i++;
                     }
+
+                    if (Math.Abs(angleData[i] - angleData[i + 1]) == 180)
+                    {
+                        Add(new ShortTile(angleData[i])
+                        {
+                            Position = tilePosition,
+                            Rotation = angleData[i],
+                        });
+
+                        tilePosition += newTilePosition;
+
+                        continue;
+                    }
                 }
 
                 if (angleData[i] == 999)
@@ -76,7 +89,7 @@ namespace Circle.Game.Screens.Play
                     newTilePosition = CalculationExtensions.GetComputedTilePosition(angleData[i]);
                 }
 
-                if (i >= 1)
+                if (i > 0)
                 {
                     if (Math.Abs(angleData[i] - angleData[i - 1]) == 180)
                     {
@@ -153,7 +166,7 @@ namespace Circle.Game.Screens.Play
 
             for (int i = 0; i < info.Angles.Length; i++)
             {
-                if (info.Angles[i] == 0 || info.Angles[i] == 999)
+                if (info.Angles[i] == 999 || info.Angles[i] <= 0)
                 {
                     newAngleData.Add(info.Angles[i]);
                     continue;
