@@ -96,7 +96,8 @@ namespace Circle.Game.Beatmap
     {
         Twirl,
         SetSpeed,
-        MoveCamera
+        MoveCamera,
+        Other
     }
 
     public enum SpeedType
