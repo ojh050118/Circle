@@ -35,7 +35,7 @@ namespace Circle.Game.Beatmap
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Background failed to load");
+                Logger.Error(e, "Failed to load background.");
                 return null;
             }
         }
@@ -53,7 +53,7 @@ namespace Circle.Game.Beatmap
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Background failed to load");
+                Logger.Error(e, "Failed to load background.");
                 return null;
             }
         }
@@ -71,7 +71,7 @@ namespace Circle.Game.Beatmap
             }
             catch (Exception e)
             {
-                Logger.Error(e, "BeatmapTrack failed to load");
+                Logger.Error(e, "Failed to load beatmap track.");
                 return null;
             }
         }
@@ -85,12 +85,11 @@ namespace Circle.Game.Beatmap
 
             try
             {
-                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.ogg"))
-                       ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.mp3"));
+                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}"));
             }
             catch (Exception e)
             {
-                Logger.Error(e, "BeatmapTrack failed to load");
+                Logger.Error(e, "Failed to load beatmap track.");
                 return null;
             }
         }

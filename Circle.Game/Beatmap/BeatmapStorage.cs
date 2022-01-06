@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using osu.Framework.Graphics;
 using osu.Framework.Platform;
 
 namespace Circle.Game.Beatmap
