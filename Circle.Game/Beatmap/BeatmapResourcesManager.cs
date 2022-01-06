@@ -24,14 +24,14 @@ namespace Circle.Game.Beatmap
 
         public Texture GetBackground(BeatmapInfo info)
         {
-            if (string.IsNullOrEmpty(info.Settings.BackgroundTexture))
+            if (string.IsNullOrEmpty(info.Settings.BgImage))
                 return null;
 
             var backgrounds = files.GetStorageForDirectory("backgrounds");
 
             try
             {
-                return largeTextureStore.Get(Path.Combine(backgrounds.GetFullPath(string.Empty), $"{info.Settings.BackgroundTexture}"));
+                return largeTextureStore.Get(Path.Combine(backgrounds.GetFullPath(string.Empty), $"{info.Settings.BgImage}"));
             }
             catch (Exception e)
             {
@@ -60,15 +60,14 @@ namespace Circle.Game.Beatmap
 
         public Track GetBeatmapTrack(BeatmapInfo info)
         {
-            if (string.IsNullOrEmpty(info.Settings.Track))
+            if (string.IsNullOrEmpty(info.Settings.SongFileName))
                 return null;
 
             var tracks = files.GetStorageForDirectory("tracks");
 
             try
             {
-                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.ogg"))
-                       ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.mp3"));
+                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.SongFileName}"));
             }
             catch (Exception e)
             {

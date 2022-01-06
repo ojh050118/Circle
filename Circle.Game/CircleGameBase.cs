@@ -106,8 +106,13 @@ namespace Circle.Game
             base.LoadComplete();
 
             applySettings();
+
             WorkingBeatmap.ValueChanged += value =>
-                Logger.Log($"Beatmap changed: {value.OldValue.Settings.Author} - {value.OldValue.Settings.Track} ¡æ {value.NewValue.Settings.Author} - {value.NewValue.Settings.Track}.");
+            {
+                var oldBeatmapName = $"[{value.OldValue.Settings.Author}] {value.OldValue.Settings.Artist} - {value.OldValue.Settings.Song}";
+                var newBeatmapName = $"[{value.NewValue.Settings.Author}] {value.NewValue.Settings.Artist} - {value.NewValue.Settings.Song}";
+                Logger.Log($"Beatmap changed: {oldBeatmapName} ¡æ {value.NewValue.Settings.Author} - {newBeatmapName}.");
+            };
         }
 
         public override void SetHost(GameHost host)

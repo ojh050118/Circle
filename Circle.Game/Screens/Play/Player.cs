@@ -63,6 +63,7 @@ namespace Circle.Game.Screens.Play
                            .Schedule(() =>
                            {
                                musicController.Stop();
+                               musicController.ReloadTrack();
                                musicController.SeekTo(beatmap.Value.Settings.Offset);
                            });
 
@@ -95,7 +96,7 @@ namespace Circle.Game.Screens.Play
         {
             playfield.StartPlaying();
             musicController.CurrentTrack.VolumeTo(1);
-            Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.Value.Settings.BPM);
+            Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.Value.Settings.Bpm);
             playState = GamePlayState.Playing;
         }
     }
