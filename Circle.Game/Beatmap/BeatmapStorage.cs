@@ -89,7 +89,7 @@ namespace Circle.Game.Beatmap
         public SpeedType? SpeedType;
         public float BeatsPerMinute;
         public float BpmMultiplier;
-        public RelativeTo? RelativeTo;
+        public Relativity? Relativity;
     }
 
     public enum EventType
@@ -106,11 +106,13 @@ namespace Circle.Game.Beatmap
         Bpm
     }
 
-    public enum RelativeTo
+    public enum Relativity
     {
         Tile,
+        LastPosition,
         Player,
         Global,
-        LastPosition
+        RedPlanet,
+        BluePlanet
     }
 }
