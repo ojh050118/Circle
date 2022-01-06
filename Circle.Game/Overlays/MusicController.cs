@@ -61,7 +61,7 @@ namespace Circle.Game.Overlays
 
         private void changeTrack(BeatmapInfo info)
         {
-            if (info.Settings.Track == string.Empty)
+            if (info.Settings.SongFileName == string.Empty)
                 return;
 
             var lastTrack = CurrentTrack;
@@ -77,12 +77,20 @@ namespace Circle.Game.Overlays
                 if (queuedTrack == CurrentTrack)
                 {
                     AddInternal(queuedTrack);
-                    queuedTrack.Seek(info.Settings.PreviewTrackStart * 1000);
+                    queuedTrack.Seek(info.Settings.PreviewSongStart * 1000);
                     queuedTrack.VolumeTo(0).Then().VolumeTo(1, 300, Easing.Out);
                 }
                 else
                     queuedTrack.Dispose();
             });
+        }
+
+        public void ReloadTrack()
+        {
+            if (string.IsNullOrEmpty(workingBeatmap.Value.Settings.SongFileName))
+                return;
+
+            CurrentTrack = new DrawableTrack(beatmapResources.GetBeatmapTrack(workingBeatmap.Value));
         }
 
         public void RestartTrack() => Schedule(() => CurrentTrack.Restart());

@@ -71,8 +71,8 @@ namespace Circle.Game.Screens.Select
                         updateItemScale(item);
                         Scroll.ScrollTo(item.Y + item.Height / 2);
 
-                        if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BackgroundTexture))
-                            background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BackgroundTexture, 1000, Easing.OutPow10);
+                        if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BgImage))
+                            background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
                         else
                             background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
 
@@ -102,7 +102,7 @@ namespace Circle.Game.Screens.Select
             if (Scroll.Child.Children.Count == 0)
                 return;
 
-            if (string.IsNullOrEmpty(working.Value.Settings.Track))
+            if (string.IsNullOrEmpty(working.Value.Settings.Song))
             {
                 var idx = new Random().Next(0, Scroll.Child.Children.Count);
                 Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);

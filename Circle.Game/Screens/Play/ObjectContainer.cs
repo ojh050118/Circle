@@ -160,15 +160,15 @@ namespace Circle.Game.Screens.Play
         {
             List<float> newAngleData = new List<float>();
 
-            for (int i = 0; i < info.Angles.Length; i++)
+            for (int i = 0; i < info.AngleData.Length; i++)
             {
-                if (info.Angles[i] == 999 || info.Angles[i] <= 0)
+                if (info.AngleData[i] == 999 || info.AngleData[i] <= 0)
                 {
-                    newAngleData.Add(info.Angles[i]);
+                    newAngleData.Add(info.AngleData[i]);
                     continue;
                 }
 
-                newAngleData.Add(360 - info.Angles[i]);
+                newAngleData.Add(360 - info.AngleData[i]);
             }
 
             return newAngleData.ToArray();

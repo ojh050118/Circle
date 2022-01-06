@@ -24,18 +24,18 @@ namespace Circle.Game.Beatmap
 
         public Texture GetBackground(BeatmapInfo info)
         {
-            if (string.IsNullOrEmpty(info.Settings.BackgroundTexture))
+            if (string.IsNullOrEmpty(info.Settings.BgImage))
                 return null;
 
             var backgrounds = files.GetStorageForDirectory("backgrounds");
 
             try
             {
-                return largeTextureStore.Get(Path.Combine(backgrounds.GetFullPath(string.Empty), $"{info.Settings.BackgroundTexture}"));
+                return largeTextureStore.Get(Path.Combine(backgrounds.GetFullPath(string.Empty), $"{info.Settings.BgImage}"));
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Background failed to load");
+                Logger.Error(e, "Failed to load background.");
                 return null;
             }
         }
@@ -53,26 +53,25 @@ namespace Circle.Game.Beatmap
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Background failed to load");
+                Logger.Error(e, "Failed to load background.");
                 return null;
             }
         }
 
         public Track GetBeatmapTrack(BeatmapInfo info)
         {
-            if (string.IsNullOrEmpty(info.Settings.Track))
+            if (string.IsNullOrEmpty(info.Settings.SongFileName))
                 return null;
 
             var tracks = files.GetStorageForDirectory("tracks");
 
             try
             {
-                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.ogg"))
-                       ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.Track}.mp3"));
+                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.SongFileName}"));
             }
             catch (Exception e)
             {
-                Logger.Error(e, "BeatmapTrack failed to load");
+                Logger.Error(e, "Failed to load beatmap track.");
                 return null;
             }
         }
@@ -86,12 +85,11 @@ namespace Circle.Game.Beatmap
 
             try
             {
-                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.ogg"))
-                       ?? trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}.mp3"));
+                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}"));
             }
             catch (Exception e)
             {
-                Logger.Error(e, "BeatmapTrack failed to load");
+                Logger.Error(e, "Failed to load beatmap track.");
                 return null;
             }
         }

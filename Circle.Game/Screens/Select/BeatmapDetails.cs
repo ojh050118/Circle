@@ -146,14 +146,14 @@ namespace Circle.Game.Screens.Select
 
             workingBeatmap.ValueChanged += v =>
             {
-                if (string.IsNullOrEmpty(v.NewValue.Settings.BackgroundTexture))
+                if (string.IsNullOrEmpty(v.NewValue.Settings.BgImage))
                     background.FadeTextureTo(TextureSource.Internal, "Duelyst", 500, Easing.Out);
                 else
-                    background.FadeTextureTo(TextureSource.External, v.NewValue.Settings.BackgroundTexture, 500, Easing.Out);
+                    background.FadeTextureTo(TextureSource.External, v.NewValue.Settings.BgImage, 500, Easing.Out);
 
-                if (!string.IsNullOrEmpty(v.NewValue.Settings.Track) && !string.IsNullOrEmpty(v.NewValue.Settings.Artist))
+                if (!string.IsNullOrEmpty(v.NewValue.Settings.Song) && !string.IsNullOrEmpty(v.NewValue.Settings.Artist))
                 {
-                    title.Text = v.NewValue.Settings.Track;
+                    title.Text = v.NewValue.Settings.Song;
                     artist.Text = v.NewValue.Settings.Artist;
                 }
 
@@ -172,12 +172,12 @@ namespace Circle.Game.Screens.Select
                     },
                     new SpriteText
                     {
-                        Text = $"BPM: {v.NewValue.Settings.BPM}",
+                        Text = $"BPM: {v.NewValue.Settings.Bpm}",
                         Font = FontUsage.Default.With(size: 24)
                     },
                     new SpriteText
                     {
-                        Text = $"Difficulty: {v.NewValue.Settings.BeatmapDifficulty}",
+                        Text = $"Difficulty: {v.NewValue.Settings.Difficulty}",
                         Font = FontUsage.Default.With(size: 24)
                     },
                     new SpriteText

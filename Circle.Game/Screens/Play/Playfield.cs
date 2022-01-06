@@ -53,7 +53,7 @@ namespace Circle.Game.Screens.Play
         {
             base.LoadComplete();
 
-            currentBpm = beatmap.Value.Settings.BPM;
+            currentBpm = beatmap.Value.Settings.Bpm;
             bluePlanet.Rotation = tiles.Children[0].Angle - 180;
             planetState.ValueChanged += _ => movePlanet();
             planetState.ValueChanged += _ => this.MoveTo(-tiles.Children[currentFloor].Position, 500, Easing.OutSine);
@@ -61,7 +61,7 @@ namespace Circle.Game.Screens.Play
 
         public void StartPlaying()
         {
-            bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.BPM, Easing.Out);
+            bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.Bpm, Easing.Out);
             bluePlanet.RotateTo(tiles.Children[currentFloor].Angle, getRelativeDuration(tiles.Children[currentFloor].Angle))
                       .Then()
                       .Schedule(changePlanetState);

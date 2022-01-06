@@ -53,7 +53,7 @@ namespace Circle.Game.Screens.Select.Carousel
                 Origin = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
                 FillMode = FillMode.Fill,
-                Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BackgroundTexture)
+                Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BgImage)
                     ? largeTexture.Get("Duelyst")
                     : beatmapResources.GetBackground(BeatmapInfo)
             };
@@ -106,7 +106,7 @@ namespace Circle.Game.Screens.Select.Carousel
                     {
                         new SpriteText
                         {
-                            Text = BeatmapInfo.Settings.Track,
+                            Text = BeatmapInfo.Settings.Song,
                             Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
                         },
                         new SpriteText
