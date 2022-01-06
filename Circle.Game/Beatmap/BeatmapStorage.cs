@@ -84,7 +84,7 @@ namespace Circle.Game.Beatmap
 
     public struct Actions
     {
-        public float Floor;
+        public int Floor;
         public EventType EventType;
         public SpeedType? SpeedType;
         public float BeatsPerMinute;

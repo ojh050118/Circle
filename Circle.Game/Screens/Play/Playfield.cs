@@ -75,10 +75,19 @@ namespace Circle.Game.Screens.Play
             if (tiles.Children[currentFloor].Reverse.Value)
                 isClockwise = !isClockwise;
 
-            if (tiles.Children[currentFloor].Bpm.Value != 0)
-                currentBpm = tiles.Children[currentFloor].Bpm.Value;
-            else if (tiles.Children[currentFloor].BpmMultiplier.Value != -1)
-                currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
+            if (tiles.Children[currentFloor].SpeedType != null)
+            {
+                switch (tiles.Children[currentFloor].SpeedType)
+                {
+                    case SpeedType.Multiplier:
+                        currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
+                        break;
+
+                    case SpeedType.Bpm:
+                        currentBpm = tiles.Children[currentFloor].Bpm.Value;
+                        break;
+                }
+            }
 
             float fixedRotation = prevAngle;
 
