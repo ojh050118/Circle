@@ -122,35 +122,31 @@ namespace Circle.Game.Screens.Play
 
             foreach (var action in beatmapInfo.Actions)
             {
-                for (int i = 0; i < Children.Count; i++)
+                switch (action.EventType)
                 {
-                    if (i == action.Floor)
-                    {
-                        switch (action.EventType)
+                    case EventType.Twirl:
+                        Children[action.Floor].Reverse.Value = true;
+                        break;
+
+                    case EventType.SetSpeed:
+                        switch (action.SpeedType)
                         {
-                            case EventType.Twirl:
-                                Children[i].Reverse.Value = true;
+                            case SpeedType.Multiplier:
+                                Children[action.Floor].SpeedType = SpeedType.Multiplier;
+                                Children[action.Floor].BpmMultiplier.Value = action.BpmMultiplier;
                                 break;
 
-                            case EventType.SetSpeed:
-                                switch (action.SpeedType)
-                                {
-                                    case SpeedType.Multiplier:
-                                        Children[i].BpmMultiplier.Value = action.BpmMultiplier;
-                                        break;
-
-                                    case SpeedType.Bpm:
-                                        Children[i].Bpm.Value = action.BeatsPerMinute;
-                                        break;
-                                }
-
-                                break;
-
-                            case EventType.MoveCamera:
-                                // Todo: 카메라 기능 추가
+                            case SpeedType.Bpm:
+                                Children[action.Floor].SpeedType = SpeedType.Bpm;
+                                Children[action.Floor].Bpm.Value = action.BeatsPerMinute;
                                 break;
                         }
-                    }
+
+                        break;
+
+                    case EventType.MoveCamera:
+                        // Todo: 카메라 기능 추가
+                        break;
                 }
             }
         }

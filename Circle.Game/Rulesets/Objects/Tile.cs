@@ -1,4 +1,5 @@
-﻿using osu.Framework.Allocation;
+﻿using Circle.Game.Beatmap;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -13,10 +14,11 @@ namespace Circle.Game.Rulesets.Objects
         public Bindable<bool> Reverse;
         public Bindable<float> Bpm;
         public Bindable<float> BpmMultiplier;
-        public Easing Easing;
+        public Easing Easing = Easing.None;
 
         public readonly TileType TileType;
         public readonly float Angle;
+        public SpeedType? SpeedType;
 
         public Color4 IconColour
         {
@@ -39,7 +41,7 @@ namespace Circle.Game.Rulesets.Objects
             Angle = angle;
             Reverse = new Bindable<bool>(false);
             Bpm = new Bindable<float>(0);
-            BpmMultiplier = new Bindable<float>(-1);
+            BpmMultiplier = new Bindable<float>(1);
             icon = new SpriteIcon
             {
                 Size = new Vector2(35),
