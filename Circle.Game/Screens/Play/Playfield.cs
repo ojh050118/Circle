@@ -95,7 +95,7 @@ namespace Circle.Game.Screens.Play
             if (tiles.Children[currentFloor].Angle != 999 && tiles.Children[currentFloor - 1].Angle != 999)
                 fixedRotation -= 180;
 
-            float newRotation = currentAngle > 180 ? currentAngle - 360 : currentAngle;
+            float newRotation = currentAngle >= 180 ? currentAngle - 360 : currentAngle;
 
             // 회전방향에 따라 새로운 각도 계산
             if (isClockwise)
