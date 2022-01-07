@@ -132,13 +132,21 @@ namespace Circle.Game.Screens.Play
                         switch (action.SpeedType)
                         {
                             case SpeedType.Multiplier:
-                                Children[action.Floor].SpeedType = SpeedType.Multiplier;
-                                Children[action.Floor].BpmMultiplier.Value = action.BpmMultiplier;
+                                if (action.Floor < Children.Count)
+                                {
+                                    Children[action.Floor].SpeedType = SpeedType.Multiplier;
+                                    Children[action.Floor].BpmMultiplier.Value = action.BpmMultiplier;
+                                }
+
                                 break;
 
                             case SpeedType.Bpm:
-                                Children[action.Floor].SpeedType = SpeedType.Bpm;
-                                Children[action.Floor].Bpm.Value = action.BeatsPerMinute;
+                                if (action.Floor < Children.Count)
+                                {
+                                    Children[action.Floor].SpeedType = SpeedType.Bpm;
+                                    Children[action.Floor].Bpm.Value = action.BeatsPerMinute;
+                                }
+
                                 break;
                         }
 
