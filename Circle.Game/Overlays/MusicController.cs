@@ -90,6 +90,8 @@ namespace Circle.Game.Overlays
             if (string.IsNullOrEmpty(workingBeatmap.Value.Settings.SongFileName))
                 return;
 
+            CurrentTrack.Stop();
+            CurrentTrack.Expire();
             CurrentTrack = new DrawableTrack(beatmapResources.GetBeatmapTrack(workingBeatmap.Value));
         }
 
