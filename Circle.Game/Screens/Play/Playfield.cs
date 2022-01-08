@@ -180,9 +180,7 @@ namespace Circle.Game.Screens.Play
             if (tiles.Children[currentFloor].TileType == TileType.Normal)
                 planetState.Value = planetState.Value == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
             else
-            {
                 movePlanet();
-            }
         }
 
         private void fadeTiles()
