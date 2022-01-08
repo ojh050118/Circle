@@ -63,11 +63,10 @@ namespace Circle.Game.Screens.Play
                            .Schedule(() =>
                            {
                                musicController.Stop();
-                               musicController.ReloadTrack();
+                               musicController.ChangeTrack(beatmap.Value);
                                musicController.SeekTo(beatmap.Value.Settings.Offset);
+                               playState = GamePlayState.Ready;
                            });
-
-            playState = GamePlayState.Ready;
         }
 
         protected override bool OnKeyDown(KeyDownEvent e)
