@@ -59,9 +59,7 @@ namespace Circle.Game.Screens.Play
             planetState.ValueChanged += _ => this.MoveTo(-tiles.Children[currentFloor].Position, 500, Easing.OutSine);
 
             for (int i = 9; i < tiles.Children.Count; i++)
-            {
                 tiles.Children[i].Alpha = 0;
-            }
         }
 
         public void StartPlaying()
@@ -74,30 +72,24 @@ namespace Circle.Game.Screens.Play
 
         private void movePlanet()
         {
+            setSpeed(tiles.Children[currentFloor].SpeedType);
+
+            if (tiles.Children[currentFloor].TileType == TileType.Midspin)
+            {
+                currentFloor++;
+                setSpeed(tiles.Children[currentFloor].SpeedType);
+            }
+
             // 음수인 각도가 나올 수 있기때문에 각도 수정.
             var currentAngle = CalculationExtensions.GetSafeAngle(tiles.Children[currentFloor].Angle);
 
             if (tiles.Children[currentFloor].Reverse.Value)
                 isClockwise = !isClockwise;
 
-            if (tiles.Children[currentFloor].SpeedType != null)
-            {
-                switch (tiles.Children[currentFloor].SpeedType)
-                {
-                    case SpeedType.Multiplier:
-                        currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
-                        break;
-
-                    case SpeedType.Bpm:
-                        currentBpm = tiles.Children[currentFloor].Bpm.Value;
-                        break;
-                }
-            }
-
             float fixedRotation = prevAngle;
 
             // 현재 타일이 미드스핀 타일일 때 계산하면 안됩니다.
-            if (tiles.Children[currentFloor].Angle != 999 && tiles.Children[currentFloor - 1].Angle != 999)
+            if (tiles.Children[currentFloor].TileType != TileType.Midspin && tiles.Children[currentFloor - 1].TileType != TileType.Midspin)
                 fixedRotation -= 180;
 
             float newRotation = currentAngle >= 180 ? currentAngle - 360 : currentAngle;
@@ -105,12 +97,14 @@ namespace Circle.Game.Screens.Play
             // 회전방향에 따라 새로운 각도 계산
             if (isClockwise)
             {
-                if (fixedRotation >= newRotation)
+                while (fixedRotation >= newRotation)
                     newRotation += 360;
             }
             else
             {
-                if (fixedRotation <= newRotation)
+                newRotation = currentAngle >= 180 ? currentAngle : newRotation;
+
+                while (fixedRotation <= newRotation)
                     newRotation -= 360;
             }
 
@@ -131,6 +125,23 @@ namespace Circle.Game.Screens.Play
                 bluePlanet.RotateTo(newRotation, getRelativeDuration(newRotation))
                           .Then()
                           .Schedule(changePlanetState);
+            }
+        }
+
+        private void setSpeed(SpeedType? speedType)
+        {
+            switch (speedType)
+            {
+                case SpeedType.Multiplier:
+                    currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
+                    break;
+
+                case SpeedType.Bpm:
+                    currentBpm = tiles.Children[currentFloor].Bpm.Value;
+                    break;
+
+                default:
+                    return;
             }
         }
 
@@ -173,8 +184,6 @@ namespace Circle.Game.Screens.Play
                 planetState.Value = planetState.Value == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
             else
             {
-                currentFloor++;
-
                 if (currentFloor + 8 < tiles.Children.Count)
                     tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
                 else
