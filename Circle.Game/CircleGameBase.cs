@@ -72,6 +72,7 @@ namespace Circle.Game
             AddFont(Resources, @"Fonts/OpenSans-Light");
             AddFont(Resources, @"Fonts/OpenSans-Bold");
             AddFont(Resources, @"Fonts/OpenSans-SemiBold");
+            AddFont(Resources, @"Fonts/Noto-Hangul");
 
             dependencies.CacheAs(largeStore);
 
