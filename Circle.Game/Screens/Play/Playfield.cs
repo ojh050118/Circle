@@ -55,8 +55,11 @@ namespace Circle.Game.Screens.Play
 
             currentBpm = beatmap.Value.Settings.Bpm;
             bluePlanet.Rotation = tiles.Children[0].Angle - 180;
-            planetState.ValueChanged += _ => movePlanet();
-            planetState.ValueChanged += _ => this.MoveTo(-tiles.Children[currentFloor].Position, 500, Easing.OutSine);
+            planetState.ValueChanged += _ =>
+            {
+                movePlanet();
+                this.MoveTo(-tiles.Children[currentFloor].Position, 500, Easing.OutSine);
+            };
 
             for (int i = 9; i < tiles.Children.Count; i++)
                 tiles.Children[i].Alpha = 0;
@@ -73,10 +76,12 @@ namespace Circle.Game.Screens.Play
         private void movePlanet()
         {
             setSpeed(tiles.Children[currentFloor].SpeedType);
+            fadeTiles();
 
             if (tiles.Children[currentFloor].TileType == TileType.Midspin)
             {
                 currentFloor++;
+                fadeTiles();
                 setSpeed(tiles.Children[currentFloor].SpeedType);
             }
 
@@ -157,14 +162,6 @@ namespace Circle.Game.Screens.Play
 
             currentFloor++;
 
-            if (currentFloor + 8 < tiles.Children.Count)
-                tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
-            else
-                tiles.Children[currentFloor].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
-
-            if (currentFloor > 3)
-                tiles.Children[currentFloor - 4].FadeOut(60000 / currentBpm, Easing.Out);
-
             if (planetState.Value == PlanetState.Fire)
             {
                 redPlanet.Expansion = 0;
@@ -184,16 +181,19 @@ namespace Circle.Game.Screens.Play
                 planetState.Value = planetState.Value == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
             else
             {
-                if (currentFloor + 8 < tiles.Children.Count)
-                    tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
-                else
-                    tiles.Children[currentFloor].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
-
-                if (currentFloor > 3)
-                    tiles.Children[currentFloor - 4].FadeOut(60000 / currentBpm, Easing.Out);
-
                 movePlanet();
             }
+        }
+
+        private void fadeTiles()
+        {
+            if (currentFloor + 8 < tiles.Children.Count)
+                tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
+            else
+                tiles.Children[currentFloor].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
+
+            if (currentFloor > 3)
+                tiles.Children[currentFloor - 4].FadeOut(60000 / currentBpm, Easing.Out);
         }
 
         private float getRelativeDuration(float newRotation) => 60000 / currentBpm * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
