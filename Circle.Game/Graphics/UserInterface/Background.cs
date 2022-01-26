@@ -110,7 +110,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         public void FadeTextureTo(TextureSource source, string textureName, double duration = 0, Easing easing = Easing.None)
         {
-            if (Sprite is null)
+            if (Sprite is null || string.IsNullOrEmpty(textureName))
                 return;
 
             AddInternal(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)

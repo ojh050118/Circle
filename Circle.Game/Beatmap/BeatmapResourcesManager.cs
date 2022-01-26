@@ -65,14 +65,14 @@ namespace Circle.Game.Beatmap
 
             var tracks = files.GetStorageForDirectory("tracks");
 
-            try
+            if (trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.SongFileName}")) != null)
             {
                 return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.SongFileName}"));
             }
-            catch (Exception e)
+            else
             {
-                Logger.Error(e, "Failed to load beatmap track.");
-                return null;
+                Logger.Log($"Failed to load beatmap track({info.Settings.SongFileName}).");
+                return new TrackVirtual(1000);
             }
         }
 
@@ -83,14 +83,14 @@ namespace Circle.Game.Beatmap
 
             var tracks = files.GetStorageForDirectory("tracks");
 
-            try
+            if (trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}")) != null)
             {
                 return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}"));
             }
-            catch (Exception e)
+            else
             {
-                Logger.Error(e, "Failed to load beatmap track.");
-                return null;
+                Logger.Log($"Failed to load beatmap track({name}).");
+                return new TrackVirtual(1000);
             }
         }
     }
