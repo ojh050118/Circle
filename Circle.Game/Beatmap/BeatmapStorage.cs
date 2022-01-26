@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 
 namespace Circle.Game.Beatmap
@@ -24,8 +26,16 @@ namespace Circle.Game.Beatmap
                 var text = sr.ReadLine();
                 sr.Close();
 
-                var beatmap = JsonConvert.DeserializeObject<BeatmapInfo>(text);
-                beatmaps.Add(beatmap);
+                // 파싱에 실패하는 비트맵이 존재할 수 있음.
+                try
+                {
+                    var beatmap = JsonConvert.DeserializeObject<BeatmapInfo>(text);
+                    beatmaps.Add(beatmap);
+                }
+                catch
+                {
+                    Logger.Log($"Failed to load beatmap({file}).");
+                }
             }
 
             return beatmaps;
