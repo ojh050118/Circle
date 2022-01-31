@@ -24,13 +24,6 @@ namespace Circle.Game.Rulesets.Objects
                     {
                         RelativeSizeAxes = Axes.Both,
                     },
-                    new SpriteText
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Text = angle.ToString(CultureInfo.CurrentCulture),
-                        Colour = Color4.Black
-                    }
                 },
                 EdgeEffect = new EdgeEffectParameters
                 {
