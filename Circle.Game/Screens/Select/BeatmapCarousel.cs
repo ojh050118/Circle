@@ -24,6 +24,12 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private Bindable<BeatmapInfo> working { get; set; }
 
+        [Resolved]
+        private MusicController music { get; set; }
+
+        [Resolved]
+        private Background background { get; set; }
+
         public Bindable<bool> PlayRequested { get; set; } = new Bindable<bool>(false);
 
         public BeatmapCarousel()
@@ -63,35 +69,47 @@ namespace Circle.Game.Screens.Select
             {
                 item.State.ValueChanged += v =>
                 {
-                    if (v.NewValue == CarouselItemState.PlayRequested)
-                        PlayRequested.Value = true;
-
-                    if (v.NewValue == CarouselItemState.Selected)
+                    switch (v.NewValue)
                     {
-                        updateItemScale(item);
-                        Scroll.ScrollTo(item.Y + item.Height / 2);
+                        case CarouselItemState.NotSelected:
+                            break;
 
-                        if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BgImage))
-                            background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
-                        else
-                            background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
+                        case CarouselItemState.Selected:
+                            onSelected(item);
+                            break;
 
-                        Schedule(() =>
-                        {
-                            if (!working.Value.Equals(item.BeatmapInfo))
-                            {
-                                working.Value = item.BeatmapInfo;
-                                music.Play();
-                            }
-                        });
-
-                        foreach (var item2 in Scroll.Child.Children)
-                        {
-                            if (item2 != item)
-                                item2.State.Value = CarouselItemState.NotSelected;
-                        }
+                        case CarouselItemState.PlayRequested:
+                            PlayRequested.Value = true;
+                            break;
                     }
                 };
+            }
+        }
+
+        private void onSelected(CarouselItem item)
+        {
+            updateItemScale(item);
+            Scroll.ScrollTo(item.Y + item.Height / 2);
+
+            if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BgImage))
+                background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
+            else
+                background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
+
+            Schedule(() =>
+            {
+                if (!working.Value.Equals(item.BeatmapInfo))
+                {
+                    music.ChangeTrack(item.BeatmapInfo);
+                    working.Value = item.BeatmapInfo;
+                    music.Play();
+                }
+            });
+
+            foreach (var item2 in Scroll.Child.Children)
+            {
+                if (item2 != item)
+                    item2.State.Value = CarouselItemState.NotSelected;
             }
         }
 

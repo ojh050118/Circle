@@ -21,7 +21,7 @@ namespace Circle.Game.Rulesets.Objects
                     new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                    },
+                    }
                 },
                 EdgeEffect = new EdgeEffectParameters
                 {
