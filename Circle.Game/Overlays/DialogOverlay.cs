@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
@@ -29,6 +30,8 @@ namespace Circle.Game.Overlays
         /// 버튼들. 버튼이 없으면 버튼 없이 대화 상자가 생성됨.
         /// </summary>
         public IReadOnlyList<DialogButton> Buttons;
+
+        public Action OnHide;
 
         private readonly SpriteText title;
         private readonly SpriteText description;
@@ -165,6 +168,7 @@ namespace Circle.Game.Overlays
 
             Content.ScaleTo(1.2f, 1000, Easing.OutPow10);
             Content.FadeOut(1000, Easing.OutPow10);
+            OnHide?.Invoke();
         }
     }
 }

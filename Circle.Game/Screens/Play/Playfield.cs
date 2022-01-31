@@ -30,7 +30,9 @@ namespace Circle.Game.Screens.Play
 
         private bool isClockwise;
 
-        private float currentBpm;
+        public float CurrentBpm { get; private set; }
+
+        public Action OnComplete { get; set; }
 
         public Playfield()
         {
@@ -53,7 +55,7 @@ namespace Circle.Game.Screens.Play
         {
             base.LoadComplete();
 
-            currentBpm = beatmap.Value.Settings.Bpm;
+            CurrentBpm = beatmap.Value.Settings.Bpm;
             bluePlanet.Rotation = tiles.Children[0].Angle - 180;
             planetState.ValueChanged += _ =>
             {
@@ -68,7 +70,7 @@ namespace Circle.Game.Screens.Play
         public void StartPlaying()
         {
             bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.Bpm, Easing.Out);
-            bluePlanet.RotateTo(tiles.Children[currentFloor].Angle, getRelativeDuration(tiles.Children[currentFloor].Angle))
+            bluePlanet.RotateTo(tiles.Children[currentFloor].Angle, GetRelativeDuration(tiles.Children[currentFloor].Angle))
                       .Then()
                       .Schedule(changePlanetState);
         }
@@ -118,7 +120,7 @@ namespace Circle.Game.Screens.Play
                 redPlanet.Expansion = 1;
                 redPlanet.Position = tiles.Children[currentFloor].Position;
                 redPlanet.Rotation = fixedRotation;
-                redPlanet.RotateTo(newRotation, getRelativeDuration(newRotation))
+                redPlanet.RotateTo(newRotation, GetRelativeDuration(newRotation))
                          .Then()
                          .Schedule(changePlanetState);
             }
@@ -127,7 +129,7 @@ namespace Circle.Game.Screens.Play
                 bluePlanet.Expansion = 1;
                 bluePlanet.Position = tiles.Children[currentFloor].Position;
                 bluePlanet.Rotation = fixedRotation;
-                bluePlanet.RotateTo(newRotation, getRelativeDuration(newRotation))
+                bluePlanet.RotateTo(newRotation, GetRelativeDuration(newRotation))
                           .Then()
                           .Schedule(changePlanetState);
             }
@@ -138,11 +140,11 @@ namespace Circle.Game.Screens.Play
             switch (speedType)
             {
                 case SpeedType.Multiplier:
-                    currentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
+                    CurrentBpm *= tiles.Children[currentFloor].BpmMultiplier.Value;
                     break;
 
                 case SpeedType.Bpm:
-                    currentBpm = tiles.Children[currentFloor].Bpm.Value;
+                    CurrentBpm = tiles.Children[currentFloor].Bpm.Value;
                     break;
 
                 default:
@@ -156,6 +158,7 @@ namespace Circle.Game.Screens.Play
             {
                 var lastPosition = tiles.Children[currentFloor].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor].Angle);
                 this.MoveTo(-lastPosition, 500, Easing.OutSine);
+                OnComplete?.Invoke();
 
                 return;
             }
@@ -186,14 +189,14 @@ namespace Circle.Game.Screens.Play
         private void fadeTiles()
         {
             if (currentFloor + 8 < tiles.Children.Count)
-                tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
+                tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / CurrentBpm, Easing.Out);
             else
-                tiles.Children[currentFloor].FadeTo(0.6f, 60000 / currentBpm, Easing.Out);
+                tiles.Children[currentFloor].FadeTo(0.6f, 60000 / CurrentBpm, Easing.Out);
 
             if (currentFloor > 3)
-                tiles.Children[currentFloor - 4].FadeOut(60000 / currentBpm, Easing.Out);
+                tiles.Children[currentFloor - 4].FadeOut(60000 / CurrentBpm, Easing.Out);
         }
 
-        private float getRelativeDuration(float newRotation) => 60000 / currentBpm * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
+        public float GetRelativeDuration(float newRotation) => 60000 / CurrentBpm * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
     }
 }

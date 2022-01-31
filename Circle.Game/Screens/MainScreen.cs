@@ -83,26 +83,21 @@ namespace Circle.Game.Screens
             dialog.Title = "Exit";
             dialog.Description = "Are you sure exit game?";
 
-            if (dialog.Buttons == null)
+            dialog.Buttons = new[]
             {
-                dialog.Buttons = new[]
+                new DialogButton
                 {
-                    new DialogButton
-                    {
-                        Text = "Cancel",
-                        Action = dialog.Hide
-                    },
-                    new DialogButton
-                    {
-                        Text = "OK",
-                        Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
-                        Action = Game.Exit
-                    }
-                };
-                dialog.Push();
-            }
-            else
-                dialog.Show();
+                    Text = "Cancel",
+                    Action = dialog.Hide
+                },
+                new DialogButton
+                {
+                    Text = "OK",
+                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
+                    Action = Game.Exit
+                }
+            };
+            dialog.Push();
         }
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)
