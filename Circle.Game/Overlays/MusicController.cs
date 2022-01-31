@@ -3,7 +3,6 @@ using Circle.Game.Beatmap;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
@@ -14,10 +13,7 @@ namespace Circle.Game.Overlays
     public class MusicController : CompositeDrawable
     {
         [NotNull]
-        public DrawableTrack CurrentTrack { get; set; } = new DrawableTrack(new TrackVirtual(1000));
-
-        [Resolved]
-        private Bindable<BeatmapInfo> workingBeatmap { get; set; }
+        public DrawableTrack CurrentTrack { get; private set; } = new DrawableTrack(new TrackVirtual(1000));
 
         [Resolved]
         private BeatmapResourcesManager beatmapResources { get; set; }
@@ -29,12 +25,6 @@ namespace Circle.Game.Overlays
         public bool HasCompleted => CurrentTrack.HasCompleted;
 
         private ScheduledDelegate seekDelegate;
-
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            workingBeatmap.ValueChanged += info => ChangeTrack(info.NewValue);
-        }
 
         public void Play(bool restart = false)
         {
@@ -64,10 +54,8 @@ namespace Circle.Game.Overlays
             if (info.Settings.SongFileName == string.Empty)
                 return;
 
-            var lastTrack = CurrentTrack;
-
             var queuedTrack = new DrawableTrack(beatmapResources.GetBeatmapTrack(info));
-
+            var lastTrack = CurrentTrack;
             CurrentTrack = queuedTrack;
 
             Schedule(() =>

@@ -159,10 +159,7 @@ namespace Circle.Game.Screens.Select.Carousel
 
         protected override bool OnClick(ClickEvent e)
         {
-            if (State.Value == CarouselItemState.Selected)
-                State.Value = CarouselItemState.PlayRequested;
-
-            State.Value = CarouselItemState.Selected;
+            State.Value = State.Value == CarouselItemState.Selected ? CarouselItemState.PlayRequested : CarouselItemState.Selected;
 
             return base.OnClick(e);
         }

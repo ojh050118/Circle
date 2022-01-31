@@ -7,7 +7,7 @@ namespace Circle.Desktop
     {
         public static void Main()
         {
-            using (GameHost host = Host.GetSuitableHost(@"Circle"))
+            using (GameHost host = Host.GetSuitableDesktopHost(@"Circle"))
             using (osu.Framework.Game game = new CircleGameDesktop())
                 host.Run(game);
         }
