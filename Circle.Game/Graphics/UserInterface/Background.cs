@@ -33,6 +33,8 @@ namespace Circle.Game.Graphics.UserInterface
             set => bufferedContainer.BlurSigma = value;
         }
 
+        public float Dim;
+
         private readonly TextureSource source;
 
         [Resolved]
@@ -94,6 +96,7 @@ namespace Circle.Game.Graphics.UserInterface
             }
 
             dim?.FadeTo(newAlpha, duration, easing);
+            Dim = newAlpha;
         }
 
         private Sprite loadTexture(TextureSource source, string textureName)

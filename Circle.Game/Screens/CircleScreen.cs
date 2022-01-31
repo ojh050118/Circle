@@ -44,8 +44,8 @@ namespace Circle.Game.Screens
 
             if (FadeBackground)
             {
-                background.DimTo(0.5f, 1000, Easing.OutPow10);
-                background.BlurTo(new Vector2(10), 1000, Easing.OutPow10);
+                background.DimTo(background.Dim + 0.5f, 1000, Easing.OutPow10);
+                background.BlurTo(background.BlurSigma + new Vector2(10), 1000, Easing.OutPow10);
             }
         }
 
@@ -55,8 +55,8 @@ namespace Circle.Game.Screens
 
             if (FadeBackground)
             {
-                background.DimTo(0, 1000, Easing.OutPow10);
-                background.BlurTo(Vector2.Zero, 1000, Easing.OutPow10);
+                background.DimTo(background.Dim - 0.5f, 1000, Easing.OutPow10);
+                background.BlurTo(background.BlurSigma - new Vector2(10), 1000, Easing.OutPow10);
             }
 
             sampleBack?.Play();
@@ -69,6 +69,8 @@ namespace Circle.Game.Screens
             base.OnResuming(last);
 
             this.MoveToX(0, 1000, Easing.OutPow10);
+            this.FadeIn(1000, Easing.OutPow10);
+            OnResume();
         }
 
         public override void OnSuspending(IScreen next)
@@ -76,6 +78,7 @@ namespace Circle.Game.Screens
             base.OnSuspending(next);
 
             this.MoveToX(-DrawWidth * 0.5f, 2500, Easing.OutPow10);
+            this.FadeOut(1250, Easing.OutPow10);
         }
 
         public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
@@ -94,5 +97,9 @@ namespace Circle.Game.Screens
         }
 
         public virtual void OnExit() => this.Exit();
+
+        protected virtual void OnResume()
+        {
+        }
     }
 }
