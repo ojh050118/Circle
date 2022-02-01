@@ -33,7 +33,7 @@ namespace Circle.Game.Screens.Play
             };
 
             // 음악 시작 시간보다 한 박자 먼저 시작됩니다.
-            Seek(beatmap.Value.Settings.Offset - (60000 / beatmap.Value.Settings.Bpm));
+            Seek(beatmap.Value.Settings.Offset - 60000 / beatmap.Value.Settings.Bpm);
         }
 
         public override void Start()
@@ -41,10 +41,7 @@ namespace Circle.Game.Screens.Play
             base.Start();
 
             if (!isStarted)
-            {
-                //Playfield.StartPlaying();
                 isStarted = true;
-            }
         }
 
         protected override GameplayClock CreateGameplayClock(IFrameBasedClock source)

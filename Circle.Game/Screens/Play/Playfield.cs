@@ -63,17 +63,16 @@ namespace Circle.Game.Screens.Play
             isClockwise = true;
             redPlanet.Expansion = bluePlanet.Expansion = 0;
             bluePlanet.Rotation = tileInfos.First().Angle - 180;
+            Scheduler.Add(addTransforms);
 
             for (int i = 9; i < tileInfos.Length; i++)
                 tileContainer.Children[i].Alpha = 0;
-
-            Scheduler.Add(addTransforms);
         }
 
         private void addTransforms()
         {
-            double startTimeOffset = beatmap.Value.Settings.Offset - 60000 / CurrentBpm;
-            PlanetState planetState = PlanetState.Fire;
+            double startTimeOffset = beatmap.Value.Settings.Offset - 60000 / beatmap.Value.Settings.Bpm;
+            PlanetState planetState = PlanetState.Ice;
 
             #region Initial transform
 
@@ -94,6 +93,9 @@ namespace Circle.Game.Screens.Play
                     bluePlanet.ExpandTo(0);
                     using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
                         planetContainer.MoveTo(tileInfos[currentFloor].Position);
+
+                    if (tileInfos[currentFloor].TileType != TileType.Midspin)
+                        planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
                 }
             }
 
