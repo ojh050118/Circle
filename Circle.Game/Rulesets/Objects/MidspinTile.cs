@@ -7,8 +7,8 @@ namespace Circle.Game.Rulesets.Objects
 {
     public class MidspinTile : Tile
     {
-        public MidspinTile(float angle)
-            : base(TileType.Midspin, angle)
+        public MidspinTile()
+            : base(TileType.Midspin)
         {
             Child = new Container
             {

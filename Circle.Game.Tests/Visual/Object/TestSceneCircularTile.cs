@@ -14,7 +14,7 @@ namespace Circle.Game.Tests.Visual.Object
                 RelativeSizeAxes = Axes.Both,
                 Colour = Color4.Black
             });
-            Add(new CircularTile(0)
+            Add(new CircularTile()
             {
                 Anchor = Anchor.Centre,
             });
