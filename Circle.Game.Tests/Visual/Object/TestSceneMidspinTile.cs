@@ -14,7 +14,7 @@ namespace Circle.Game.Tests.Visual.Object
                 RelativeSizeAxes = Axes.Both,
                 Colour = Color4.Black
             });
-            Add(new MidspinTile()
+            Add(new MidspinTile
             {
                 Anchor = Anchor.Centre,
             });

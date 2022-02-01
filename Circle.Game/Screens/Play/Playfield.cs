@@ -259,7 +259,6 @@ namespace Circle.Game.Screens.Play
                         tile
                     };
                     setSpeed(0, list[0].SpeedType);
-                    
                 }
             }
         }

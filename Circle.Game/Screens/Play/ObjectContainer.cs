@@ -51,7 +51,7 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case TileType.Midspin:
-                        Add(new MidspinTile()
+                        Add(new MidspinTile
                         {
                             Floor = i,
                             Position = positions[i],
@@ -61,7 +61,7 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case TileType.Short:
-                        Add(new ShortTile()
+                        Add(new ShortTile
                         {
                             Floor = i,
                             Position = positions[i],
@@ -71,7 +71,7 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case TileType.Circular:
-                        Add(new CircularTile()
+                        Add(new CircularTile
                         {
                             Floor = i,
                             Position = positions[i],

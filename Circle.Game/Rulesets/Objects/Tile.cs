@@ -13,7 +13,7 @@ namespace Circle.Game.Rulesets.Objects
         public EventType? EventType { get; set; }
 
         public TileType TileType { get; }
-        public SpeedType? SpeedType { get; set; } = null;
+        public SpeedType? SpeedType { get; set; }
 
         public Easing Easing { get; set; } = Easing.None;
 
