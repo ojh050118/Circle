@@ -34,7 +34,7 @@ namespace Circle.Game.Screens.Play
 
         public Action OnComplete { get; set; }
 
-        public double EndTime { get; private set; }
+        public double EndTime { get; private set; } = double.MaxValue;
 
         [BackgroundDependencyLoader]
         private void load()
