@@ -42,7 +42,7 @@ namespace Circle.Game.Screens.Play
 
             if (!isStarted)
             {
-                Playfield.StartPlaying();
+                //Playfield.StartPlaying();
                 isStarted = true;
             }
         }

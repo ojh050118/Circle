@@ -16,6 +16,7 @@ namespace Circle.Game.Screens.Play
 {
     public class Player : CircleScreen
     {
+        public override bool BlockExit => !IsLoaded;
         public override bool FadeBackground => false;
 
         private GamePlayState playState = GamePlayState.NotPlaying;
@@ -58,7 +59,7 @@ namespace Circle.Game.Screens.Play
         {
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmap, musicController.CurrentTrack),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmap, Clock),
             };
 
             masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
@@ -102,6 +103,14 @@ namespace Circle.Game.Screens.Play
             }
 
             return base.OnKeyDown(e);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            if (masterGameplayClockContainer.CurrentTime >= masterGameplayClockContainer.Playfield.EndTime)
+                playState = GamePlayState.Complete;
         }
 
         public override void OnExit()
