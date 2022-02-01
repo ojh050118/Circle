@@ -10,7 +10,7 @@ namespace Circle.Game.Tests.Visual.Overlays
         [Resolved]
         private MusicController music { get; set; }
 
-        private SpriteText text;
+        private readonly SpriteText text;
 
         public TestSceneMusicController()
         {
