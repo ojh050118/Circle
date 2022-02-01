@@ -12,17 +12,13 @@ namespace Circle.Game.Screens.Play
 {
     public class Playfield : Container
     {
-        private readonly ObjectContainer tiles;
-        private readonly Planet redPlanet;
-        private readonly Planet bluePlanet;
+        private ObjectContainer tiles;
+        private Planet redPlanet;
+        private Planet bluePlanet;
+        private Container<Planet> planetContainer;
 
         [Resolved]
         private Bindable<BeatmapInfo> beatmap { get; set; }
-
-        /// <summary>
-        /// 현재 회전하는 행성을 가리킵니다.
-        /// </summary>
-        private readonly Bindable<PlanetState> planetState;
 
         private int currentFloor;
 
@@ -34,7 +30,10 @@ namespace Circle.Game.Screens.Play
 
         public Action OnComplete { get; set; }
 
-        public Playfield()
+        public double EndTime { get; private set; }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             AutoSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
@@ -42,60 +41,165 @@ namespace Circle.Game.Screens.Play
             Children = new Drawable[]
             {
                 tiles = new ObjectContainer(),
-                redPlanet = new Planet(Color4.Red),
-                bluePlanet = new Planet(Color4.DeepSkyBlue),
+                planetContainer = new Container<Planet>
+                {
+                    AutoSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Children = new[]
+                    {
+                        redPlanet = new Planet(Color4.Red),
+                        bluePlanet = new Planet(Color4.DeepSkyBlue),
+                    }
+                }
             };
-
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            planetState = new Bindable<PlanetState>(PlanetState.Ice);
             isClockwise = true;
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
             CurrentBpm = beatmap.Value.Settings.Bpm;
             bluePlanet.Rotation = tiles.Children[0].Angle - 180;
-            planetState.ValueChanged += _ =>
-            {
-                movePlanet();
-                this.MoveTo(-tiles.Children[currentFloor].Position, 500, Easing.OutSine);
-            };
 
             for (int i = 9; i < tiles.Children.Count; i++)
                 tiles.Children[i].Alpha = 0;
+
+            Scheduler.Add(addTransforms);
         }
 
-        public void StartPlaying()
+        private void addTransforms()
         {
-            bluePlanet.ExpandTo(1, 60000 / beatmap.Value.Settings.Bpm, Easing.Out);
-            bluePlanet.RotateTo(tiles.Children[currentFloor].Angle, GetRelativeDuration(tiles.Children[currentFloor].Angle))
-                      .Then()
-                      .Schedule(changePlanetState);
-        }
+            double startTimeOffset = beatmap.Value.Settings.Offset - 60000 / CurrentBpm;
+            PlanetState planetState = PlanetState.Fire;
 
-        private void movePlanet()
-        {
-            setSpeed(tiles.Children[currentFloor].SpeedType);
-            fadeTiles();
+            #region Initial transform
 
-            if (tiles.Children[currentFloor].TileType == TileType.Midspin)
+            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
-                currentFloor++;
-                fadeTiles();
-                setSpeed(tiles.Children[currentFloor].SpeedType);
+                startTimeOffset += GetRelativeDuration(bluePlanet.Rotation, tiles.Children[currentFloor].Angle);
+                bluePlanet.ExpandTo(1, 60000 / CurrentBpm, Easing.Out);
+                bluePlanet.RotateTo(tiles.Children[currentFloor].Angle, GetRelativeDuration(bluePlanet.Rotation, tiles.Children[currentFloor].Angle));
             }
 
-            // 음수인 각도가 나올 수 있기때문에 각도 수정.
+            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+            {
+                prevAngle = CalculationExtensions.GetSafeAngle(tiles.Children[currentFloor].Angle);
+                currentFloor++;
+
+                if (currentFloor < tiles.Children.Count)
+                {
+                    bluePlanet.ExpandTo(0);
+                    using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
+                        planetContainer.MoveTo(tiles.Children[currentFloor].Position);
+                }
+            }
+
+            #endregion
+
+            while (currentFloor < tiles.Children.Count)
+            {
+                using (BeginAbsoluteSequence(startTimeOffset))
+                    this.MoveTo(-tiles.Children[currentFloor].Position, 500, Easing.OutSine);
+
+                setSpeed(tiles.Children[currentFloor].SpeedType);
+                addTileTransform(startTimeOffset);
+
+                if (tiles.Children[currentFloor].TileType == TileType.Midspin)
+                {
+                    currentFloor++;
+                    setSpeed(tiles.Children[currentFloor].SpeedType);
+                    addTileTransform(startTimeOffset);
+                }
+
+                var (fixedRotation, newRotation) = computeRotation();
+
+                if (planetState == PlanetState.Fire)
+                {
+                    using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                    {
+                        startTimeOffset += GetRelativeDuration(fixedRotation, newRotation);
+                        redPlanet.ExpandTo(1);
+                        redPlanet.RotateTo(fixedRotation);
+                        redPlanet.RotateTo(newRotation, GetRelativeDuration(fixedRotation, newRotation));
+                    }
+
+                    using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                    {
+                        prevAngle = CalculationExtensions.GetSafeAngle(newRotation);
+                        currentFloor++;
+                        redPlanet.ExpandTo(0);
+                    }
+                }
+                else
+                {
+                    using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                    {
+                        startTimeOffset += GetRelativeDuration(fixedRotation, newRotation);
+                        bluePlanet.ExpandTo(1);
+                        bluePlanet.RotateTo(fixedRotation);
+                        bluePlanet.RotateTo(newRotation, GetRelativeDuration(fixedRotation, newRotation));
+                    }
+
+                    using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                    {
+                        prevAngle = CalculationExtensions.GetSafeAngle(newRotation);
+                        currentFloor++;
+                        bluePlanet.ExpandTo(0);
+                    }
+                }
+
+                if (currentFloor < tiles.Children.Count)
+                {
+                    using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
+                        planetContainer.MoveTo(tiles.Children[currentFloor].Position);
+
+                    if (tiles.Children[currentFloor].TileType == TileType.Normal)
+                        planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
+                }
+                else
+                {
+                    var lastPosition = tiles.Children[currentFloor - 1].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor - 1].Angle);
+
+                    using (BeginAbsoluteSequence(startTimeOffset))
+                        this.MoveTo(-lastPosition, 500, Easing.OutSine);
+
+                    using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
+                        planetContainer.MoveTo(lastPosition);
+
+                    switch (planetState)
+                    {
+                        case PlanetState.Fire:
+                            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                            {
+                                bluePlanet.ExpandTo(1);
+                                bluePlanet.Spin(60000 / CurrentBpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevAngle - 180);
+                            }
+
+                            break;
+
+                        case PlanetState.Ice:
+                            using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                            {
+                                redPlanet.ExpandTo(1);
+                                redPlanet.Spin(60000 / CurrentBpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevAngle - 180);
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            EndTime = startTimeOffset;
+        }
+
+        private (float fixedRotation, float newRotation) computeRotation()
+        {
             var currentAngle = CalculationExtensions.GetSafeAngle(tiles.Children[currentFloor].Angle);
 
+            // 소용돌이 적용.
             if (tiles.Children[currentFloor].Reverse.Value)
                 isClockwise = !isClockwise;
 
             float fixedRotation = prevAngle;
 
-            // 현재 타일이 미드스핀 타일일 때 계산하면 안됩니다.
+            // 현재 타일이 미드스핀 타일일 때 계산 스킵.
             if (tiles.Children[currentFloor].TileType != TileType.Midspin && tiles.Children[currentFloor - 1].TileType != TileType.Midspin)
                 fixedRotation -= 180;
 
@@ -115,24 +219,7 @@ namespace Circle.Game.Screens.Play
                     newRotation -= 360;
             }
 
-            if (planetState.Value == PlanetState.Fire)
-            {
-                redPlanet.Expansion = 1;
-                redPlanet.Position = tiles.Children[currentFloor].Position;
-                redPlanet.Rotation = fixedRotation;
-                redPlanet.RotateTo(newRotation, GetRelativeDuration(newRotation))
-                         .Then()
-                         .Schedule(changePlanetState);
-            }
-            else
-            {
-                bluePlanet.Expansion = 1;
-                bluePlanet.Position = tiles.Children[currentFloor].Position;
-                bluePlanet.Rotation = fixedRotation;
-                bluePlanet.RotateTo(newRotation, GetRelativeDuration(newRotation))
-                          .Then()
-                          .Schedule(changePlanetState);
-            }
+            return (fixedRotation, newRotation);
         }
 
         private void setSpeed(SpeedType? speedType)
@@ -152,51 +239,29 @@ namespace Circle.Game.Screens.Play
             }
         }
 
-        private void changePlanetState()
-        {
-            if (currentFloor + 1 >= tiles.Children.Count)
-            {
-                var lastPosition = tiles.Children[currentFloor].Position + CalculationExtensions.GetComputedTilePosition(tiles.Children[currentFloor].Angle);
-                this.MoveTo(-lastPosition, 500, Easing.OutSine);
-                OnComplete?.Invoke();
-
-                return;
-            }
-
-            currentFloor++;
-
-            if (planetState.Value == PlanetState.Fire)
-            {
-                redPlanet.Expansion = 0;
-                prevAngle = redPlanet.Rotation = CalculationExtensions.GetSafeAngle(redPlanet.Rotation);
-                if (currentFloor < tiles.Children.Count)
-                    redPlanet.Position = tiles.Children[currentFloor].Position;
-            }
-            else
-            {
-                bluePlanet.Expansion = 0;
-                prevAngle = bluePlanet.Rotation = CalculationExtensions.GetSafeAngle(bluePlanet.Rotation);
-                if (currentFloor < tiles.Children.Count)
-                    bluePlanet.Position = tiles.Children[currentFloor].Position;
-            }
-
-            if (tiles.Children[currentFloor].TileType == TileType.Normal)
-                planetState.Value = planetState.Value == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
-            else
-                movePlanet();
-        }
-
-        private void fadeTiles()
+        private void addTileTransform(double startTimeOffset)
         {
             if (currentFloor + 8 < tiles.Children.Count)
-                tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / CurrentBpm, Easing.Out);
-            else
-                tiles.Children[currentFloor].FadeTo(0.6f, 60000 / CurrentBpm, Easing.Out);
+            {
+                using (tiles.Children[currentFloor + 8].BeginAbsoluteSequence(startTimeOffset))
+                    tiles.Children[currentFloor + 8].FadeTo(0.6f, 60000 / CurrentBpm, Easing.Out);
+            }
+            else if (currentFloor < tiles.Children.Count)
+            {
+                using (tiles.Children[currentFloor].BeginAbsoluteSequence(startTimeOffset))
+                    tiles.Children[currentFloor].FadeTo(0.6f, 60000 / CurrentBpm, Easing.Out);
+            }
 
-            if (currentFloor > 3)
-                tiles.Children[currentFloor - 4].FadeOut(60000 / CurrentBpm, Easing.Out);
+            if (currentFloor >= 4)
+            {
+                using (tiles.Children[currentFloor - 4].BeginAbsoluteSequence(startTimeOffset))
+                    tiles.Children[currentFloor - 4].FadeOut(60000 / CurrentBpm, Easing.Out);
+            }
         }
 
-        public float GetRelativeDuration(float newRotation) => 60000 / CurrentBpm * Math.Abs((planetState.Value == PlanetState.Fire ? redPlanet.Rotation : bluePlanet.Rotation) - newRotation) / 180;
+        public float GetRelativeDuration(float oldRotation, float newRotation)
+        {
+            return 60000 / CurrentBpm * Math.Abs(oldRotation - newRotation) / 180;
+        }
     }
 }
