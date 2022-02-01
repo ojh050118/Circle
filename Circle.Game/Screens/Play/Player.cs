@@ -16,7 +16,6 @@ namespace Circle.Game.Screens.Play
 {
     public class Player : CircleScreen
     {
-        public override bool BlockExit => !IsLoaded;
         public override bool FadeBackground => false;
 
         private GamePlayState playState = GamePlayState.NotPlaying;
