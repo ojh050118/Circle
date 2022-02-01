@@ -10,8 +10,8 @@ namespace Circle.Game.Rulesets.Objects
 {
     public class CircularTile : Tile
     {
-        public CircularTile(float angle)
-            : base(TileType.Normal, angle)
+        public CircularTile()
+            : base(TileType.Circular)
         {
             Size = new Vector2(HEIGHT);
             Child = new CircularContainer

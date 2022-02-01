@@ -3,6 +3,8 @@
     public enum TileType
     {
         Normal,
-        Midspin
+        Midspin,
+        Short,
+        Circular
     }
 }

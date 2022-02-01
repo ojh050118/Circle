@@ -9,8 +9,8 @@ namespace Circle.Game.Rulesets.Objects
 {
     public class BasicTile : Tile
     {
-        public BasicTile(float angle)
-            : base(TileType.Normal, angle)
+        public BasicTile()
+            : base(TileType.Normal)
         {
             Child = new CircularContainer
             {
