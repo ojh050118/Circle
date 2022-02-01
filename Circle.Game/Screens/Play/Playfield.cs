@@ -95,7 +95,7 @@ namespace Circle.Game.Screens.Play
                         planetContainer.MoveTo(tileInfos[currentFloor].Position);
 
                     if (tileInfos[currentFloor].TileType != TileType.Midspin)
-                        planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
+                        planetState = PlanetState.Fire;
                 }
             }
 
