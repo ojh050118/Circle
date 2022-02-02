@@ -36,8 +36,10 @@ namespace Circle.Game.Overlays
         private readonly SpriteText title;
         private readonly SpriteText description;
         private FillFlowContainer buttonContainer;
+        private FillFlowContainer divisor;
 
-        public DialogOverlay()
+        public DialogOverlay(BufferedContainer screenContainer)
+            : base(screenContainer)
         {
             Content = new Container
             {
@@ -101,7 +103,10 @@ namespace Circle.Game.Overlays
             if (buttonContainer == null)
                 Content.Add(createButtonContainer());
             else
+            {
+                divisor.Children = createButtonDivisor(Buttons);
                 buttonContainer.Children = computeWidth(Buttons);
+            }
 
             Show();
         }
@@ -126,6 +131,15 @@ namespace Circle.Game.Overlays
                         RelativeSizeAxes = Axes.X,
                         Height = 2,
                     },
+                    divisor = new FillFlowContainer
+                    {
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
+                        Direction = FillDirection.Horizontal,
+                        RelativeSizeAxes = Axes.X,
+                        AutoSizeAxes = Axes.Y,
+                        Children = createButtonDivisor(Buttons)
+                    },
                     buttonContainer = new FillFlowContainer
                     {
                         Anchor = Anchor.TopCentre,
@@ -137,6 +151,33 @@ namespace Circle.Game.Overlays
                     }
                 }
             };
+        }
+
+        private Container[] createButtonDivisor(IReadOnlyList<DialogButton> buttons)
+        {
+            List<Container> boxContainer = new List<Container>();
+
+            for (int i = 1; i < buttons.Count; i++)
+            {
+                boxContainer.Add(new Container
+                {
+                    RelativeSizeAxes = Axes.X,
+                    Height = 50,
+                    Width = (float)buttons.Count / (buttons.Count * buttons.Count),
+                    Child = new Box
+                    {
+                        Anchor = Anchor.BottomRight,
+                        Origin = Anchor.BottomCentre,
+                        Alpha = 0.3f,
+                        Colour = Color4.Black,
+                        RelativeSizeAxes = Axes.Y,
+                        Width = 2,
+                        Height = 0.96f
+                    }
+                });
+            }
+
+            return boxContainer.ToArray();
         }
 
         private DialogButton[] computeWidth(IReadOnlyList<DialogButton> buttons)

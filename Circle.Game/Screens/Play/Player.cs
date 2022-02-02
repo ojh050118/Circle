@@ -109,7 +109,10 @@ namespace Circle.Game.Screens.Play
             base.Update();
 
             if (masterGameplayClockContainer.CurrentTime >= masterGameplayClockContainer.Playfield.EndTime)
+            {
                 playState = GamePlayState.Complete;
+                dialog.BlockInputAction = false;
+            }
         }
 
         public override void OnExit()
@@ -142,6 +145,7 @@ namespace Circle.Game.Screens.Play
 
             dialog.Title = "Paused";
             dialog.Description = "Game paused";
+            dialog.BlockInputAction = true;
 
             dialog.Buttons = new[]
             {
@@ -153,6 +157,7 @@ namespace Circle.Game.Screens.Play
                         playState = GamePlayState.NotPlaying;
                         OnExit();
                         dialog.Hide();
+                        dialog.BlockInputAction = false;
                     }
                 },
                 new DialogButton
