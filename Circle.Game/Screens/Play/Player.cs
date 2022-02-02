@@ -10,6 +10,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
+using osu.Framework.Threading;
 using osuTK.Input;
 
 namespace Circle.Game.Screens.Play
@@ -52,6 +53,8 @@ namespace Circle.Game.Screens.Play
         private DialogOverlay dialog { get; set; }
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
+
+        private ScheduledDelegate scheduledDelegate;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -142,6 +145,7 @@ namespace Circle.Game.Screens.Play
         {
             masterGameplayClockContainer.Stop();
             musicController.CurrentTrack.VolumeTo(0, 250, Easing.OutPow10).Then().Schedule(musicController.Stop);
+            scheduledDelegate?.Cancel();
 
             dialog.Title = "Paused";
             dialog.Description = "Game paused";
@@ -175,14 +179,14 @@ namespace Circle.Game.Screens.Play
                     Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
                     Action = () =>
                     {
-                        Scheduler.AddDelayed(() =>
+                        scheduledDelegate = Scheduler.AddDelayed(() =>
                         {
                             playState = GamePlayState.Playing;
                             musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
                             masterGameplayClockContainer.Start();
                             musicController.CurrentTrack.VolumeTo(1);
                             musicController.Play();
-                        }, 1000);
+                        }, 500);
                         dialog.Hide();
                     }
                 }
