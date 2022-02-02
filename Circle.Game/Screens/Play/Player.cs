@@ -188,6 +188,7 @@ namespace Circle.Game.Screens.Play
                                 musicController.Play();
                                 musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
                             }
+
                             scheduledDelegate = Scheduler.AddDelayed(() =>
                             {
                                 if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
@@ -199,6 +200,7 @@ namespace Circle.Game.Screens.Play
                                         musicController.Play();
                                     }, Math.Abs(masterGameplayClockContainer.CurrentTime));
                                 }
+
                                 playState = GamePlayState.Playing;
                                 masterGameplayClockContainer.Start();
                             }, 1000);
