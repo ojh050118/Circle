@@ -8,6 +8,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
+using osuTK;
 using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.Containers
@@ -23,6 +24,24 @@ namespace Circle.Game.Graphics.Containers
 
         public new Container<Drawable> Content { get; set; }
 
+        private readonly BufferedContainer bluredBackground;
+
+        public bool BlockInputAction { get; set; }
+
+        protected CircleFocusedOverlayContainer(BufferedContainer screenContainer)
+        {
+            bluredBackground = new BufferedContainer
+            {
+                RelativeSizeAxes = Axes.Both,
+                Child = screenContainer.CreateView().With(d =>
+                {
+                    d.RelativeSizeAxes = Axes.Both;
+                    d.SynchronisedDrawQuad = true;
+                    d.DisplayOriginalEffects = true;
+                })
+            };
+        }
+
         [BackgroundDependencyLoader(true)]
         private void load(AudioManager audio)
         {
@@ -31,6 +50,7 @@ namespace Circle.Game.Graphics.Containers
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
             {
+                bluredBackground,
                 dim = new Box
                 {
                     Colour = Color4.Black,
@@ -63,7 +83,7 @@ namespace Circle.Game.Graphics.Containers
 
         public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
         {
-            if (e.Action == InputAction.Back)
+            if (e.Action == InputAction.Back && !BlockInputAction)
             {
                 Hide();
                 return true;
@@ -78,13 +98,15 @@ namespace Circle.Game.Graphics.Containers
 
         protected override void PopIn()
         {
-            dim.FadeTo(0.3f, 1000, Easing.OutPow10);
+            dim.FadeTo(0.4f, 1000, Easing.OutPow10);
+            bluredBackground.FadeIn(0).BlurTo(new Vector2(10), 1000, Easing.OutPow10);
             base.PopIn();
         }
 
         protected override void PopOut()
         {
             dim.FadeOut(1000, Easing.OutPow10);
+            bluredBackground.BlurTo(new Vector2(0), 1000, Easing.OutPow10).Then().FadeOut(0);
             base.PopOut();
         }
     }

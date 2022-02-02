@@ -2,6 +2,7 @@ using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Platform;
 using osu.Framework.Testing;
@@ -26,7 +27,7 @@ namespace Circle.Game.Tests
             {
                 background = new Background(textureName: "Duelyst"),
                 new TestBrowser("Circle"),
-                dialog = new DialogOverlay(),
+                dialog = new DialogOverlay(new BufferedContainer()),
                 new CursorContainer()
             });
             dependencies.CacheAs(background);
