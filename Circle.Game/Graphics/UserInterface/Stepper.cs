@@ -12,11 +12,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    /// <summary>
-    /// 방향으로 값을 바꿀 수있는 컨트롤.
-    /// </summary>
-    /// <typeparam name="T">바꿀 값.</typeparam>
-    public class RollingControl<T> : Container
+    public class Stepper<T> : Container
     {
         [Resolved]
         private CircleConfigManager localConfig { get; set; }
@@ -32,7 +28,7 @@ namespace Circle.Game.Graphics.UserInterface
         /// <summary>
         /// 아이템들.
         /// </summary>
-        public RollingItem<T>[] Item;
+        public StepperItem<T>[] Item;
 
         /// <summary>
         /// 현재 값.
@@ -52,7 +48,7 @@ namespace Circle.Game.Graphics.UserInterface
         /// <summary>
         /// 방향으로 값을 바꿀 수있는 컨트롤.
         /// </summary>
-        public RollingControl()
+        public Stepper()
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;

@@ -17,48 +17,48 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new RollingControl<WindowMode>
+                new Stepper<WindowMode>
                 {
                     Text = "Screen mode",
                     Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode),
                     Item = new[]
                     {
-                        new RollingItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Windowed),
-                        new RollingItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Borderless),
-                        new RollingItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Fullscreen)
+                        new StepperItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Windowed),
+                        new StepperItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Borderless),
+                        new StepperItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Fullscreen)
                     }
                 },
-                new RollingControl<FrameSync>
+                new Stepper<FrameSync>
                 {
                     Text = "Frame limiter",
                     Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
                     Item = new[]
                     {
-                        new RollingItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit2x, "2x"),
-                        new RollingItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit4x, "4x"),
-                        new RollingItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit8x, "8x"),
-                        new RollingItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Unlimited),
-                        new RollingItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.VSync)
+                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit2x, "2x"),
+                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit4x, "4x"),
+                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit8x, "8x"),
+                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Unlimited),
+                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.VSync)
                     }
                 },
-                new RollingControl<ExecutionMode>
+                new Stepper<ExecutionMode>
                 {
                     Text = "Threading mode",
                     Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode),
                     Item = new[]
                     {
-                        new RollingItem<ExecutionMode>(FrameworkSetting.ExecutionMode, ExecutionMode.MultiThreaded),
-                        new RollingItem<ExecutionMode>(FrameworkSetting.ExecutionMode, ExecutionMode.SingleThread)
+                        new StepperItem<ExecutionMode>(FrameworkSetting.ExecutionMode, ExecutionMode.MultiThreaded),
+                        new StepperItem<ExecutionMode>(FrameworkSetting.ExecutionMode, ExecutionMode.SingleThread)
                     }
                 },
-                new RollingControl<bool>
+                new Stepper<bool>
                 {
                     Text = "Frame overlay",
                     Current = localConfig.GetBindable<bool>(CircleSetting.FpsDisplay),
                     Item = new[]
                     {
-                        new RollingItem<bool>(CircleSetting.FpsDisplay, true, "On"),
-                        new RollingItem<bool>(CircleSetting.FpsDisplay, false, "Off"),
+                        new StepperItem<bool>(CircleSetting.FpsDisplay, true, "On"),
+                        new StepperItem<bool>(CircleSetting.FpsDisplay, false, "Off"),
                     }
                 },
                 new SettingsSlider<float>

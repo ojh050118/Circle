@@ -4,47 +4,47 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneRollingControl : CircleTestScene
+    public class TestSceneStepper : CircleTestScene
     {
-        private RollingControl<string> control;
+        private Stepper<string> stepper;
 
         [BackgroundDependencyLoader]
         private void load()
         {
-            Add(new RollingControl<int>
+            Add(new Stepper<int>
             {
                 Anchor = Anchor.TopCentre,
                 Origin = Anchor.TopCentre,
-                Text = "Rolling Control",
+                Text = "Stepper",
                 Item = new[]
                 {
-                    new RollingItem<int>(1),
-                    new RollingItem<int>(2),
-                    new RollingItem<int>(3),
+                    new StepperItem<int>(1),
+                    new StepperItem<int>(2),
+                    new StepperItem<int>(3),
                 }
             });
-            Add(control = new RollingControl<string>
+            Add(stepper = new Stepper<string>
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                Text = "Rolling Control",
+                Text = "Stepper",
                 Item = new[]
                 {
-                    new RollingItem<string>("value1"),
-                    new RollingItem<string>("value2"),
-                    new RollingItem<string>("value3"),
+                    new StepperItem<string>("value1"),
+                    new StepperItem<string>("value2"),
+                    new StepperItem<string>("value3"),
                 }
             });
-            Add(new RollingControl<TestEnum>
+            Add(new Stepper<TestEnum>
             {
                 Anchor = Anchor.BottomCentre,
                 Origin = Anchor.BottomCentre,
-                Text = "Rolling Control",
+                Text = "Stepper",
                 Item = new[]
                 {
-                    new RollingItem<TestEnum>(TestEnum.Enum1),
-                    new RollingItem<TestEnum>(TestEnum.Enum2),
-                    new RollingItem<TestEnum>(TestEnum.Enum3),
+                    new StepperItem<TestEnum>(TestEnum.Enum1),
+                    new StepperItem<TestEnum>(TestEnum.Enum2),
+                    new StepperItem<TestEnum>(TestEnum.Enum3),
                 }
             });
         }
@@ -53,7 +53,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
         {
             base.LoadComplete();
 
-            control.SetCurrent("value1");
+            stepper.SetCurrent("value1");
         }
 
         private enum TestEnum
