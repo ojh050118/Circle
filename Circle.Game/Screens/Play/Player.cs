@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Circle.Game.Beatmap;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
@@ -126,7 +127,7 @@ namespace Circle.Game.Screens.Play
                 return;
             }
 
-            Schedule(() =>
+            musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
             {
                 musicController.CurrentTrack.VolumeTo(1);
                 musicController.Play();
@@ -144,7 +145,7 @@ namespace Circle.Game.Screens.Play
         private void onPaused()
         {
             masterGameplayClockContainer.Stop();
-            musicController.CurrentTrack.VolumeTo(0, 250, Easing.OutPow10).Then().Schedule(musicController.Stop);
+            musicController.CurrentTrack.VolumeTo(0, 1000, Easing.OutPow10).Then().Schedule(musicController.Stop);
             scheduledDelegate?.Cancel();
 
             dialog.Title = "Paused";
@@ -179,14 +180,31 @@ namespace Circle.Game.Screens.Play
                     Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
                     Action = () =>
                     {
-                        scheduledDelegate = Scheduler.AddDelayed(() =>
+                        musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
                         {
-                            playState = GamePlayState.Playing;
-                            musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
-                            masterGameplayClockContainer.Start();
-                            musicController.CurrentTrack.VolumeTo(1);
-                            musicController.Play();
-                        }, 500);
+                            if (masterGameplayClockContainer.CurrentTime - 1000 >= 0)
+                            {
+                                musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000);
+                                musicController.Play();
+                                musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
+                            }
+
+                            scheduledDelegate = Scheduler.AddDelayed(() =>
+                            {
+                                if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
+                                {
+                                    Scheduler.AddDelayed(() =>
+                                    {
+                                        musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
+                                        musicController.CurrentTrack.VolumeTo(1);
+                                        musicController.Play();
+                                    }, Math.Abs(masterGameplayClockContainer.CurrentTime));
+                                }
+
+                                playState = GamePlayState.Playing;
+                                masterGameplayClockContainer.Start();
+                            }, 1000);
+                        });
                         dialog.Hide();
                     }
                 }
