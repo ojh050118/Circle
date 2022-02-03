@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Circle.Game.Beatmap;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
@@ -112,6 +113,11 @@ namespace Circle.Game.Screens.Play
                         }
                     }
                 }
+                else
+                {
+                    tileTypes.Add(TileType.Circular);
+                    break;
+                }
 
                 if (angleData[floor] == 999)
                 {
@@ -152,7 +158,9 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case TileType.Circular:
-                        offset += newTilePosition;
+                        if (i + 1 < angleData.Length)
+                            offset += newTilePosition;
+
                         break;
                 }
 
@@ -181,9 +189,6 @@ namespace Circle.Game.Screens.Play
 
             foreach (var action in beatmapInfo.Actions)
             {
-                if (action.Floor >= angleData.Length)
-                    continue;
-
                 infos[action.Floor].EventType = action.EventType;
 
                 switch (action.EventType)
@@ -286,6 +291,8 @@ namespace Circle.Game.Screens.Play
 
                 newAngleData.Add(360 - targetAngleData[i]);
             }
+
+            newAngleData.Add(360 - targetAngleData.Last());
 
             return newAngleData.ToArray();
         }

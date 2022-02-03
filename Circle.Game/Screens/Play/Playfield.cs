@@ -163,30 +163,22 @@ namespace Circle.Game.Screens.Play
                 }
                 else
                 {
-                    var lastPosition = tileInfos.Last().Position + CalculationExtensions.GetComputedTilePosition(tileInfos.Last().Angle);
-
-                    using (BeginAbsoluteSequence(startTimeOffset))
-                        this.MoveTo(-lastPosition, 500, Easing.OutSine);
-
-                    using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
-                        planetContainer.MoveTo(lastPosition);
-
                     switch (planetState)
                     {
                         case PlanetState.Fire:
-                            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                            using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
                             {
-                                bluePlanet.ExpandTo(1);
-                                bluePlanet.Spin(60000 / CurrentBpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevAngle - 180);
+                                redPlanet.ExpandTo(1);
+                                redPlanet.Spin(60000 / CurrentBpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevAngle);
                             }
 
                             break;
 
                         case PlanetState.Ice:
-                            using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
                             {
-                                redPlanet.ExpandTo(1);
-                                redPlanet.Spin(60000 / CurrentBpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevAngle - 180);
+                                bluePlanet.ExpandTo(1);
+                                bluePlanet.Spin(60000 / CurrentBpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevAngle);
                             }
 
                             break;
