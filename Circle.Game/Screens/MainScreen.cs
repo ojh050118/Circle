@@ -33,6 +33,11 @@ namespace Circle.Game.Screens
         [Resolved]
         private Background background { get; set; }
 
+        private IconWithTextButton play;
+        private IconWithTextButton edit;
+        private IconWithTextButton settings;
+        private IconWithTextButton exit;
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -57,24 +62,24 @@ namespace Circle.Game.Screens
                     Margin = new MarginPadding { Top = 120, Left = 100 },
                     Children = new Drawable[]
                     {
-                        new IconWithTextButton("play", "button-play-select")
+                        play = new IconWithTextButton("play", "button-play-select")
                         {
                             Icon = FontAwesome.Solid.Play,
                             Action = () => this.Push(new SongSelectScreen())
                         },
-                        new IconWithTextButton("edit", "button-edit-select")
+                        edit = new IconWithTextButton("edit", "button-edit-select")
                         {
                             Icon = FontAwesome.Solid.Edit,
                         },
-                        new IconWithTextButton("settings", "button-settings-select")
+                        settings = new IconWithTextButton("settings", "button-settings-select")
                         {
                             Icon = FontAwesome.Solid.Cog,
                             Action = () => this.Push(new SettingsScreen())
                         },
-                        new IconWithTextButton("exit")
+                        exit = new IconWithTextButton("exit")
                         {
                             Icon = FontAwesome.Solid.DoorOpen,
-                            Action = onExit
+                            Action = OnExit
                         }
                     }
                 }
@@ -88,7 +93,7 @@ namespace Circle.Game.Screens
             background.ChangeTexture(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
         }
 
-        private void onExit()
+        public override void OnExit()
         {
             dialog.Title = "Exit";
             dialog.Description = "Are you sure exit game?";
@@ -112,16 +117,31 @@ namespace Circle.Game.Screens
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)
         {
-            if (e.Action == InputAction.Back)
+            switch (e.Action)
             {
-                onExit();
-                return true;
+                case InputAction.Select:
+                case InputAction.Play:
+                    play.Action?.Invoke();
+                    return true;
+
+                case InputAction.Edit:
+                    edit.Action?.Invoke();
+                    return true;
+
+                case InputAction.Settings:
+                    settings.Action?.Invoke();
+                    return true;
+
+                case InputAction.Back:
+                case InputAction.Exit:
+                    exit.Action?.Invoke();
+                    return true;
             }
 
             return base.OnPressed(e);
         }
 
-        private class IconWithTextButton : CircularContainer
+        private class IconWithTextButton : Container
         {
             private readonly SpriteIcon icon;
 
@@ -139,7 +159,6 @@ namespace Circle.Game.Screens
             public IconWithTextButton(string text = @"", string sample = @"")
             {
                 sampleName = sample;
-                Masking = true;
                 AutoSizeAxes = Axes.X;
                 Height = 40;
                 Child = new FillFlowContainer
@@ -189,6 +208,11 @@ namespace Circle.Game.Screens
             private void load(AudioManager audio)
             {
                 sampleSelect = audio.Samples.Get(sampleName);
+                Action += () =>
+                {
+                    sampleSelect?.Play();
+                    Child.FlashColour(Color4.DarkGray, 250, Easing.InQuad);
+                };
             }
 
             protected override bool OnHover(HoverEvent e)
@@ -207,9 +231,7 @@ namespace Circle.Game.Screens
 
             protected override bool OnClick(ClickEvent e)
             {
-                Child.FlashColour(Color4.DarkGray, 250, Easing.InQuad);
                 Action?.Invoke();
-                sampleSelect?.Play();
 
                 return base.OnClick(e);
             }

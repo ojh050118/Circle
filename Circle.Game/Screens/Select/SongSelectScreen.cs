@@ -1,5 +1,7 @@
-﻿using Circle.Game.Screens.Play;
+﻿using Circle.Game.Input;
+using Circle.Game.Screens.Play;
 using osu.Framework.Graphics;
+using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 
 namespace Circle.Game.Screens.Select
@@ -42,6 +44,22 @@ namespace Circle.Game.Screens.Select
                 if (v.NewValue)
                     this.Push(new Player());
             };
+        }
+
+        public override bool OnPressed(KeyBindingPressEvent<InputAction> e)
+        {
+            switch (e.Action)
+            {
+                case InputAction.NextBeatmap:
+                    carousel?.SelectBeatmap(VerticalDirection.Down);
+                    break;
+
+                case InputAction.PreviousBeatmap:
+                    carousel?.SelectBeatmap(VerticalDirection.Up);
+                    break;
+            }
+
+            return base.OnPressed(e);
         }
 
         public override void OnEntering(IScreen last)

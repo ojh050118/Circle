@@ -3,17 +3,20 @@ using System.Linq;
 using Circle.Game.Beatmap;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Game.Screens.Select.Carousel;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Input.Bindings;
+using osu.Framework.Input.Events;
 using osuTK;
 
 namespace Circle.Game.Screens.Select
 {
-    public class BeatmapCarousel : CompositeDrawable
+    public class BeatmapCarousel : CompositeDrawable, IKeyBindingHandler<InputAction>
     {
         protected readonly CarouselScrollContainer Scroll;
 
@@ -27,6 +30,8 @@ namespace Circle.Game.Screens.Select
         private Background background { get; set; }
 
         public Bindable<bool> PlayRequested { get; set; } = new Bindable<bool>(false);
+
+        private CarouselItem selectedItem;
 
         public BeatmapCarousel()
         {
@@ -60,6 +65,53 @@ namespace Circle.Game.Screens.Select
                 item.State.BindValueChanged(state => onChangedItemState(item, state));
         }
 
+        public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
+        {
+            if (e.Action == InputAction.Select && selectedItem != null)
+            {
+                selectedItem.State.Value = CarouselItemState.PlayRequested;
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual void OnReleased(KeyBindingReleaseEvent<InputAction> e)
+        {
+        }
+
+        public void SelectBeatmap(VerticalDirection direction)
+        {
+            if (Scroll.Child.Children?.Count == 0 || selectedItem == null)
+                return;
+
+            int idx = Scroll.Child.IndexOf(selectedItem);
+
+            if (direction == VerticalDirection.Up)
+            {
+                if (idx > 0)
+                    Scroll.Child.Children[idx - 1].State.Value = CarouselItemState.Selected;
+                else
+                    Scroll.Child.Children.Last().State.Value = CarouselItemState.Selected;
+            }
+            else
+            {
+                if (idx < Scroll.Child.Count - 1)
+                    Scroll.Child.Children[idx + 1].State.Value = CarouselItemState.Selected;
+                else
+                    Scroll.Child.Children.First().State.Value = CarouselItemState.Selected;
+            }
+        }
+
+        public void SelectBeatmap(BeatmapInfo beatmap)
+        {
+            foreach (var item in Scroll.Child.Children)
+            {
+                if (beatmap.Equals(item.BeatmapInfo))
+                    item.State.Value = CarouselItemState.Selected;
+            }
+        }
+
         private void onChangedItemState(CarouselItem item, ValueChangedEvent<CarouselItemState> state)
         {
             switch (state.NewValue)
@@ -69,7 +121,10 @@ namespace Circle.Game.Screens.Select
 
                 case CarouselItemState.Selected:
                     if (state.OldValue == CarouselItemState.NotSelected)
+                    {
                         onSelected(item);
+                        selectedItem = item;
+                    }
                     else
                         item.State.Value = CarouselItemState.PlayRequested;
 
