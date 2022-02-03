@@ -1,6 +1,4 @@
-﻿using Circle.Game.Graphics.UserInterface;
-using Circle.Game.Screens.Play;
-using osu.Framework.Allocation;
+﻿using Circle.Game.Screens.Play;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 
@@ -9,9 +7,6 @@ namespace Circle.Game.Screens.Select
     public class SongSelectScreen : CircleScreen
     {
         public override string Header => "Play";
-
-        [Resolved]
-        private Background background { get; set; }
 
         private readonly BeatmapCarousel carousel;
         private readonly BeatmapDetails details;
