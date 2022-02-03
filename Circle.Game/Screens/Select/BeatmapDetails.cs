@@ -21,9 +21,13 @@ namespace Circle.Game.Screens.Select
         private Bindable<BeatmapInfo> workingBeatmap { get; set; }
 
         private readonly Background background;
-        private readonly FillFlowContainer details;
         private readonly SpriteText title;
         private readonly SpriteText artist;
+
+        private readonly SpriteText author;
+        private readonly SpriteText bpm;
+        private readonly SpriteText difficulty;
+        private readonly TextFlowContainer description;
 
         public BeatmapDetails()
         {
@@ -119,13 +123,42 @@ namespace Circle.Game.Screens.Select
                             {
                                 RelativeSizeAxes = Axes.Both,
                                 Height = 0.6f,
-                                Child = details = new FillFlowContainer
+                                Child = new FillFlowContainer
                                 {
                                     Direction = FillDirection.Vertical,
                                     Spacing = new Vector2(5),
                                     Padding = new MarginPadding { Horizontal = 10, Vertical = 5 },
                                     RelativeSizeAxes = Axes.X,
                                     AutoSizeAxes = Axes.Y,
+                                    Children = new Drawable[]
+                                    {
+                                        new SpriteText
+                                        {
+                                            Text = "Details",
+                                            Margin = new MarginPadding { Bottom = 10 },
+                                            Font = FontUsage.Default.With("OpenSans-Bold", 30)
+                                        },
+                                        author = new SpriteText
+                                        {
+                                            Text = "Author: ",
+                                            Font = FontUsage.Default.With(size: 24)
+                                        },
+                                        bpm = new SpriteText
+                                        {
+                                            Text = "BPM: ",
+                                            Font = FontUsage.Default.With(size: 24)
+                                        },
+                                        difficulty = new SpriteText
+                                        {
+                                            Text = "Difficulty: ",
+                                            Font = FontUsage.Default.With(size: 24)
+                                        },
+                                        description = new TextFlowContainer
+                                        {
+                                            RelativeSizeAxes = Axes.X,
+                                            AutoSizeAxes = Axes.Y,
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -138,57 +171,38 @@ namespace Circle.Game.Screens.Select
                     Colour = Color4.Black.Opacity(100)
                 }
             };
+
+            description.AddText("Description: ", t => t.Font = FontUsage.Default.With(size: 24));
         }
 
         protected override void LoadComplete()
         {
             base.LoadComplete();
 
-            workingBeatmap.ValueChanged += v =>
-            {
-                if (string.IsNullOrEmpty(v.NewValue.Settings.BgImage))
-                    background.FadeTextureTo(TextureSource.Internal, "Duelyst", 500, Easing.Out);
-                else
-                    background.FadeTextureTo(TextureSource.External, v.NewValue.Settings.BgImage, 500, Easing.Out);
-
-                if (!string.IsNullOrEmpty(v.NewValue.Settings.Song) && !string.IsNullOrEmpty(v.NewValue.Settings.Artist))
-                {
-                    title.Text = v.NewValue.Settings.Song;
-                    artist.Text = v.NewValue.Settings.Artist;
-                }
-
-                details.Children = new Drawable[]
-                {
-                    new SpriteText
-                    {
-                        Text = "Details",
-                        Margin = new MarginPadding { Bottom = 10 },
-                        Font = FontUsage.Default.With("OpenSans-Bold", 30)
-                    },
-                    new SpriteText
-                    {
-                        Text = $"Author: {v.NewValue.Settings.Author}",
-                        Font = FontUsage.Default.With(size: 24)
-                    },
-                    new SpriteText
-                    {
-                        Text = $"BPM: {v.NewValue.Settings.Bpm}",
-                        Font = FontUsage.Default.With(size: 24)
-                    },
-                    new SpriteText
-                    {
-                        Text = $"Difficulty: {v.NewValue.Settings.Difficulty}",
-                        Font = FontUsage.Default.With(size: 24)
-                    },
-                    new SpriteText
-                    {
-                        Text = $"Description: {v.NewValue.Settings.BeatmapDesc}",
-                        Font = FontUsage.Default.With(size: 24)
-                    },
-                };
-            };
-
+            workingBeatmap.BindValueChanged(onBeatmapChanged);
             workingBeatmap.TriggerChange();
+        }
+
+        public void ChangeBeatmap(BeatmapInfo beatmap) => workingBeatmap.Value = beatmap;
+
+        private void onBeatmapChanged(ValueChangedEvent<BeatmapInfo> beatmap)
+        {
+            if (string.IsNullOrEmpty(beatmap.NewValue.Settings.BgImage))
+                background.FadeTextureTo(TextureSource.Internal, "Duelyst", 500, Easing.Out);
+            else
+                background.FadeTextureTo(TextureSource.External, beatmap.NewValue.Settings.BgImage, 500, Easing.Out);
+
+            if (!string.IsNullOrEmpty(beatmap.NewValue.Settings.Song) && !string.IsNullOrEmpty(beatmap.NewValue.Settings.Artist))
+            {
+                title.Text = beatmap.NewValue.Settings.Song;
+                artist.Text = beatmap.NewValue.Settings.Artist;
+            }
+
+            author.Text = $"Author: {beatmap.NewValue.Settings.Author}";
+            bpm.Text = $"BPM: {beatmap.NewValue.Settings.Bpm}";
+            difficulty.Text = $"Difficulty: {beatmap.NewValue.Settings.Difficulty}";
+            description.Clear();
+            description.AddText($"Description: {beatmap.NewValue.Settings.BeatmapDesc}", t => t.Font = FontUsage.Default.With(size: 24));
         }
     }
 }
