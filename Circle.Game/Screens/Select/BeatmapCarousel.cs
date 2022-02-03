@@ -17,8 +17,6 @@ namespace Circle.Game.Screens.Select
     {
         protected readonly CarouselScrollContainer Scroll;
 
-        private CarouselItem selectedCarouselItem => Scroll?.Child.Children.FirstOrDefault(i => i.State.Value == CarouselItemState.Selected);
-
         private int oldScrollHeight;
 
         [Resolved]
