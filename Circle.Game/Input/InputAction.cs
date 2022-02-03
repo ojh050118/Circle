@@ -3,8 +3,17 @@
     public enum InputAction
     {
         Play,
+        Edit,
         Settings,
         Exit,
-        Back
+        Back,
+        Home,
+        NextBeatmap,
+        PreviousBeatmap,
+        IncreaseVolume,
+        DecreaseVolume,
+        NextVolumeMeter,
+        PreviousVolumeMeter,
+        Select
     }
 }
