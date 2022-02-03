@@ -65,7 +65,6 @@ namespace Circle.Game.Overlays
                 if (queuedTrack == CurrentTrack)
                 {
                     AddInternal(queuedTrack);
-                    queuedTrack.Seek(info.Settings.PreviewSongStart * 1000);
                     queuedTrack.VolumeTo(0).Then().VolumeTo(1, 300, Easing.Out);
                 }
                 else

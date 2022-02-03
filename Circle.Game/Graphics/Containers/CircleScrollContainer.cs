@@ -133,8 +133,8 @@ namespace Circle.Game.Graphics.Containers
             [BackgroundDependencyLoader]
             private void load()
             {
-                Colour = defaultColour = Color4.Black.Opacity(0.4f);
-                hoverColour = Color4.White.Opacity(0.4f);
+                Colour = defaultColour = Color4.White.Opacity(0.3f);
+                hoverColour = Color4.White.Opacity(0.5f);
                 highlightColour = Color4.Gray;
             }
 
