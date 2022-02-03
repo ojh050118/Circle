@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmap;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -13,49 +12,46 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class Background : CompositeDrawable
     {
-        private BufferedContainer bufferedContainer;
-        private BufferedContainer newBufferedContainer;
-        private Box dim;
-
-        public readonly Sprite Sprite;
-
-        private readonly string textureName;
-
-        public Vector2 BlurSigma
-        {
-            get
-            {
-                if (bufferedContainer == null)
-                    return newBufferedContainer.BlurSigma;
-                else
-                    return bufferedContainer.BlurSigma;
-            }
-            set => bufferedContainer.BlurSigma = value;
-        }
-
-        public float Dim;
-
-        private readonly TextureSource source;
-
         [Resolved]
         private LargeTextureStore largeTexture { get; set; }
 
         [Resolved]
         private BeatmapResourcesManager beatmapResources { get; set; }
 
+        private readonly Sprite sprite;
+        private BufferedContainer currentTexture;
+        private Box dimBox;
+
+        private readonly string textureName;
+        private readonly TextureSource source;
+        private Vector2 blurSigma;
+        private float dim;
+
+        public Vector2 BlurSigma
+        {
+            get => blurSigma;
+            set => BlurTo(value);
+        }
+
+        public float Dim
+        {
+            get => dim;
+            set => DimTo(value);
+        }
+
         public Background(TextureSource source = TextureSource.Internal, string textureName = @"")
         {
             this.source = source;
             this.textureName = textureName;
             RelativeSizeAxes = Axes.Both;
-            AddInternal(bufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
+            AddInternal(currentTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
                 RedrawOnScale = false,
                 Masking = true,
-                Child = Sprite = new Sprite
+                Child = sprite = new Sprite
                 {
                     RelativeSizeAxes = Axes.Both,
                     Anchor = Anchor.Centre,
@@ -69,25 +65,25 @@ namespace Circle.Game.Graphics.UserInterface
         private void load()
         {
             if (!string.IsNullOrEmpty(textureName))
-                Sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapResources.GetBackground(textureName);
+                sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapResources.GetBackground(textureName);
         }
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
         {
-            Schedule(() => bufferedContainer?.BlurTo(newBlurSigma, duration, easing));
-            Schedule(() => newBufferedContainer?.BlurTo(newBlurSigma, duration, easing));
+            blurSigma = newBlurSigma;
+            Schedule(() => currentTexture?.BlurTo(newBlurSigma, duration, easing));
         }
 
         public void ColorTo(Color4 color4, double duration = 0, Easing easing = Easing.None)
         {
-            bufferedContainer.FadeColour(color4, duration, easing);
+            currentTexture.FadeColour(color4, duration, easing);
         }
 
         public void DimTo(float newAlpha, double duration = 0, Easing easing = Easing.None)
         {
-            if (dim == null)
+            if (dimBox == null)
             {
-                AddInternal(dim = new Box
+                AddInternal(dimBox = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = Color4.Black,
@@ -95,8 +91,8 @@ namespace Circle.Game.Graphics.UserInterface
                 });
             }
 
-            dim?.FadeTo(newAlpha, duration, easing);
-            Dim = newAlpha;
+            dimBox?.FadeTo(newAlpha, duration, easing);
+            dim = newAlpha;
         }
 
         private Sprite loadTexture(TextureSource source, string textureName)
@@ -111,29 +107,36 @@ namespace Circle.Game.Graphics.UserInterface
             };
         }
 
-        public void FadeTextureTo(TextureSource source, string textureName, double duration = 0, Easing easing = Easing.None)
+        public void ChangeTexture(TextureSource source, string name, double duration = 0, Easing easing = Easing.None)
         {
-            if (Sprite is null || string.IsNullOrEmpty(textureName))
+            if (string.IsNullOrEmpty(name))
                 return;
 
-            AddInternal(newBufferedContainer = new BufferedContainer(cachedFrameBuffer: true)
+            var queuedTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 Alpha = 0,
+                BlurSigma = BlurSigma,
                 RelativeSizeAxes = Axes.Both,
                 RedrawOnScale = false,
                 Masking = true,
-                Child = loadTexture(source, textureName),
-            });
-            if (dim != null)
-                ChangeInternalChildDepth(dim, -1);
+                Child = loadTexture(source, name),
+            };
+            var lastTexture = currentTexture;
+            currentTexture = queuedTexture;
 
-            newBufferedContainer.BlurSigma = BlurSigma;
-            newBufferedContainer.FadeIn(duration, easing).Then().Schedule(() =>
+            Schedule(() =>
             {
-                RemoveInternal(InternalChildren.First());
-                bufferedContainer = newBufferedContainer;
+                if (queuedTexture == currentTexture)
+                {
+                    AddInternal(queuedTexture);
+                    if (dimBox != null)
+                        ChangeInternalChildDepth(dimBox, -1);
+                    queuedTexture.FadeIn(duration, easing).Then().Schedule(() => lastTexture.Expire());
+                }
+                else
+                    queuedTexture.Dispose();
             });
         }
     }

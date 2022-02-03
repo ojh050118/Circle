@@ -188,9 +188,9 @@ namespace Circle.Game.Screens.Select
         private void onBeatmapChanged(ValueChangedEvent<BeatmapInfo> beatmap)
         {
             if (string.IsNullOrEmpty(beatmap.NewValue.Settings.BgImage))
-                background.FadeTextureTo(TextureSource.Internal, "Duelyst", 500, Easing.Out);
+                background.ChangeTexture(TextureSource.Internal, "Duelyst", 500, Easing.Out);
             else
-                background.FadeTextureTo(TextureSource.External, beatmap.NewValue.Settings.BgImage, 500, Easing.Out);
+                background.ChangeTexture(TextureSource.External, beatmap.NewValue.Settings.BgImage, 500, Easing.Out);
 
             if (!string.IsNullOrEmpty(beatmap.NewValue.Settings.Song) && !string.IsNullOrEmpty(beatmap.NewValue.Settings.Artist))
             {

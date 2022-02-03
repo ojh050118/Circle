@@ -87,9 +87,9 @@ namespace Circle.Game.Screens.Select
             Scroll.ScrollTo(getScaledPositionY(item) + item.Height / 2);
 
             if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BgImage))
-                background.FadeTextureTo(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
+                background.ChangeTexture(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
             else
-                background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
+                background.ChangeTexture(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
 
             if (!working.Value.Equals(item.BeatmapInfo))
             {

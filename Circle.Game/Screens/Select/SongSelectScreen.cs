@@ -1,6 +1,4 @@
-﻿using Circle.Game.Graphics.UserInterface;
-using Circle.Game.Screens.Play;
-using osu.Framework.Allocation;
+﻿using Circle.Game.Screens.Play;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 
@@ -9,9 +7,6 @@ namespace Circle.Game.Screens.Select
     public class SongSelectScreen : CircleScreen
     {
         public override string Header => "Play";
-
-        [Resolved]
-        private Background background { get; set; }
 
         private readonly BeatmapCarousel carousel;
         private readonly BeatmapDetails details;
@@ -55,13 +50,6 @@ namespace Circle.Game.Screens.Select
 
             details.RotateTo(-45).Then().RotateTo(0, 1000, Easing.OutPow10);
             details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
-        }
-
-        public override bool OnExiting(IScreen next)
-        {
-            background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
-
-            return base.OnExiting(next);
         }
 
         public override void OnSuspending(IScreen next)
