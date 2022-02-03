@@ -57,13 +57,6 @@ namespace Circle.Game.Screens.Select
             details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
         }
 
-        public override bool OnExiting(IScreen next)
-        {
-            background.FadeTextureTo(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
-
-            return base.OnExiting(next);
-        }
-
         public override void OnSuspending(IScreen next)
         {
             base.OnSuspending(next);

@@ -30,6 +30,9 @@ namespace Circle.Game.Screens
         [Resolved]
         private DialogOverlay dialog { get; set; }
 
+        [Resolved]
+        private Background background { get; set; }
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -76,6 +79,13 @@ namespace Circle.Game.Screens
                     }
                 }
             };
+        }
+
+        public override void OnResuming(IScreen last)
+        {
+            base.OnResuming(last);
+
+            background.ChangeTexture(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
         }
 
         private void onExit()

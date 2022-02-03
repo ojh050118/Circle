@@ -13,7 +13,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
         {
             Background background;
             BasicTextBox textBox;
-            double fadeDuration = 0;
+            double duration = 0;
 
             Add(new Box
             {
@@ -33,17 +33,21 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 Size = new Vector2(200, 30)
             });
 
-            AddLabel("Scale");
-            AddStep("Scale to 0.6", () => background.Scale = new Vector2(0.6f));
-            AddStep("Scale to 1", () => background.Scale = new Vector2(1));
+            AddSliderStep<double>("Duration", 0, 1000, 500, v => duration = v);
+
+            AddLabel("Dim");
+            AddSliderStep<float>("Dim", 0, 1, 0, v => background.Dim = v);
+            AddStep("Dim to 0.5", () => background.DimTo(0.5f, duration));
+            AddStep("Dim to 0", () => background.DimTo(0, duration));
+
             AddLabel("Blur");
-            AddSliderStep("BlurSIgma", 0, 10f, 0, v => background.BlurSigma = new Vector2(v));
-            AddStep("BlurTo 10", () => background.BlurTo(new Vector2(10), 500));
-            AddStep("BlurTo 0", () => background.BlurTo(Vector2.Zero, 500));
+            AddSliderStep("BlurSigma", 0, 10f, 0, v => background.BlurSigma = new Vector2(v));
+            AddStep("Blur to 10", () => background.BlurTo(new Vector2(10), duration));
+            AddStep("Blur to 0", () => background.BlurTo(Vector2.Zero, duration));
+
             AddLabel("Fade texture");
-            AddSliderStep<double>("Duration", 0, 2000, 1000, v => fadeDuration = v);
-            AddStep("Fade texture to Duelyst", () => background.FadeTextureTo(TextureSource.Internal, "Duelyst", fadeDuration));
-            AddStep("Fade texture to external texture", () => background.FadeTextureTo(TextureSource.External, textBox.Text, fadeDuration));
+            AddStep("Fade texture to Duelyst", () => background.ChangeTexture(TextureSource.Internal, "Duelyst", duration));
+            AddStep("Fade texture to external texture", () => background.ChangeTexture(TextureSource.External, textBox.Text, duration));
         }
     }
 }
