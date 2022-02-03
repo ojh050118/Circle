@@ -44,7 +44,7 @@ namespace Circle.Game.Screens
 
             if (FadeBackground)
             {
-                background.DimTo(background.Dim + 0.5f, 1000, Easing.OutPow10);
+                background.DimTo(background.Dim + 0.4f, 1000, Easing.OutPow10);
                 background.BlurTo(background.BlurSigma + new Vector2(10), 1000, Easing.OutPow10);
             }
         }
@@ -55,7 +55,7 @@ namespace Circle.Game.Screens
 
             if (FadeBackground)
             {
-                background.DimTo(background.Dim - 0.5f, 1000, Easing.OutPow10);
+                background.DimTo(background.Dim - 0.4f, 1000, Easing.OutPow10);
                 background.BlurTo(background.BlurSigma - new Vector2(10), 1000, Easing.OutPow10);
             }
 
