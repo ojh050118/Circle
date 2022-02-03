@@ -178,7 +178,6 @@ namespace Circle.Game.Screens.Select
 
                 totalY += 250 * nextScale;
                 totalY += 10;
-
             }
 
             return totalY;
