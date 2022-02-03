@@ -17,8 +17,6 @@ namespace Circle.Game.Screens.Select
     {
         protected readonly CarouselScrollContainer Scroll;
 
-        private int oldScrollHeight;
-
         [Resolved]
         private Bindable<BeatmapInfo> working { get; set; }
 
@@ -137,10 +135,6 @@ namespace Circle.Game.Screens.Select
             base.UpdateAfterChildren();
 
             Scroll.ScrollContent.Height = Scroll.ScrollContent.Child.Height + DrawHeight;
-
-            // 부동소수점 끼리 비교할 수 없기 때문에 정수로 비교.
-            if (oldScrollHeight != (int)Math.Round(Scroll.ScrollContent.Height))
-                oldScrollHeight = (int)Math.Round(Scroll.ScrollContent.Height);
         }
 
         private void updateItemScale(CarouselItem item)
