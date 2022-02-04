@@ -182,7 +182,7 @@ namespace Circle.Game.Screens.Play
                 {
                     TileType = types[floor],
                     Floor = floor,
-                    Angle = angleData[floor],
+                    Angle = types[floor] == TileType.Midspin ? angleData[floor - 1] : angleData[floor],
                     Position = tilePositions[floor],
                 };
             }
@@ -203,13 +203,11 @@ namespace Circle.Game.Screens.Play
                             case SpeedType.Multiplier:
                                 infos[action.Floor].SpeedType = SpeedType.Multiplier;
                                 infos[action.Floor].BpmMultiplier = action.BpmMultiplier;
-
                                 break;
 
                             case SpeedType.Bpm:
                                 infos[action.Floor].SpeedType = SpeedType.Bpm;
                                 infos[action.Floor].Bpm = action.BeatsPerMinute;
-
                                 break;
                         }
 
