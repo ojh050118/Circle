@@ -55,9 +55,6 @@ namespace Circle.Game.Screens.Play
             isClockwise = true;
             redPlanet.Expansion = bluePlanet.Expansion = 0;
             bluePlanet.Rotation = tileInfos.First().Angle - 180;
-
-            for (int i = 8; i < tileInfos.Length; i++)
-                tileContainer.Children[i].Alpha = 0;
         }
 
         protected override void LoadComplete()
@@ -196,6 +193,9 @@ namespace Circle.Game.Screens.Play
             float bpm = beatmap.Value.Settings.Bpm;
             float previousAngle = CalculationExtensions.GetSafeAngle(tileInfos.First().Angle - 180);
 
+            for (int i = 8; i < tileInfos.Length; i++)
+                tileContainer.Children[i].Alpha = 0;
+
             // Fade in
             for (int i = 8; i < tileInfos.Length; i++)
             {
@@ -226,7 +226,7 @@ namespace Circle.Game.Screens.Play
                 if (i > 3)
                 {
                     using (tileContainer.Children[i - 4].BeginAbsoluteSequence(startTimeOffset))
-                        tileContainer.Children[i - 4].FadeOut(60000 / bpm, Easing.Out);
+                        tileContainer.Children[i - 4].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
 
                 startTimeOffset += GetRelativeDuration(fixedRotation, newRotation, bpm);
