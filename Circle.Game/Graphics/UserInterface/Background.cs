@@ -12,21 +12,6 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class Background : CompositeDrawable
     {
-        [Resolved]
-        private LargeTextureStore largeTexture { get; set; }
-
-        [Resolved]
-        private BeatmapResourcesManager beatmapResources { get; set; }
-
-        private readonly Sprite sprite;
-        private BufferedContainer currentTexture;
-        private Box dimBox;
-
-        private readonly string textureName;
-        private readonly TextureSource source;
-        private Vector2 blurSigma;
-        private float dim;
-
         public Vector2 BlurSigma
         {
             get => blurSigma;
@@ -39,10 +24,28 @@ namespace Circle.Game.Graphics.UserInterface
             set => DimTo(value);
         }
 
+        public string TextureName { get; private set; }
+        public TextureSource TextureSource { get; private set; }
+
+        [Resolved]
+        private LargeTextureStore largeTexture { get; set; }
+
+        [Resolved]
+        private BeatmapResourcesManager beatmapResources { get; set; }
+
+        private readonly Sprite sprite;
+        private BufferedContainer currentTexture;
+        private Box dimBox;
+
+        private readonly TextureSource source;
+        private Vector2 blurSigma;
+        private float dim;
+
         public Background(TextureSource source = TextureSource.Internal, string textureName = @"")
         {
             this.source = source;
-            this.textureName = textureName;
+            TextureName = textureName;
+            TextureSource = source;
             RelativeSizeAxes = Axes.Both;
             AddInternal(currentTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
@@ -64,8 +67,8 @@ namespace Circle.Game.Graphics.UserInterface
         [BackgroundDependencyLoader]
         private void load()
         {
-            if (!string.IsNullOrEmpty(textureName))
-                sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapResources.GetBackground(textureName);
+            if (!string.IsNullOrEmpty(TextureName))
+                sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(TextureName) : beatmapResources.GetBackground(TextureName);
         }
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
@@ -112,6 +115,8 @@ namespace Circle.Game.Graphics.UserInterface
             if (string.IsNullOrEmpty(name))
                 return;
 
+            TextureName = name;
+            TextureSource = source;
             var queuedTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,

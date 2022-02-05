@@ -1,9 +1,12 @@
 ﻿using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Screens.Setting.Sections;
+using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Screens;
 using osuTK;
 using osuTK.Graphics;
 
@@ -12,6 +15,12 @@ namespace Circle.Game.Screens.Setting
     public class SettingsScreen : CircleScreen
     {
         public override string Header => "Settings";
+
+        [Resolved]
+        private Background background { get; set; }
+
+        private string oldTexture;
+        private TextureSource oldTextureSource;
 
         public SettingsScreen()
         {
@@ -57,6 +66,22 @@ namespace Circle.Game.Screens.Setting
                     }
                 },
             });
+        }
+
+        public override void OnEntering(IScreen last)
+        {
+            base.OnEntering(last);
+
+            oldTexture = background.TextureName;
+            oldTextureSource = background.TextureSource;
+            background.ChangeTexture(TextureSource.Internal, "bg2", 1000, Easing.OutPow10);
+        }
+
+        public override bool OnExiting(IScreen next)
+        {
+            background.ChangeTexture(oldTextureSource, oldTexture, 1000, Easing.OutPow10);
+
+            return base.OnExiting(next);
         }
     }
 }

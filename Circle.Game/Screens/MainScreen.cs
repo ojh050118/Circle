@@ -90,7 +90,7 @@ namespace Circle.Game.Screens
         {
             base.OnResuming(last);
 
-            background.ChangeTexture(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
+            background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
         }
 
         public override void OnExit()

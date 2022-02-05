@@ -20,7 +20,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 Colour = Color4.Black,
                 RelativeSizeAxes = Axes.Both
             });
-            Add(background = new Background(textureName: "Duelyst")
+            Add(background = new Background(textureName: "bg1")
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -46,7 +46,8 @@ namespace Circle.Game.Tests.Visual.UserInterface
             AddStep("Blur to 0", () => background.BlurTo(Vector2.Zero, duration));
 
             AddLabel("Fade texture");
-            AddStep("Fade texture to Duelyst", () => background.ChangeTexture(TextureSource.Internal, "Duelyst", duration));
+            AddStep("Fade texture to bg1", () => background.ChangeTexture(TextureSource.Internal, "bg1", duration));
+            AddStep("Fade texture to bg2", () => background.ChangeTexture(TextureSource.Internal, "bg2", duration));
             AddStep("Fade texture to external texture", () => background.ChangeTexture(TextureSource.External, textBox.Text, duration));
         }
     }

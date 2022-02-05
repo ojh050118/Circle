@@ -70,7 +70,6 @@ namespace Circle.Game.Screens
 
             this.MoveToX(0, 1000, Easing.OutPow10);
             this.FadeIn(1000, Easing.OutPow10);
-            OnResume();
         }
 
         public override void OnSuspending(IScreen next)
@@ -97,9 +96,5 @@ namespace Circle.Game.Screens
         }
 
         public virtual void OnExit() => this.Exit();
-
-        protected virtual void OnResume()
-        {
-        }
     }
 }
