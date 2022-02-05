@@ -144,7 +144,7 @@ namespace Circle.Game.Screens.Select
             if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BgImage))
                 background.ChangeTexture(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
             else
-                background.ChangeTexture(TextureSource.Internal, "Duelyst", 1000, Easing.OutPow10);
+                background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
 
             if (!working.Value.Equals(item.BeatmapInfo))
             {

@@ -136,9 +136,10 @@ namespace Circle.Game.Screens.Play
             base.OnExit();
         }
 
-        protected override void OnResume()
+        public override void OnResuming(IScreen last)
         {
-            base.OnResume();
+            base.OnResuming(last);
+
             onPaused();
         }
 

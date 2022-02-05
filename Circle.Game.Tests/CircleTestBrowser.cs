@@ -25,7 +25,7 @@ namespace Circle.Game.Tests
 
             AddRange(new Drawable[]
             {
-                background = new Background(textureName: "Duelyst"),
+                background = new Background(textureName: "bg1"),
                 new TestBrowser("Circle"),
                 dialog = new DialogOverlay(new BufferedContainer()),
                 new CursorContainer()

@@ -188,7 +188,7 @@ namespace Circle.Game.Screens.Select
         private void onBeatmapChanged(ValueChangedEvent<BeatmapInfo> beatmap)
         {
             if (string.IsNullOrEmpty(beatmap.NewValue.Settings.BgImage))
-                background.ChangeTexture(TextureSource.Internal, "Duelyst", 500, Easing.Out);
+                background.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
             else
                 background.ChangeTexture(TextureSource.External, beatmap.NewValue.Settings.BgImage, 500, Easing.Out);
 

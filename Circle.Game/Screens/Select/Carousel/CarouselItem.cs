@@ -54,7 +54,7 @@ namespace Circle.Game.Screens.Select.Carousel
                 RelativeSizeAxes = Axes.Both,
                 FillMode = FillMode.Fill,
                 Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BgImage)
-                    ? largeTexture.Get("Duelyst")
+                    ? largeTexture.Get("bg1")
                     : beatmapResources.GetBackground(BeatmapInfo)
             };
 

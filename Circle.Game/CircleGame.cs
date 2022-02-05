@@ -31,7 +31,7 @@ namespace Circle.Game
                     RelativeSizeAxes = Axes.Both,
                     Children = new Drawable[]
                     {
-                        background = new Background(textureName: "Duelyst"),
+                        background = new Background(textureName: "bg1"),
                         screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
                     }
                 },
