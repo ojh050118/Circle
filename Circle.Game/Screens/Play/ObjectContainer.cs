@@ -214,8 +214,7 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case EventType.SetPlanetRotation:
-                            infos[action.Floor].Easing = action.Ease;
-
+                        infos[action.Floor].Easing = action.Ease;
                         break;
 
                     case EventType.MoveCamera:
@@ -268,8 +267,7 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case EventType.SetPlanetRotation:
-                            Children[action.Floor].Easing = action.Ease;
-
+                        Children[action.Floor].Easing = action.Ease;
                         break;
 
                     case EventType.MoveCamera:
