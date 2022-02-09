@@ -14,7 +14,6 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
-using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
 
