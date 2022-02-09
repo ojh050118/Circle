@@ -213,9 +213,15 @@ namespace Circle.Game.Screens.Play
 
                         break;
 
-                    case EventType.Other:
-                        // Todo: 회전 에이징 추가
+                    case EventType.SetPlanetRotation:
+                        infos[action.Floor].Easing = action.Ease;
+                        break;
+
+                    case EventType.MoveCamera:
                         // Todo: 카메라 기능 추가
+                        break;
+
+                    case EventType.Other:
                         break;
                 }
             }
@@ -258,6 +264,10 @@ namespace Circle.Game.Screens.Play
                                 break;
                         }
 
+                        break;
+
+                    case EventType.SetPlanetRotation:
+                        Children[action.Floor].Easing = action.Ease;
                         break;
 
                     case EventType.MoveCamera:

@@ -56,6 +56,7 @@ namespace Circle.Game.Beatmap
         public float BeatsPerMinute;
         public float BpmMultiplier;
         public Relativity? RelativeTo;
+        public Easing Ease;
     }
 
     public enum EventType
@@ -63,6 +64,7 @@ namespace Circle.Game.Beatmap
         Twirl,
         SetSpeed,
         MoveCamera,
+        SetPlanetRotation,
         Other
     }
 
