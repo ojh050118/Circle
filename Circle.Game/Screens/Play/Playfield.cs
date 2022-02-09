@@ -72,6 +72,7 @@ namespace Circle.Game.Screens.Play
             float previousAngle;
             float bpm = beatmap.Value.Settings.Bpm;
             int floor = 0;
+            Easing easing = Easing.None;
 
             #region Initial planet rotate
 
@@ -79,7 +80,7 @@ namespace Circle.Game.Screens.Play
             {
                 startTimeOffset += GetRelativeDuration(bluePlanet.Rotation, tileInfos[floor].Angle, bpm);
                 bluePlanet.ExpandTo(1, 60000 / bpm, Easing.Out);
-                bluePlanet.RotateTo(tileInfos[floor].Angle, GetRelativeDuration(bluePlanet.Rotation, tileInfos[floor].Angle, bpm));
+                bluePlanet.RotateTo(tileInfos[floor].Angle, GetRelativeDuration(bluePlanet.Rotation, tileInfos[floor].Angle, bpm), easing);
             }
 
             using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
@@ -110,6 +111,9 @@ namespace Circle.Game.Screens.Play
                 bpm = getNewBpm(bpm, floor, tileInfos[floor].SpeedType);
                 previousAngle = newRotation;
 
+                if (tileInfos[floor].EventType == EventType.SetPlanetRotation)
+                    easing = tileInfos[floor].Easing;
+
                 switch (planetState)
                 {
                     case PlanetState.Fire:
@@ -117,7 +121,7 @@ namespace Circle.Game.Screens.Play
                         {
                             redPlanet.ExpandTo(1);
                             redPlanet.RotateTo(fixedRotation);
-                            redPlanet.RotateTo(newRotation, GetRelativeDuration(fixedRotation, newRotation, bpm));
+                            redPlanet.RotateTo(newRotation, GetRelativeDuration(fixedRotation, newRotation, bpm), easing);
                         }
 
                         break;
@@ -127,7 +131,7 @@ namespace Circle.Game.Screens.Play
                         {
                             bluePlanet.ExpandTo(1);
                             bluePlanet.RotateTo(fixedRotation);
-                            bluePlanet.RotateTo(newRotation, GetRelativeDuration(fixedRotation, newRotation, bpm));
+                            bluePlanet.RotateTo(newRotation, GetRelativeDuration(fixedRotation, newRotation, bpm), easing);
                         }
 
                         break;
