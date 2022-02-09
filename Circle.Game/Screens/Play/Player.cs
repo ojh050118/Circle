@@ -7,11 +7,14 @@ using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Bindables;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
+using osuTK.Graphics;
 using osuTK.Input;
 
 namespace Circle.Game.Screens.Play
@@ -63,6 +66,23 @@ namespace Circle.Game.Screens.Play
             InternalChildren = new Drawable[]
             {
                 masterGameplayClockContainer = new MasterGameplayClockContainer(beatmap, Clock),
+                new Container
+                {
+                    AutoSizeAxes = Axes.Both,
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Y = 32,
+                    Children = new Drawable[]
+                    {
+                        new SpriteText
+                        {
+                            Text = $"{beatmap.Value.Settings.Artist} - {beatmap.Value.Settings.Song}",
+                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
+                            Shadow = true,
+                            ShadowColour = Color4.Black.Opacity(0.4f),
+                        }
+                    }
+                },
             };
 
             masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
@@ -136,6 +156,13 @@ namespace Circle.Game.Screens.Play
             base.OnExit();
         }
 
+        public override bool OnExiting(IScreen next)
+        {
+            this.FadeOut(1000, Easing.OutPow10);
+
+            return base.OnExiting(next);
+        }
+
         public override void OnResuming(IScreen last)
         {
             base.OnResuming(last);
@@ -158,6 +185,7 @@ namespace Circle.Game.Screens.Play
                 new DialogButton
                 {
                     Text = "Exit",
+                    TextColour = Color4.Red,
                     Action = () =>
                     {
                         playState = GamePlayState.NotPlaying;
