@@ -6,12 +6,8 @@
     <OutputType>Exe</OutputType>
     <ProjectGuid>{7AA1DB5D-78DB-4693-AE50-D6078F5A0CAB}</ProjectGuid>
     <RootNamespace>Circle.iOS</RootNamespace>
-    <AssemblyName>Circle</AssemblyName>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProvisioningType>automatic</ProvisioningType>
+    <AssemblyName>Circle.iOS</AssemblyName>
+    <MtouchUseLlvm>false</MtouchUseLlvm>
   </PropertyGroup>
   <Import Project="..\Circle.iOS.props" />
   <ItemGroup>
@@ -38,14 +34,8 @@
       <Name>Circle.Resources</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup Label="Package References">
-    <PackageReference Include="ppy.osu.Framework.iOS" Version="2021.1111.0" />
-  </ItemGroup>
-  <ItemGroup Label="Transitive Dependencies">
-    <PackageReference Include="ppy.osu.Framework" Version="2021.1111.0" />
-    <PackageReference Include="ppy.osu.Framework.NativeLibs" Version="2021.805.0" ExcludeAssets="all">
-      <IncludeAssets>none</IncludeAssets>
-    </PackageReference>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.1" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
