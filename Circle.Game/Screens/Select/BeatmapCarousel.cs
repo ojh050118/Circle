@@ -18,10 +18,10 @@ namespace Circle.Game.Screens.Select
 {
     public class BeatmapCarousel : CompositeDrawable, IKeyBindingHandler<InputAction>
     {
-        protected readonly CarouselScrollContainer Scroll;
+        protected CarouselScrollContainer Scroll;
 
         [Resolved]
-        private Bindable<BeatmapInfo> working { get; set; }
+        private BeatmapManager beatmapManager { get; set; }
 
         [Resolved]
         private MusicController music { get; set; }
@@ -33,7 +33,14 @@ namespace Circle.Game.Screens.Select
 
         private CarouselItem selectedItem;
 
-        public BeatmapCarousel()
+        /// <summary>
+        /// BeatmapDetails에서 비트맵을 변경할 때 필요합니다.
+        /// BeatmapDetails에서 BeatmapManager.OnBeatmapChanged 이벤트를 구독하면 TextFlowContainer에서 오류가 발생하기 떄문입니다.
+        /// </summary>
+        public Bindable<BeatmapInfo> SelectedBeatmap;
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             RelativeSizeAxes = Axes.Both;
             InternalChildren = new Drawable[]
@@ -53,16 +60,47 @@ namespace Circle.Game.Screens.Select
                     }
                 }
             };
-        }
 
-        [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps)
-        {
-            foreach (var beatmap in beatmaps.GetBeatmaps())
+            SelectedBeatmap = new Bindable<BeatmapInfo>(beatmapManager.CurrentBeatmap);
+            if (beatmapManager.LoadedBeatmaps == null)
+                beatmapManager.ReloadBeatmaps();
+
+            foreach (var beatmap in beatmapManager.LoadedBeatmaps)
                 Scroll.Child.Add(new CarouselItem { BeatmapInfo = beatmap });
 
             foreach (var item in Scroll.Child.Children)
                 item.State.BindValueChanged(state => onChangedItemState(item, state));
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            if (Scroll.Child.Children.Count == 0)
+                return;
+
+            if (string.IsNullOrEmpty(beatmapManager.CurrentBeatmap.Settings.Song))
+            {
+                var idx = new Random().Next(0, Scroll.Child.Children.Count);
+                Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
+                return;
+            }
+
+            foreach (var item in Scroll.Child.Children)
+            {
+                if (item.BeatmapInfo.Equals(beatmapManager.CurrentBeatmap))
+                {
+                    Scheduler.AddDelayed(() => item.State.Value = CarouselItemState.Selected, 50);
+                    break;
+                }
+            }
+        }
+
+        protected override void UpdateAfterChildren()
+        {
+            base.UpdateAfterChildren();
+
+            Scroll.ScrollContent.Height = Scroll.ScrollContent.Child.Height + DrawHeight;
         }
 
         public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
@@ -146,9 +184,10 @@ namespace Circle.Game.Screens.Select
             else
                 background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
 
-            if (!working.Value.Equals(item.BeatmapInfo))
+            if (!beatmapManager.CurrentBeatmap.Equals(item.BeatmapInfo))
             {
-                working.Value = item.BeatmapInfo;
+                beatmapManager.CurrentBeatmap = item.BeatmapInfo;
+                SelectedBeatmap.Value = beatmapManager.CurrentBeatmap;
                 music.ChangeTrack(item.BeatmapInfo);
                 music.SeekTo(item.BeatmapInfo.Settings.PreviewSongStart * 1000);
                 music.Play();
@@ -159,37 +198,6 @@ namespace Circle.Game.Screens.Select
                 if (notSelected != item)
                     notSelected.State.Value = CarouselItemState.NotSelected;
             }
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            if (Scroll.Child.Children.Count == 0)
-                return;
-
-            if (string.IsNullOrEmpty(working.Value.Settings.Song))
-            {
-                var idx = new Random().Next(0, Scroll.Child.Children.Count);
-                Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
-                return;
-            }
-
-            foreach (var item in Scroll.Child.Children)
-            {
-                if (item.BeatmapInfo.Equals(working.Value))
-                {
-                    Scheduler.AddDelayed(() => item.State.Value = CarouselItemState.Selected, 50);
-                    break;
-                }
-            }
-        }
-
-        protected override void UpdateAfterChildren()
-        {
-            base.UpdateAfterChildren();
-
-            Scroll.ScrollContent.Height = Scroll.ScrollContent.Child.Height + DrawHeight;
         }
 
         private void updateItemScale(CarouselItem item)

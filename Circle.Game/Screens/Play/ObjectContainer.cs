@@ -5,7 +5,6 @@ using Circle.Game.Beatmap;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osuTK;
@@ -26,9 +25,9 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(Bindable<BeatmapInfo> beatmap)
+        private void load(BeatmapManager beatmap)
         {
-            beatmapInfo = beatmap.Value;
+            beatmapInfo = beatmap.CurrentBeatmap;
             createTiles();
         }
 

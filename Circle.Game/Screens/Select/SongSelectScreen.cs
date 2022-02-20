@@ -44,6 +44,7 @@ namespace Circle.Game.Screens.Select
                 if (v.NewValue)
                     this.Push(new Player());
             };
+            carousel.SelectedBeatmap.ValueChanged += beatmap => details.ChangeBeatmap(beatmap.NewValue);
         }
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)

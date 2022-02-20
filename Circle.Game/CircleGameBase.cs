@@ -5,7 +5,6 @@ using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Resources;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Configuration.Tracking;
 using osu.Framework.Development;
 using osu.Framework.Graphics;
@@ -13,7 +12,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Performance;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
-using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osuTK;
 
@@ -31,8 +29,6 @@ namespace Circle.Game
 
         protected Storage Storage { get; set; }
 
-        protected Bindable<BeatmapInfo> WorkingBeatmap { get; set; }
-
         protected override Container<Drawable> Content => ContentContainer;
 
         protected MusicController MusicController { get; private set; }
@@ -40,6 +36,10 @@ namespace Circle.Game
         private DependencyContainer dependencies;
 
         protected BeatmapResourcesManager BeatmapResourceStore { get; set; }
+
+        protected BeatmapStorage BeatmapStorage { get; set; }
+
+        protected BeatmapManager BeatmapManager { get; set; }
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
@@ -56,7 +56,7 @@ namespace Circle.Game
         protected CircleGameBase()
         {
             IsDevelopmentBuild = DebugUtils.IsDebugBuild;
-            Name = $"Circle {(IsDevelopmentBuild ? "(Development Mode)" : string.Empty)}";
+            Name = $"Circle{(IsDevelopmentBuild ? " (Development mode)" : string.Empty)}";
         }
 
         [BackgroundDependencyLoader]
@@ -76,15 +76,14 @@ namespace Circle.Game
 
             dependencies.CacheAs(largeStore);
 
-            dependencies.CacheAs(new BeatmapStorage(files));
             dependencies.CacheAs(BeatmapResourceStore = new BeatmapResourcesManager(files, Audio, Host));
+            dependencies.CacheAs(BeatmapStorage = new BeatmapStorage(files, BeatmapResourceStore));
+            dependencies.CacheAs(BeatmapManager = new BeatmapManager(BeatmapStorage));
 
             dependencies.CacheAs(Storage);
 
             dependencies.CacheAs(LocalConfig);
             dependencies.CacheAs(TrackedSettings);
-
-            dependencies.CacheAs(WorkingBeatmap = new Bindable<BeatmapInfo>());
 
             dependencies.CacheAs(MusicController = new MusicController());
 
@@ -107,13 +106,6 @@ namespace Circle.Game
             base.LoadComplete();
 
             applySettings();
-
-            WorkingBeatmap.ValueChanged += value =>
-            {
-                var oldBeatmapName = $"[{value.OldValue.Settings.Author}] {value.OldValue.Settings.Artist} - {value.OldValue.Settings.Song}";
-                var newBeatmapName = $"[{value.NewValue.Settings.Author}] {value.NewValue.Settings.Artist} - {value.NewValue.Settings.Song}";
-                Logger.Log($"Beatmap changed: {oldBeatmapName} ¡æ {value.NewValue.Settings.Author} - {newBeatmapName}.");
-            };
         }
 
         public override void SetHost(GameHost host)

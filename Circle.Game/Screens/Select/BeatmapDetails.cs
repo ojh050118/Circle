@@ -2,7 +2,6 @@
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
@@ -18,18 +17,19 @@ namespace Circle.Game.Screens.Select
     public class BeatmapDetails : Container
     {
         [Resolved]
-        private Bindable<BeatmapInfo> workingBeatmap { get; set; }
+        private BeatmapManager beatmapManager { get; set; }
 
-        private readonly Background background;
-        private readonly SpriteText title;
-        private readonly SpriteText artist;
+        private Background background;
+        private SpriteText title;
+        private SpriteText artist;
 
-        private readonly SpriteText author;
-        private readonly SpriteText bpm;
-        private readonly SpriteText difficulty;
-        private readonly TextFlowContainer description;
+        private SpriteText author;
+        private SpriteText bpm;
+        private SpriteText difficulty;
+        private TextFlowContainer description;
 
-        public BeatmapDetails()
+        [BackgroundDependencyLoader]
+        private void load()
         {
             RelativeSizeAxes = Axes.Both;
             Child = new Container
@@ -179,30 +179,30 @@ namespace Circle.Game.Screens.Select
         {
             base.LoadComplete();
 
-            workingBeatmap.BindValueChanged(onBeatmapChanged);
-            workingBeatmap.TriggerChange();
+            // 로드 후 한번만 동기화 해야합니다.
+            ChangeBeatmap(beatmapManager.CurrentBeatmap);
         }
 
-        public void ChangeBeatmap(BeatmapInfo beatmap) => workingBeatmap.Value = beatmap;
+        public void ChangeBeatmap(BeatmapInfo beatmap) => onBeatmapChanged(beatmap);
 
-        private void onBeatmapChanged(ValueChangedEvent<BeatmapInfo> beatmap)
+        private void onBeatmapChanged(BeatmapInfo newBeatmap)
         {
-            if (string.IsNullOrEmpty(beatmap.NewValue.Settings.BgImage))
+            if (string.IsNullOrEmpty(newBeatmap.Settings.BgImage))
                 background.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
             else
-                background.ChangeTexture(TextureSource.External, beatmap.NewValue.Settings.BgImage, 500, Easing.Out);
+                background.ChangeTexture(TextureSource.External, newBeatmap.Settings.BgImage, 500, Easing.Out);
 
-            if (!string.IsNullOrEmpty(beatmap.NewValue.Settings.Song) && !string.IsNullOrEmpty(beatmap.NewValue.Settings.Artist))
+            if (!string.IsNullOrEmpty(newBeatmap.Settings.Song) && !string.IsNullOrEmpty(newBeatmap.Settings.Artist))
             {
-                title.Text = beatmap.NewValue.Settings.Song;
-                artist.Text = beatmap.NewValue.Settings.Artist;
+                title.Text = newBeatmap.Settings.Song;
+                artist.Text = newBeatmap.Settings.Artist;
             }
 
-            author.Text = $"Author: {beatmap.NewValue.Settings.Author}";
-            bpm.Text = $"BPM: {beatmap.NewValue.Settings.Bpm}";
-            difficulty.Text = $"Difficulty: {beatmap.NewValue.Settings.Difficulty}";
+            author.Text = $"Author: {newBeatmap.Settings.Author}";
+            bpm.Text = $"BPM: {newBeatmap.Settings.Bpm}";
+            difficulty.Text = $"Difficulty: {newBeatmap.Settings.Difficulty}";
             description.Clear();
-            description.AddText($"Description: {beatmap.NewValue.Settings.BeatmapDesc}", t => t.Font = FontUsage.Default.With(size: 24));
+            description.AddText($"Description: {newBeatmap.Settings.BeatmapDesc}", t => t.Font = FontUsage.Default.With(size: 24));
         }
     }
 }

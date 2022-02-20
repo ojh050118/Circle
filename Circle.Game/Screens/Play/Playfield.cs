@@ -4,7 +4,6 @@ using Circle.Game.Beatmap;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osuTK.Graphics;
@@ -19,7 +18,7 @@ namespace Circle.Game.Screens.Play
         private Container<Planet> planetContainer;
 
         [Resolved]
-        private Bindable<BeatmapInfo> beatmap { get; set; }
+        private BeatmapManager beatmap { get; set; }
 
         private TileInfo[] tileInfos;
 
@@ -59,8 +58,8 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            addTileTransforms(beatmap.Value.Settings.Offset - 60000 / beatmap.Value.Settings.Bpm);
-            addTransforms(beatmap.Value.Settings.Offset - 60000 / beatmap.Value.Settings.Bpm);
+            addTileTransforms(beatmap.CurrentBeatmap.Settings.Offset - 60000 / beatmap.CurrentBeatmap.Settings.Bpm);
+            addTransforms(beatmap.CurrentBeatmap.Settings.Offset - 60000 / beatmap.CurrentBeatmap.Settings.Bpm);
 
             base.LoadComplete();
         }
@@ -70,7 +69,7 @@ namespace Circle.Game.Screens.Play
             double startTimeOffset = gameplayStartTime;
             PlanetState planetState = PlanetState.Ice;
             float previousAngle;
-            float bpm = beatmap.Value.Settings.Bpm;
+            float bpm = beatmap.CurrentBeatmap.Settings.Bpm;
             int floor = 0;
             Easing easing = Easing.None;
 
@@ -194,7 +193,7 @@ namespace Circle.Game.Screens.Play
         private void addTileTransforms(double gameplayStartTime)
         {
             double startTimeOffset = gameplayStartTime;
-            float bpm = beatmap.Value.Settings.Bpm;
+            float bpm = beatmap.CurrentBeatmap.Settings.Bpm;
             float previousAngle = CalculationExtensions.GetSafeAngle(tileInfos.First().Angle - 180);
 
             for (int i = 8; i < tileInfos.Length; i++)
@@ -215,7 +214,7 @@ namespace Circle.Game.Screens.Play
             }
 
             startTimeOffset = gameplayStartTime;
-            bpm = beatmap.Value.Settings.Bpm;
+            bpm = beatmap.CurrentBeatmap.Settings.Bpm;
             previousAngle = CalculationExtensions.GetSafeAngle(tileInfos.First().Angle - 180);
             isClockwise = true;
 
