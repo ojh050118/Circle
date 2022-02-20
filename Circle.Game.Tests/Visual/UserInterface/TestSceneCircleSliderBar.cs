@@ -8,13 +8,14 @@ namespace Circle.Game.Tests.Visual.UserInterface
     {
         public TestSceneCircleSliderBar()
         {
+            CircleSliderBar<float> slider;
             var value = new BindableNumber<float>
             {
                 MinValue = 0,
                 MaxValue = 100,
             };
 
-            Add(new CircleSliderBar<float>
+            Add(slider = new CircleSliderBar<float>
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -22,6 +23,12 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 KeyboardStep = 5,
                 Current = value
             });
+            AddSliderStep<float>("Current", 0, 100, 0, v => slider.Current.Value = v);
+            AddStep("Current to 0", () => slider.Current.Value = 0);
+            AddStep("Current to 25", () => slider.Current.Value = 25);
+            AddStep("Current to 50", () => slider.Current.Value = 50);
+            AddStep("Current to 75", () => slider.Current.Value = 75);
+            AddStep("Current to 100", () => slider.Current.Value = 100);
         }
     }
 }
