@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>junho.circle</string>
+	<string>junho.Circle</string>
 	<key>CFBundleName</key>
 	<string>FlappyOsu</string>
 	<key>CFBundleDisplayName</key>
