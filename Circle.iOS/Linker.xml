@@ -9,7 +9,7 @@
     <assembly fullname="osu.Framework.iOS">
         <type fullname="*" />
     </assembly>
-    <assembly fullname="Circle.Game.Resources">
+    <assembly fullname="Circle.Resources">
         <type fullname="*" />
     </assembly>
 </linker>
