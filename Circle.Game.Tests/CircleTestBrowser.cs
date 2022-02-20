@@ -1,3 +1,4 @@
+using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using osu.Framework.Allocation;
@@ -15,6 +16,13 @@ namespace Circle.Game.Tests
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+        [BackgroundDependencyLoader]
+        private void load(CircleConfigManager config)
+        {
+            if (config.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
+                BeatmapManager.ReloadBeatmaps();
+        }
 
         protected override void LoadComplete()
         {

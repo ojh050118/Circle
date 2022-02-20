@@ -26,9 +26,9 @@ namespace Circle.Game.Tests.Visual.Overlays
         }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps, MusicController music)
+        private void load(BeatmapManager beatmaps, MusicController music)
         {
-            foreach (var beatmap in beatmaps.GetBeatmaps())
+            foreach (var beatmap in beatmaps.LoadedBeatmaps)
             {
                 AddStep($"{beatmap.Settings.SongFileName}", () => music.ChangeTrack(beatmap));
             }

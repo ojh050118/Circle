@@ -19,6 +19,7 @@ namespace Circle.Game.Configuration
             SetDefault(CircleSetting.Scale, 1f, 0.8f, 1.6f);
             SetDefault(CircleSetting.FpsDisplay, false);
             SetDefault(CircleSetting.Offset, 0);
+            SetDefault(CircleSetting.LoadBeatmapsOnStartup, true);
         }
 
         public override TrackedSettings CreateTrackedSettings()
@@ -43,6 +44,12 @@ namespace Circle.Game.Configuration
                         value: $"{offset}"
                     )
                 ),
+                new TrackedSetting<bool>(CircleSetting.LoadBeatmapsOnStartup, loadBeatmap => new SettingDescription(
+                        rawValue: loadBeatmap,
+                        name: "LoadBeatmapsOnStartup",
+                        value: $"{loadBeatmap}"
+                    )
+                )
             };
         }
     }
@@ -52,5 +59,6 @@ namespace Circle.Game.Configuration
         Scale,
         FpsDisplay,
         Offset,
+        LoadBeatmapsOnStartup
     }
 }

@@ -13,13 +13,17 @@ namespace Circle.Game.Beatmap
     {
         private readonly LargeTextureStore largeTextureStore;
         private readonly ITrackStore trackStore;
-        private readonly Storage files;
+
+        public readonly Storage Backgrounds;
+        public readonly Storage Tracks;
 
         public BeatmapResourcesManager(Storage storage, AudioManager audioManager, GameHost host = null)
         {
-            trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(storage.GetStorageForDirectory("tracks")));
-            files = storage;
-            largeTextureStore = new LargeTextureStore(host?.CreateTextureLoaderStore(new StorageBackedResourceStore(storage.GetStorageForDirectory("backgrounds"))));
+            var files = storage;
+            Backgrounds = files.GetStorageForDirectory("backgrounds");
+            Tracks = files.GetStorageForDirectory("tracks");
+            largeTextureStore = new LargeTextureStore(host?.CreateTextureLoaderStore(new StorageBackedResourceStore(Backgrounds)));
+            trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(Tracks));
         }
 
         public Texture GetBackground(BeatmapInfo info)
@@ -27,11 +31,9 @@ namespace Circle.Game.Beatmap
             if (string.IsNullOrEmpty(info.Settings.BgImage))
                 return null;
 
-            var backgrounds = files.GetStorageForDirectory("backgrounds");
-
             try
             {
-                return largeTextureStore.Get(Path.Combine(backgrounds.GetFullPath(string.Empty), $"{info.Settings.BgImage}"));
+                return largeTextureStore.Get(Path.Combine(Backgrounds.GetFullPath(string.Empty), $"{info.Settings.BgImage}"));
             }
             catch (Exception e)
             {
@@ -45,11 +47,9 @@ namespace Circle.Game.Beatmap
             if (string.IsNullOrEmpty(name))
                 return null;
 
-            var backgrounds = files.GetStorageForDirectory("backgrounds");
-
             try
             {
-                return largeTextureStore.Get(Path.Combine(backgrounds.GetFullPath(string.Empty), $"{name}"));
+                return largeTextureStore.Get(Path.Combine(Backgrounds.GetFullPath(string.Empty), $"{name}"));
             }
             catch (Exception e)
             {
@@ -63,11 +63,9 @@ namespace Circle.Game.Beatmap
             if (string.IsNullOrEmpty(info.Settings.SongFileName))
                 return null;
 
-            var tracks = files.GetStorageForDirectory("tracks");
-
             try
             {
-                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{info.Settings.SongFileName}"));
+                return trackStore.Get(Path.Combine(Tracks.GetFullPath(string.Empty), $"{info.Settings.SongFileName}"));
             }
             catch
             {
@@ -81,11 +79,9 @@ namespace Circle.Game.Beatmap
             if (string.IsNullOrEmpty(name))
                 return null;
 
-            var tracks = files.GetStorageForDirectory("tracks");
-
             try
             {
-                return trackStore.Get(Path.Combine(tracks.GetFullPath(string.Empty), $"{name}"));
+                return trackStore.Get(Path.Combine(Tracks.GetFullPath(string.Empty), $"{name}"));
             }
             catch
             {

@@ -1,4 +1,6 @@
 using System;
+using Circle.Game.Beatmap;
+using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
@@ -39,7 +41,7 @@ namespace Circle.Game.Screens
         private IconWithTextButton exit;
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(CircleConfigManager localConfig, BeatmapManager beatmapManager)
         {
             InternalChildren = new Drawable[]
             {
@@ -84,6 +86,9 @@ namespace Circle.Game.Screens
                     }
                 }
             };
+
+            if (localConfig.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
+                beatmapManager.ReloadBeatmaps();
         }
 
         public override void OnResuming(IScreen last)

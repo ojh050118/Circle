@@ -6,7 +6,6 @@ using Circle.Game.Overlays;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
-using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -51,7 +50,7 @@ namespace Circle.Game.Screens.Play
         private MusicController musicController { get; set; }
 
         [Resolved]
-        private Bindable<BeatmapInfo> beatmap { get; set; }
+        private BeatmapManager beatmap { get; set; }
 
         [Resolved]
         private DialogOverlay dialog { get; set; }
@@ -65,7 +64,7 @@ namespace Circle.Game.Screens.Play
         {
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmap, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmap.CurrentBeatmap, Clock),
                 new Container
                 {
                     AutoSizeAxes = Axes.Both,
@@ -76,7 +75,7 @@ namespace Circle.Game.Screens.Play
                     {
                         new SpriteText
                         {
-                            Text = $"{beatmap.Value.Settings.Artist} - {beatmap.Value.Settings.Song}",
+                            Text = $"{beatmap.CurrentBeatmap.Settings.Artist} - {beatmap.CurrentBeatmap.Settings.Song}",
                             Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
                             Shadow = true,
                             ShadowColour = Color4.Black.Opacity(0.4f),
@@ -97,8 +96,8 @@ namespace Circle.Game.Screens.Play
                            .Schedule(() =>
                            {
                                musicController.Stop();
-                               musicController.ChangeTrack(beatmap.Value);
-                               musicController.SeekTo(beatmap.Value.Settings.Offset);
+                               musicController.ChangeTrack(beatmap.CurrentBeatmap);
+                               musicController.SeekTo(beatmap.CurrentBeatmap.Settings.Offset);
                                playState = GamePlayState.Ready;
                            });
         }
@@ -113,7 +112,7 @@ namespace Circle.Game.Screens.Play
                 case GamePlayState.Ready:
                     masterGameplayClockContainer.Start();
                     musicController.CurrentTrack.VolumeTo(1);
-                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.Value.Settings.Bpm);
+                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.CurrentBeatmap.Settings.Bpm);
                     playState = GamePlayState.Playing;
                     break;
 
