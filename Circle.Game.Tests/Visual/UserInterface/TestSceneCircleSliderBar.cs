@@ -24,11 +24,11 @@ namespace Circle.Game.Tests.Visual.UserInterface
                 Current = value
             });
             AddSliderStep<float>("Current", 0, 100, 0, v => slider.Current.Value = v);
-            AddStep($"Current to 0", () => slider.Current.Value = 0);
-            AddStep($"Current to 25", () => slider.Current.Value = 25);
-            AddStep($"Current to 50", () => slider.Current.Value = 50);
-            AddStep($"Current to 75", () => slider.Current.Value = 75);
-            AddStep($"Current to 100", () => slider.Current.Value = 100);
+            AddStep("Current to 0", () => slider.Current.Value = 0);
+            AddStep("Current to 25", () => slider.Current.Value = 25);
+            AddStep("Current to 50", () => slider.Current.Value = 50);
+            AddStep("Current to 75", () => slider.Current.Value = 75);
+            AddStep("Current to 100", () => slider.Current.Value = 100);
         }
     }
 }
