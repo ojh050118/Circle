@@ -11,8 +11,10 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
+using osu.Framework.Platform;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
+using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
 
@@ -60,7 +62,7 @@ namespace Circle.Game.Screens.Play
         private ScheduledDelegate scheduledDelegate;
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(GameHost host)
         {
             InternalChildren = new Drawable[]
             {
@@ -84,6 +86,19 @@ namespace Circle.Game.Screens.Play
                 },
             };
 
+            if (!host.CanExit)
+            {
+                AddInternal(new IconButton
+                {
+                    Anchor = Anchor.TopRight,
+                    Origin = Anchor.TopRight,
+                    Margin = new MarginPadding(10),
+                    Size = new Vector2(50),
+                    Icon = FontAwesome.Solid.Pause,
+                    Action = onPaused
+                });
+            }
+
             masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
         }
 
@@ -102,11 +117,36 @@ namespace Circle.Game.Screens.Play
                            });
         }
 
+        protected override bool OnClick(ClickEvent e)
+        {
+            updateState();
+
+            return base.OnClick(e);
+        }
+
         protected override bool OnKeyDown(KeyDownEvent e)
         {
             if (blockedKeys.Contains(e.Key))
                 return false;
 
+            updateState();
+
+            return base.OnKeyDown(e);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            if (masterGameplayClockContainer.CurrentTime >= masterGameplayClockContainer.Playfield.EndTime)
+            {
+                playState = GamePlayState.Complete;
+                dialog.BlockInputAction = false;
+            }
+        }
+
+        private void updateState()
+        {
             switch (playState)
             {
                 case GamePlayState.Ready:
@@ -122,19 +162,6 @@ namespace Circle.Game.Screens.Play
                 case GamePlayState.Complete:
                     OnExit();
                     break;
-            }
-
-            return base.OnKeyDown(e);
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            if (masterGameplayClockContainer.CurrentTime >= masterGameplayClockContainer.Playfield.EndTime)
-            {
-                playState = GamePlayState.Complete;
-                dialog.BlockInputAction = false;
             }
         }
 
