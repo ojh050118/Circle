@@ -1,4 +1,5 @@
 ﻿using Circle.Game.Graphics.UserInterface;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
@@ -12,7 +13,17 @@ namespace Circle.Game.Screens
     {
         public const int MARGIN = 30;
 
+        public string Text { get; set; } = string.Empty;
+
+        private readonly CircleScreen screen;
+
         public ScreenHeader(CircleScreen screen)
+        {
+            this.screen = screen;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Margin = new MarginPadding { Top = MARGIN, Left = 30, Bottom = 10 };
             AutoSizeAxes = Axes.Both;
@@ -32,7 +43,7 @@ namespace Circle.Game.Screens
                     },
                     new SpriteText
                     {
-                        Text = screen.Header,
+                        Text = string.IsNullOrEmpty(Text) ? screen.Header : Text,
                         Font = FontUsage.Default.With(size: 40),
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft

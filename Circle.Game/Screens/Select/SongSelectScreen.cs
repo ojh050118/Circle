@@ -42,7 +42,7 @@ namespace Circle.Game.Screens.Select
             carousel.PlayRequested.ValueChanged += v =>
             {
                 if (v.NewValue)
-                    this.Push(new Player());
+                    this.Push(new PlayerLoader());
             };
             carousel.SelectedBeatmap.ValueChanged += beatmap => details.ChangeBeatmap(beatmap.NewValue);
         }
