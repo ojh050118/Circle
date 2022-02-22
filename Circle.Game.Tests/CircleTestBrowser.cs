@@ -12,34 +12,31 @@ namespace Circle.Game.Tests
 {
     public class CircleTestBrowser : CircleGameBase
     {
-        private DependencyContainer dependencies;
+        private Background background;
+        private DialogOverlay dialog;
 
-        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
-            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
-
-        [BackgroundDependencyLoader]
-        private void load(CircleConfigManager config)
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
         {
-            if (config.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
-                BeatmapManager.ReloadBeatmaps();
+            var dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+            dependencies.CacheAs(background = new Background(textureName: "bg1"));
+            dependencies.CacheAs(dialog = new DialogOverlay(new BufferedContainer()));
+
+            return dependencies;
         }
 
-        protected override void LoadComplete()
+        [BackgroundDependencyLoader]
+        private void load()
         {
-            base.LoadComplete();
-
-            Background background;
-            DialogOverlay dialog;
+            if (LocalConfig.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
+                BeatmapManager.ReloadBeatmaps();
 
             AddRange(new Drawable[]
             {
-                background = new Background(textureName: "bg1"),
+                background,
                 new TestBrowser("Circle"),
-                dialog = new DialogOverlay(new BufferedContainer()),
+                dialog,
                 new CursorContainer()
             });
-            dependencies.CacheAs(background);
-            dependencies.CacheAs(dialog);
         }
 
         public override void SetHost(GameHost host)
