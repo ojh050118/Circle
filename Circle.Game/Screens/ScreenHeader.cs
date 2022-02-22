@@ -15,7 +15,7 @@ namespace Circle.Game.Screens
 
         public string Text { get; set; } = string.Empty;
 
-        private CircleScreen screen;
+        private readonly CircleScreen screen;
 
         public ScreenHeader(CircleScreen screen)
         {
