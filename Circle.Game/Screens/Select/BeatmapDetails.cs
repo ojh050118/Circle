@@ -136,22 +136,30 @@ namespace Circle.Game.Screens.Select
                                         {
                                             Text = "Details",
                                             Margin = new MarginPadding { Bottom = 10 },
-                                            Font = FontUsage.Default.With("OpenSans-Bold", 30)
+                                            Font = FontUsage.Default.With("OpenSans-Bold", 30),
+                                            Shadow = true,
+                                            ShadowColour = Color4.Black.Opacity(0.4f),
                                         },
                                         author = new SpriteText
                                         {
                                             Text = "Author: ",
-                                            Font = FontUsage.Default.With(size: 24)
+                                            Font = FontUsage.Default.With(size: 24),
+                                            Shadow = true,
+                                            ShadowColour = Color4.Black.Opacity(0.4f),
                                         },
                                         bpm = new SpriteText
                                         {
                                             Text = "BPM: ",
-                                            Font = FontUsage.Default.With(size: 24)
+                                            Font = FontUsage.Default.With(size: 24),
+                                            Shadow = true,
+                                            ShadowColour = Color4.Black.Opacity(0.4f),
                                         },
                                         difficulty = new SpriteText
                                         {
                                             Text = "Difficulty: ",
-                                            Font = FontUsage.Default.With(size: 24)
+                                            Font = FontUsage.Default.With(size: 24),
+                                            Shadow = true,
+                                            ShadowColour = Color4.Black.Opacity(0.4f),
                                         },
                                         description = new TextFlowContainer
                                         {
@@ -172,7 +180,12 @@ namespace Circle.Game.Screens.Select
                 }
             };
 
-            description.AddText("Description: ", t => t.Font = FontUsage.Default.With(size: 24));
+            description.AddText("Description: ", t =>
+            {
+                t.Font = FontUsage.Default.With(size: 24);
+                t.Shadow = true;
+                t.ShadowColour = Color4.Black.Opacity(0.4f);
+            });
         }
 
         protected override void LoadComplete()
@@ -202,7 +215,12 @@ namespace Circle.Game.Screens.Select
             bpm.Text = $"BPM: {newBeatmap.Settings.Bpm}";
             difficulty.Text = $"Difficulty: {newBeatmap.Settings.Difficulty}";
             description.Clear();
-            description.AddText($"Description: {newBeatmap.Settings.BeatmapDesc}", t => t.Font = FontUsage.Default.With(size: 24));
+            description.AddText($"Description: {newBeatmap.Settings.BeatmapDesc}", t =>
+            {
+                t.Font = FontUsage.Default.With(size: 24);
+                t.Shadow = true;
+                t.ShadowColour = Color4.Black.Opacity(0.4f);
+            });
         }
     }
 }

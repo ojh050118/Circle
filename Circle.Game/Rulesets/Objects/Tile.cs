@@ -34,7 +34,7 @@ namespace Circle.Game.Rulesets.Objects
         {
             Anchor = Anchor.Centre;
             OriginPosition = new Vector2(25);
-            Alpha = 0.6f;
+            Alpha = 0.45f;
             Size = new Vector2(WIDTH, HEIGHT);
             TileType = type;
             icon = new SpriteIcon

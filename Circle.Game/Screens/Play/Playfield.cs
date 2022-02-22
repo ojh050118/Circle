@@ -208,7 +208,7 @@ namespace Circle.Game.Screens.Play
                 bpm = getNewBpm(bpm, tileInfos[i - 8].Floor, tileInfos[i - 8].SpeedType);
 
                 using (tileContainer.Children[i].BeginAbsoluteSequence(startTimeOffset))
-                    tileContainer.Children[i].FadeTo(0.6f, 60000 / bpm, Easing.Out);
+                    tileContainer.Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
 
                 startTimeOffset += GetRelativeDuration(fixedRotation, newRotation, bpm);
             }
