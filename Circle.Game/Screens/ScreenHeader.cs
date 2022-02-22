@@ -46,7 +46,7 @@ namespace Circle.Game.Screens
                         Text = string.IsNullOrEmpty(Text) ? screen.Header : Text,
                         Font = FontUsage.Default.With(size: 40),
                         Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft
+                        Origin = Anchor.CentreLeft,
                     }.WithEffect(new GlowEffect
                     {
                         PadExtent = true,
