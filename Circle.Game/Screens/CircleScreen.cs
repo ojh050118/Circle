@@ -19,6 +19,8 @@ namespace Circle.Game.Screens
 
         public virtual bool FadeBackground => true;
 
+        public virtual bool PlaySample => true;
+
         private Sample sampleBack;
 
         [Resolved]
@@ -33,7 +35,8 @@ namespace Circle.Game.Screens
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)
         {
-            sampleBack = audio.Samples.Get("screen-back");
+            if (PlaySample)
+                sampleBack = audio.Samples.Get("screen-back");
         }
 
         public override void OnEntering(IScreen last)

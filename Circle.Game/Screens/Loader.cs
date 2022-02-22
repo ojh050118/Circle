@@ -1,5 +1,4 @@
 ﻿using Circle.Game.Graphics.UserInterface;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Screens;
@@ -13,7 +12,6 @@ namespace Circle.Game.Screens
 
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
-        public Bindable<bool> ComponentLoaded { get; } = new Bindable<bool>(false);
 
         public override void OnEntering(IScreen last)
         {
@@ -41,8 +39,6 @@ namespace Circle.Game.Screens
                 Schedule(checkIsLoaded);
                 return;
             }
-            else
-                ComponentLoaded.Value = true;
 
             spinnerShow?.Cancel();
 
