@@ -36,7 +36,7 @@ namespace Circle.Game.Beatmap
             {
                 var oldBeatmapName = $"[{beatmap.oldBeatmap.Settings.Author}] {beatmap.oldBeatmap.Settings.Artist} - {beatmap.oldBeatmap.Settings.Song}";
                 var newBeatmapName = $"[{beatmap.newBeatmap.Settings.Author}] {beatmap.newBeatmap.Settings.Artist} - {beatmap.newBeatmap.Settings.Song}";
-                Logger.Log($"Beatmap changed: {oldBeatmapName} → {newBeatmapName}.");
+                Logger.Log($"Beatmap changed: {oldBeatmapName} to {newBeatmapName}.");
             };
         }
 
@@ -56,6 +56,9 @@ namespace Circle.Game.Beatmap
         /// </summary>
         public void ClearCurrentBeatmap()
         {
+            if (currentBeatmap.Equals(new BeatmapInfo()))
+                return;
+
             var oldBeatmap = CurrentBeatmap;
             CurrentBeatmap = new BeatmapInfo();
             OnBeatmapChanged?.Invoke((oldBeatmap, CurrentBeatmap));
