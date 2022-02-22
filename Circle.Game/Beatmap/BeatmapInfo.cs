@@ -8,7 +8,7 @@ namespace Circle.Game.Beatmap
         public Settings Settings;
         public Actions[] Actions;
 
-        public bool Equals(BeatmapInfo info) => AngleData?.Length == info.AngleData?.Length && Settings.Equals(info.Settings) && Actions.Length == info.Actions.Length;
+        public bool Equals(BeatmapInfo info) => AngleData?.Length == info.AngleData?.Length && Settings.Equals(info.Settings) && Actions?.Length == info.Actions?.Length;
     }
 
     public struct Settings
