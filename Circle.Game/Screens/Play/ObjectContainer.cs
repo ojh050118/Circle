@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Circle.Game.Beatmap;
+using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
@@ -13,9 +13,9 @@ namespace Circle.Game.Screens.Play
 {
     public class ObjectContainer : Container<Tile>
     {
-        private float[] angleData => convertAngles(beatmapInfo.AngleData);
+        private float[] angleData => convertAngles(currentBeatmap.AngleData);
 
-        private BeatmapInfo beatmapInfo;
+        private Beatmap currentBeatmap;
 
         public ObjectContainer()
         {
@@ -27,7 +27,7 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load(BeatmapManager beatmap)
         {
-            beatmapInfo = beatmap.CurrentBeatmap;
+            currentBeatmap = beatmap.CurrentBeatmap.Beatmap;
             createTiles();
         }
 
@@ -186,7 +186,7 @@ namespace Circle.Game.Screens.Play
                 };
             }
 
-            foreach (var action in beatmapInfo.Actions)
+            foreach (var action in currentBeatmap.Actions)
             {
                 infos[action.Floor].EventType = action.EventType;
 
@@ -230,10 +230,10 @@ namespace Circle.Game.Screens.Play
 
         private void addActionsToTile()
         {
-            if (beatmapInfo.Actions is null)
+            if (currentBeatmap.Actions is null)
                 return;
 
-            foreach (var action in beatmapInfo.Actions)
+            foreach (var action in currentBeatmap.Actions)
             {
                 switch (action.EventType)
                 {

@@ -1,5 +1,8 @@
-﻿using Circle.Game.Input;
+﻿using Circle.Game.Beatmaps;
+using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Input;
 using Circle.Game.Screens.Play;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
@@ -12,6 +15,12 @@ namespace Circle.Game.Screens.Select
 
         private readonly BeatmapCarousel carousel;
         private readonly BeatmapDetails details;
+
+        [Resolved]
+        private Background background { get; set; }
+
+        [Resolved]
+        private BeatmapStorage beatmaps { get; set; }
 
         public SongSelectScreen()
         {
@@ -44,7 +53,14 @@ namespace Circle.Game.Screens.Select
                 if (v.NewValue)
                     this.Push(new PlayerLoader());
             };
-            carousel.SelectedBeatmap.ValueChanged += beatmap => details.ChangeBeatmap(beatmap.NewValue);
+            carousel.SelectedBeatmap.ValueChanged += beatmap =>
+            {
+                details.ChangeBeatmap(beatmap.NewValue);
+                if (!beatmaps.Storage.Exists(beatmap.NewValue.RelativeBackgroundPath))
+                    background.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
+                else
+                    background.ChangeTexture(TextureSource.External, beatmap.NewValue.RelativeBackgroundPath, 500, Easing.Out);
+            };
         }
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)

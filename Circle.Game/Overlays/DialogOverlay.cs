@@ -50,6 +50,7 @@ namespace Circle.Game.Overlays
                 Width = 0.3f,
                 AutoSizeAxes = Axes.Y,
                 CornerRadius = 10,
+                Scale = new Vector2(1.2f),
                 Children = new Drawable[]
                 {
                     new Box
@@ -197,8 +198,6 @@ namespace Circle.Game.Overlays
         {
             base.PopIn();
 
-            Content.Scale = new Vector2(1.2f);
-            Content.Alpha = 0;
             Content.ScaleTo(1, 1000, Easing.OutPow10);
             Content.FadeTo(0.8f, 1000, Easing.OutPow10);
         }

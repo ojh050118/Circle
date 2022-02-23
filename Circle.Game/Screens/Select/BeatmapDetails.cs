@@ -1,4 +1,4 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
@@ -9,6 +9,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Platform;
 using osuTK;
 using osuTK.Graphics;
 
@@ -19,7 +20,7 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private BeatmapManager beatmapManager { get; set; }
 
-        private Background background;
+        private Background preview;
         private SpriteText title;
         private SpriteText artist;
 
@@ -28,9 +29,12 @@ namespace Circle.Game.Screens.Select
         private SpriteText difficulty;
         private TextFlowContainer description;
 
+        private Storage files;
+
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(BeatmapStorage beatmaps)
         {
+            files = beatmaps.Storage;
             RelativeSizeAxes = Axes.Both;
             Child = new Container
             {
@@ -59,7 +63,7 @@ namespace Circle.Game.Screens.Select
                                 CornerRadius = 5,
                                 Children = new Drawable[]
                                 {
-                                    background = new Background(),
+                                    preview = new Background(),
                                     new FillFlowContainer
                                     {
                                         RelativeSizeAxes = Axes.Both,
@@ -161,10 +165,16 @@ namespace Circle.Game.Screens.Select
                                             Shadow = true,
                                             ShadowColour = Color4.Black.Opacity(0.4f),
                                         },
-                                        description = new TextFlowContainer
+                                        description = new TextFlowContainer(t =>
+                                        {
+                                            t.Font = FontUsage.Default.With(size: 24);
+                                            t.Shadow = true;
+                                            t.ShadowColour = Color4.Black.Opacity(0.4f);
+                                        })
                                         {
                                             RelativeSizeAxes = Axes.X,
                                             AutoSizeAxes = Axes.Y,
+                                            Text = "Description: "
                                         }
                                     }
                                 }
@@ -179,13 +189,6 @@ namespace Circle.Game.Screens.Select
                     Colour = Color4.Black.Opacity(100)
                 }
             };
-
-            description.AddText("Description: ", t =>
-            {
-                t.Font = FontUsage.Default.With(size: 24);
-                t.Shadow = true;
-                t.ShadowColour = Color4.Black.Opacity(0.4f);
-            });
         }
 
         protected override void LoadComplete()
@@ -198,29 +201,24 @@ namespace Circle.Game.Screens.Select
 
         public void ChangeBeatmap(BeatmapInfo beatmap) => onBeatmapChanged(beatmap);
 
-        private void onBeatmapChanged(BeatmapInfo newBeatmap)
+        private void onBeatmapChanged(BeatmapInfo newBeatmapInfo)
         {
-            if (string.IsNullOrEmpty(newBeatmap.Settings.BgImage))
-                background.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
+            if (newBeatmapInfo == null)
+                return;
+
+            var newBeatmap = newBeatmapInfo.Beatmap;
+
+            if (!files.Exists(newBeatmapInfo.RelativeBackgroundPath))
+                preview.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
             else
-                background.ChangeTexture(TextureSource.External, newBeatmap.Settings.BgImage, 500, Easing.Out);
+                preview.ChangeTexture(TextureSource.External, newBeatmapInfo.RelativeBackgroundPath, 500, Easing.Out);
 
-            if (!string.IsNullOrEmpty(newBeatmap.Settings.Song) && !string.IsNullOrEmpty(newBeatmap.Settings.Artist))
-            {
-                title.Text = newBeatmap.Settings.Song;
-                artist.Text = newBeatmap.Settings.Artist;
-            }
-
+            title.Text = newBeatmap.Settings.Song;
+            artist.Text = newBeatmap.Settings.Artist;
             author.Text = $"Author: {newBeatmap.Settings.Author}";
             bpm.Text = $"BPM: {newBeatmap.Settings.Bpm}";
             difficulty.Text = $"Difficulty: {newBeatmap.Settings.Difficulty}";
-            description.Clear();
-            description.AddText($"Description: {newBeatmap.Settings.BeatmapDesc}", t =>
-            {
-                t.Font = FontUsage.Default.With(size: 24);
-                t.Shadow = true;
-                t.ShadowColour = Color4.Black.Opacity(0.4f);
-            });
+            description.Text = $"Description: {newBeatmap.Settings.BeatmapDesc}";
         }
     }
 }

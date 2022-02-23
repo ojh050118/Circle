@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Circle.Game.Beatmap;
+using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
-using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Game.Screens.Select.Carousel;
@@ -25,9 +24,6 @@ namespace Circle.Game.Screens.Select
 
         [Resolved]
         private MusicController music { get; set; }
-
-        [Resolved]
-        private Background background { get; set; }
 
         public Bindable<bool> PlayRequested { get; set; } = new Bindable<bool>(false);
 
@@ -79,7 +75,7 @@ namespace Circle.Game.Screens.Select
             if (Scroll.Child.Children.Count == 0)
                 return;
 
-            if (string.IsNullOrEmpty(beatmapManager.CurrentBeatmap.Settings.Song))
+            if (string.IsNullOrEmpty(beatmapManager.CurrentBeatmap?.ToString()))
             {
                 var idx = new Random().Next(0, Scroll.Child.Children.Count);
                 Scheduler.AddDelayed(() => Scroll.Child.Children[idx].State.Value = CarouselItemState.Selected, 50);
@@ -179,17 +175,12 @@ namespace Circle.Game.Screens.Select
             updateItemScale(item);
             Scroll.ScrollTo(getScaledPositionY(item) + item.Height / 2);
 
-            if (!string.IsNullOrEmpty(item.BeatmapInfo.Settings.BgImage))
-                background.ChangeTexture(TextureSource.External, item.BeatmapInfo.Settings.BgImage, 1000, Easing.OutPow10);
-            else
-                background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
-
-            if (!beatmapManager.CurrentBeatmap.Equals(item.BeatmapInfo))
+            if (beatmapManager.CurrentBeatmap == null || beatmapManager.CurrentBeatmap != item.BeatmapInfo)
             {
                 beatmapManager.CurrentBeatmap = item.BeatmapInfo;
                 SelectedBeatmap.Value = beatmapManager.CurrentBeatmap;
                 music.ChangeTrack(item.BeatmapInfo);
-                music.SeekTo(item.BeatmapInfo.Settings.PreviewSongStart * 1000);
+                music.SeekTo(item.BeatmapInfo.Beatmap.Settings.PreviewSongStart * 1000);
                 music.Play();
             }
 

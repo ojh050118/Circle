@@ -1,4 +1,4 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using Circle.Game.Overlays;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics.Sprites;
@@ -30,7 +30,7 @@ namespace Circle.Game.Tests.Visual.Overlays
         {
             foreach (var beatmap in beatmaps.LoadedBeatmaps)
             {
-                AddStep($"{beatmap.Settings.SongFileName}", () => music.ChangeTrack(beatmap));
+                AddStep($"{beatmap.Beatmap.Settings.SongFileName}", () => music.ChangeTrack(beatmap));
             }
         }
 

@@ -1,34 +1,32 @@
 ﻿using osu.Framework.Graphics;
 
-namespace Circle.Game.Beatmap
+namespace Circle.Game.Beatmaps
 {
-    public struct BeatmapInfo
+    public class Beatmap
     {
-        public float[] AngleData;
-        public Settings Settings;
-        public Actions[] Actions;
-
-        public bool Equals(BeatmapInfo info) => AngleData?.Length == info.AngleData?.Length && Settings.Equals(info.Settings) && Actions?.Length == info.Actions?.Length;
+        public float[] AngleData { get; set; }
+        public Settings Settings { get; set; }
+        public Actions[] Actions { get; set; }
     }
 
     public struct Settings
     {
-        public string Artist;
-        public string Song;
-        public string SongFileName;
-        public string Author;
-        public bool SeparateCountdownTime;
-        public int PreviewSongStart;
-        public int PreviewSongDuration;
-        public string BeatmapDesc;
-        public int Difficulty;
-        public float Bpm;
-        public int Volume;
-        public int Offset;
-        public int Pitch;
-        public int CountdownTicks;
-        public string BgImage;
-        public Easing PlanetEasing;
+        public string Artist { get; set; }
+        public string Song { get; set; }
+        public string SongFileName { get; set; }
+        public string Author { get; set; }
+        public bool SeparateCountdownTime { get; set; }
+        public int PreviewSongStart { get; set; }
+        public int PreviewSongDuration { get; set; }
+        public string BeatmapDesc { get; set; }
+        public int Difficulty { get; set; }
+        public float Bpm { get; set; }
+        public int Volume { get; set; }
+        public int Offset { get; set; }
+        public int Pitch { get; set; }
+        public int CountdownTicks { get; set; }
+        public string BgImage { get; set; }
+        public Easing PlanetEasing { get; set; }
 
         public bool Equals(Settings settings) => Artist == settings.Artist &&
                                                  Song == settings.Song &&
@@ -50,13 +48,13 @@ namespace Circle.Game.Beatmap
 
     public struct Actions
     {
-        public int Floor;
-        public EventType EventType;
-        public SpeedType? SpeedType;
-        public float BeatsPerMinute;
-        public float BpmMultiplier;
-        public Relativity? RelativeTo;
-        public Easing Ease;
+        public int Floor { get; set; }
+        public EventType EventType { get; set; }
+        public SpeedType? SpeedType { get; set; }
+        public float BeatsPerMinute { get; set; }
+        public float BpmMultiplier { get; set; }
+        public Relativity? RelativeTo { get; set; }
+        public Easing Ease { get; set; }
     }
 
     public enum EventType

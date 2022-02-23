@@ -1,9 +1,9 @@
-﻿using Circle.Game.Screens.Select;
+﻿using Circle.Game.Beatmaps;
+using Circle.Game.Screens.Select;
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osuTK.Graphics;
-using osu.Framework.Graphics;
-using osu.Framework.Allocation;
-using Circle.Game.Beatmap;
 
 namespace Circle.Game.Tests.Visual.SongSelect
 {
@@ -26,7 +26,7 @@ namespace Circle.Game.Tests.Visual.SongSelect
             AddRepeatStep("Select beatmap(up)", () => carousel.SelectBeatmap(VerticalDirection.Up), 5);
             AddLabel("Select beatmap(beatmap)");
             foreach (var beatmap in beatmaps.LoadedBeatmaps)
-                AddStep($"Select beatmap({beatmap.Settings.Song})", () => carousel.SelectBeatmap(beatmap));
+                AddStep($"Select beatmap({beatmap.Beatmap.Settings.Song})", () => carousel.SelectBeatmap(beatmap));
         }
     }
 }

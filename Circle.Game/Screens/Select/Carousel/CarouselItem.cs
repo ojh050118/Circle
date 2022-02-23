@@ -1,4 +1,4 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -45,7 +45,7 @@ namespace Circle.Game.Screens.Select.Carousel
         }
 
         [BackgroundDependencyLoader]
-        private void load(LargeTextureStore largeTexture, BeatmapResourcesManager beatmapResources)
+        private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps)
         {
             sprite = new Sprite
             {
@@ -53,9 +53,9 @@ namespace Circle.Game.Screens.Select.Carousel
                 Origin = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
                 FillMode = FillMode.Fill,
-                Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BgImage)
+                Texture = !beatmaps.Storage.Exists(BeatmapInfo.RelativeBackgroundPath)
                     ? largeTexture.Get("bg1")
-                    : beatmapResources.GetBackground(BeatmapInfo)
+                    : beatmaps.GetBackground(BeatmapInfo)
             };
 
             BorderContainer.Children = new Drawable[]
@@ -106,12 +106,12 @@ namespace Circle.Game.Screens.Select.Carousel
                     {
                         new SpriteText
                         {
-                            Text = BeatmapInfo.Settings.Song,
+                            Text = BeatmapInfo.Beatmap.Settings.Song,
                             Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
                         },
                         new SpriteText
                         {
-                            Text = BeatmapInfo.Settings.Author,
+                            Text = BeatmapInfo.Beatmap.Settings.Author,
                             Font = FontUsage.Default.With(size: 24)
                         }
                     }

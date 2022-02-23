@@ -1,4 +1,4 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -31,7 +31,7 @@ namespace Circle.Game.Graphics.UserInterface
         private LargeTextureStore largeTexture { get; set; }
 
         [Resolved]
-        private BeatmapResourcesManager beatmapResources { get; set; }
+        private BeatmapStorage beatmaps { get; set; }
 
         private readonly Sprite sprite;
         private BufferedContainer currentTexture;
@@ -68,7 +68,7 @@ namespace Circle.Game.Graphics.UserInterface
         private void load()
         {
             if (!string.IsNullOrEmpty(TextureName))
-                sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(TextureName) : beatmapResources.GetBackground(TextureName);
+                sprite.Texture = source == TextureSource.Internal ? largeTexture.Get(TextureName) : beatmaps.GetBackground(TextureName);
         }
 
         public void BlurTo(Vector2 newBlurSigma, double duration = 0, Easing easing = Easing.None)
@@ -106,7 +106,7 @@ namespace Circle.Game.Graphics.UserInterface
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 FillMode = FillMode.Fill,
-                Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapResources.GetBackground(textureName)
+                Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmaps.GetBackground(textureName)
             };
         }
 
