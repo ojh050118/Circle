@@ -19,8 +19,11 @@ namespace Circle.Game.Beatmaps
             get => currentBeatmap;
             set
             {
-                OnBeatmapChanged?.Invoke((currentBeatmap, value));
+                var oldBeatmap = currentBeatmap;
                 currentBeatmap = value;
+
+                if (!BeatmapUtils.Compare(oldBeatmap, currentBeatmap))
+                    OnBeatmapChanged?.Invoke((oldBeatmap, currentBeatmap));
             }
         }
 
@@ -46,10 +49,13 @@ namespace Circle.Game.Beatmaps
         /// </summary>
         public void ReloadBeatmaps()
         {
+            Logger.Log("Loading beatmaps...");
             loadedBeatmaps = beatmapStorage.GetBeatmapInfos().ToList();
             OnLoadedBeatmaps?.Invoke(loadedBeatmaps);
-            if (!loadedBeatmaps.Exists(b => b == currentBeatmap))
+            if (!loadedBeatmaps.Exists(b => b.Equals(CurrentBeatmap)))
                 ClearCurrentBeatmap();
+
+            Logger.Log($"Loaded {loadedBeatmaps.Count} beatmaps!");
         }
 
         /// <summary>
@@ -97,7 +103,6 @@ namespace Circle.Game.Beatmaps
 
         public void Migrate()
         {
-
             foreach (var bi in beatmapStorage.GetBeatmapInfos())
             {
                 if (bi.Directory != @"beatmaps")
@@ -110,16 +115,16 @@ namespace Circle.Game.Beatmaps
                 Logger.Log($"Migrated {bi}!");
             }
 
-            deleteAll();
+            deleteOldStorages();
             ReloadBeatmaps();
         }
 
         private void migrateTracks(BeatmapInfo info)
         {
-            var tracks = beatmapStorage.Storage.GetFullPath("tracks");
             var songFileName = info.Beatmap.Settings.SongFileName;
+            var tracks = Path.Combine(beatmapStorage.Storage.GetFullPath("tracks"), songFileName);
 
-            if (string.IsNullOrEmpty(songFileName) || !File.Exists(Path.Combine(tracks, songFileName)))
+            if (string.IsNullOrEmpty(songFileName) || !beatmapStorage.Storage.Exists(tracks))
                 return;
 
             var fileName = Path.GetFileNameWithoutExtension(info.Name).Trim(' ');
@@ -127,7 +132,7 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                File.Copy(Path.Combine(tracks, songFileName), Path.Combine(beatmap, songFileName));
+                File.Copy(tracks, Path.Combine(beatmap, songFileName));
             }
             catch (Exception e)
             {
@@ -137,10 +142,10 @@ namespace Circle.Game.Beatmaps
 
         private void migrateBackgrounds(BeatmapInfo info)
         {
-            var backgrounds = beatmapStorage.Storage.GetFullPath("backgrounds");
             var bgImage = info.Beatmap.Settings.BgImage;
+            var backgrounds = Path.Combine(beatmapStorage.Storage.GetFullPath("backgrounds"), bgImage);
 
-            if (string.IsNullOrEmpty(bgImage) || !File.Exists(Path.Combine(backgrounds, bgImage)))
+            if (string.IsNullOrEmpty(bgImage) || !beatmapStorage.Storage.Exists(backgrounds))
                 return;
 
             var fileName = Path.GetFileNameWithoutExtension(info.Name).Trim(' ');
@@ -148,7 +153,7 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                File.Copy(Path.Combine(backgrounds, bgImage), Path.Combine(beatmap, bgImage));
+                File.Copy(backgrounds, Path.Combine(beatmap, bgImage));
             }
             catch (Exception e)
             {
@@ -156,7 +161,7 @@ namespace Circle.Game.Beatmaps
             }
         }
 
-        private void deleteAll()
+        private void deleteOldStorages()
         {
             beatmapStorage.Storage.DeleteDirectory(@"backgrounds");
             beatmapStorage.Storage.DeleteDirectory(@"beatmaps");
@@ -177,7 +182,7 @@ namespace Circle.Game.Beatmaps
         /// <returns></returns>
         public bool Delete(BeatmapInfo beatmap, bool deleteResources)
         {
-            if (beatmap == currentBeatmap)
+            if (currentBeatmap.Equals(beatmap))
                 ClearCurrentBeatmap();
 
             beatmapStorage.Delete(beatmap, deleteResources);

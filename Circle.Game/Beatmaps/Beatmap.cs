@@ -1,12 +1,16 @@
-﻿using osu.Framework.Graphics;
+﻿using System;
+using osu.Framework.Graphics;
+using osu.Framework.Utils;
 
 namespace Circle.Game.Beatmaps
 {
-    public class Beatmap
+    public class Beatmap : IEquatable<Beatmap>
     {
         public float[] AngleData { get; set; }
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
+
+        public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.Equals(beatmap.Actions);
     }
 
     public struct Settings
@@ -37,7 +41,7 @@ namespace Circle.Game.Beatmaps
                                                  PreviewSongDuration == settings.PreviewSongDuration &&
                                                  BeatmapDesc == settings.BeatmapDesc &&
                                                  Difficulty == settings.Difficulty &&
-                                                 (int)Bpm == (int)settings.Bpm &&
+                                                 Precision.AlmostEquals(Bpm, settings.Bpm) &&
                                                  Volume == settings.Volume &&
                                                  Offset == settings.Offset &&
                                                  Pitch == settings.Pitch &&
@@ -55,6 +59,14 @@ namespace Circle.Game.Beatmaps
         public float BpmMultiplier { get; set; }
         public Relativity? RelativeTo { get; set; }
         public Easing Ease { get; set; }
+
+        public bool Equals(Actions actions) => Floor == actions.Floor &&
+                                               EventType == actions.EventType &&
+                                               SpeedType == actions.SpeedType &&
+                                               Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute) &&
+                                               Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier) &&
+                                               RelativeTo == actions.RelativeTo &&
+                                               Ease == actions.Ease;
     }
 
     public enum EventType

@@ -20,7 +20,7 @@ namespace Circle.Game.Beatmaps
 
         public BeatmapStorage(Storage files, AudioManager audioManager, GameHost host = null)
         {
-            Storage ??= files;
+            Storage = files;
             largeTextureStore = new LargeTextureStore(host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
             trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(files));
         }
@@ -32,12 +32,12 @@ namespace Circle.Game.Beatmaps
             foreach (var dir in Storage.GetDirectories(string.Empty))
             {
                 DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
+
                 foreach (var fi in di.GetFiles("*.circle"))
                 {
-                    var beatmap = GetBeatmap(Path.Combine(fi.Directory.Name, fi.Name));
+                    var beatmap = GetBeatmap(Path.Combine(fi.Directory?.Name, fi.Name));
                     beatmapInfo.Add(new BeatmapInfo(beatmap, fi));
                 }
-
             }
 
             return beatmapInfo.ToArray();
@@ -48,9 +48,10 @@ namespace Circle.Game.Beatmaps
             foreach (var dir in Storage.GetDirectories(string.Empty))
             {
                 DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
+
                 foreach (var fi in di.GetFiles("*.circle"))
                 {
-                    if (beatmap == GetBeatmap(Path.Combine(fi.Directory.Name, fi.Name)))
+                    if (beatmap == GetBeatmap(Path.Combine(fi.Directory?.Name, fi.Name)))
                         return new BeatmapInfo(beatmap, fi);
                 }
             }
@@ -68,7 +69,7 @@ namespace Circle.Game.Beatmaps
             Beatmap beatmap = default;
 
             if (string.IsNullOrEmpty(path))
-                return beatmap;
+                return null;
 
             using (StreamReader sr = File.OpenText(Storage.GetFullPath(path)))
             {

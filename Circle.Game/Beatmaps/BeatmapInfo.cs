@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Circle.Game.Beatmaps
 {
@@ -6,14 +7,14 @@ namespace Circle.Game.Beatmaps
     /// 비트맵 파일에 대한 기본적인 정보를 제공합니다.
     /// 리소스에 대한 경로 정보도 포함하고 있습니다.
     /// </summary>
-    public class BeatmapInfo
+    public class BeatmapInfo : IEquatable<BeatmapInfo>
     {
         /// <summary>
         /// 비트맵.
         /// </summary>
         public Beatmap Beatmap { get; }
 
-        private FileInfo fileInfo;
+        private readonly FileInfo fileInfo;
 
         /// <summary>
         /// 부모 디렉터리 이름입니다.
@@ -43,7 +44,7 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// 비트맵 파일에 대한 절대 경로입니다.
         /// </summary>
-        public string BeatmapPath { get; } = string.Empty;
+        public string BeatmapPath { get; }
 
         /// <summary>
         /// 트랙 파일에 대한 절대 경로입니다.
@@ -58,7 +59,7 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// 비트맵 파일에 대한 상대 경로입니다. (ex: folder\beatmap.circle)
         /// </summary>
-        public string RelativeBeatmapPath { get; } = string.Empty;
+        public string RelativeBeatmapPath { get; }
 
         /// <summary>
         /// 트랙 파일에 대한 상대 경로입니다. (ex: folder\track.mp3)
@@ -74,24 +75,25 @@ namespace Circle.Game.Beatmaps
         {
             Beatmap = beatmap;
             fileInfo = info;
-            Directory = fileInfo.Directory.Name;
+            Directory = fileInfo.Directory?.Name;
             DirectoryName = fileInfo.DirectoryName;
             Name = fileInfo.Name;
             Extension = fileInfo.Extension;
             Exists = fileInfo.Exists;
             BeatmapPath = fileInfo.FullName;
-            RelativeBeatmapPath = Path.Combine(fileInfo.Directory.Name, Name);
+            if (!string.IsNullOrEmpty(Directory))
+                RelativeBeatmapPath = Path.Combine(Directory, Name);
 
             if (!string.IsNullOrEmpty(Beatmap.Settings.SongFileName))
             {
-                SongPath = Path.Combine(fileInfo.Directory.FullName, Beatmap.Settings.SongFileName);
-                RelativeSongPath = Path.Combine(fileInfo.Directory.Name, Beatmap.Settings.SongFileName);
+                SongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
+                RelativeSongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
             }
 
             if (!string.IsNullOrEmpty(Beatmap.Settings.BgImage))
             {
-                BackgroundPath = Path.Combine(fileInfo.Directory.FullName, Beatmap.Settings.BgImage);
-                RelativeBackgroundPath = Path.Combine(fileInfo.Directory.Name, Beatmap.Settings.BgImage);
+                BackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
+                RelativeBackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
             }
         }
 
@@ -101,5 +103,24 @@ namespace Circle.Game.Beatmaps
         public void Delete() => fileInfo.Delete();
 
         public override string ToString() => $"[{Beatmap.Settings.Author}] {Beatmap.Settings.Artist} - {Beatmap.Settings.Song}";
+
+        public bool Equals(BeatmapInfo info)
+        {
+            if (info == null)
+                return false;
+
+            return Beatmap.Equals(info.Beatmap) &&
+                   Directory == info.Directory &&
+                   DirectoryName == info.DirectoryName &&
+                   Name == info.Name &&
+                   Extension == info.Extension &&
+                   Exists == info.Exists &&
+                   BeatmapPath == info.BeatmapPath &&
+                   SongPath == info.SongPath &&
+                   BackgroundPath == info.BackgroundPath &&
+                   RelativeBeatmapPath == info.RelativeBeatmapPath &&
+                   RelativeSongPath == info.RelativeSongPath &&
+                   RelativeBackgroundPath == info.RelativeBackgroundPath;
+        }
     }
 }

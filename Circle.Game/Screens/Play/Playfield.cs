@@ -61,7 +61,6 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            var currentBeatmap = beatmap.CurrentBeatmap.Beatmap;
             addTileTransforms(currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm);
             addTransforms(currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm);
 

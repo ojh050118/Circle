@@ -17,9 +17,6 @@ namespace Circle.Game.Screens.Select
 {
     public class BeatmapDetails : Container
     {
-        [Resolved]
-        private BeatmapManager beatmapManager { get; set; }
-
         private Background preview;
         private SpriteText title;
         private SpriteText artist;
@@ -189,14 +186,6 @@ namespace Circle.Game.Screens.Select
                     Colour = Color4.Black.Opacity(100)
                 }
             };
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            // 로드 후 한번만 동기화 해야합니다.
-            ChangeBeatmap(beatmapManager.CurrentBeatmap);
         }
 
         public void ChangeBeatmap(BeatmapInfo beatmap) => onBeatmapChanged(beatmap);

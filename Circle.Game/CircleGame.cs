@@ -20,7 +20,6 @@ namespace Circle.Game
         private ImportOverlay import;
         private DialogOverlay dialog;
 
-
         public GameScreenContainer ScreenContainer;
 
         [BackgroundDependencyLoader]

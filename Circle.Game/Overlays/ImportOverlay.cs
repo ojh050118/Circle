@@ -17,10 +17,10 @@ namespace Circle.Game.Overlays
 {
     public class ImportOverlay : CircleFocusedOverlayContainer
     {
-        private CircleFileSelector fileSelector;
+        private readonly CircleFileSelector fileSelector;
 
-        private SpriteIcon icon;
-        private TextFlowContainer text;
+        private readonly SpriteIcon icon;
+        private readonly TextFlowContainer text;
 
         [Resolved]
         private BeatmapManager manager { get; set; }
@@ -126,7 +126,6 @@ namespace Circle.Game.Overlays
                                     }
                                 }
                             },
-
                         }
                     }
                 }
