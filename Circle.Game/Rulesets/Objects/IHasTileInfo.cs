@@ -1,4 +1,4 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using osu.Framework.Graphics;
 
 namespace Circle.Game.Rulesets.Objects

@@ -1,16 +1,16 @@
-﻿using Circle.Game.Screens.Select;
+﻿using Circle.Game.Beatmaps;
+using Circle.Game.Screens.Select;
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osuTK.Graphics;
-using osu.Framework.Graphics;
-using osu.Framework.Allocation;
-using Circle.Game.Beatmap;
 
 namespace Circle.Game.Tests.Visual.SongSelect
 {
     public class TestSceneBeatmapCarousel : CircleTestScene
     {
         [BackgroundDependencyLoader]
-        private void load(BeatmapManager beatmaps)
+        private void load(BeatmapStorage beatmaps)
         {
             BeatmapCarousel carousel;
 
@@ -21,12 +21,16 @@ namespace Circle.Game.Tests.Visual.SongSelect
                 RelativeSizeAxes = Axes.Both,
             });
             Add(carousel = new BeatmapCarousel());
+            AddLabel("Add carousel item");
+            foreach (var bi in beatmaps.GetBeatmapInfos())
+                AddStep($"Add item({bi})", () => carousel.AddItem(bi, null));
+
             AddLabel("Select beatmap(vertical direction)");
             AddRepeatStep("Select beatmap(down)", () => carousel.SelectBeatmap(VerticalDirection.Down), 5);
             AddRepeatStep("Select beatmap(up)", () => carousel.SelectBeatmap(VerticalDirection.Up), 5);
             AddLabel("Select beatmap(beatmap)");
-            foreach (var beatmap in beatmaps.LoadedBeatmaps)
-                AddStep($"Select beatmap({beatmap.Settings.Song})", () => carousel.SelectBeatmap(beatmap));
+            foreach (var bi in beatmaps.GetBeatmapInfos())
+                AddStep($"Select beatmap({bi})", () => carousel.SelectBeatmap(bi));
         }
     }
 }

@@ -24,13 +24,13 @@ namespace Circle.Game.Graphics.Containers
 
         public new Container<Drawable> Content { get; set; }
 
-        private readonly BufferedContainer bluredBackground;
+        private readonly GameScreenContainer gameScreen;
 
         public bool BlockInputAction { get; set; }
 
         protected CircleFocusedOverlayContainer(BufferedContainer screenContainer)
         {
-            bluredBackground = new BufferedContainer
+            gameScreen = new GameScreenContainer
             {
                 RelativeSizeAxes = Axes.Both,
                 Child = screenContainer.CreateView().With(d =>
@@ -50,7 +50,7 @@ namespace Circle.Game.Graphics.Containers
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
             {
-                bluredBackground,
+                gameScreen,
                 dim = new Box
                 {
                     Colour = Color4.Black,
@@ -99,14 +99,14 @@ namespace Circle.Game.Graphics.Containers
         protected override void PopIn()
         {
             dim.FadeTo(0.4f, 1000, Easing.OutPow10);
-            bluredBackground.FadeIn(0).BlurTo(new Vector2(10), 1000, Easing.OutPow10);
+            gameScreen.FadeIn(0).BlurTo(new Vector2(10), 1000, Easing.OutPow10);
             base.PopIn();
         }
 
         protected override void PopOut()
         {
             dim.FadeOut(1000, Easing.OutPow10);
-            bluredBackground.BlurTo(new Vector2(0), 1000, Easing.OutPow10).Then().FadeOut(0);
+            gameScreen.BlurTo(new Vector2(0), 1000, Easing.OutPow10).Then().FadeOut(0);
             base.PopOut();
         }
     }

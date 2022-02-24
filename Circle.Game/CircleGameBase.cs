@@ -1,5 +1,5 @@
 using System;
-using Circle.Game.Beatmap;
+using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
@@ -34,8 +34,6 @@ namespace Circle.Game
         protected MusicController MusicController { get; private set; }
 
         private DependencyContainer dependencies;
-
-        protected BeatmapResourcesManager BeatmapResourceStore { get; set; }
 
         protected BeatmapStorage BeatmapStorage { get; set; }
 
@@ -76,8 +74,7 @@ namespace Circle.Game
 
             dependencies.CacheAs(largeStore);
 
-            dependencies.CacheAs(BeatmapResourceStore = new BeatmapResourcesManager(files, Audio, Host));
-            dependencies.CacheAs(BeatmapStorage = new BeatmapStorage(files, BeatmapResourceStore));
+            dependencies.CacheAs(BeatmapStorage = new BeatmapStorage(files, Audio, Host));
             dependencies.CacheAs(BeatmapManager = new BeatmapManager(BeatmapStorage));
 
             dependencies.CacheAs(Storage);

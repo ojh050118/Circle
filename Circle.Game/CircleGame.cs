@@ -1,9 +1,9 @@
-﻿using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
 using osu.Framework.Screens;
 
 namespace Circle.Game
@@ -17,16 +17,17 @@ namespace Circle.Game
 
         private ScreenStack screenStack;
         private Background background;
+        private ImportOverlay import;
         private DialogOverlay dialog;
 
-        protected BufferedContainer ScreenContainer;
+        public GameScreenContainer ScreenContainer;
 
         [BackgroundDependencyLoader]
         private void load()
         {
             Children = new Drawable[]
             {
-                ScreenContainer = new BufferedContainer
+                ScreenContainer = new GameScreenContainer
                 {
                     RelativeSizeAxes = Axes.Both,
                     Children = new Drawable[]
@@ -35,10 +36,12 @@ namespace Circle.Game
                         screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
                     }
                 },
+                import = new ImportOverlay(ScreenContainer),
                 dialog = new DialogOverlay(ScreenContainer)
             };
 
             dependencies.CacheAs(background);
+            dependencies.CacheAs(import);
             dependencies.CacheAs(dialog);
             dependencies.CacheAs(this);
         }

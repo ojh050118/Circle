@@ -1,4 +1,4 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -33,7 +33,7 @@ namespace Circle.Game.Screens.Play
         {
             InternalChild = header = new ScreenHeader(this)
             {
-                Text = $"{beatmap.CurrentBeatmap.Settings.Artist} - {beatmap.CurrentBeatmap.Settings.Song}",
+                Text = beatmap.CurrentBeatmap.ToString(),
                 Alpha = 0
             };
         }

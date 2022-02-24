@@ -3,7 +3,6 @@
     public enum CarouselItemState
     {
         NotSelected,
-        Selected,
-        PlayRequested
+        Selected
     }
 }

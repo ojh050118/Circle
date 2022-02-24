@@ -13,12 +13,14 @@ namespace Circle.Game.Tests
     public class CircleTestBrowser : CircleGameBase
     {
         private Background background;
+        private ImportOverlay import;
         private DialogOverlay dialog;
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
         {
             var dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
             dependencies.CacheAs(background = new Background(textureName: "bg1"));
+            dependencies.CacheAs(import = new ImportOverlay(new BufferedContainer()));
             dependencies.CacheAs(dialog = new DialogOverlay(new BufferedContainer()));
 
             return dependencies;
@@ -34,6 +36,7 @@ namespace Circle.Game.Tests
             {
                 background,
                 new TestBrowser("Circle"),
+                import,
                 dialog,
                 new CursorContainer()
             });

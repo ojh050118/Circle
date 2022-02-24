@@ -1,6 +1,7 @@
-﻿using Circle.Game.Beatmap;
+﻿using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Overlays;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
@@ -13,7 +14,7 @@ namespace Circle.Game.Screens.Setting.Sections
         public override string Header => "Debug";
 
         [BackgroundDependencyLoader]
-        private void load(CircleGameBase gameBase, GameHost host, CircleConfigManager config, BeatmapManager beatmap)
+        private void load(CircleGameBase gameBase, GameHost host, CircleConfigManager config, BeatmapManager beatmap, ImportOverlay import)
         {
             FlowContent.AddRange(new Drawable[]
             {
@@ -26,13 +27,6 @@ namespace Circle.Game.Screens.Setting.Sections
                         new StepperItem<bool>(CircleSetting.LoadBeatmapsOnStartup, true, "On"),
                         new StepperItem<bool>(CircleSetting.LoadBeatmapsOnStartup, false, "Off")
                     }
-                },
-                new BoxButton
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Text = "Reload beatmaps",
-                    Action = beatmap.ReloadBeatmaps
                 },
                 new BoxButton
                 {

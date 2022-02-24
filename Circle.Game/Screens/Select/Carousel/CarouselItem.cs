@@ -1,4 +1,5 @@
-﻿using Circle.Game.Beatmap;
+﻿using System;
+using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -21,13 +22,14 @@ namespace Circle.Game.Screens.Select.Carousel
 
         protected override Container<Drawable> Content { get; } = new Container { RelativeSizeAxes = Axes.Both };
 
-        public readonly Bindable<CarouselItemState> State = new Bindable<CarouselItemState>(CarouselItemState.NotSelected);
+        public readonly Bindable<CarouselItemState> State = new Bindable<CarouselItemState>();
 
         public BeatmapInfo BeatmapInfo { get; set; }
 
-        private Sprite sprite;
+        public Action DoubleClicked { get; set; }
 
-        public CarouselItem()
+        [BackgroundDependencyLoader]
+        private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps)
         {
             Size = new Vector2(1, 250);
             RelativeSizeAxes = Axes.X;
@@ -41,87 +43,75 @@ namespace Circle.Game.Screens.Select.Carousel
                 Masking = true,
                 CornerRadius = 10,
                 BorderColour = Color4.SkyBlue,
-            };
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(LargeTextureStore largeTexture, BeatmapResourcesManager beatmapResources)
-        {
-            sprite = new Sprite
-            {
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                RelativeSizeAxes = Axes.Both,
-                FillMode = FillMode.Fill,
-                Texture = string.IsNullOrEmpty(BeatmapInfo.Settings.BgImage)
-                    ? largeTexture.Get("bg1")
-                    : beatmapResources.GetBackground(BeatmapInfo)
-            };
-
-            BorderContainer.Children = new Drawable[]
-            {
-                sprite,
-                new FillFlowContainer
+                Children = new Drawable[]
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Direction = FillDirection.Horizontal,
-                    // 이렇게 하면 그래디언트가 수평이 아니라 ~40° 각도로 대각선이 됩니다.
-                    Shear = new Vector2(0.8f, 0),
-                    Alpha = 0.5f,
-                    Children = new[]
+                    new Sprite
                     {
-                        new Box
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = Color4.Black,
-                            Width = 0.4f,
-                        },
-                        new Box
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = ColourInfo.GradientHorizontal(Color4.Black, new Color4(0f, 0f, 0f, 0.9f)),
-                            Width = 0.05f,
-                        },
-                        new Box
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = ColourInfo.GradientHorizontal(new Color4(0f, 0f, 0f, 0.9f), new Color4(0f, 0f, 0f, 0.1f)),
-                            Width = 0.2f,
-                        },
-                        new Box
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Colour = ColourInfo.GradientHorizontal(new Color4(0f, 0f, 0f, 0.1f), new Color4(0, 0, 0, 0)),
-                            Width = 0.05f,
-                        },
-                    }
-                },
-                new FillFlowContainer
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Direction = FillDirection.Vertical,
-                    Padding = new MarginPadding { Horizontal = 20, Vertical = 10 },
-                    Spacing = new Vector2(5),
-                    Children = new Drawable[]
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        RelativeSizeAxes = Axes.Both,
+                        FillMode = FillMode.Fill,
+                        Texture = !beatmaps.Storage.Exists(BeatmapInfo.RelativeBackgroundPath)
+                            ? largeTexture.Get("bg1")
+                            : beatmaps.GetBackground(BeatmapInfo)
+                    },
+                    new FillFlowContainer
                     {
-                        new SpriteText
+                        RelativeSizeAxes = Axes.Both,
+                        Direction = FillDirection.Horizontal,
+                        // 이렇게 하면 그래디언트가 수평이 아니라 ~40° 각도로 대각선이 됩니다.
+                        Shear = new Vector2(0.8f, 0),
+                        Alpha = 0.5f,
+                        Children = new[]
                         {
-                            Text = BeatmapInfo.Settings.Song,
-                            Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
-                        },
-                        new SpriteText
+                            new Box
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Colour = Color4.Black,
+                                Width = 0.4f,
+                            },
+                            new Box
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Colour = ColourInfo.GradientHorizontal(Color4.Black, new Color4(0f, 0f, 0f, 0.9f)),
+                                Width = 0.05f,
+                            },
+                            new Box
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Colour = ColourInfo.GradientHorizontal(new Color4(0f, 0f, 0f, 0.9f), new Color4(0f, 0f, 0f, 0.1f)),
+                                Width = 0.2f,
+                            },
+                            new Box
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Colour = ColourInfo.GradientHorizontal(new Color4(0f, 0f, 0f, 0.1f), new Color4(0, 0, 0, 0)),
+                                Width = 0.05f,
+                            },
+                        }
+                    },
+                    new FillFlowContainer
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Direction = FillDirection.Vertical,
+                        Padding = new MarginPadding { Horizontal = 20, Vertical = 10 },
+                        Spacing = new Vector2(5),
+                        Children = new Drawable[]
                         {
-                            Text = BeatmapInfo.Settings.Author,
-                            Font = FontUsage.Default.With(size: 24)
+                            new SpriteText
+                            {
+                                Text = BeatmapInfo.Beatmap.Settings.Song,
+                                Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
+                            },
+                            new SpriteText
+                            {
+                                Text = BeatmapInfo.Beatmap.Settings.Author,
+                                Font = FontUsage.Default.With(size: 24)
+                            }
                         }
                     }
                 }
             };
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
 
             State.BindValueChanged(updateState, true);
         }
@@ -150,17 +140,15 @@ namespace Circle.Game.Screens.Select.Carousel
                         Roundness = 10,
                     };
                     break;
-
-                case CarouselItemState.PlayRequested:
-                    BorderContainer.FlashColour(Color4.White, 1000, Easing.OutPow10);
-                    break;
             }
         }
 
         protected override bool OnClick(ClickEvent e)
         {
-            State.Value = State.Value == CarouselItemState.Selected ? CarouselItemState.PlayRequested : CarouselItemState.Selected;
+            if (State.Value == CarouselItemState.Selected)
+                DoubleClicked?.Invoke();
 
+            State.Value = CarouselItemState.Selected;
             return base.OnClick(e);
         }
     }

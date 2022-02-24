@@ -1,4 +1,5 @@
 using Circle.Game.Screens;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Screens;
 
@@ -6,7 +7,8 @@ namespace Circle.Game.Tests.Visual
 {
     public class TestSceneMainScreen : CircleTestScene
     {
-        public TestSceneMainScreen()
+        [BackgroundDependencyLoader]
+        private void load()
         {
             Add(new ScreenStack(new MainScreen()) { RelativeSizeAxes = Axes.Both });
         }

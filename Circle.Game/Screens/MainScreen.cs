@@ -1,5 +1,5 @@
 using System;
-using Circle.Game.Beatmap;
+using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;

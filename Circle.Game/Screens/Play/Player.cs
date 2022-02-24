@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Circle.Game.Beatmap;
+using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Screens.Setting;
@@ -52,21 +52,24 @@ namespace Circle.Game.Screens.Play
         private MusicController musicController { get; set; }
 
         [Resolved]
-        private BeatmapManager beatmap { get; set; }
+        private DialogOverlay dialog { get; set; }
 
         [Resolved]
-        private DialogOverlay dialog { get; set; }
+        private BeatmapManager manager { get; set; }
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
 
         private ScheduledDelegate scheduledDelegate;
 
+        private Beatmap currentBeatmap;
+
         [BackgroundDependencyLoader]
         private void load(GameHost host)
         {
+            currentBeatmap = manager.CurrentBeatmap.Beatmap;
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmap.CurrentBeatmap, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(currentBeatmap, Clock),
                 new Container
                 {
                     AutoSizeAxes = Axes.Both,
@@ -77,7 +80,7 @@ namespace Circle.Game.Screens.Play
                     {
                         new SpriteText
                         {
-                            Text = $"{beatmap.CurrentBeatmap.Settings.Artist} - {beatmap.CurrentBeatmap.Settings.Song}",
+                            Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
                             Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
                             Shadow = true,
                             ShadowColour = Color4.Black.Opacity(0.4f),
@@ -111,8 +114,8 @@ namespace Circle.Game.Screens.Play
                            .Schedule(() =>
                            {
                                musicController.Stop();
-                               musicController.ChangeTrack(beatmap.CurrentBeatmap);
-                               musicController.SeekTo(beatmap.CurrentBeatmap.Settings.Offset);
+                               musicController.ChangeTrack(manager.CurrentBeatmap);
+                               musicController.SeekTo(manager.CurrentBeatmap.Beatmap.Settings.Offset);
                                playState = GamePlayState.Ready;
                            });
         }
@@ -152,7 +155,7 @@ namespace Circle.Game.Screens.Play
                 case GamePlayState.Ready:
                     masterGameplayClockContainer.Start();
                     musicController.CurrentTrack.VolumeTo(1);
-                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / beatmap.CurrentBeatmap.Settings.Bpm);
+                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / manager.CurrentBeatmap.Beatmap.Settings.Bpm);
                     playState = GamePlayState.Playing;
                     break;
 

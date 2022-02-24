@@ -1,5 +1,10 @@
-﻿using Circle.Game.Input;
+﻿using System;
+using Circle.Game.Beatmaps;
+using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Input;
+using Circle.Game.Overlays;
 using Circle.Game.Screens.Play;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
@@ -10,10 +15,23 @@ namespace Circle.Game.Screens.Select
     {
         public override string Header => "Play";
 
-        private readonly BeatmapCarousel carousel;
-        private readonly BeatmapDetails details;
+        private BeatmapCarousel carousel;
+        private BeatmapDetails details;
 
-        public SongSelectScreen()
+        [Resolved]
+        private Background background { get; set; }
+
+        [Resolved]
+        private BeatmapStorage beatmaps { get; set; }
+
+        [Resolved]
+        private BeatmapManager beatmapManager { get; set; }
+
+        [Resolved]
+        private MusicController music { get; set; }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             InternalChildren = new Drawable[]
             {
@@ -30,21 +48,74 @@ namespace Circle.Game.Screens.Select
                 {
                     Width = 0.4f,
                     Anchor = Anchor.CentreRight,
-                    Origin = Anchor.CentreRight
+                    Origin = Anchor.CentreRight,
                 }
             };
+
+            if (beatmapManager.LoadedBeatmaps == null)
+                beatmapManager.ReloadBeatmaps();
+
+            foreach (var bi in beatmapManager.LoadedBeatmaps)
+                carousel.AddItem(bi, () => this.Push(new PlayerLoader()));
+
+            carousel.SelectedItem.ValueChanged += info => beatmapManager.CurrentBeatmap = info.NewValue.BeatmapInfo;
+            beatmapManager.OnBeatmapChanged += beatmapChanged;
+            checkIsLoadedCarousel();
         }
 
-        protected override void LoadComplete()
+        private void checkIsLoadedCarousel()
         {
-            base.LoadComplete();
-
-            carousel.PlayRequested.ValueChanged += v =>
+            if (carousel.LoadState != LoadState.Loaded)
             {
-                if (v.NewValue)
-                    this.Push(new PlayerLoader());
-            };
-            carousel.SelectedBeatmap.ValueChanged += beatmap => details.ChangeBeatmap(beatmap.NewValue);
+                Schedule(checkIsLoadedCarousel);
+                return;
+            }
+
+            setBeatmap();
+        }
+
+        public override void OnEntering(IScreen last)
+        {
+            base.OnEntering(last);
+
+            details.RotateTo(-45).Then().RotateTo(0, 1000, Easing.OutPow10);
+            details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
+        }
+
+        private void setBeatmap()
+        {
+            if (carousel.Count == 0)
+                return;
+
+            BeatmapInfo beatmapInfo;
+
+            if (beatmapManager.CurrentBeatmap == null)
+            {
+                var idx = new Random().Next(0, beatmapManager.LoadedBeatmaps.Count);
+                beatmapInfo = beatmapManager.LoadedBeatmaps[idx];
+            }
+            else
+                beatmapInfo = beatmapManager.CurrentBeatmap;
+
+            beatmapChanged((beatmapManager.CurrentBeatmap, beatmapInfo));
+        }
+
+        private void beatmapChanged((BeatmapInfo oldBeatmap, BeatmapInfo newBeatmap) beatmap)
+        {
+            details.ChangeBeatmap(beatmap.newBeatmap);
+            if (!beatmaps.Storage.Exists(beatmap.newBeatmap.RelativeBackgroundPath))
+                background.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
+            else
+                background.ChangeTexture(TextureSource.External, beatmap.newBeatmap.RelativeBackgroundPath, 500, Easing.Out);
+
+            carousel.SelectBeatmap(beatmap.newBeatmap);
+
+            if (!BeatmapUtils.Compare(beatmap.oldBeatmap, beatmap.newBeatmap))
+            {
+                music.ChangeTrack(beatmapManager.CurrentBeatmap);
+                music.SeekTo(beatmapManager.CurrentBeatmap.Beatmap.Settings.PreviewSongStart * 1000);
+                music.Play();
+            }
         }
 
         public override bool OnPressed(KeyBindingPressEvent<InputAction> e)
@@ -58,17 +129,14 @@ namespace Circle.Game.Screens.Select
                 case InputAction.PreviousBeatmap:
                     carousel?.SelectBeatmap(VerticalDirection.Up);
                     break;
+
+                case InputAction.Select:
+                    if (beatmapManager.CurrentBeatmap != null)
+                        this.Push(new PlayerLoader());
+                    break;
             }
 
             return base.OnPressed(e);
-        }
-
-        public override void OnEntering(IScreen last)
-        {
-            base.OnEntering(last);
-
-            details.RotateTo(-45).Then().RotateTo(0, 1000, Easing.OutPow10);
-            details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
         }
 
         public override void OnSuspending(IScreen next)
@@ -84,8 +152,14 @@ namespace Circle.Game.Screens.Select
             base.OnResuming(last);
 
             carousel.FadeIn(1000, Easing.OutPow10);
-            carousel.PlayRequested.Value = false;
             details.MoveToX(0, 500, Easing.OutPow10);
+        }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            beatmapManager.OnBeatmapChanged -= beatmapChanged;
+
+            base.Dispose(isDisposing);
         }
     }
 }
