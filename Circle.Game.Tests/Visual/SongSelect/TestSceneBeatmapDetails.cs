@@ -8,13 +8,13 @@ namespace Circle.Game.Tests.Visual.SongSelect
     public class TestSceneBeatmapDetails : CircleTestScene
     {
         [BackgroundDependencyLoader]
-        private void load(BeatmapManager beatmaps)
+        private void load(BeatmapStorage beatmaps)
         {
             BeatmapDetails details;
 
             Add(details = new BeatmapDetails { Padding = new MarginPadding(10) });
             AddLabel("Beatmaps");
-            foreach (var beatmap in beatmaps.LoadedBeatmaps)
+            foreach (var beatmap in beatmaps.GetBeatmapInfos())
                 AddStep($"Change to {beatmap.Beatmap.Settings.SongFileName}", () => details.ChangeBeatmap(beatmap));
         }
     }

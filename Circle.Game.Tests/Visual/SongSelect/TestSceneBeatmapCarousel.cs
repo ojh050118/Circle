@@ -10,7 +10,7 @@ namespace Circle.Game.Tests.Visual.SongSelect
     public class TestSceneBeatmapCarousel : CircleTestScene
     {
         [BackgroundDependencyLoader]
-        private void load(BeatmapManager beatmaps)
+        private void load(BeatmapStorage beatmaps)
         {
             BeatmapCarousel carousel;
 
@@ -22,14 +22,14 @@ namespace Circle.Game.Tests.Visual.SongSelect
             });
             Add(carousel = new BeatmapCarousel());
             AddLabel("Add carousel item");
-            foreach (var bi in beatmaps.LoadedBeatmaps)
+            foreach (var bi in beatmaps.GetBeatmapInfos())
                 AddStep($"Add item({bi})", () => carousel.AddItem(bi, null));
 
             AddLabel("Select beatmap(vertical direction)");
             AddRepeatStep("Select beatmap(down)", () => carousel.SelectBeatmap(VerticalDirection.Down), 5);
             AddRepeatStep("Select beatmap(up)", () => carousel.SelectBeatmap(VerticalDirection.Up), 5);
             AddLabel("Select beatmap(beatmap)");
-            foreach (var bi in beatmaps.LoadedBeatmaps)
+            foreach (var bi in beatmaps.GetBeatmapInfos())
                 AddStep($"Select beatmap({bi})", () => carousel.SelectBeatmap(bi));
         }
     }

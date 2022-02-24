@@ -10,27 +10,23 @@ namespace Circle.Game.Tests.Visual.Overlays
         [Resolved]
         private MusicController music { get; set; }
 
-        private readonly SpriteText text;
-
-        public TestSceneMusicController()
-        {
-            music = new MusicController();
-            Add(text = new SpriteText
-            {
-                Text = $"Current time: {music.CurrentTrack.CurrentTime}"
-            });
-            AddStep("Play", () => music.Play());
-            AddStep("Stop", () => music.Stop());
-            AddStep("Restart", () => music.RestartTrack());
-            AddLabel("tracks");
-        }
+        private SpriteText text;
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapManager beatmaps, MusicController music)
+        private void load(BeatmapStorage beatmaps, MusicController music)
         {
-            foreach (var beatmap in beatmaps.LoadedBeatmaps)
+            Add(text = new SpriteText
             {
-                AddStep($"{beatmap.Beatmap.Settings.SongFileName}", () => music.ChangeTrack(beatmap));
+                Text = $"Current time: {music.CurrentTrack?.CurrentTime}"
+            });
+            AddStep("Play", () => music.Play());
+            AddStep("Stop", music.Stop);
+            AddStep("Restart", music.RestartTrack);
+            AddLabel("tracks");
+
+            foreach (var bi in beatmaps.GetBeatmapInfos())
+            {
+                AddStep($"{bi.Beatmap.Settings.SongFileName}", () => music.ChangeTrack(bi));
             }
         }
 
