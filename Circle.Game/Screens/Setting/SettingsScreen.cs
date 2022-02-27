@@ -32,7 +32,7 @@ namespace Circle.Game.Screens.Setting
                     Margin = new MarginPadding { Left = 80 },
                     Padding = new MarginPadding { Top = 130, Bottom = 65 },
                     RelativeSizeAxes = Axes.Both,
-                    Width = 0.5f,
+                    Width = 0.6f,
                     Child = new Container
                     {
                         RelativeSizeAxes = Axes.Both,
