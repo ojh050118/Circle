@@ -1,6 +1,8 @@
 ﻿using System;
 using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
+using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -28,9 +30,12 @@ namespace Circle.Game.Screens.Select.Carousel
 
         public Action DoubleClicked { get; set; }
 
+        private Sample clickSample;
+
         [BackgroundDependencyLoader]
-        private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps)
+        private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps, AudioManager audio)
         {
+            clickSample = audio.Samples.Get("button-click");
             Size = new Vector2(1, 250);
             RelativeSizeAxes = Axes.X;
             Anchor = Anchor.TopCentre;
@@ -149,6 +154,8 @@ namespace Circle.Game.Screens.Select.Carousel
                 DoubleClicked?.Invoke();
 
             State.Value = CarouselItemState.Selected;
+            clickSample?.Play();
+
             return base.OnClick(e);
         }
     }
