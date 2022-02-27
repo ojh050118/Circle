@@ -81,7 +81,7 @@ namespace Circle.Game.Tests
         {
             toast.Push(new ToastInfo
             {
-                Description = $"Imported successfully!",
+                Description = "Imported successfully!",
                 SubDescription = name,
                 Icon = FontAwesome.Solid.Check,
                 IconColour = Color4.LightGreen
