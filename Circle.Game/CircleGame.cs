@@ -24,14 +24,14 @@ namespace Circle.Game
         private Background background;
         private ImportOverlay import;
         private DialogOverlay dialog;
-        private Toast toast;
+        private Toast toast = new Toast();
 
         public GameScreenContainer ScreenContainer;
 
         [BackgroundDependencyLoader]
         private void load()
         {
-            dependencies.CacheAs(toast = new Toast());
+            dependencies.CacheAs(toast);
 
             Children = new Drawable[]
             {
@@ -55,6 +55,7 @@ namespace Circle.Game
             dependencies.CacheAs(this);
 
             BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
+            BeatmapManager.OnImported += imported;
         }
 
         protected override void LoadComplete()
@@ -69,6 +70,7 @@ namespace Circle.Game
             base.Dispose(isDisposing);
 
             BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
+            BeatmapManager.OnImported -= imported;
         }
 
         private void loadedBeatmaps(IList<BeatmapInfo> beatmaps)
@@ -76,6 +78,17 @@ namespace Circle.Game
             toast.Push(new ToastInfo
             {
                 Description = $"Loaded {beatmaps.Count} beatmaps!",
+                Icon = FontAwesome.Solid.Check,
+                IconColour = Color4.LightGreen
+            });
+        }
+
+        private void imported(string name)
+        {
+            toast.Push(new ToastInfo
+            {
+                Description = $"Imported successfully!",
+                SubDescription = name,
                 Icon = FontAwesome.Solid.Check,
                 IconColour = Color4.LightGreen
             });

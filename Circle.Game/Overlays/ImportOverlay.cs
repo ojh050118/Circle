@@ -155,17 +155,7 @@ namespace Circle.Game.Overlays
             if (string.IsNullOrEmpty(path))
                 return;
 
-            Task.Factory.StartNew(() =>
-            {
-                manager.Import(path);
-                toast.Push(new ToastInfo
-                {
-                    Description = "Imported!",
-                    SubDescription = fileSelector.CurrentFile.Value.Name,
-                    Icon = FontAwesome.Solid.Check,
-                    IconColour = Color4.LightGreen
-                });
-            }, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(() => manager.Import(path), TaskCreationOptions.LongRunning);
         }
 
         protected override void PopIn()

@@ -13,6 +13,8 @@ namespace Circle.Game.Overlays.OSD
         private const int toast_minimum_width = 300;
         private const int toast_default_padding = 15;
 
+        public int ToastQueueCount;
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -23,6 +25,8 @@ namespace Circle.Game.Overlays.OSD
         public void Push(ToastInfo info)
         {
             CircularContainer toast;
+            int delay = 2000 * ToastQueueCount;
+            ToastQueueCount++;
 
             Schedule(() =>
             {
@@ -117,9 +121,9 @@ namespace Circle.Game.Overlays.OSD
                     }
                 });
 
-                int delay = 2000 * (Children.Count - 1);
                 toast.Delay(delay).MoveToY(0, 250, Easing.OutCubic).Then().Delay(1500).MoveToY(-100, 250, Easing.OutCubic).Then().Expire();
             });
+            Scheduler.AddDelayed(() => ToastQueueCount--, 2000);
         }
     }
 }

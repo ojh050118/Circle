@@ -50,6 +50,7 @@ namespace Circle.Game.Tests
             });
 
             BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
+            BeatmapManager.OnImported += imported;
         }
 
         public override void SetHost(GameHost host)
@@ -63,6 +64,7 @@ namespace Circle.Game.Tests
             base.Dispose(isDisposing);
 
             BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
+            BeatmapManager.OnImported -= imported;
         }
 
         private void loadedBeatmaps(IList<BeatmapInfo> beatmaps)
@@ -70,6 +72,17 @@ namespace Circle.Game.Tests
             toast.Push(new ToastInfo
             {
                 Description = $"Loaded {beatmaps.Count} beatmaps!",
+                Icon = FontAwesome.Solid.Check,
+                IconColour = Color4.LightGreen
+            });
+        }
+
+        private void imported(string name)
+        {
+            toast.Push(new ToastInfo
+            {
+                Description = $"Imported successfully!",
+                SubDescription = name,
                 Icon = FontAwesome.Solid.Check,
                 IconColour = Color4.LightGreen
             });

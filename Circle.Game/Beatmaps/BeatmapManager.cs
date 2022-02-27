@@ -35,6 +35,8 @@ namespace Circle.Game.Beatmaps
 
         public event Action<IList<BeatmapInfo>> OnLoadedBeatmaps;
 
+        public event Action<string> OnImported;
+
         public BeatmapManager(BeatmapStorage beatmaps)
         {
             beatmapStorage = beatmaps;
@@ -79,6 +81,8 @@ namespace Circle.Game.Beatmaps
                 try
                 {
                     File.Copy(path, Path.Combine(beatmap, Path.GetFileName(path)), true);
+                    if (!migration)
+                        OnImported?.Invoke(Path.GetFileName(path));
                 }
                 catch (Exception e)
                 {
@@ -98,6 +102,8 @@ namespace Circle.Game.Beatmaps
                 reader.Archive.WriteToDirectory(beatmap);
                 if (migration)
                     File.Delete(path);
+                else
+                    OnImported?.Invoke(Path.GetFileName(path));
             }
         }
 
