@@ -24,7 +24,7 @@ namespace Circle.Game
         private Background background;
         private ImportOverlay import;
         private DialogOverlay dialog;
-        private Toast toast = new Toast();
+        private readonly Toast toast = new Toast();
 
         public GameScreenContainer ScreenContainer;
 
@@ -87,7 +87,7 @@ namespace Circle.Game
         {
             toast.Push(new ToastInfo
             {
-                Description = $"Imported successfully!",
+                Description = "Imported successfully!",
                 SubDescription = name,
                 Icon = FontAwesome.Solid.Check,
                 IconColour = Color4.LightGreen

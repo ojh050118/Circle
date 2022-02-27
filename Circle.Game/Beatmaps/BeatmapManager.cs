@@ -122,7 +122,6 @@ namespace Circle.Game.Beatmaps
             }
 
             deleteOldStorages();
-            ReloadBeatmaps();
         }
 
         private void migrateTracks(BeatmapInfo info)

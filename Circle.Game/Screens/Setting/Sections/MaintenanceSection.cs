@@ -34,6 +34,14 @@ namespace Circle.Game.Screens.Setting.Sections
                             IconColour = Color4.DeepSkyBlue
                         });
                         beatmap.Migrate();
+                        toast.Push(new ToastInfo
+                        {
+                            Description = "Migration",
+                            SubDescription = "Migration successful! Check out what's new!",
+                            Icon = FontAwesome.Solid.Check,
+                            IconColour = Color4.LightGreen
+                        });
+                        beatmap.ReloadBeatmaps();
                     }, TaskCreationOptions.LongRunning)
                 },
                 new BoxButton
