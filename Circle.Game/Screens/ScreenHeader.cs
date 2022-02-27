@@ -36,7 +36,7 @@ namespace Circle.Game.Screens
                     new IconButton
                     {
                         Icon = FontAwesome.Solid.AngleLeft,
-                        Size = new Vector2(30),
+                        Size = new Vector2(40),
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft,
                         Action = screen.OnExit
