@@ -1,4 +1,6 @@
 ﻿using osu.Framework.Allocation;
+using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -11,6 +13,8 @@ namespace Circle.Game.Graphics.UserInterface
     public class CircleButton : ClickableContainer
     {
         private readonly Box hover;
+        private Sample hoverSample;
+        private Sample clickSample;
 
         protected new Container Content;
 
@@ -48,13 +52,16 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(AudioManager audio)
         {
+            hoverSample = audio.Samples.Get("button-hover");
+            clickSample = audio.Samples.Get("button-click");
             Content.CornerRadius = CornerRadius;
         }
 
         protected override bool OnHover(HoverEvent e)
         {
+            hoverSample?.Play();
             hover.FadeTo(0.25f, 250, Easing.OutQuint);
 
             return base.OnHover(e);
@@ -79,6 +86,13 @@ namespace Circle.Game.Graphics.UserInterface
             Child.ScaleTo(1, 1500, Easing.OutPow10);
 
             base.OnMouseUp(e);
+        }
+
+        protected override bool OnClick(ClickEvent e)
+        {
+            clickSample?.Play();
+
+            return base.OnClick(e);
         }
     }
 }
