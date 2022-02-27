@@ -49,6 +49,7 @@ namespace Circle.Game
                 toast,
             };
 
+            dependencies.CacheAs(ScreenContainer);
             dependencies.CacheAs(background);
             dependencies.CacheAs(import);
             dependencies.CacheAs(dialog);
