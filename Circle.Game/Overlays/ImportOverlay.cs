@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
@@ -24,6 +25,9 @@ namespace Circle.Game.Overlays
 
         [Resolved]
         private BeatmapManager manager { get; set; }
+
+        [Resolved]
+        private Toast toast { get; set; }
 
         public ImportOverlay(BufferedContainer gameScreen)
             : base(gameScreen)
@@ -154,6 +158,13 @@ namespace Circle.Game.Overlays
             Task.Factory.StartNew(() =>
             {
                 manager.Import(path);
+                toast.Push(new ToastInfo
+                {
+                    Description = "Imported!",
+                    SubDescription = fileSelector.CurrentFile.Value.Name,
+                    Icon = FontAwesome.Solid.Check,
+                    IconColour = Color4.LightGreen
+                });
             }, TaskCreationOptions.LongRunning);
         }
 
