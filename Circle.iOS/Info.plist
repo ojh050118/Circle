@@ -5,7 +5,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>junho.Circle</string>
 	<key>CFBundleName</key>
-	<string>FlappyOsu</string>
+	<string>Circle</string>
 	<key>CFBundleDisplayName</key>
 	<string>Circle</string>
 	<key>CFBundleShortVersionString</key>
@@ -44,5 +44,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/AppIcon.appiconset</string>
 </dict>
 </plist>
