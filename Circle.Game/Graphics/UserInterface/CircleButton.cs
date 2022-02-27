@@ -1,4 +1,5 @@
 ﻿using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -33,8 +34,8 @@ namespace Circle.Game.Graphics.UserInterface
                     new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Colour = Color4.Black,
-                        Alpha = useBackground ? 0.4f : 0
+                        Colour = Color4.Black.Opacity(0.4f),
+                        Alpha = useBackground ? 1 : 0
                     },
                     hover = new Box
                     {
@@ -54,7 +55,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override bool OnHover(HoverEvent e)
         {
-            hover.FadeTo(0.25f, 500, Easing.OutQuint);
+            hover.FadeTo(0.25f, 250, Easing.OutQuint);
 
             return base.OnHover(e);
         }
