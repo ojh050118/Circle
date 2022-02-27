@@ -151,10 +151,7 @@ namespace Circle.Game.Overlays
             if (string.IsNullOrEmpty(path))
                 return;
 
-            Task.Factory.StartNew(() =>
-            {
-                manager.Import(path);
-            }, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(() => manager.Import(path), TaskCreationOptions.LongRunning);
         }
 
         protected override void PopIn()
