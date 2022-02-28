@@ -107,7 +107,7 @@ namespace Circle.Game.Screens.Play
             {
                 // Camera
                 using (BeginAbsoluteSequence(startTimeOffset))
-                    this.MoveTo(-tileInfos[floor].Position, 500, Easing.OutSine);
+                    this.MoveTo(-tileInfos[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
                 var (fixedRotation, newRotation) = computeRotation(floor, previousAngle);
                 bpm = getNewBpm(bpm, floor, tileInfos[floor].SpeedType);
