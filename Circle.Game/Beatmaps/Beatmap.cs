@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
 
@@ -10,10 +11,10 @@ namespace Circle.Game.Beatmaps
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
 
-        public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.Equals(beatmap.Actions);
+        public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }
 
-    public struct Settings
+    public struct Settings : IEquatable<Settings>
     {
         public string Artist { get; set; }
         public string Song { get; set; }
@@ -50,7 +51,7 @@ namespace Circle.Game.Beatmaps
                                                  PlanetEasing == settings.PlanetEasing;
     }
 
-    public struct Actions
+    public struct Actions : IEquatable<Actions>
     {
         public int Floor { get; set; }
         public EventType EventType { get; set; }
