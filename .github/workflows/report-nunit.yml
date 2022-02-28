@@ -1,0 +1,29 @@
+name: Annotate CI run with test results
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+jobs:
+  annotate:
+    name: Annotate CI run with test results
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
+    strategy:
+       fail-fast: false
+       matrix:
+          os:
+            - { prettyname: Windows }
+            - { prettyname: macOS }
+          threadingMode: ['SingleThread', 'MultiThreaded']
+    timeout-minutes: 5
+    steps:
+      - name: Annotate CI run with test results
+        uses: dorny/test-reporter@v1.4.2
+        with:
+          artifact: osu-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
+          name: Test Results (${{matrix.os.prettyname}}, ${{matrix.threadingMode}})
+          path: "*.trx"
+          reporter: dotnet-trx
+          list-suites: 'failed'
+          list-tests: 'failed'
