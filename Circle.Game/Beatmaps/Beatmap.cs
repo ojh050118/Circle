@@ -42,7 +42,7 @@ namespace Circle.Game.Beatmaps
                                                  PreviewSongDuration == settings.PreviewSongDuration &&
                                                  BeatmapDesc == settings.BeatmapDesc &&
                                                  Difficulty == settings.Difficulty &&
-                                                 Precision.AlmostEquals(Bpm, settings.Bpm, 1) &&
+                                                 Precision.AlmostEquals(Bpm, settings.Bpm) &&
                                                  Volume == settings.Volume &&
                                                  Offset == settings.Offset &&
                                                  Pitch == settings.Pitch &&
@@ -64,8 +64,8 @@ namespace Circle.Game.Beatmaps
         public bool Equals(Actions actions) => Floor == actions.Floor &&
                                                EventType == actions.EventType &&
                                                SpeedType == actions.SpeedType &&
-                                               Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute, 1) &&
-                                               Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier, 1) &&
+                                               Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute) &&
+                                               Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier) &&
                                                RelativeTo == actions.RelativeTo &&
                                                Ease == actions.Ease;
     }
