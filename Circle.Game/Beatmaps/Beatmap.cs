@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
 
@@ -10,10 +11,10 @@ namespace Circle.Game.Beatmaps
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
 
-        public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.Equals(beatmap.Actions);
+        public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }
 
-    public struct Settings
+    public struct Settings : IEquatable<Settings>
     {
         public string Artist { get; set; }
         public string Song { get; set; }
@@ -41,7 +42,7 @@ namespace Circle.Game.Beatmaps
                                                  PreviewSongDuration == settings.PreviewSongDuration &&
                                                  BeatmapDesc == settings.BeatmapDesc &&
                                                  Difficulty == settings.Difficulty &&
-                                                 Precision.AlmostEquals(Bpm, settings.Bpm) &&
+                                                 Precision.AlmostEquals(Bpm, settings.Bpm, 1) &&
                                                  Volume == settings.Volume &&
                                                  Offset == settings.Offset &&
                                                  Pitch == settings.Pitch &&
@@ -50,7 +51,7 @@ namespace Circle.Game.Beatmaps
                                                  PlanetEasing == settings.PlanetEasing;
     }
 
-    public struct Actions
+    public struct Actions : IEquatable<Actions>
     {
         public int Floor { get; set; }
         public EventType EventType { get; set; }
@@ -63,8 +64,8 @@ namespace Circle.Game.Beatmaps
         public bool Equals(Actions actions) => Floor == actions.Floor &&
                                                EventType == actions.EventType &&
                                                SpeedType == actions.SpeedType &&
-                                               Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute) &&
-                                               Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier) &&
+                                               Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute, 1) &&
+                                               Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier, 1) &&
                                                RelativeTo == actions.RelativeTo &&
                                                Ease == actions.Ease;
     }

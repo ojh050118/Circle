@@ -188,9 +188,7 @@ namespace Circle.Game.Screens.Select
             };
         }
 
-        public void ChangeBeatmap(BeatmapInfo beatmap) => onBeatmapChanged(beatmap);
-
-        private void onBeatmapChanged(BeatmapInfo newBeatmapInfo)
+        public void ChangeBeatmap(BeatmapInfo newBeatmapInfo)
         {
             if (newBeatmapInfo == null)
                 return;
