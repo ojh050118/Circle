@@ -63,6 +63,7 @@ jobs:
         run: msbuild Circle.Android/Circle.Android.csproj /restore /p:Configuration=Debug
 
   build-only-ios:
+    if: false
     name: Build only (iOS)
     runs-on: macos-latest
     timeout-minutes: 60
