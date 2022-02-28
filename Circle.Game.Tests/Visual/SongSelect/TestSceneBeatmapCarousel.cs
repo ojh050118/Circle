@@ -29,6 +29,7 @@ namespace Circle.Game.Tests.Visual.SongSelect
             AddRepeatStep("Select beatmap(down)", () => carousel.SelectBeatmap(VerticalDirection.Down), 5);
             AddRepeatStep("Select beatmap(up)", () => carousel.SelectBeatmap(VerticalDirection.Up), 5);
             AddLabel("Select beatmap(beatmap)");
+
             foreach (var bi in beatmaps.GetBeatmapInfos())
             {
                 AddAssert($"Select beatmap({bi})", () =>
