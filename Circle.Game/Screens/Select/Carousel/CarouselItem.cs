@@ -42,9 +42,10 @@ namespace Circle.Game.Screens.Select.Carousel
 
         public BeatmapInfo BeatmapInfo { get; }
 
-        public Action DoubleClicked { get; }
+        public Action DoubleClicked { get; private set; }
 
         private Sample sampleClick;
+        private Sample sampleDoubleClick;
 
         public const float ITEM_HEIGHT = 250;
 
@@ -57,7 +58,8 @@ namespace Circle.Game.Screens.Select.Carousel
         [BackgroundDependencyLoader]
         private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps, AudioManager audio)
         {
-            sampleClick = audio.Samples.Get("button-click");
+            sampleClick = audio.Samples.Get("SongSelect/select-click");
+            sampleDoubleClick = audio.Samples.Get("SongSelect/select-double-click");
             Size = new Vector2(1, ITEM_HEIGHT);
             RelativeSizeAxes = Axes.X;
             Anchor = Anchor.TopCentre;
@@ -147,6 +149,7 @@ namespace Circle.Game.Screens.Select.Carousel
                 }
             };
 
+            DoubleClicked += () => sampleDoubleClick?.Play();
             StateChanged += updateState;
             StateChanged += state =>
             {
