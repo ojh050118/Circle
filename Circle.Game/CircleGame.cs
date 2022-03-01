@@ -4,6 +4,7 @@ using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
+using Circle.Game.Overlays.Volume;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -22,6 +23,7 @@ namespace Circle.Game
 
         private ScreenStack screenStack;
         private Background background;
+        private VolumeOverlay volume;
         private ImportOverlay import;
         private DialogOverlay dialog;
         private readonly Toast toast = new Toast();
@@ -35,6 +37,12 @@ namespace Circle.Game
 
             Children = new Drawable[]
             {
+                new VolumeControlReceptor
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    ActionRequested = action => volume.Adjust(action),
+                    ScrollActionRequested = (action, amount, _) => volume.Adjust(action, amount),
+                },
                 ScreenContainer = new GameScreenContainer
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -44,6 +52,7 @@ namespace Circle.Game
                         screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
                     }
                 },
+                volume = new VolumeOverlay(),
                 import = new ImportOverlay(ScreenContainer),
                 dialog = new DialogOverlay(ScreenContainer),
                 toast,
@@ -51,6 +60,7 @@ namespace Circle.Game
 
             dependencies.CacheAs(ScreenContainer);
             dependencies.CacheAs(background);
+            dependencies.CacheAs(volume);
             dependencies.CacheAs(import);
             dependencies.CacheAs(dialog);
             dependencies.CacheAs(this);
