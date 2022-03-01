@@ -18,7 +18,6 @@ namespace Circle.Game.Tests
     public class CircleTestBrowser : CircleGameBase
     {
         private Background background;
-        private VolumeOverlay volume;
         private ImportOverlay import;
         private DialogOverlay dialog;
         private Toast toast;
