@@ -14,5 +14,7 @@ namespace Circle.Game.Overlays.OSD
         public Color4 IconColour { get; set; } = Color4.Gray;
 
         public bool Closable { get; set; }
+
+        public string Sample { get; set; } = "notification-pop-in";
     }
 }
