@@ -64,21 +64,21 @@ namespace Circle.Game.Screens
                     Margin = new MarginPadding { Top = 120, Left = 100 },
                     Children = new Drawable[]
                     {
-                        play = new IconWithTextButton("play", "button-play-select")
+                        play = new IconWithTextButton("play", "button-play-select", Color4.LightGreen)
                         {
                             Icon = FontAwesome.Solid.Play,
                             Action = () => this.Push(new SongSelectScreen())
                         },
-                        edit = new IconWithTextButton("edit", "button-edit-select")
+                        edit = new IconWithTextButton("edit", "button-edit-select", Color4.Yellow)
                         {
                             Icon = FontAwesome.Solid.Edit,
                         },
-                        settings = new IconWithTextButton("settings", "button-settings-select")
+                        settings = new IconWithTextButton("settings", "button-settings-select", Color4.Gray)
                         {
                             Icon = FontAwesome.Solid.Cog,
                             Action = () => this.Push(new SettingsScreen())
                         },
-                        exit = new IconWithTextButton("exit")
+                        exit = new IconWithTextButton("exit", colour: Color4.IndianRed)
                         {
                             Icon = FontAwesome.Solid.DoorOpen,
                             Action = OnExit
@@ -152,6 +152,7 @@ namespace Circle.Game.Screens
 
             private Sample sampleSelect;
             private readonly string sampleName;
+            private Color4 colour;
 
             public IconUsage Icon
             {
@@ -161,16 +162,17 @@ namespace Circle.Game.Screens
 
             public Action Action { get; set; }
 
-            public IconWithTextButton(string text = @"", string sample = @"")
+            public IconWithTextButton(string text = @"", string sample = @"", Color4 colour = default)
             {
                 sampleName = sample;
+                this.colour = colour;
                 AutoSizeAxes = Axes.X;
                 Height = 40;
                 Child = new FillFlowContainer
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Alpha = 0.6f,
+                    Alpha = 0.7f,
                     RelativeSizeAxes = Axes.Y,
                     AutoSizeAxes = Axes.X,
                     Direction = FillDirection.Horizontal,
@@ -182,7 +184,7 @@ namespace Circle.Game.Screens
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Margin = new MarginPadding { Left = 10 },
-                            Size = new Vector2(17),
+                            Size = new Vector2(20),
                         },
                         new Box
                         {
@@ -198,7 +200,7 @@ namespace Circle.Game.Screens
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Text = text,
-                            Font = FontUsage.Default.With(size: 26)
+                            Font = FontUsage.Default.With(size: 28)
                         }.WithEffect(new GlowEffect
                         {
                             BlurSigma = new Vector2(5),
@@ -216,13 +218,13 @@ namespace Circle.Game.Screens
                 Action += () =>
                 {
                     sampleSelect?.Play();
-                    Child.FlashColour(Color4.DarkGray, 250, Easing.InQuad);
+                    Child.FlashColour(colour, 750, Easing.Out);
                 };
             }
 
             protected override bool OnHover(HoverEvent e)
             {
-                Child.FadeTo(1).Then().FadeTo(0.8f, 250, Easing.In);
+                Child.FadeTo(1).Then().FadeTo(0.85f, 250, Easing.Out);
 
                 return base.OnHover(e);
             }
@@ -231,7 +233,7 @@ namespace Circle.Game.Screens
             {
                 base.OnHoverLost(e);
 
-                Child.FadeTo(0.6f, 1000, Easing.OutPow10);
+                Child.FadeTo(0.7f, 500, Easing.Out);
             }
 
             protected override bool OnClick(ClickEvent e)
