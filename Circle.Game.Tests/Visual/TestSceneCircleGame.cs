@@ -30,6 +30,7 @@ namespace Circle.Game.Tests.Visual
             typeof(GameScreenContainer),
             typeof(Toast),
             typeof(Background),
+            typeof(VolumeOverlay),
             typeof(ImportOverlay),
             typeof(DialogOverlay)
         };
