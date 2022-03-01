@@ -152,7 +152,7 @@ namespace Circle.Game.Screens
 
             private Sample sampleSelect;
             private readonly string sampleName;
-            private Color4 colour;
+            private readonly Color4 colour;
 
             public IconUsage Icon
             {
