@@ -60,7 +60,7 @@ namespace Circle.Game.Screens.Select
 
         public void Select(BeatmapInfo info)
         {
-            var item = carouselItems.FirstOrDefault(item => item.BeatmapInfo.Equals(info));
+            var item = carouselItems.FirstOrDefault(i => i.BeatmapInfo.Equals(info));
             if (item == null)
                 return;
 
