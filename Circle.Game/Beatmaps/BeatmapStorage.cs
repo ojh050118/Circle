@@ -29,15 +29,22 @@ namespace Circle.Game.Beatmaps
         {
             List<BeatmapInfo> beatmapInfo = new List<BeatmapInfo>();
 
-            foreach (var dir in Storage.GetDirectories(string.Empty))
+            try
             {
-                DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
-
-                foreach (var fi in di.GetFiles("*.circle"))
+                foreach (var dir in Storage.GetDirectories(string.Empty))
                 {
-                    var beatmap = GetBeatmap(Path.Combine(fi.Directory?.Name, fi.Name));
-                    beatmapInfo.Add(new BeatmapInfo(beatmap, fi));
+                    DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
+
+                    foreach (var fi in di.GetFiles("*.circle"))
+                    {
+                        var beatmap = GetBeatmap(Path.Combine(fi.Directory?.Name, fi.Name));
+                        beatmapInfo.Add(new BeatmapInfo(beatmap, fi));
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error getting Beatmap Infos: {e.Message}");
             }
 
             return beatmapInfo.ToArray();
