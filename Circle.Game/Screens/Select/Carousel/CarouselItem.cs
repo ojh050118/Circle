@@ -1,9 +1,10 @@
 ﻿using System;
 using Circle.Game.Beatmaps;
+using Circle.Game.Graphics.Containers;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
-using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
@@ -18,25 +19,46 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
-    public class CarouselItem : Container
+    public class CarouselItem : Container, IStateful<SelectionState>
     {
         public Container BorderContainer;
 
-        protected override Container<Drawable> Content { get; } = new Container { RelativeSizeAxes = Axes.Both };
+        private SelectionState state;
 
-        public readonly Bindable<CarouselItemState> State = new Bindable<CarouselItemState>();
+        public SelectionState State
+        {
+            get => state;
+            set
+            {
+                if (state == value)
+                    return;
 
-        public BeatmapInfo BeatmapInfo { get; set; }
+                state = value;
+                StateChanged?.Invoke(value);
+            }
+        }
 
-        public Action DoubleClicked { get; set; }
+        public event Action<SelectionState> StateChanged;
 
-        private Sample clickSample;
+        public BeatmapInfo BeatmapInfo { get; }
+
+        public Action DoubleClicked { get; }
+
+        private Sample sampleClick;
+
+        public const float ITEM_HEIGHT = 250;
+
+        public CarouselItem(BeatmapInfo info, Action doubleClicked)
+        {
+            BeatmapInfo = info;
+            DoubleClicked = doubleClicked;
+        }
 
         [BackgroundDependencyLoader]
         private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps, AudioManager audio)
         {
-            clickSample = audio.Samples.Get("button-click");
-            Size = new Vector2(1, 250);
+            sampleClick = audio.Samples.Get("button-click");
+            Size = new Vector2(1, ITEM_HEIGHT);
             RelativeSizeAxes = Axes.X;
             Anchor = Anchor.TopCentre;
             Origin = Anchor.TopCentre;
@@ -44,6 +66,7 @@ namespace Circle.Game.Screens.Select.Carousel
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
+                BorderThickness = 0,
                 RelativeSizeAxes = Axes.Both,
                 Masking = true,
                 CornerRadius = 10,
@@ -115,17 +138,28 @@ namespace Circle.Game.Screens.Select.Carousel
                             }
                         }
                     }
+                },
+                EdgeEffect = new EdgeEffectParameters
+                {
+                    Type = EdgeEffectType.Shadow,
+                    Radius = 10,
+                    Colour = Color4.Black.Opacity(100),
                 }
             };
 
-            State.BindValueChanged(updateState, true);
+            StateChanged += updateState;
+            StateChanged += state =>
+            {
+                if (state == SelectionState.Selected)
+                    sampleClick?.Play();
+            };
         }
 
-        private void updateState(ValueChangedEvent<CarouselItemState> state)
+        private void updateState(SelectionState state)
         {
-            switch (state.NewValue)
+            switch (state)
             {
-                case CarouselItemState.NotSelected:
+                case SelectionState.NotSelected:
                     BorderContainer.BorderThickness = 0;
                     BorderContainer.EdgeEffect = new EdgeEffectParameters
                     {
@@ -135,7 +169,7 @@ namespace Circle.Game.Screens.Select.Carousel
                     };
                     break;
 
-                case CarouselItemState.Selected:
+                case SelectionState.Selected:
                     BorderContainer.BorderThickness = 2.5f;
                     BorderContainer.EdgeEffect = new EdgeEffectParameters
                     {
@@ -150,11 +184,10 @@ namespace Circle.Game.Screens.Select.Carousel
 
         protected override bool OnClick(ClickEvent e)
         {
-            if (State.Value == CarouselItemState.Selected)
+            if (State == SelectionState.Selected)
                 DoubleClicked?.Invoke();
 
-            State.Value = CarouselItemState.Selected;
-            clickSample?.Play();
+            State = SelectionState.Selected;
 
             return base.OnClick(e);
         }

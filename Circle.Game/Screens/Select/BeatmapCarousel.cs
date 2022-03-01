@@ -15,14 +15,11 @@ namespace Circle.Game.Screens.Select
     {
         protected CarouselScrollContainer Scroll;
 
-        public int Count => Scroll.Child.Children.Count;
+        private SelectionCycleFillFlowContainer<CarouselItem> carouselItems;
 
-        public Bindable<CarouselItem> SelectedItem { get; private set; }
+        public int Count => carouselItems.Count;
 
-        public BeatmapCarousel()
-        {
-            SelectedItem = new Bindable<CarouselItem>();
-        }
+        public Bindable<CarouselItem> SelectedItem { get; private set; } = new Bindable<CarouselItem>();
 
         [BackgroundDependencyLoader]
         private void load()
@@ -34,7 +31,7 @@ namespace Circle.Game.Screens.Select
                 {
                     RelativeSizeAxes = Axes.Both,
                     Masking = false,
-                    Child = new FillFlowContainer<CarouselItem>
+                    Child = carouselItems = new SelectionCycleFillFlowContainer<CarouselItem>
                     {
                         AutoSizeAxes = Axes.Y,
                         RelativeSizeAxes = Axes.X,
@@ -47,90 +44,68 @@ namespace Circle.Game.Screens.Select
             };
         }
 
-        public void AddItem(BeatmapInfo info, Action onDoubleClicked)
+        public void Add(BeatmapInfo info, Action onDoubleClicked)
         {
             CarouselItem item;
-            Scroll.Child.Add(item = new CarouselItem { BeatmapInfo = info, DoubleClicked = onDoubleClicked });
-            item.State.BindValueChanged(state => onChangedItemState(item, state));
+            carouselItems.Add(item = new CarouselItem(info, onDoubleClicked));
+            item.StateChanged += state =>
+            {
+                if (state == SelectionState.Selected)
+                    updateItems();
+            };
 
-            if (SelectedItem.Value != null)
-                updateItemScale(SelectedItem.Value);
+            if (carouselItems.Selected != null)
+                updateItems(false);
+        }
+
+        public void Select(BeatmapInfo info)
+        {
+            var item = carouselItems.FirstOrDefault(item => item.BeatmapInfo.Equals(info));
+            if (item == null)
+                return;
+
+            carouselItems.Select(item);
+        }
+
+        public void SelectNext()
+        {
+            if (carouselItems.Count == 0)
+                return;
+
+            carouselItems.SelectNext();
+        }
+
+        public void SelectPrevious()
+        {
+            if (carouselItems.Count == 0)
+                return;
+
+            carouselItems.SelectPrevious();
+        }
+
+        private void updateItems(bool scroll = true)
+        {
+            SelectedItem.Value = carouselItems.Selected;
+            updateItemScale();
+            if (scroll)
+                Scroll.ScrollTo(getScaledPositionY() + CarouselItem.ITEM_HEIGHT / 2);
         }
 
         protected override void UpdateAfterChildren()
         {
             base.UpdateAfterChildren();
 
-            Scroll.ScrollContent.Height = Scroll.ScrollContent.Child.Height + DrawHeight;
+            Scroll.ScrollContent.Height = carouselItems.Height + DrawHeight;
         }
 
-        public void SelectBeatmap(VerticalDirection direction)
+        private void updateItemScale()
         {
-            if (Scroll.Child.Children?.Count == 0 || SelectedItem.Value == null)
-                return;
-
-            int idx = Scroll.Child.IndexOf(SelectedItem.Value);
-
-            if (direction == VerticalDirection.Up)
-            {
-                if (idx > 0)
-                    Scroll.Child.Children[idx - 1].State.Value = CarouselItemState.Selected;
-                else
-                    Scroll.Child.Children.Last().State.Value = CarouselItemState.Selected;
-            }
-            else
-            {
-                if (idx < Scroll.Child.Count - 1)
-                    Scroll.Child.Children[idx + 1].State.Value = CarouselItemState.Selected;
-                else
-                    Scroll.Child.Children.First().State.Value = CarouselItemState.Selected;
-            }
-        }
-
-        public void SelectBeatmap(BeatmapInfo beatmap)
-        {
-            foreach (var item in Scroll.Child.Children)
-            {
-                if (beatmap.Equals(item.BeatmapInfo))
-                    item.State.Value = CarouselItemState.Selected;
-            }
-        }
-
-        private void onChangedItemState(CarouselItem item, ValueChangedEvent<CarouselItemState> state)
-        {
-            switch (state.NewValue)
-            {
-                case CarouselItemState.NotSelected:
-                    break;
-
-                case CarouselItemState.Selected:
-                    onSelected(item);
-                    break;
-            }
-        }
-
-        private void onSelected(CarouselItem item)
-        {
-            updateItemScale(item);
-            Scroll.ScrollTo(getScaledPositionY(item) + item.Height / 2);
-
-            SelectedItem.Value = item;
-
-            foreach (var notSelected in Scroll.Child.Children)
-            {
-                if (notSelected != item)
-                    notSelected.State.Value = CarouselItemState.NotSelected;
-            }
-        }
-
-        private void updateItemScale(CarouselItem item)
-        {
-            var idx = Scroll.Child.Children.ToList().FindIndex(i => i.Equals(item));
+            var idx = carouselItems.IndexOf(carouselItems.Selected);
             float nextScale = 1;
 
-            for (int i = idx; i < Scroll.Child.Children.Count; i++)
+            for (int i = idx; i < carouselItems.Count; i++)
             {
-                Scroll.Child.Children[i].ScaleTo(nextScale, 1000, Easing.OutPow10);
+                carouselItems.Children[i].ScaleTo(nextScale, 1000, Easing.OutPow10);
                 if (nextScale > 0.7f)
                     nextScale -= 0.1f;
             }
@@ -139,15 +114,15 @@ namespace Circle.Game.Screens.Select
 
             for (int i = idx - 1; i >= 0; i--)
             {
-                Scroll.Child.Children[i].ScaleTo(nextScale, 1000, Easing.OutPow10);
+                carouselItems.Children[i].ScaleTo(nextScale, 1000, Easing.OutPow10);
                 if (nextScale > 0.7f)
                     nextScale -= 0.1f;
             }
         }
 
-        private float getScaledPositionY(CarouselItem item)
+        private float getScaledPositionY()
         {
-            var idx = Scroll.Child.Children.ToList().FindIndex(i => i.Equals(item));
+            var idx = carouselItems.IndexOf(carouselItems.Selected);
             float totalY = 0;
             float nextScale = 1;
 
@@ -163,7 +138,7 @@ namespace Circle.Game.Screens.Select
             return totalY;
         }
 
-        protected class CarouselScrollContainer : CircleScrollContainer<FillFlowContainer<CarouselItem>>
+        protected class CarouselScrollContainer : CircleScrollContainer<SelectionCycleFillFlowContainer<CarouselItem>>
         {
             public CarouselScrollContainer()
             {

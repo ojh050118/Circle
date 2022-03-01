@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Circle.Game.Overlays.Volume;
 using osu.Framework;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;

@@ -1,4 +1,4 @@
-﻿namespace Circle.Game.Overlays.Volume
+﻿namespace Circle.Game.Graphics.Containers
 {
     public enum SelectionState
     {

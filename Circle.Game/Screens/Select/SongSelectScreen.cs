@@ -56,7 +56,7 @@ namespace Circle.Game.Screens.Select
                 beatmapManager.ReloadBeatmaps();
 
             foreach (var bi in beatmapManager.LoadedBeatmaps)
-                carousel.AddItem(bi, () => this.Push(new PlayerLoader()));
+                carousel.Add(bi, () => this.Push(new PlayerLoader()));
 
             carousel.SelectedItem.ValueChanged += info => beatmapManager.CurrentBeatmap = info.NewValue.BeatmapInfo;
             beatmapManager.OnBeatmapChanged += beatmapChanged;
@@ -108,7 +108,7 @@ namespace Circle.Game.Screens.Select
             else
                 background.ChangeTexture(TextureSource.External, beatmap.newBeatmap.RelativeBackgroundPath, 500, Easing.Out);
 
-            carousel.SelectBeatmap(beatmap.newBeatmap);
+            carousel.Select(beatmap.newBeatmap);
 
             if (!BeatmapUtils.Compare(beatmap.oldBeatmap, beatmap.newBeatmap))
             {
@@ -123,11 +123,11 @@ namespace Circle.Game.Screens.Select
             switch (e.Action)
             {
                 case InputAction.NextBeatmap:
-                    carousel?.SelectBeatmap(VerticalDirection.Down);
+                    carousel?.SelectNext();
                     break;
 
                 case InputAction.PreviousBeatmap:
-                    carousel?.SelectBeatmap(VerticalDirection.Up);
+                    carousel?.SelectPrevious();
                     break;
 
                 case InputAction.Select:
