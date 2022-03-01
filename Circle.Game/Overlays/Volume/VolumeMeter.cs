@@ -25,6 +25,7 @@ namespace Circle.Game.Overlays.Volume
         private CircularProgress volumeCircle;
         private CircularProgress volumeCircleGlow;
         private SpriteText volumeText;
+        private CircularContainer meterContainer;
         private Sample sampleHover;
 
         private readonly string name;
@@ -57,6 +58,7 @@ namespace Circle.Game.Overlays.Volume
         private const int blur_amount = 5;
         private const float volume_circle_size = 0.93f;
         private const float inner_radius = 0.12f;
+        private const float background_opacity = 0.3f;
 
         public double DisplayVolume
         {
@@ -94,16 +96,17 @@ namespace Circle.Game.Overlays.Volume
             sampleHover = audio.Samples.Get("button-hover");
             Children = new Drawable[]
             {
-                new Container
+                meterContainer = new CircularContainer
                 {
                     Size = new Vector2(circleSize),
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
+                    Masking = true,
                     Children = new Drawable[]
                     {
                         new Shape.Circle
                         {
-                            Colour = Color4.Black.Opacity(0.4f),
+                            Colour = Color4.Black.Opacity(background_opacity),
                             RelativeSizeAxes = Axes.Both,
                         },
                         volumeText = new SpriteText
@@ -171,6 +174,12 @@ namespace Circle.Game.Overlays.Volume
                                 InnerRadius = inner_radius,
                             }
                         },
+                    },
+                    EdgeEffect = new EdgeEffectParameters
+                    {
+                        Type = EdgeEffectType.Shadow,
+                        Radius = 15,
+                        Colour = Color4.Black.Opacity(background_opacity),
                     }
                 },
                 new CircularContainer
@@ -185,12 +194,12 @@ namespace Circle.Game.Overlays.Volume
                         new Shape.Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Color4.Black.Opacity(0.4f),
+                            Colour = Color4.Black.Opacity(background_opacity),
                         },
                         new Container
                         {
                             AutoSizeAxes = Axes.Both,
-                            Padding = new MarginPadding { Horizontal = 15, Vertical = 2 },
+                            Padding = new MarginPadding { Horizontal = 15 },
                             Child = new SpriteText
                             {
                                 Anchor = Anchor.Centre,
@@ -212,12 +221,12 @@ namespace Circle.Game.Overlays.Volume
             {
                 case SelectionState.NotSelected:
                     this.FadeTo(0.5f, 500);
-                    this.ScaleTo(1, 500, Easing.OutQuint);
+                    meterContainer.ScaleTo(1, 500, Easing.OutQuint);
                     break;
 
                 case SelectionState.Selected:
                     this.FadeTo(1, 250);
-                    this.ScaleTo(1.03f, 250, Easing.OutQuint);
+                    meterContainer.ScaleTo(1.03f, 250, Easing.OutQuint);
                     break;
             }
         }
