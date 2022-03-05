@@ -57,6 +57,13 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private BeatmapManager manager { get; set; }
 
+        [Resolved]
+        private Background background { get; set; }
+
+        private TextureSource texureSource;
+
+        private string textureName;
+
         private MasterGameplayClockContainer masterGameplayClockContainer;
 
         private ScheduledDelegate scheduledDelegate;
@@ -66,6 +73,8 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load(GameHost host)
         {
+            texureSource = background.TextureSource;
+            textureName = background.TextureName;
             currentBeatmap = manager.CurrentBeatmap.Beatmap;
             InternalChildren = new Drawable[]
             {
@@ -194,9 +203,10 @@ namespace Circle.Game.Screens.Play
 
         public override void OnResuming(IScreen last)
         {
-            base.OnResuming(last);
-
+            background.ChangeTexture(texureSource, textureName, 1000, Easing.OutPow10);
             onPaused();
+
+            base.OnResuming(last);
         }
 
         private void onPaused()
