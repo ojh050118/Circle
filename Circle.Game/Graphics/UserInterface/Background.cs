@@ -48,7 +48,7 @@ namespace Circle.Game.Graphics.UserInterface
             TextureName = textureName;
             TextureSource = source;
             RelativeSizeAxes = Axes.Both;
-            AddInternal(currentTexture = new BufferedContainer
+            AddInternal(currentTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -118,7 +118,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             TextureName = name;
             TextureSource = source;
-            var queuedTexture = new BufferedContainer
+            var queuedTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
