@@ -19,10 +19,8 @@ namespace Circle.Game.Screens.Setting
         [Resolved]
         private Background background { get; set; }
 
-        private string oldTexture;
-        private TextureSource oldTextureSource;
-
-        public SettingsScreen()
+        [BackgroundDependencyLoader]
+        private void load()
         {
             AddRangeInternal(new Drawable[]
             {
@@ -71,18 +69,9 @@ namespace Circle.Game.Screens.Setting
 
         public override void OnEntering(IScreen last)
         {
-            base.OnEntering(last);
-
-            oldTexture = background.TextureName;
-            oldTextureSource = background.TextureSource;
             background.ChangeTexture(TextureSource.Internal, "bg2", 1000, Easing.OutPow10);
-        }
 
-        public override bool OnExiting(IScreen next)
-        {
-            background.ChangeTexture(oldTextureSource, oldTexture, 1000, Easing.OutPow10);
-
-            return base.OnExiting(next);
+            base.OnEntering(last);
         }
     }
 }

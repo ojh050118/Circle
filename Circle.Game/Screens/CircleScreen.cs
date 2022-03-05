@@ -42,8 +42,7 @@ namespace Circle.Game.Screens
         public override void OnEntering(IScreen last)
         {
             base.OnEntering(last);
-            X = DrawWidth;
-            this.MoveToX(0, 1000, Easing.OutPow10);
+            this.MoveToX(DrawWidth).MoveToX(0, 1000, Easing.OutPow10);
 
             if (FadeBackground)
             {

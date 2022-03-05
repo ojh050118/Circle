@@ -25,6 +25,7 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         public string TextureName { get; private set; }
+
         public TextureSource TextureSource { get; private set; }
 
         [Resolved]
@@ -47,7 +48,7 @@ namespace Circle.Game.Graphics.UserInterface
             TextureName = textureName;
             TextureSource = source;
             RelativeSizeAxes = Axes.Both;
-            AddInternal(currentTexture = new BufferedContainer(cachedFrameBuffer: true)
+            AddInternal(currentTexture = new BufferedContainer
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -117,7 +118,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             TextureName = name;
             TextureSource = source;
-            var queuedTexture = new BufferedContainer(cachedFrameBuffer: true)
+            var queuedTexture = new BufferedContainer
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -138,7 +139,8 @@ namespace Circle.Game.Graphics.UserInterface
                     AddInternal(queuedTexture);
                     if (dimBox != null)
                         ChangeInternalChildDepth(dimBox, -1);
-                    queuedTexture.FadeIn(duration, easing).Then().Schedule(() => lastTexture.Expire());
+                    queuedTexture.FadeIn(duration, easing);
+                    lastTexture.Delay(duration).Expire();
                 }
                 else
                     queuedTexture.Dispose();

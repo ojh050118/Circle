@@ -46,6 +46,7 @@ namespace Circle.Game
                 ScreenContainer = new GameScreenContainer
                 {
                     RelativeSizeAxes = Axes.Both,
+                    RedrawOnScale = false,
                     Children = new Drawable[]
                     {
                         background = new Background(textureName: "bg1"),
