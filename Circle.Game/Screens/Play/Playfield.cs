@@ -106,7 +106,7 @@ namespace Circle.Game.Screens.Play
             while (floor < tileInfos.Length)
             {
                 // Camera
-                using (BeginAbsoluteSequence(startTimeOffset))
+                using (BeginAbsoluteSequence(startTimeOffset, false))
                     this.MoveTo(-tileInfos[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
                 var (fixedRotation, newRotation) = computeRotation(floor, previousAngle);
@@ -119,7 +119,7 @@ namespace Circle.Game.Screens.Play
                 switch (planetState)
                 {
                     case PlanetState.Fire:
-                        using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                        using (redPlanet.BeginAbsoluteSequence(startTimeOffset, false))
                         {
                             redPlanet.ExpandTo(1);
                             redPlanet.RotateTo(fixedRotation);
@@ -129,7 +129,7 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case PlanetState.Ice:
-                        using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                        using (bluePlanet.BeginAbsoluteSequence(startTimeOffset, false))
                         {
                             bluePlanet.ExpandTo(1);
                             bluePlanet.RotateTo(fixedRotation);
@@ -145,13 +145,13 @@ namespace Circle.Game.Screens.Play
                 switch (planetState)
                 {
                     case PlanetState.Fire:
-                        using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                        using (redPlanet.BeginAbsoluteSequence(startTimeOffset, false))
                             redPlanet.ExpandTo(0);
 
                         break;
 
                     case PlanetState.Ice:
-                        using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                        using (bluePlanet.BeginAbsoluteSequence(startTimeOffset, false))
                             bluePlanet.ExpandTo(0);
 
                         break;
@@ -159,7 +159,7 @@ namespace Circle.Game.Screens.Play
 
                 if (floor < tileInfos.Length)
                 {
-                    using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
+                    using (planetContainer.BeginAbsoluteSequence(startTimeOffset, false))
                         planetContainer.MoveTo(tileInfos[floor].Position);
 
                     if (tileInfos[floor].TileType != TileType.Midspin && tileInfos[floor - 1].TileType != TileType.Midspin)
@@ -170,7 +170,7 @@ namespace Circle.Game.Screens.Play
                     switch (planetState)
                     {
                         case PlanetState.Fire:
-                            using (redPlanet.BeginAbsoluteSequence(startTimeOffset))
+                            using (redPlanet.BeginAbsoluteSequence(startTimeOffset, false))
                             {
                                 redPlanet.ExpandTo(1);
                                 redPlanet.Spin(60000 / bpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, previousAngle);
@@ -179,7 +179,7 @@ namespace Circle.Game.Screens.Play
                             break;
 
                         case PlanetState.Ice:
-                            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
+                            using (bluePlanet.BeginAbsoluteSequence(startTimeOffset, false))
                             {
                                 bluePlanet.ExpandTo(1);
                                 bluePlanet.Spin(60000 / bpm * 2, isClockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, previousAngle);
@@ -210,7 +210,7 @@ namespace Circle.Game.Screens.Play
                 previousAngle = newRotation;
                 bpm = getNewBpm(bpm, tileInfos[i - 8].Floor, tileInfos[i - 8].SpeedType);
 
-                using (tileContainer.Children[i].BeginAbsoluteSequence(startTimeOffset))
+                using (tileContainer.Children[i].BeginAbsoluteSequence(startTimeOffset, false))
                     tileContainer.Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
 
                 startTimeOffset += GetRelativeDuration(fixedRotation, newRotation, bpm);
@@ -231,7 +231,7 @@ namespace Circle.Game.Screens.Play
 
                 if (i > 3)
                 {
-                    using (tileContainer.Children[i - 4].BeginAbsoluteSequence(startTimeOffset))
+                    using (tileContainer.Children[i - 4].BeginAbsoluteSequence(startTimeOffset, false))
                         tileContainer.Children[i - 4].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
 
