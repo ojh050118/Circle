@@ -125,6 +125,38 @@ namespace Circle.Game.Beatmaps
             }
         }
 
+        public Stream GetVideo(string name)
+        {
+            if (!Storage.Exists(name))
+                return null;
+
+            try
+            {
+                return File.Open(name, FileMode.Open);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Failed to load video.");
+                return null;
+            }
+        }
+
+        public Stream GetVideo(BeatmapInfo info)
+        {
+            if (!Storage.Exists(info.VideoPath))
+                return null;
+
+            try
+            {
+                return File.Open(info.VideoPath, FileMode.Open);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Failed to load video.");
+                return null;
+            }
+        }
+
         public Track GetTrack(BeatmapInfo info)
         {
             if (!Storage.Exists(info.SongPath))
