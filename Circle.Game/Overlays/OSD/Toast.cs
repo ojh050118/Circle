@@ -17,7 +17,7 @@ namespace Circle.Game.Overlays.OSD
         private void load()
         {
             RelativeSizeAxes = Axes.X;
-            Height = 100;
+            AutoSizeAxes = Axes.Y;
         }
 
         public void Push(ToastInfo info)
