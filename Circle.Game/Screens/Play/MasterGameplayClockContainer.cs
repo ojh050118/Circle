@@ -49,7 +49,6 @@ namespace Circle.Game.Screens.Play
                     RelativeSizeAxes = Axes.Both,
                     Loop = false,
                     PlaybackPosition = beatmap.Settings.VidOffset + (beatmap.Settings.Offset - 60000 / beatmap.Settings.Bpm),
-                    Alpha = 0
                 });
             }
 
