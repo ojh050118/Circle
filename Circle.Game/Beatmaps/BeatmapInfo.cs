@@ -57,6 +57,11 @@ namespace Circle.Game.Beatmaps
         public string BackgroundPath { get; } = string.Empty;
 
         /// <summary>
+        /// 비디오 파일에 대한 절대 경로입니다.
+        /// </summary>
+        public string VideoPath { get; } = string.Empty;
+
+        /// <summary>
         /// 비트맵 파일에 대한 상대 경로입니다. (ex: folder\beatmap.circle)
         /// </summary>
         public string RelativeBeatmapPath { get; }
@@ -70,6 +75,11 @@ namespace Circle.Game.Beatmaps
         /// 텍스처 파일에 대한 상대 경로입니다. (ex: folder\texture.png)
         /// </summary>
         public string RelativeBackgroundPath { get; } = string.Empty;
+
+        /// <summary>
+        /// 비디오 파일에 대한 상대 경로입니다. (ex: folder\video.mp4)
+        /// </summary>
+        public string RelativeVideoPath { get; } = string.Empty;
 
         public BeatmapInfo(Beatmap beatmap, FileInfo info)
         {
@@ -86,14 +96,20 @@ namespace Circle.Game.Beatmaps
 
             if (!string.IsNullOrEmpty(Beatmap.Settings.SongFileName))
             {
-                SongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
+                SongPath = Path.Combine(DirectoryName, Beatmap.Settings.SongFileName);
                 RelativeSongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
             }
 
             if (!string.IsNullOrEmpty(Beatmap.Settings.BgImage))
             {
-                BackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
+                BackgroundPath = Path.Combine(DirectoryName, Beatmap.Settings.BgImage);
                 RelativeBackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
+            }
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.BgVideo))
+            {
+                VideoPath = Path.Combine(DirectoryName, Beatmap.Settings.BgVideo);
+                RelativeVideoPath = Path.Combine(Directory, Beatmap.Settings.BgVideo);
             }
         }
 
@@ -118,9 +134,11 @@ namespace Circle.Game.Beatmaps
                    BeatmapPath == info.BeatmapPath &&
                    SongPath == info.SongPath &&
                    BackgroundPath == info.BackgroundPath &&
+                   VideoPath == info.VideoPath &&
                    RelativeBeatmapPath == info.RelativeBeatmapPath &&
                    RelativeSongPath == info.RelativeSongPath &&
-                   RelativeBackgroundPath == info.RelativeBackgroundPath;
+                   RelativeBackgroundPath == info.RelativeBackgroundPath &&
+                   RelativeVideoPath == info.RelativeVideoPath;
         }
     }
 }

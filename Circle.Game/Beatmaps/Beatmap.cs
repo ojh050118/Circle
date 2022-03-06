@@ -28,9 +28,11 @@ namespace Circle.Game.Beatmaps
         public float Bpm { get; set; }
         public int Volume { get; set; }
         public int Offset { get; set; }
+        public float VidOffset { get; set; }
         public int Pitch { get; set; }
         public int CountdownTicks { get; set; }
         public string BgImage { get; set; }
+        public string BgVideo { get; set; }
         public Easing PlanetEasing { get; set; }
 
         public bool Equals(Settings settings) => Artist == settings.Artist &&
@@ -45,9 +47,11 @@ namespace Circle.Game.Beatmaps
                                                  Precision.AlmostEquals(Bpm, settings.Bpm) &&
                                                  Volume == settings.Volume &&
                                                  Offset == settings.Offset &&
+                                                 Precision.AlmostEquals(VidOffset, settings.VidOffset) &&
                                                  Pitch == settings.Pitch &&
                                                  CountdownTicks == settings.CountdownTicks &&
                                                  BgImage == settings.BgImage &&
+                                                 BgVideo == settings.BgVideo &&
                                                  PlanetEasing == settings.PlanetEasing;
     }
 

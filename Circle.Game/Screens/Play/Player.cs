@@ -78,7 +78,7 @@ namespace Circle.Game.Screens.Play
             currentBeatmap = manager.CurrentBeatmap.Beatmap;
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(currentBeatmap, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(manager.CurrentBeatmap, Clock),
                 new Container
                 {
                     AutoSizeAxes = Axes.Both,
