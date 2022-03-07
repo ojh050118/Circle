@@ -1,5 +1,7 @@
 ﻿using System;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics.Containers;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Configuration;
 using osu.Framework.Graphics;
@@ -10,7 +12,7 @@ namespace Circle.Game.Graphics.UserInterface
     ///
     /// </summary>
     /// <typeparam name="T">CS0453</typeparam>
-    public class StepperItem<T> : Component
+    public class StepperItem<T> : Component, IStateful<SelectionState>
     {
         /// <summary>
         /// 값을 올바르게 할당해야합니다. 값이 같은 아이템이 있으면 올바른 작동을 하지 않을 수 있습니다.
@@ -33,25 +35,56 @@ namespace Circle.Game.Graphics.UserInterface
         [Resolved]
         private FrameworkConfigManager config { get; set; }
 
-        public StepperItem(T value, Action action = null, string text = null)
+        private SelectionState state;
+
+        public SelectionState State
+        {
+            get => state;
+            set
+            {
+                if (state == value)
+                    return;
+
+                state = value;
+                stateChanged(value);
+                StateChanged?.Invoke(value);
+            }
+        }
+
+        public event Action<SelectionState> StateChanged;
+
+        public StepperItem(T value, Action selected = null, string text = null)
         {
             Value = value;
-            Action = action;
+            Action += selected;
             Text = text ?? value.ToString();
         }
 
         public StepperItem(CircleSetting lookup, T value, string text = null)
         {
             Value = value;
-            Action = () => localConfig.SetValue(lookup, value);
+            Action += () => localConfig.SetValue(lookup, value);
             Text = text ?? value.ToString();
         }
 
         public StepperItem(FrameworkSetting lookup, T value, string text = null)
         {
             Value = value;
-            Action = () => config.SetValue(lookup, value);
+            Action += () => config.SetValue(lookup, value);
             Text = text ?? value.ToString();
+        }
+
+        private void stateChanged(SelectionState state)
+        {
+            switch (state)
+            {
+                case SelectionState.NotSelected:
+                    break;
+
+                case SelectionState.Selected:
+                    Action?.Invoke();
+                    break;
+            }
         }
     }
 }

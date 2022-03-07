@@ -1,7 +1,7 @@
-﻿using System;
+﻿using System.Linq;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Configuration.Tracking;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -25,34 +25,30 @@ namespace Circle.Game.Graphics.UserInterface
         /// </summary>
         public string Text { get; set; }
 
+        private Container<StepperItem<T>> items;
+
         /// <summary>
         /// 아이템들.
         /// </summary>
-        public StepperItem<T>[] Item;
+        public StepperItem<T>[] Items;
 
-        /// <summary>
-        /// 현재 값.
-        /// </summary>
-        public Bindable<T> Current { get; set; } = new Bindable<T>();
-
-        /// <summary>
-        /// 아이템에 설정되어있는 값을 표시합니다.
-        /// </summary>
         private SpriteText text;
 
-        /// <summary>
-        /// 현재 아이템의 인덱스. 기본 값은 -1입니다.
-        /// </summary>
-        private int currentIdx = -1;
+        private readonly T initialCurrent;
+
+        private int? selectedIndex;
+
+        public T Selected => (selectedIndex >= 0 && selectedIndex < items.Count) ? Items[selectedIndex.Value].Value : default;
 
         /// <summary>
         /// 방향으로 값을 바꿀 수있는 컨트롤.
         /// </summary>
-        public Stepper()
+        public Stepper(T current = default)
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             CornerRadius = 5;
+            initialCurrent = current;
         }
 
         [BackgroundDependencyLoader]
@@ -92,7 +88,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Icon = FontAwesome.Solid.AngleLeft,
-                            Action = () => changeCurrent(Direction.Backward),
+                            Action = SelectPrevious,
                             Size = new Vector2(30)
                         },
                         new IconButton
@@ -100,7 +96,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Anchor = Anchor.CentreRight,
                             Origin = Anchor.CentreRight,
                             Icon = FontAwesome.Solid.AngleRight,
-                            Action = () => changeCurrent(Direction.Forward),
+                            Action = SelectNext,
                             Size = new Vector2(30)
                         },
                         text = new SpriteText
@@ -111,71 +107,61 @@ namespace Circle.Game.Graphics.UserInterface
                         }
                     }
                 },
-                new Container
+                items = new Container<StepperItem<T>>
                 {
-                    Children = Item
+                    Name = "Stepper items",
+                    Children = Items
                 }
             };
-
-            SetCurrent(Current.Value);
+            Select(initialCurrent);
         }
 
-        /// <summary>
-        /// 값을 설정하고 동작을 실행합니다.
-        /// </summary>
-        /// <param name="toValue">바꿀 값.</param>
-        public void SetCurrent(T toValue)
+        public void Select(T value)
         {
-            var isExist = false;
-
-            // 값의 존재여부, currentIndex를 바꿉니다.
-            foreach (var i in Item)
-            {
-                if (i.Value.Equals(toValue))
-                {
-                    isExist = true;
-                    currentIdx = Array.FindIndex(Item, r => r.Value.Equals(toValue));
-                    break;
-                }
-            }
-
-            // 값이 존재하지않는다면 아래 코드를 실행하지 않습니다.
-            if (!isExist)
+            var item = items.FirstOrDefault(v => v.Value.Equals(value));
+            if (item == null)
                 return;
 
-            // 새로운 값으로 바꿉니다.
-            Current.Value = toValue;
-            text.Text = Item[currentIdx].Text;
+            int newIndex = items.IndexOf(item);
 
-            // 동작을 실행합니다.
-            if (Item[currentIdx].Action != null)
-                Item[currentIdx].Action.Invoke();
-
-            localConfig.LoadInto(trackedSettings);
-        }
-
-        /// <summary>
-        /// 방향으로 Item 인덱스를 바꾸고 SetCurrent()를 실행합니다.
-        /// </summary>
-        /// <param name="direction">방향.</param>
-        private void changeCurrent(Direction direction)
-        {
-            // 아이템들이 없거나 할당이 되어있지 않다면 아래 코드를 실행하지 않습니다.
-            if (Item is null)
-                return;
-            else if (Item.Length == 0)
-                return;
-
-            if (direction == Direction.Forward)
-                SetCurrent(currentIdx + 1 >= Item.Length ? Item[0].Value : Item[currentIdx + 1].Value);
+            if (newIndex < 0)
+                setSelected(null);
             else
-                SetCurrent(currentIdx <= 0 ? Item[^1].Value : Item[currentIdx - 1].Value);
+                setSelected(newIndex);
         }
 
-        private enum Direction
+        public void SelectPrevious()
         {
-            Forward,
-            Backward
+            if (!selectedIndex.HasValue || selectedIndex == 0)
+                setSelected(items.Count - 1);
+            else
+                setSelected(selectedIndex - 1);
+        }
+
+        public void SelectNext()
+        {
+            if (!selectedIndex.HasValue || selectedIndex == items.Count - 1)
+                setSelected(0);
+            else
+                setSelected(selectedIndex + 1);
+        }
+
+        private void setSelected(int? index)
+        {
+            if (selectedIndex == index)
+                return;
+
+            if (selectedIndex.HasValue)
+                items[selectedIndex.Value].State = SelectionState.NotSelected;
+
+            selectedIndex = index;
+            localConfig.LoadInto(trackedSettings);
+
+            if (selectedIndex.HasValue)
+            {
+                items[selectedIndex.Value].State = SelectionState.Selected;
+                text.Text = Items[selectedIndex.Value].Text;
+            }
         }
     }
 }
