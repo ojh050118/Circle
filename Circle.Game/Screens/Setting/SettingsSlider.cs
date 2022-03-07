@@ -91,8 +91,7 @@ namespace Circle.Game.Screens.Setting
                 {
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
-                    RelativeSizeAxes = Axes.X,
-                    AutoSizeAxes = Axes.Y,
+                    RelativeSizeAxes = Axes.Both,
                     Margin = new MarginPadding { Right = 20 },
                     Width = 0.5f,
                     Children = new Drawable[]
