@@ -38,6 +38,8 @@ namespace Circle.Game.Overlays
         private FillFlowContainer buttonContainer;
         private FillFlowContainer divisor;
 
+        private GridContainer buttonGrid;
+
         public DialogOverlay(BufferedContainer screenContainer)
             : base(screenContainer)
         {
@@ -85,6 +87,19 @@ namespace Circle.Game.Overlays
                                 Margin = new MarginPadding { Bottom = 10 },
                             }
                         }
+                    },
+                    buttonGrid = new GridContainer
+                    {
+                        RelativeSizeAxes = Axes.X,
+                        Anchor = Anchor.BottomCentre,
+                        Origin = Anchor.BottomCentre,
+                        AutoSizeAxes = Axes.Y,
+                        Margin = new MarginPadding { Top = 80 },
+                        RowDimensions = new[]
+                        {
+                            new Dimension(GridSizeMode.AutoSize),
+                            new Dimension(GridSizeMode.AutoSize),
+                        },
                     }
                 }
             };
@@ -96,7 +111,7 @@ namespace Circle.Game.Overlays
             if (Buttons == null || Buttons.Count == 0)
                 return;
 
-            Content.Add(createButtonContainer());
+            refreshButtons();
         }
 
         public void Push()
@@ -106,10 +121,33 @@ namespace Circle.Game.Overlays
             else
             {
                 divisor.Children = createButtonDivisor(Buttons);
-                buttonContainer.Children = computeWidth(Buttons);
+                buttonContainer.Children = createButtons(Buttons);
             }
 
+            refreshButtons();
+
             Show();
+        }
+
+        private void refreshButtons()
+        {
+            buttonGrid.Content = new[]
+            {
+                new Drawable[]
+                {
+                    new Box
+                    {
+                        Alpha = 0.3f,
+                        Colour = Color4.Black,
+                        RelativeSizeAxes = Axes.X,
+                        Height = 2,
+                    }
+                },
+                new Drawable[]
+                {
+                    createButtons(Buttons)
+                }
+            };
         }
 
         private Container createButtonContainer()
@@ -148,7 +186,7 @@ namespace Circle.Game.Overlays
                         Direction = FillDirection.Horizontal,
                         RelativeSizeAxes = Axes.X,
                         AutoSizeAxes = Axes.Y,
-                        Children = computeWidth(Buttons)
+                        Children = createButtons(Buttons)
                     }
                 }
             };
@@ -181,17 +219,33 @@ namespace Circle.Game.Overlays
             return boxContainer.ToArray();
         }
 
-        private DialogButton[] computeWidth(IReadOnlyList<DialogButton> buttons)
+        private FillFlowContainer createButtons(IReadOnlyList<DialogButton> buttons)
         {
-            var result = new List<DialogButton>();
+            var result = new List<Drawable>();
 
-            foreach (var button in buttons)
+            for (int i = 0; i < buttons.Count; i++)
             {
-                button.Width = (float)buttons.Count / (buttons.Count * buttons.Count);
-                result.Add(button);
+                result.Add(buttons[i]);
+
+                if (i != buttons.Count - 1)
+                {
+                    result.Add(new Box
+                    {
+                        Alpha = 0.3f,
+                        Colour = Color4.Black,
+                        RelativeSizeAxes = Axes.Y,
+                        Width = 2,
+                    });
+                }
             }
 
-            return result.ToArray();
+            return new FillFlowContainer
+            {
+                AutoSizeAxes = Axes.Y,
+                RelativeSizeAxes = Axes.X,
+                Direction = FillDirection.Horizontal,
+                Children = result
+            };
         }
 
         protected override void PopIn()
