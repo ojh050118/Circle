@@ -42,7 +42,7 @@ jobs:
         with:
           name: Circle-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
           path: ${{github.workspace}}/TestResults/TestResults-${{matrix.os.prettyname}}-${{matrix.threadingMode}}.trx
-  
+
   build-only-android:
     name: Build only (Android)
     runs-on: macos-latest

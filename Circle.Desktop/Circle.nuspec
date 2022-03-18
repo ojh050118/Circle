@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Circle</id>
+        <version>0.0.0</version>
+        <title>Circle</title>
+        <authors>Junho</authors>
+        <owners>Dean Herbert</owners>
+        <projectUrl>https://github.com/ojh050118/Circle</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/ppy/osu-framework/master/assets/o!f%20Logo%20Small%20FC.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>zzap ADOFAI.</description>
+        <releaseNotes>prerelease</releaseNotes>
+        <copyright>Junho</copyright>
+        <language>en-AU</language>
+    </metadata>
+    <files>
+      <file src="**.exe" target="lib\net45\" exclude="**vshost**"/>
+      <file src="**.dll" target="lib\net45\"/>
+      <file src="**.config" target="lib\net45\"/>
+    </files>
+</package>
