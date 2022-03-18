@@ -44,7 +44,7 @@ jobs:
           path: ${{github.workspace}}/TestResults/TestResults-${{matrix.os.prettyname}}-${{matrix.threadingMode}}.trx
 
   deploy-test:
-    name: Comilation test
+    name: Compilation test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
