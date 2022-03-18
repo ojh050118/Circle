@@ -43,16 +43,6 @@ jobs:
           name: Circle-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
           path: ${{github.workspace}}/TestResults/TestResults-${{matrix.os.prettyname}}-${{matrix.threadingMode}}.trx
 
-  deploy-test:
-    name: Comilation test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0'
-      - run: msbuild Circle.Desktop.Deploy/Circle.Desktop.Deploy.csproj /restore /p:Configuration=Debug
-
   build-only-android:
     name: Build only (Android)
     runs-on: macos-latest
