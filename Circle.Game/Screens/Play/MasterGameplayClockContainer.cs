@@ -33,7 +33,7 @@ namespace Circle.Game.Screens.Play
                 container = new FrameStabilityContainer(beatmap.Settings.VidOffset + beatmap.Settings.Offset - 60000 / beatmap.Settings.Bpm),
                 new FrameStabilityContainer(beatmap.Settings.Offset)
                 {
-                    Child = Playfield = new Playfield(),
+                    Child = Playfield = new Playfield(beatmap),
                 }
             };
 

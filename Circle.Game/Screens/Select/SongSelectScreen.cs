@@ -56,7 +56,7 @@ namespace Circle.Game.Screens.Select
                 beatmapManager.ReloadBeatmaps();
 
             foreach (var bi in beatmapManager.LoadedBeatmaps)
-                carousel.Add(bi, () => this.Push(new PlayerLoader()));
+                carousel.Add(bi, () => this.Push(new PlayerLoader(carousel.SelectedItem.Value.BeatmapInfo)));
 
             carousel.SelectedItem.ValueChanged += info => beatmapManager.CurrentBeatmap = info.NewValue.BeatmapInfo;
             beatmapManager.OnBeatmapChanged += beatmapChanged;
@@ -132,7 +132,7 @@ namespace Circle.Game.Screens.Select
 
                 case InputAction.Select:
                     if (beatmapManager.CurrentBeatmap != null)
-                        this.Push(new PlayerLoader());
+                        this.Push(new PlayerLoader(carousel.SelectedItem.Value.BeatmapInfo));
                     break;
             }
 

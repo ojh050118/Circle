@@ -20,8 +20,11 @@ namespace Circle.Game.Screens.Play
         private ScheduledDelegate spinnerShow;
         private ScreenHeader header;
 
-        public PlayerLoader()
+        private readonly BeatmapInfo beatmapInfo;
+
+        public PlayerLoader(BeatmapInfo beatmapInfo)
         {
+            this.beatmapInfo = beatmapInfo;
             InternalChildren = new Drawable[]
             {
                 header = new ScreenHeader(this)
@@ -42,8 +45,13 @@ namespace Circle.Game.Screens.Play
         {
             base.OnEntering(last);
 
-            LoadComponentAsync(player = new Player());
+            if (beatmapInfo.Beatmap.AngleData == null || beatmapInfo.Beatmap.AngleData.Length == 0)
+            {
+                OnExit();
+                return;
+            }
 
+            LoadComponentAsync(player = new Player(beatmapInfo));
             LoadComponentAsync(spinner = new LoadingSpinner(true, true)
             {
                 Anchor = Anchor.Centre,
@@ -91,7 +99,7 @@ namespace Circle.Game.Screens.Play
                 Scheduler.AddDelayed(() => this.Push(player), LoadingSpinner.TRANSITION_DURATION);
             }
             else
-                this.Push(player);
+                Scheduler.Add(() => this.Push(player));
         }
     }
 }

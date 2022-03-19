@@ -55,9 +55,6 @@ namespace Circle.Game.Screens.Play
         private DialogOverlay dialog { get; set; }
 
         [Resolved]
-        private BeatmapManager manager { get; set; }
-
-        [Resolved]
         private Background background { get; set; }
 
         private TextureSource texureSource;
@@ -68,17 +65,23 @@ namespace Circle.Game.Screens.Play
 
         private ScheduledDelegate scheduledDelegate;
 
-        private Beatmap currentBeatmap;
+        private readonly BeatmapInfo beatmapInfo;
+        private readonly Beatmap currentBeatmap;
+
+        public Player(BeatmapInfo beatmapInfo)
+        {
+            this.beatmapInfo = beatmapInfo;
+            currentBeatmap = beatmapInfo.Beatmap;
+        }
 
         [BackgroundDependencyLoader]
         private void load(GameHost host)
         {
             texureSource = background.TextureSource;
             textureName = background.TextureName;
-            currentBeatmap = manager.CurrentBeatmap.Beatmap;
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(manager.CurrentBeatmap, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
                 new Container
                 {
                     AutoSizeAxes = Axes.Both,
@@ -123,8 +126,8 @@ namespace Circle.Game.Screens.Play
                            .Schedule(() =>
                            {
                                musicController.Stop();
-                               musicController.ChangeTrack(manager.CurrentBeatmap);
-                               musicController.SeekTo(manager.CurrentBeatmap.Beatmap.Settings.Offset);
+                               musicController.ChangeTrack(beatmapInfo);
+                               musicController.SeekTo(currentBeatmap.Settings.Offset);
                                playState = GamePlayState.Ready;
                            });
         }
@@ -164,7 +167,7 @@ namespace Circle.Game.Screens.Play
                 case GamePlayState.Ready:
                     masterGameplayClockContainer.Start();
                     musicController.CurrentTrack.VolumeTo(1);
-                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / manager.CurrentBeatmap.Beatmap.Settings.Bpm);
+                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / currentBeatmap.Settings.Bpm);
                     playState = GamePlayState.Playing;
                     break;
 
