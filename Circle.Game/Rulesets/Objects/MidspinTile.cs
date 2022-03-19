@@ -10,6 +10,7 @@ namespace Circle.Game.Rulesets.Objects
         public MidspinTile()
             : base(TileType.Midspin)
         {
+            Size = new Vector2(50);
             Child = new Container
             {
                 RelativeSizeAxes = Axes.Both,

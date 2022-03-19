@@ -55,7 +55,7 @@ namespace Circle.Game.Screens.Play
                         {
                             Floor = i,
                             Position = positions[i],
-                            Rotation = angleData[i - 1],
+                            Rotation = getAvailableAngle(i),
                         });
 
                         break;
@@ -75,7 +75,7 @@ namespace Circle.Game.Screens.Play
                         {
                             Floor = i,
                             Position = positions[i],
-                            Rotation = angleData[i],
+                            Rotation = getAvailableAngle(i),
                         });
 
                         break;
@@ -93,7 +93,7 @@ namespace Circle.Game.Screens.Play
             {
                 if (floor + 1 < angleData.Length)
                 {
-                    if (angleData[floor + 1] == 999)
+                    if (angleData[floor + 1] == 999 && angleData[floor] != 999)
                     {
                         tileTypes.Add(TileType.Short);
                         continue;
@@ -114,6 +114,7 @@ namespace Circle.Game.Screens.Play
                 }
                 else
                 {
+                    // 마지막 타일을 의미합니다.
                     tileTypes.Add(TileType.Circular);
                     break;
                 }
@@ -133,7 +134,6 @@ namespace Circle.Game.Screens.Play
         private IReadOnlyList<Vector2> getTilePositions()
         {
             var types = getTileType();
-
             var positions = new List<Vector2> { Vector2.Zero };
             Vector2 offset = Vector2.Zero;
 
@@ -148,12 +148,12 @@ namespace Circle.Game.Screens.Play
                         break;
 
                     case TileType.Midspin:
+
+                        offset -= CalculationExtensions.GetComputedTilePosition(getAvailableAngle(i));
                         break;
 
                     case TileType.Short:
-                        if (types[i + 1] != TileType.Midspin)
-                            offset += newTilePosition;
-
+                        offset += newTilePosition;
                         break;
 
                     case TileType.Circular:
@@ -169,7 +169,7 @@ namespace Circle.Game.Screens.Play
             return positions;
         }
 
-        public IReadOnlyList<TileInfo> GetTileInfos()
+        public IReadOnlyList<TileInfo> GetTilesInfo()
         {
             TileInfo[] infos = new TileInfo[angleData.Length];
             var types = getTileType();
@@ -181,7 +181,7 @@ namespace Circle.Game.Screens.Play
                 {
                     TileType = types[floor],
                     Floor = floor,
-                    Angle = types[floor] == TileType.Midspin ? angleData[floor - 1] : angleData[floor],
+                    Angle = types[floor] == TileType.Midspin ? getAvailableAngle(floor) : angleData[floor],
                     Position = tilePositions[floor],
                 };
             }
@@ -274,6 +274,24 @@ namespace Circle.Game.Screens.Play
                         break;
                 }
             }
+        }
+
+        private float getAvailableAngle(int index)
+        {
+            var availableAngle = 0f;
+
+            for (int i = index - 1; i >= 0; i--)
+            {
+                if (angleData[i] != 999)
+                {
+                    availableAngle += angleData[i];
+                    break;
+                }
+                else
+                    availableAngle += 180;
+            }
+
+            return availableAngle;
         }
 
         /// <summary>
