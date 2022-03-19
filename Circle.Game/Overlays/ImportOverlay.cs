@@ -124,7 +124,7 @@ namespace Circle.Game.Overlays
                                         Text = "Import all",
                                         Action = () =>
                                         {
-                                            foreach (var circlez in fileSelector.CurrentPath.Value?.GetFiles(@"*.circlez"))
+                                            foreach (var circlez in fileSelector.CurrentPath.Value?.GetFiles(@"*.circlez")!)
                                                 startImport(circlez.FullName);
                                         }
                                     },
