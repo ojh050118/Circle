@@ -29,10 +29,6 @@ namespace Circle.Game.Graphics.Containers
         [Resolved(canBeNull: true)]
         private GameScreenContainer gameScreen { get; set; }
 
-        protected CircleFocusedOverlayContainer()
-        {
-        }
-
         [BackgroundDependencyLoader(true)]
         private void load(AudioManager audio)
         {
