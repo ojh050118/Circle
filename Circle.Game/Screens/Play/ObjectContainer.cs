@@ -15,19 +15,19 @@ namespace Circle.Game.Screens.Play
     {
         private float[] angleData => convertAngles(currentBeatmap.AngleData);
 
-        private Beatmap currentBeatmap;
+        private readonly Beatmap currentBeatmap;
 
-        public ObjectContainer()
+        public ObjectContainer(Beatmap beatmap)
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             AutoSizeAxes = Axes.Both;
+            currentBeatmap = beatmap;
         }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapManager beatmap)
+        private void load()
         {
-            currentBeatmap = beatmap.CurrentBeatmap.Beatmap;
             createTiles();
         }
 

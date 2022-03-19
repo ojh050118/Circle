@@ -17,9 +17,6 @@ namespace Circle.Game.Screens.Play
         private Planet bluePlanet;
         private Container<Planet> planetContainer;
 
-        [Resolved]
-        private BeatmapManager beatmap { get; set; }
-
         private TileInfo[] tileInfos;
 
         private bool isClockwise;
@@ -28,7 +25,12 @@ namespace Circle.Game.Screens.Play
 
         public double EndTime { get; private set; } = double.MaxValue;
 
-        private Beatmap currentBeatmap;
+        private readonly Beatmap currentBeatmap;
+
+        public Playfield(Beatmap beatmap)
+        {
+            currentBeatmap = beatmap;
+        }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -38,7 +40,7 @@ namespace Circle.Game.Screens.Play
             Origin = Anchor.Centre;
             Children = new Drawable[]
             {
-                tileContainer = new ObjectContainer(),
+                tileContainer = new ObjectContainer(currentBeatmap),
                 planetContainer = new Container<Planet>
                 {
                     AutoSizeAxes = Axes.Both,
@@ -52,7 +54,6 @@ namespace Circle.Game.Screens.Play
                 }
             };
 
-            currentBeatmap = beatmap.CurrentBeatmap.Beatmap;
             tileInfos = tileContainer.GetTileInfos().ToArray();
             isClockwise = true;
             redPlanet.Expansion = bluePlanet.Expansion = 0;
