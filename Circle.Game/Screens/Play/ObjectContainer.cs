@@ -279,6 +279,7 @@ namespace Circle.Game.Screens.Play
         private float getAvailableAngle(int index)
         {
             var availableAngle = 0f;
+
             for (int i = index - 1; i >= 0; i--)
             {
                 if (angleData[i] != 999)
