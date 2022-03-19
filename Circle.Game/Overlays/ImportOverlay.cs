@@ -116,8 +116,17 @@ namespace Circle.Game.Overlays
                                 {
                                     new BoxButton
                                     {
-                                        Text = "Cancel",
+                                        Text = "Exit",
                                         Action = Hide
+                                    },
+                                    new BoxButton
+                                    {
+                                        Text = "Import all",
+                                        Action = () =>
+                                        {
+                                            foreach (var circlez in fileSelector.CurrentPath.Value?.GetFiles(@"*.circlez"))
+                                                startImport(circlez.FullName);
+                                        }
                                     },
                                     new BoxButton
                                     {
