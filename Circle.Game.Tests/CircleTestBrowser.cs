@@ -6,7 +6,6 @@ using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Platform;
@@ -27,8 +26,8 @@ namespace Circle.Game.Tests
             var dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
             dependencies.CacheAs(toast = new Toast());
             dependencies.CacheAs(background = new Background(textureName: "bg1"));
-            dependencies.CacheAs(import = new ImportOverlay(new BufferedContainer()));
-            dependencies.CacheAs(dialog = new DialogOverlay(new BufferedContainer()));
+            dependencies.CacheAs(import = new ImportOverlay());
+            dependencies.CacheAs(dialog = new DialogOverlay());
 
             return dependencies;
         }

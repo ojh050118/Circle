@@ -25,8 +25,7 @@ namespace Circle.Game.Overlays
         [Resolved]
         private BeatmapManager manager { get; set; }
 
-        public ImportOverlay(BufferedContainer gameScreen)
-            : base(gameScreen)
+        public ImportOverlay()
         {
             Content = new Container
             {

@@ -1,5 +1,4 @@
 ﻿using Circle.Game.Overlays;
-using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
@@ -8,7 +7,7 @@ namespace Circle.Game.Tests.Visual.Overlays
         public TestSceneImportOverlay()
         {
             ImportOverlay import;
-            Add(import = new ImportOverlay(new BufferedContainer()));
+            Add(import = new ImportOverlay());
             AddStep("show", import.Show);
             AddStep("hide", import.Hide);
         }

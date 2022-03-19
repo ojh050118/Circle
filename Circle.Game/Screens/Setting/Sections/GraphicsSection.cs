@@ -64,6 +64,15 @@ namespace Circle.Game.Screens.Setting.Sections
                     LeftIcon = FontAwesome.Solid.Compress,
                     RightIcon = FontAwesome.Solid.Expand,
                     TransferValueOnCommit = true,
+                },
+                new Stepper<bool>(localConfig.Get<bool>(CircleSetting.BlurVisibility))
+                {
+                    Text = "Overlay background blur",
+                    Items = new[]
+                    {
+                        new StepperItem<bool>(CircleSetting.BlurVisibility, false, "Off"),
+                        new StepperItem<bool>(CircleSetting.BlurVisibility, true, "On"),
+                    }
                 }
             });
         }

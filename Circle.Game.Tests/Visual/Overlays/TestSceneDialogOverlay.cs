@@ -1,6 +1,5 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
-using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
@@ -9,7 +8,7 @@ namespace Circle.Game.Tests.Visual.Overlays
         public TestSceneDialogOverlay()
         {
             DialogOverlay dialog;
-            Add(dialog = new DialogOverlay(new BufferedContainer())
+            Add(dialog = new DialogOverlay
             {
                 Title = "Title",
                 Description = "Description",
