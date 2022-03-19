@@ -20,6 +20,7 @@ namespace Circle.Game.Configuration
             SetDefault(CircleSetting.FpsDisplay, false);
             SetDefault(CircleSetting.Offset, 0);
             SetDefault(CircleSetting.LoadBeatmapsOnStartup, true);
+            SetDefault(CircleSetting.BlurVisibility, true);
         }
 
         public override TrackedSettings CreateTrackedSettings()
@@ -49,6 +50,12 @@ namespace Circle.Game.Configuration
                         name: "LoadBeatmapsOnStartup",
                         value: $"{loadBeatmap}"
                     )
+                ),
+                new TrackedSetting<bool>(CircleSetting.BlurVisibility, blur => new SettingDescription(
+                        rawValue: blur,
+                        name: "BlurVisibility",
+                        value: $"{blur}"
+                    )
                 )
             };
         }
@@ -59,6 +66,7 @@ namespace Circle.Game.Configuration
         Scale,
         FpsDisplay,
         Offset,
-        LoadBeatmapsOnStartup
+        LoadBeatmapsOnStartup,
+        BlurVisibility
     }
 }

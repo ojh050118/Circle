@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Circle.Game.Beatmaps;
+using Circle.Game.Configuration;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
@@ -35,7 +36,7 @@ namespace Circle.Game
         {
             dependencies.CacheAs(toast);
 
-            Children = new Drawable[]
+            /*Children = new Drawable[]
             {
                 new VolumeControlReceptor
                 {
@@ -57,9 +58,9 @@ namespace Circle.Game
                 import = new ImportOverlay(ScreenContainer),
                 dialog = new DialogOverlay(ScreenContainer),
                 toast,
-            };
+            };*/
+            addGameScreen();
 
-            dependencies.CacheAs(ScreenContainer);
             dependencies.CacheAs(background);
             dependencies.CacheAs(volume);
             dependencies.CacheAs(import);
@@ -83,6 +84,51 @@ namespace Circle.Game
 
             BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
             BeatmapManager.OnImported -= imported;
+        }
+
+        private void addGameScreen()
+        {
+            ScreenContainer = new GameScreenContainer
+            {
+                RelativeSizeAxes = Axes.Both,
+                RedrawOnScale = false,
+                Depth = 6,
+                Children = new Drawable[]
+                {
+                    background = new Background(textureName: "bg1"),
+                    screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
+                }
+            };
+            dependencies.CacheAs(ScreenContainer);
+
+            Children = new Drawable[]
+            {
+                new VolumeControlReceptor
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Depth = 7,
+                    ActionRequested = action => volume.Adjust(action),
+                    ScrollActionRequested = (action, amount, _) => volume.Adjust(action, amount),
+                },
+                volume = new VolumeOverlay(),
+                import = new ImportOverlay(),
+                dialog = new DialogOverlay(),
+                toast,
+            };
+
+            if (LocalConfig.Get<bool>(CircleSetting.BlurVisibility))
+            {
+                Add(ScreenContainer);
+            }
+            else
+            {
+                ScreenContainer.Dispose();
+                AddRange(new Drawable[]
+                {
+                    background = new Background(textureName: "bg1") { Depth = 6 },
+                    screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both, Depth = 5 },
+                });
+            }
         }
 
         private void loadedBeatmaps(IList<BeatmapInfo> beatmaps)

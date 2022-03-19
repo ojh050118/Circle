@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
-using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
@@ -27,7 +26,6 @@ namespace Circle.Game.Tests.Visual
             typeof(CircleGameBase),
             typeof(TrackedSettings),
             typeof(CircleConfigManager),
-            typeof(GameScreenContainer),
             typeof(Toast),
             typeof(Background),
             typeof(VolumeOverlay),

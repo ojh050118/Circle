@@ -38,8 +38,7 @@ namespace Circle.Game.Overlays
         private FillFlowContainer buttonContainer;
         private FillFlowContainer divisor;
 
-        public DialogOverlay(BufferedContainer screenContainer)
-            : base(screenContainer)
+        public DialogOverlay()
         {
             Content = new Container
             {
