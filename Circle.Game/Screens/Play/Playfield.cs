@@ -17,7 +17,7 @@ namespace Circle.Game.Screens.Play
         private Planet bluePlanet;
         private Container<Planet> planetContainer;
 
-        private TileInfo[] tileInfos;
+        private TileInfo[] tilesInfo;
 
         private bool isClockwise;
 
@@ -54,10 +54,10 @@ namespace Circle.Game.Screens.Play
                 }
             };
 
-            tileInfos = tileContainer.GetTileInfos().ToArray();
+            tilesInfo = tileContainer.GetTilesInfo().ToArray();
             isClockwise = true;
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            bluePlanet.Rotation = tileInfos.First().Angle - 180;
+            bluePlanet.Rotation = tilesInfo.First().Angle - 180;
         }
 
         protected override void LoadComplete()
@@ -70,8 +70,10 @@ namespace Circle.Game.Screens.Play
 
         private void addTransforms(double gameplayStartTime)
         {
-            double startTimeOffset = gameplayStartTime;
+            // 회전하고 있는 행성.
             PlanetState planetState = PlanetState.Ice;
+
+            double startTimeOffset = gameplayStartTime;
             float previousAngle;
             float bpm = currentBeatmap.Settings.Bpm;
             int floor = 0;
@@ -81,41 +83,43 @@ namespace Circle.Game.Screens.Play
 
             using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
-                startTimeOffset += GetRelativeDuration(bluePlanet.Rotation, tileInfos[floor].Angle, bpm);
+                startTimeOffset += GetRelativeDuration(bluePlanet.Rotation, tilesInfo[floor].Angle, bpm);
                 bluePlanet.ExpandTo(1, 60000 / bpm, Easing.Out);
-                bluePlanet.RotateTo(tileInfos[floor].Angle, GetRelativeDuration(bluePlanet.Rotation, tileInfos[floor].Angle, bpm), easing);
+                bluePlanet.RotateTo(tilesInfo[floor].Angle, GetRelativeDuration(bluePlanet.Rotation, tilesInfo[floor].Angle, bpm), easing);
             }
 
             using (bluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
-                previousAngle = tileInfos[floor].Angle;
+                previousAngle = tilesInfo[floor].Angle;
                 floor++;
 
-                if (floor < tileInfos.Length)
+                if (floor < tilesInfo.Length)
                 {
                     bluePlanet.ExpandTo(0);
                     using (planetContainer.BeginAbsoluteSequence(startTimeOffset))
-                        planetContainer.MoveTo(tileInfos[floor].Position);
+                        planetContainer.MoveTo(tilesInfo[floor].Position);
 
-                    if (tileInfos[floor].TileType != TileType.Midspin)
+                    if (tilesInfo[floor].TileType != TileType.Midspin)
                         planetState = PlanetState.Fire;
                 }
             }
 
             #endregion
 
-            while (floor < tileInfos.Length)
+            while (floor < tilesInfo.Length)
             {
                 // Camera
                 using (BeginAbsoluteSequence(startTimeOffset, false))
-                    this.MoveTo(-tileInfos[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
+                    this.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
                 var (fixedRotation, newRotation) = computeRotation(floor, previousAngle);
-                bpm = getNewBpm(bpm, floor, tileInfos[floor].SpeedType);
+                bpm = getNewBpm(bpm, floor, tilesInfo[floor].SpeedType);
                 previousAngle = newRotation;
 
-                if (tileInfos[floor].EventType == EventType.SetPlanetRotation)
-                    easing = tileInfos[floor].Easing;
+                if (tilesInfo[floor].EventType == EventType.SetPlanetRotation)
+                    easing = tilesInfo[floor].Easing;
+
+                #region Planet totation
 
                 switch (planetState)
                 {
@@ -140,8 +144,13 @@ namespace Circle.Game.Screens.Play
                         break;
                 }
 
+                #endregion
+
+                // 회전을 마치면 다른 행성으로 회전할 준비를 해야합니다.
                 startTimeOffset += GetRelativeDuration(fixedRotation, newRotation, bpm);
                 floor++;
+
+                #region Planet reducation
 
                 switch (planetState)
                 {
@@ -158,12 +167,16 @@ namespace Circle.Game.Screens.Play
                         break;
                 }
 
-                if (floor < tileInfos.Length)
+                #endregion
+
+                if (floor < tilesInfo.Length)
                 {
                     using (planetContainer.BeginAbsoluteSequence(startTimeOffset, false))
-                        planetContainer.MoveTo(tileInfos[floor].Position);
+                        planetContainer.MoveTo(tilesInfo[floor].Position);
 
-                    if (tileInfos[floor].TileType != TileType.Midspin && tileInfos[floor - 1].TileType != TileType.Midspin)
+                    if (tilesInfo[floor].TileType != TileType.Midspin && tilesInfo[floor - 1].TileType != TileType.Midspin)
+                        planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
+                    else if (tilesInfo[floor].TileType == TileType.Midspin && tilesInfo[floor - 1].TileType == TileType.Midspin)
                         planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
                 }
                 else
@@ -198,18 +211,18 @@ namespace Circle.Game.Screens.Play
         {
             double startTimeOffset = gameplayStartTime;
             float bpm = currentBeatmap.Settings.Bpm;
-            float previousAngle = CalculationExtensions.GetSafeAngle(tileInfos.First().Angle - 180);
+            float previousAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
 
-            for (int i = 8; i < tileInfos.Length; i++)
+            for (int i = 8; i < tilesInfo.Length; i++)
                 tileContainer.Children[i].Alpha = 0;
 
             // Fade in
-            for (int i = 8; i < tileInfos.Length; i++)
+            for (int i = 8; i < tilesInfo.Length; i++)
             {
-                var (fixedRotation, newRotation) = computeRotation(tileInfos[i - 8].Floor, previousAngle);
+                var (fixedRotation, newRotation) = computeRotation(tilesInfo[i - 8].Floor, previousAngle);
 
                 previousAngle = newRotation;
-                bpm = getNewBpm(bpm, tileInfos[i - 8].Floor, tileInfos[i - 8].SpeedType);
+                bpm = getNewBpm(bpm, tilesInfo[i - 8].Floor, tilesInfo[i - 8].SpeedType);
 
                 using (tileContainer.Children[i].BeginAbsoluteSequence(startTimeOffset, false))
                     tileContainer.Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
@@ -219,16 +232,16 @@ namespace Circle.Game.Screens.Play
 
             startTimeOffset = gameplayStartTime;
             bpm = currentBeatmap.Settings.Bpm;
-            previousAngle = CalculationExtensions.GetSafeAngle(tileInfos.First().Angle - 180);
+            previousAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
             isClockwise = true;
 
             // Fade out
-            for (int i = 0; i < tileInfos.Length; i++)
+            for (int i = 0; i < tilesInfo.Length; i++)
             {
-                var (fixedRotation, newRotation) = computeRotation(tileInfos[i].Floor, previousAngle);
+                var (fixedRotation, newRotation) = computeRotation(tilesInfo[i].Floor, previousAngle);
 
                 previousAngle = newRotation;
-                bpm = getNewBpm(bpm, tileInfos[i].Floor, tileInfos[i].SpeedType);
+                bpm = getNewBpm(bpm, tilesInfo[i].Floor, tilesInfo[i].SpeedType);
 
                 if (i > 3)
                 {
@@ -250,10 +263,10 @@ namespace Circle.Game.Screens.Play
         /// <returns>변환된 각도. (회전 전 각도, 회전 후 각도)</returns>
         private (float fixedRotation, float newRotation) computeRotation(int floor, float previousAngle)
         {
-            var currentAngle = CalculationExtensions.GetSafeAngle(tileInfos[floor].Angle);
+            var currentAngle = CalculationExtensions.GetSafeAngle(tilesInfo[floor].Angle);
 
             // 소용돌이 적용.
-            if (tileInfos[floor].Twirl)
+            if (tilesInfo[floor].Twirl)
                 isClockwise = !isClockwise;
 
             float fixedRotation = CalculationExtensions.GetSafeAngle(previousAngle);
@@ -261,12 +274,14 @@ namespace Circle.Game.Screens.Play
             // 현재와 이전 타일이 미드스핀 타일일 때 회전각을 반전하면 안됩니다.
             if (floor > 0)
             {
-                if (tileInfos[floor].TileType != TileType.Midspin && tileInfos[floor - 1].TileType != TileType.Midspin)
+                if (tilesInfo[floor].TileType != TileType.Midspin && tilesInfo[floor - 1].TileType != TileType.Midspin)
+                    fixedRotation -= 180;
+                else if (tilesInfo[floor].TileType == TileType.Midspin && tilesInfo[floor - 1].TileType == TileType.Midspin)
                     fixedRotation -= 180;
             }
 
-            if (tileInfos[floor].TileType == TileType.Midspin)
-                return (fixedRotation, currentAngle);
+            if (tilesInfo[floor].TileType == TileType.Midspin)
+                return (fixedRotation, fixedRotation);
 
             float newRotation = currentAngle >= 180 ? currentAngle - 360 : currentAngle;
 
@@ -292,10 +307,10 @@ namespace Circle.Game.Screens.Play
             switch (speedType)
             {
                 case SpeedType.Multiplier:
-                    return current * tileInfos[floor].BpmMultiplier;
+                    return current * tilesInfo[floor].BpmMultiplier;
 
                 case SpeedType.Bpm:
-                    return tileInfos[floor].Bpm;
+                    return tilesInfo[floor].Bpm;
 
                 default:
                     return current;
