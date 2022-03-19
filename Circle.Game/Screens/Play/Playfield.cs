@@ -35,21 +35,27 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load()
         {
-            AutoSizeAxes = Axes.Both;
+            RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
-            Children = new Drawable[]
+            Child = new Container
             {
-                tileContainer = new ObjectContainer(currentBeatmap),
-                planetContainer = new Container<Planet>
+                AutoSizeAxes = Axes.Both,
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Children = new Drawable[]
                 {
-                    AutoSizeAxes = Axes.Both,
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Children = new[]
+                    tileContainer = new ObjectContainer(currentBeatmap),
+                    planetContainer = new Container<Planet>
                     {
-                        redPlanet = new Planet(Color4.Red),
-                        bluePlanet = new Planet(Color4.DeepSkyBlue),
+                        AutoSizeAxes = Axes.Both,
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Children = new[]
+                        {
+                            redPlanet = new Planet(Color4.Red),
+                            bluePlanet = new Planet(Color4.DeepSkyBlue),
+                        }
                     }
                 }
             };
@@ -109,8 +115,11 @@ namespace Circle.Game.Screens.Play
             while (floor < tilesInfo.Length)
             {
                 // Camera
+                using (Child.BeginAbsoluteSequence(startTimeOffset, false))
+                    Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
+
                 using (BeginAbsoluteSequence(startTimeOffset, false))
-                    this.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
+                    this.ScaleTo(1.02f).ScaleTo(1, 500 + 100 / bpm * 500, Easing.OutSine);
 
                 var (fixedRotation, newRotation) = computeRotation(floor, previousAngle);
                 bpm = getNewBpm(bpm, floor, tilesInfo[floor].SpeedType);
