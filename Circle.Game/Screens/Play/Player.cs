@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Circle.Game.Beatmaps;
+using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Screens.Setting;
@@ -57,6 +58,9 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private Background background { get; set; }
 
+        [Resolved]
+        private CircleConfigManager localConfig { get; set; }
+
         private TextureSource texureSource;
 
         private string textureName;
@@ -69,6 +73,8 @@ namespace Circle.Game.Screens.Play
         private readonly BeatmapInfo beatmapInfo;
         private readonly Beatmap currentBeatmap;
 
+        private bool parallaxEnabled;
+
         public Player(BeatmapInfo beatmapInfo)
         {
             this.beatmapInfo = beatmapInfo;
@@ -78,6 +84,7 @@ namespace Circle.Game.Screens.Play
         [BackgroundDependencyLoader]
         private void load(GameHost host)
         {
+            parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             texureSource = background.TextureSource;
             textureName = background.TextureName;
             InternalChildren = new Drawable[]
@@ -131,6 +138,7 @@ namespace Circle.Game.Screens.Play
         {
             base.LoadComplete();
 
+            localConfig.SetValue(CircleSetting.Parallax, false);
             musicController.CurrentTrack.VolumeTo(0, 500, Easing.Out)
                            .Then()
                            .Schedule(() =>
@@ -212,6 +220,7 @@ namespace Circle.Game.Screens.Play
         public override bool OnExiting(IScreen next)
         {
             this.FadeOut(1000, Easing.OutPow10);
+            localConfig.SetValue(CircleSetting.Parallax, parallaxEnabled);
 
             return base.OnExiting(next);
         }

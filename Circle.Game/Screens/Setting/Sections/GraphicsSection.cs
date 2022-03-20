@@ -73,6 +73,15 @@ namespace Circle.Game.Screens.Setting.Sections
                         new StepperItem<bool>(CircleSetting.BlurVisibility, false, "Off"),
                         new StepperItem<bool>(CircleSetting.BlurVisibility, true, "On"),
                     }
+                },
+                new Stepper<bool>(localConfig.Get<bool>(CircleSetting.Parallax))
+                {
+                    Text = "Background parallax",
+                    Items = new[]
+                    {
+                        new StepperItem<bool>(CircleSetting.Parallax, false, "Off"),
+                        new StepperItem<bool>(CircleSetting.Parallax, true, "On"),
+                    }
                 }
             });
         }

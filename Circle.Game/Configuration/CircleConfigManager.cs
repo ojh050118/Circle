@@ -21,6 +21,7 @@ namespace Circle.Game.Configuration
             SetDefault(CircleSetting.Offset, 0);
             SetDefault(CircleSetting.LoadBeatmapsOnStartup, true);
             SetDefault(CircleSetting.BlurVisibility, true);
+            SetDefault(CircleSetting.Parallax, true);
         }
 
         public override TrackedSettings CreateTrackedSettings()
@@ -56,6 +57,12 @@ namespace Circle.Game.Configuration
                         name: "BlurVisibility",
                         value: $"{blur}"
                     )
+                ),
+                new TrackedSetting<bool>(CircleSetting.Parallax, papallax => new SettingDescription(
+                        rawValue: papallax,
+                        name: "Parallax",
+                        value: $"{papallax}"
+                    )
                 )
             };
         }
@@ -67,6 +74,7 @@ namespace Circle.Game.Configuration
         FpsDisplay,
         Offset,
         LoadBeatmapsOnStartup,
-        BlurVisibility
+        BlurVisibility,
+        Parallax
     }
 }

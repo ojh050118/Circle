@@ -91,6 +91,13 @@ namespace Circle.Game.Screens
                 beatmapManager.ReloadBeatmaps();
         }
 
+        public override void OnEntering(IScreen last)
+        {
+            base.OnEntering(last);
+
+            background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
+        }
+
         public override void OnResuming(IScreen last)
         {
             base.OnResuming(last);
