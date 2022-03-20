@@ -95,8 +95,8 @@ namespace Circle.Game.Screens.Select.Carousel
 
         public void UpdateItem()
         {
-            DelayedLoadWrapper background;
-            DelayedLoadWrapper text;
+            DelayedLoadUnloadWrapper background;
+            DelayedLoadUnloadWrapper text;
 
             BorderContainer.Children = new Drawable[]
             {

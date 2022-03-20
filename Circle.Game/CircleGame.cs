@@ -10,7 +10,6 @@ using Circle.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Screens;
 using osuTK.Graphics;
 
 namespace Circle.Game
@@ -22,8 +21,7 @@ namespace Circle.Game
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
-        private ScreenStack screenStack;
-        private Background background;
+        private CircleScreenStack screenStack;
         private VolumeOverlay volume;
         private ImportOverlay import;
         private DialogOverlay dialog;
@@ -36,32 +34,8 @@ namespace Circle.Game
         {
             dependencies.CacheAs(toast);
 
-            /*Children = new Drawable[]
-            {
-                new VolumeControlReceptor
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    ActionRequested = action => volume.Adjust(action),
-                    ScrollActionRequested = (action, amount, _) => volume.Adjust(action, amount),
-                },
-                ScreenContainer = new GameScreenContainer
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    RedrawOnScale = false,
-                    Children = new Drawable[]
-                    {
-                        background = new Background(textureName: "bg1"),
-                        screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
-                    }
-                },
-                volume = new VolumeOverlay(),
-                import = new ImportOverlay(ScreenContainer),
-                dialog = new DialogOverlay(ScreenContainer),
-                toast,
-            };*/
             addGameScreen();
 
-            dependencies.CacheAs(background);
             dependencies.CacheAs(volume);
             dependencies.CacheAs(import);
             dependencies.CacheAs(dialog);
@@ -95,8 +69,7 @@ namespace Circle.Game
                 Depth = 6,
                 Children = new Drawable[]
                 {
-                    background = new Background(textureName: "bg1"),
-                    screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both },
+                    screenStack = new CircleScreenStack { RelativeSizeAxes = Axes.Both },
                 }
             };
             dependencies.CacheAs(ScreenContainer);
@@ -125,8 +98,8 @@ namespace Circle.Game
                 ScreenContainer.Dispose();
                 AddRange(new Drawable[]
                 {
-                    background = new Background(textureName: "bg1") { Depth = 6 },
-                    screenStack = new ScreenStack { RelativeSizeAxes = Axes.Both, Depth = 5 },
+                    new Background(textureName: "bg1") { Depth = 6 },
+                    screenStack = new CircleScreenStack { RelativeSizeAxes = Axes.Both, Depth = 5 },
                 });
             }
         }
