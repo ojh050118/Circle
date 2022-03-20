@@ -9,14 +9,24 @@ namespace Circle.Game.Rulesets.Extensions
 {
     public static class CalculationExtensions
     {
+        /// <summary>
+        /// 각도와 타일의 폭으로 다음 타일의 위치를 계산합니다.
+        /// </summary>
+        /// <param name="angle">각도.</param>
+        /// <returns>다음 타일의 위치.</returns>
         public static Vector2 GetComputedTilePosition(float angle)
         {
-            var x = (float)Math.Cos(MathHelper.DegreesToRadians(angle)) * 100;
-            var y = (float)Math.Sin(MathHelper.DegreesToRadians(angle)) * 100;
+            var x = (float)Math.Cos(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
+            var y = (float)Math.Sin(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
 
             return new Vector2(x, y);
         }
 
+        /// <summary>
+        /// 60분법 범위사이의 각도로 클램프 합니다.
+        /// </summary>
+        /// <param name="angle">각도.</param>
+        /// <returns>60분법 범위의 각도</returns>
         public static float GetSafeAngle(float angle)
         {
             if (angle < 0)
@@ -36,13 +46,22 @@ namespace Circle.Game.Rulesets.Extensions
             return angle;
         }
 
+        /// <summary>
+        /// 행성이 타일에 도착하는 시간을 계산합니다
+        /// </summary>
+        /// <param name="beatmap">비트맵.</param>
+        /// <param name="gameplayStartTime">게임 시작 시간.</param>
+        /// <returns>행성이 타일이 도착하는 시간의 집합.</returns>
         public static IReadOnlyList<double> GetTileHitTime(Beatmap beatmap, double gameplayStartTime)
         {
             var tilesInfo = GetTilesInfo(beatmap).ToArray();
-            List<double> hitStartTimes = new List<double> { tilesInfo[0].Angle - 180 };
             double startTimeOffset = gameplayStartTime;
             float bpm = beatmap.Settings.Bpm;
-            float prevAngle = GetSafeAngle(tilesInfo[0].Angle - 180);
+
+            // 한 박자 앞에서 시작합니다.
+            float prevAngle = tilesInfo[0].Angle - 180;
+            startTimeOffset += GetRelativeDuration(prevAngle, tilesInfo[0].Angle, bpm);
+            List<double> hitStartTimes = new List<double> { startTimeOffset };
 
             for (int floor = 1; floor < tilesInfo.Length; floor++)
             {
@@ -57,6 +76,13 @@ namespace Circle.Game.Rulesets.Extensions
             return hitStartTimes;
         }
 
+        /// <summary>
+        /// 행성이 공전하는 것처럼 보이기 위해 각도를 계산합니다.
+        /// </summary>
+        /// <param name="tilesInfo">타일 정보들.</param>
+        /// <param name="floor">현재 타일.</param>
+        /// <param name="prevAngle">이전 타일 각도.</param>
+        /// <returns>fixedRotation: 행성이 회전하기 전 각도. newRotation: 행성이 회전할 각도.</returns>
         public static (float fixedRotation, float newRotation) ComputeRotation(TileInfo[] tilesInfo, int floor, float prevAngle)
         {
             var currentAngle = GetSafeAngle(tilesInfo[floor].Angle);
@@ -97,6 +123,12 @@ namespace Circle.Game.Rulesets.Extensions
             return (fixedRotation, newRotation);
         }
 
+        /// <summary>
+        /// 행성이 특정 타일에서 회전방뱡을 구합니다.
+        /// </summary>
+        /// <param name="tilesInfo">타일 정보.</param>
+        /// <param name="floor">현재 타일</param>
+        /// <returns>타일이 시계방향으로 회전하는지 여부.</returns>
         public static bool GetIsClockwise(TileInfo[] tilesInfo, int floor)
         {
             bool isClockwise = true;
@@ -111,6 +143,13 @@ namespace Circle.Game.Rulesets.Extensions
             return isClockwise;
         }
 
+        /// <summary>
+        /// 타일의 bpm을 적용합니다.
+        /// </summary>
+        /// <param name="tilesInfo">타일 정보.</param>
+        /// <param name="bpm">현재 bpm.</param>
+        /// <param name="floor">현재 타일.</param>
+        /// <returns>현재bpm에서 승수가 적용된 값 또는 새로운 bpm.</returns>
         public static float GetNewBpm(TileInfo[] tilesInfo, float bpm, int floor)
         {
             switch (tilesInfo[floor].SpeedType)
@@ -126,11 +165,24 @@ namespace Circle.Game.Rulesets.Extensions
             }
         }
 
+        /// <summary>
+        /// 회전 각도와 상관없이 일정한 속도로 회전할 수 있는 시간을 계산합니다.
+        /// </summary>
+        /// <param name="oldRotation">이전 각도.</param>
+        /// <param name="newRotation">새로운 각도.</param>
+        /// <param name="bpm">현재 bpm.</param>
+        /// <returns>계산된 시간.</returns>
         public static float GetRelativeDuration(float oldRotation, float newRotation, float bpm)
         {
             return 60000 / bpm * Math.Abs(oldRotation - newRotation) / 180;
         }
 
+        /// <summary>
+        /// <paramref name="angleData"/>로 타일 타입을 구분합니다.
+        /// 마지막 타일 타입은 <see cref="TileType.Circular"/>입니다.
+        /// </summary>
+        /// <param name="angleData">각도 데이터.</param>
+        /// <returns>타일 타입의 집합.</returns>
         public static IReadOnlyList<TileType> GetTileType(float[] angleData)
         {
             List<TileType> tileTypes = new List<TileType>();
@@ -177,6 +229,11 @@ namespace Circle.Game.Rulesets.Extensions
             return tileTypes;
         }
 
+        /// <summary>
+        /// 타일의 위치를 계산합니다.
+        /// </summary>
+        /// <param name="angleData">각도 데이터.</param>
+        /// <returns>각 타일의 위치의 집합.</returns>
         public static IReadOnlyList<Vector2> GetTilePositions(float[] angleData)
         {
             var types = GetTileType(angleData);
@@ -215,6 +272,11 @@ namespace Circle.Game.Rulesets.Extensions
             return positions;
         }
 
+        /// <summary>
+        /// 타일의 정보를 가져옵니다.
+        /// </summary>
+        /// <param name="beatmap">비트맵.</param>
+        /// <returns>각 타일 정보에 대한 집합.</returns>
         public static IReadOnlyList<TileInfo> GetTilesInfo(Beatmap beatmap)
         {
             TileInfo[] infos = new TileInfo[beatmap.AngleData.Length];
@@ -275,11 +337,17 @@ namespace Circle.Game.Rulesets.Extensions
             return infos;
         }
 
-        public static float GetAvailableAngle(float[] angleData, int index)
+        /// <summary>
+        /// 각도 값이 999(미드스핀)일 때 이전의 각도로 수정합니다.
+        /// </summary>
+        /// <param name="angleData">각도 데이터.</param>
+        /// <param name="floor">현재 타일.</param>
+        /// <returns>수정된 각도.</returns>
+        public static float GetAvailableAngle(float[] angleData, int floor)
         {
             var availableAngle = 0f;
 
-            for (int i = index - 1; i >= 0; i--)
+            for (int i = floor - 1; i >= 0; i--)
             {
                 if (angleData[i] != 999)
                 {
@@ -293,6 +361,11 @@ namespace Circle.Game.Rulesets.Extensions
             return availableAngle;
         }
 
+        /// <summary>
+        /// Adofai에서 사용하는 각도 방향을 우리가 원하는 방향으로 반전합니다.
+        /// </summary>
+        /// <param name="targetAngleData">Adofai 각도 데이터.</param>
+        /// <returns>반전된 값의 각도 데이터.</returns>
         public static float[] ConvertAngles(float[] targetAngleData)
         {
             List<float> newAngleData = new List<float>();
