@@ -1,9 +1,6 @@
 ﻿using Circle.Game.Beatmaps;
 using Circle.Game.Screens.Select;
 using osu.Framework.Allocation;
-using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.SongSelect
 {
@@ -14,12 +11,6 @@ namespace Circle.Game.Tests.Visual.SongSelect
         {
             BeatmapCarousel carousel;
 
-            Add(new Box
-            {
-                Colour = Color4.Black,
-                Alpha = 0.7f,
-                RelativeSizeAxes = Axes.Both,
-            });
             Add(carousel = new BeatmapCarousel());
             AddLabel("Add carousel item");
             foreach (var bi in beatmaps.GetBeatmapInfos())
