@@ -100,11 +100,11 @@ namespace Circle.Game.Screens.Select.Carousel
 
             BorderContainer.Children = new Drawable[]
             {
-                background = new DelayedLoadWrapper(() => new PanelBackground(BeatmapInfo), 200)
+                background = new DelayedLoadUnloadWrapper(() => new PanelBackground(BeatmapInfo), 200)
                 {
                     RelativeSizeAxes = Axes.Both
                 },
-                text = new DelayedLoadWrapper(() => new PanelContent(BeatmapInfo), 100)
+                text = new DelayedLoadUnloadWrapper(() => new PanelContent(BeatmapInfo), 100)
                 {
                     RelativeSizeAxes = Axes.Both
                 }
