@@ -261,12 +261,6 @@ namespace Circle.Game.Screens.Play
             }
         }
 
-        /// <summary>
-        /// 현재 타일로 자연스럽게 회전할 수 있는 각도를 제공합니다.
-        /// </summary>
-        /// <param name="floor">현재 타일 번호.</param>
-        /// <param name="previousAngle">이전 타일 각도.</param>
-        /// <returns>변환된 각도. (회전 전 각도, 회전 후 각도)</returns>
         private (float fixedRotation, float newRotation) computeRotation(int floor, float prevAngle) => CalculationExtensions.ComputeRotation(tilesInfo, floor, prevAngle);
 
         private RotationDirection getIsClockwise(int floor) => CalculationExtensions.GetIsClockwise(tilesInfo, floor) ? RotationDirection.Clockwise : RotationDirection.Counterclockwise;

@@ -251,7 +251,6 @@ namespace Circle.Game.Rulesets.Extensions
                         break;
 
                     case TileType.Midspin:
-
                         offset -= GetComputedTilePosition(GetAvailableAngle(angleData, i));
                         break;
 
@@ -279,12 +278,12 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>각 타일 정보에 대한 집합.</returns>
         public static IReadOnlyList<TileInfo> GetTilesInfo(Beatmap beatmap)
         {
-            TileInfo[] infos = new TileInfo[beatmap.AngleData.Length];
             var convertedAngleData = ConvertAngles(beatmap.AngleData);
+            TileInfo[] infos = new TileInfo[convertedAngleData.Length];
             var types = GetTileType(convertedAngleData);
             var tilePositions = GetTilePositions(convertedAngleData);
 
-            for (int floor = 0; floor < beatmap.AngleData.Length; floor++)
+            for (int floor = 0; floor < convertedAngleData.Length; floor++)
             {
                 infos[floor] = new TileInfo
                 {
@@ -363,6 +362,7 @@ namespace Circle.Game.Rulesets.Extensions
 
         /// <summary>
         /// Adofai에서 사용하는 각도 방향을 우리가 원하는 방향으로 반전합니다.
+        /// 마지막 타일이 추가로 있어야 하기때문에 하나 더 추가됩니다.
         /// </summary>
         /// <param name="targetAngleData">Adofai 각도 데이터.</param>
         /// <returns>반전된 값의 각도 데이터.</returns>
