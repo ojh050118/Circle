@@ -26,7 +26,7 @@ namespace Circle.Game.Rulesets.Objects
                 EdgeEffect = new EdgeEffectParameters
                 {
                     Type = EdgeEffectType.Shadow,
-                    Radius = 5,
+                    Radius = 7,
                     Colour = Color4.Black.Opacity(0.5f),
                 }
             };

@@ -62,6 +62,7 @@ namespace Circle.Game.Screens.Play
         private string textureName;
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
+        private SpriteText complete;
 
         private ScheduledDelegate scheduledDelegate;
 
@@ -84,16 +85,25 @@ namespace Circle.Game.Screens.Play
                 masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
                 new Container
                 {
-                    AutoSizeAxes = Axes.Both,
-                    Anchor = Anchor.TopCentre,
-                    Origin = Anchor.TopCentre,
-                    Y = 32,
+                    RelativeSizeAxes = Axes.Both,
                     Children = new Drawable[]
                     {
                         new SpriteText
                         {
+                            Anchor = Anchor.TopCentre,
+                            Origin = Anchor.TopCentre,
+                            Margin = new MarginPadding { Top = 34 },
                             Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
-                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
+                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
+                            Shadow = true,
+                            ShadowColour = Color4.Black.Opacity(0.4f),
+                        },
+                        complete = new SpriteText
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Alpha = 0,
+                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
                             Shadow = true,
                             ShadowColour = Color4.Black.Opacity(0.4f),
                         }
@@ -157,6 +167,8 @@ namespace Circle.Game.Screens.Play
             {
                 playState = GamePlayState.Complete;
                 dialog.BlockInputAction = false;
+                complete.Text = "Congratulations!";
+                complete.Alpha = 1;
             }
         }
 
