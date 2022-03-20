@@ -11,7 +11,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Pooling;
 using osu.Framework.Input.Events;
-using osuTK;
 using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Select.Carousel
@@ -57,7 +56,7 @@ namespace Circle.Game.Screens.Select.Carousel
         {
             sampleClick = audio.Samples.Get("SongSelect/select-click");
             sampleDoubleClick = audio.Samples.Get("SongSelect/select-double-click");
-            Size = new Vector2(1, ITEM_HEIGHT);
+            Height = ITEM_HEIGHT;
             RelativeSizeAxes = Axes.X;
             Anchor = Anchor.TopCentre;
             Origin = Anchor.TopCentre;
@@ -101,7 +100,7 @@ namespace Circle.Game.Screens.Select.Carousel
 
             BorderContainer.Children = new Drawable[]
             {
-                background = new DelayedLoadWrapper(() => new PanelBackground(BeatmapInfo), 300)
+                background = new DelayedLoadWrapper(() => new PanelBackground(BeatmapInfo), 200)
                 {
                     RelativeSizeAxes = Axes.Both
                 },

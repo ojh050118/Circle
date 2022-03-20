@@ -1,11 +1,9 @@
 ﻿using Circle.Game.Beatmaps;
-using osu.Framework.Allocation;
+using Circle.Game.Beatmaps.Drawables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.Textures;
 using osuTK;
 using osuTK.Graphics;
 
@@ -13,28 +11,17 @@ namespace Circle.Game.Screens.Select.Carousel
 {
     public class PanelBackground : Container
     {
-        private readonly BeatmapInfo beatmapInfo;
-
         public PanelBackground(BeatmapInfo info)
-        {
-            beatmapInfo = info;
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(LargeTextureStore largeTexture, BeatmapStorage beatmaps)
         {
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
             {
-                new Sprite
+                new BeatmapBackgroundSprite(info)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                     FillMode = FillMode.Fill,
-                    Texture = !beatmaps.Storage.Exists(beatmapInfo.RelativeBackgroundPath)
-                        ? largeTexture.Get("bg1")
-                        : beatmaps.GetBackground(beatmapInfo)
                 },
                 new FillFlowContainer
                 {

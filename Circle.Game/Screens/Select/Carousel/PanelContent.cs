@@ -1,5 +1,4 @@
 ﻿using Circle.Game.Beatmaps;
-using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -9,15 +8,7 @@ namespace Circle.Game.Screens.Select.Carousel
 {
     public class PanelContent : Container
     {
-        private readonly BeatmapInfo beatmapInfo;
-
         public PanelContent(BeatmapInfo info)
-        {
-            beatmapInfo = info;
-        }
-
-        [BackgroundDependencyLoader]
-        private void load()
         {
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
@@ -32,12 +23,12 @@ namespace Circle.Game.Screens.Select.Carousel
                     {
                         new SpriteText
                         {
-                            Text = beatmapInfo.Beatmap.Settings.Song,
+                            Text = info.Beatmap.Settings.Song,
                             Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
                         },
                         new SpriteText
                         {
-                            Text = beatmapInfo.Beatmap.Settings.Author,
+                            Text = info.Beatmap.Settings.Author,
                             Font = FontUsage.Default.With(size: 24)
                         }
                     }
