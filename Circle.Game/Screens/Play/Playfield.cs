@@ -118,6 +118,7 @@ namespace Circle.Game.Screens.Play
                 using (Child.BeginAbsoluteSequence(startTimeOffset, false))
                     Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
+                // Camera shaking
                 using (BeginAbsoluteSequence(startTimeOffset, false))
                     this.ScaleTo(1.02f).ScaleTo(1, 500 + 100 / bpm * 500, Easing.OutSine);
 
@@ -128,7 +129,7 @@ namespace Circle.Game.Screens.Play
                 if (tilesInfo[floor].EventType == EventType.SetPlanetRotation)
                     easing = tilesInfo[floor].Easing;
 
-                #region Planet totation
+                #region Planet rotation
 
                 switch (planetState)
                 {
@@ -213,6 +214,7 @@ namespace Circle.Game.Screens.Play
                 }
             }
 
+            startTimeOffset -= GetRelativeDuration(previousAngle, previousAngle - 180, bpm);
             EndTime = startTimeOffset;
         }
 
