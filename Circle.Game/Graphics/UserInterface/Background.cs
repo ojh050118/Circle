@@ -36,7 +36,6 @@ namespace Circle.Game.Graphics.UserInterface
 
         private Container backgroundContainer;
 
-        private Sprite sprite;
         private BufferedContainer currentTexture;
         private Box dimBox;
 
@@ -67,7 +66,7 @@ namespace Circle.Game.Graphics.UserInterface
                         RelativeSizeAxes = Axes.Both,
                         RedrawOnScale = false,
                         Masking = true,
-                        Child = sprite = new Sprite
+                        Child = new Sprite
                         {
                             RelativeSizeAxes = Axes.Both,
                             Anchor = Anchor.Centre,
@@ -136,7 +135,6 @@ namespace Circle.Game.Graphics.UserInterface
                 Masking = true,
                 Child = loadTexture(source, name),
             };
-            var lastTexture = currentTexture;
             currentTexture = queuedTexture;
 
             Schedule(() =>
