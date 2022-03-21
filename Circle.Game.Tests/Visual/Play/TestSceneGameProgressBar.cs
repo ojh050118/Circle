@@ -1,7 +1,5 @@
 ﻿using Circle.Game.Screens.Play;
 using osu.Framework.Graphics;
-using osuTK;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.Play
 {
