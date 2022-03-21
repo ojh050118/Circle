@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;

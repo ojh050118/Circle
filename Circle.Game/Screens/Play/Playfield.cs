@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Circle.Game.Beatmaps;
-using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
