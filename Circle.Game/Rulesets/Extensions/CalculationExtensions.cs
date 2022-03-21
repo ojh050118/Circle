@@ -57,13 +57,13 @@ namespace Circle.Game.Rulesets.Extensions
             var tilesInfo = GetTilesInfo(beatmap).ToArray();
             double startTimeOffset = gameplayStartTime;
             float bpm = beatmap.Settings.Bpm;
-
-            // 한 박자 앞에서 시작합니다.
-            float prevAngle = tilesInfo[0].Angle - 180;
-            startTimeOffset += GetRelativeDuration(prevAngle, tilesInfo[0].Angle, bpm);
+            float prevAngle = tilesInfo[0].Angle;
             List<double> hitStartTimes = new List<double> { startTimeOffset };
 
-            for (int floor = 1; floor < tilesInfo.Length; floor++)
+            startTimeOffset += GetRelativeDuration(tilesInfo[0].Angle - 180, tilesInfo[0].Angle, bpm);
+            hitStartTimes.Add(startTimeOffset);
+
+            for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
             {
                 var (fixedRotation, newRotation) = ComputeRotation(tilesInfo, floor, prevAngle);
 

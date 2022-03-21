@@ -21,8 +21,6 @@ namespace Circle.Game.Screens.Play
 
         public Action OnComplete { get; set; }
 
-        public double EndTime { get; private set; } = double.MaxValue;
-
         private readonly Beatmap currentBeatmap;
 
         public Playfield(Beatmap beatmap)
@@ -210,16 +208,13 @@ namespace Circle.Game.Screens.Play
                     }
                 }
             }
-
-            startTimeOffset -= CalculationExtensions.GetRelativeDuration(prevAngle, prevAngle - 180, bpm);
-            EndTime = startTimeOffset;
         }
 
         private void addTileTransforms(double gameplayStartTime)
         {
-            double startTimeOffset = gameplayStartTime;
             float bpm = currentBeatmap.Settings.Bpm;
             float previousAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
+            var tilesOffset = CalculationExtensions.GetTileHitTime(currentBeatmap, gameplayStartTime);
 
             for (int i = 8; i < tilesInfo.Length; i++)
                 tileContainer.Children[i].Alpha = 0;
@@ -227,36 +222,31 @@ namespace Circle.Game.Screens.Play
             // Fade in
             for (int i = 8; i < tilesInfo.Length; i++)
             {
-                var (fixedRotation, newRotation) = computeRotation(i - 8, previousAngle);
+                var (_, newRotation) = computeRotation(i - 8, previousAngle);
 
                 previousAngle = newRotation;
                 bpm = getNewBpm(bpm, i - 8);
 
-                using (tileContainer.Children[i].BeginAbsoluteSequence(startTimeOffset, false))
+                using (tileContainer.Children[i].BeginAbsoluteSequence(tilesOffset[i - 8], false))
                     tileContainer.Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
-
-                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm);
             }
 
-            startTimeOffset = gameplayStartTime;
             bpm = currentBeatmap.Settings.Bpm;
             previousAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
 
             // Fade out
             for (int i = 0; i < tilesInfo.Length; i++)
             {
-                var (fixedRotation, newRotation) = computeRotation(i, previousAngle);
+                var (_, newRotation) = computeRotation(i, previousAngle);
 
                 previousAngle = newRotation;
                 bpm = getNewBpm(bpm, i);
 
                 if (i > 3)
                 {
-                    using (tileContainer.Children[i - 4].BeginAbsoluteSequence(startTimeOffset, false))
+                    using (tileContainer.Children[i - 4].BeginAbsoluteSequence(tilesOffset[i], false))
                         tileContainer.Children[i - 4].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
-
-                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm);
             }
         }
 
