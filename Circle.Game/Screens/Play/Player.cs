@@ -4,6 +4,7 @@ using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
+using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -74,6 +75,7 @@ namespace Circle.Game.Screens.Play
         private readonly Beatmap currentBeatmap;
 
         private bool parallaxEnabled;
+        private double endTime;
 
         public Player(BeatmapInfo beatmapInfo)
         {
@@ -87,6 +89,7 @@ namespace Circle.Game.Screens.Play
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             texureSource = background.TextureSource;
             textureName = background.TextureName;
+            endTime = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).Last();
             InternalChildren = new Drawable[]
             {
                 masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
@@ -171,7 +174,7 @@ namespace Circle.Game.Screens.Play
         {
             base.Update();
 
-            if (masterGameplayClockContainer.CurrentTime >= masterGameplayClockContainer.Playfield.EndTime)
+            if (masterGameplayClockContainer.CurrentTime >= endTime)
             {
                 playState = GamePlayState.Complete;
                 dialog.BlockInputAction = false;
