@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -30,25 +31,25 @@ namespace Circle.Game.Screens.Play
 
         private readonly Key[] blockedKeys =
         {
-            Key.AltLeft,
-            Key.AltRight,
-            Key.BackSpace,
-            Key.CapsLock,
-            Key.ControlLeft,
-            Key.ControlRight,
-            Key.Delete,
-            Key.Enter,
-            Key.Home,
-            Key.Insert,
-            Key.End,
-            Key.PageDown,
-            Key.PageUp,
-            Key.PrintScreen,
-            Key.ScrollLock,
-            Key.Pause,
-            Key.LWin,
-            Key.RWin
-        };
+        Key.AltLeft,
+        Key.AltRight,
+        Key.BackSpace,
+        Key.CapsLock,
+        Key.ControlLeft,
+        Key.ControlRight,
+        Key.Delete,
+        Key.Enter,
+        Key.Home,
+        Key.Insert,
+        Key.End,
+        Key.PageDown,
+        Key.PageUp,
+        Key.PrintScreen,
+        Key.ScrollLock,
+        Key.Pause,
+        Key.LWin,
+        Key.RWin
+    };
 
         [Resolved]
         private MusicController musicController { get; set; }
@@ -68,6 +69,7 @@ namespace Circle.Game.Screens.Play
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
         private SpriteText complete;
+        private GameProgressBar bar;
 
         private ScheduledDelegate scheduledDelegate;
 
@@ -76,6 +78,8 @@ namespace Circle.Game.Screens.Play
 
         private bool parallaxEnabled;
         private double endTime;
+        private List<double> hitTimes;
+        private int floor = 1;
 
         public Player(BeatmapInfo beatmapInfo)
         {
@@ -90,35 +94,44 @@ namespace Circle.Game.Screens.Play
             texureSource = background.TextureSource;
             textureName = background.TextureName;
             endTime = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).Last();
+            hitTimes = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).ToList();
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
-                new Container
+            masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
+            new Container
+            {
+                RelativeSizeAxes = Axes.Both,
+                Children = new Drawable[]
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Children = new Drawable[]
+                    new SpriteText
                     {
-                        new SpriteText
-                        {
-                            Anchor = Anchor.TopCentre,
-                            Origin = Anchor.TopCentre,
-                            Margin = new MarginPadding { Top = 34 },
-                            Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
-                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
-                            Shadow = true,
-                            ShadowColour = Color4.Black.Opacity(0.4f),
-                        },
-                        complete = new SpriteText
-                        {
-                            Anchor = Anchor.Centre,
-                            Origin = Anchor.Centre,
-                            Alpha = 0,
-                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
-                            Shadow = true,
-                            ShadowColour = Color4.Black.Opacity(0.4f),
-                        }
+                        Anchor = Anchor.TopCentre,
+                        Origin = Anchor.TopCentre,
+                        Margin = new MarginPadding { Top = 34 },
+                        Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
+                        Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
+                        Shadow = true,
+                        ShadowColour = Color4.Black.Opacity(0.4f),
+                    },
+                    complete = new SpriteText
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Alpha = 0,
+                        Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
+                        Shadow = true,
+                        ShadowColour = Color4.Black.Opacity(0.4f),
+                    },
+                    bar = new GameProgressBar(15, 30)
+                    {
+                        Anchor = Anchor.BottomLeft,
+                        Origin = Anchor.BottomLeft,
+                        StartFloor = 0,
+                        EndFloor = hitTimes.Count(),
+                        Duration = 200
                     }
-                },
+                }
+            },
             };
 
             if (!host.CanExit)
@@ -180,6 +193,16 @@ namespace Circle.Game.Screens.Play
                 dialog.BlockInputAction = false;
                 complete.Text = "Congratulations!";
                 complete.Alpha = 1;
+                bar.CurrentFloor = floor + 1;
+            }
+
+            if (playState == GamePlayState.Complete)
+                return;
+
+            if (masterGameplayClockContainer.CurrentTime >= hitTimes[floor])
+            {
+                bar.CurrentFloor = floor + 1;
+                floor++;
             }
         }
 
@@ -248,62 +271,62 @@ namespace Circle.Game.Screens.Play
 
             dialog.Buttons = new[]
             {
-                new DialogButton
+            new DialogButton
+            {
+                Text = "Exit",
+                TextColour = Color4.Red,
+                Action = () =>
                 {
-                    Text = "Exit",
-                    TextColour = Color4.Red,
-                    Action = () =>
-                    {
-                        playState = GamePlayState.NotPlaying;
-                        OnExit();
-                        dialog.Hide();
-                        dialog.BlockInputAction = false;
-                    }
-                },
-                new DialogButton
+                    playState = GamePlayState.NotPlaying;
+                    OnExit();
+                    dialog.Hide();
+                    dialog.BlockInputAction = false;
+                }
+            },
+            new DialogButton
+            {
+                Text = "Settings",
+                Action = () =>
                 {
-                    Text = "Settings",
-                    Action = () =>
-                    {
-                        this.Push(new SettingsScreen());
-                        dialog.Hide();
-                    }
-                },
-                new DialogButton
+                    this.Push(new SettingsScreen());
+                    dialog.Hide();
+                }
+            },
+            new DialogButton
+            {
+                Text = "Resume",
+                Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
+                Action = () =>
                 {
-                    Text = "Resume",
-                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
-                    Action = () =>
+                    musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
                     {
-                        musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
+                        if (masterGameplayClockContainer.CurrentTime - 1000 >= 0)
                         {
-                            if (masterGameplayClockContainer.CurrentTime - 1000 >= 0)
+                            musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000);
+                            musicController.Play();
+                            musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
+                        }
+
+                        scheduledDelegate = Scheduler.AddDelayed(() =>
+                        {
+                            if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
                             {
-                                musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000);
-                                musicController.Play();
-                                musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
+                                Scheduler.AddDelayed(() =>
+                                {
+                                    musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
+                                    musicController.CurrentTrack.VolumeTo(1);
+                                    musicController.Play();
+                                }, Math.Abs(masterGameplayClockContainer.CurrentTime));
                             }
 
-                            scheduledDelegate = Scheduler.AddDelayed(() =>
-                            {
-                                if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
-                                {
-                                    Scheduler.AddDelayed(() =>
-                                    {
-                                        musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
-                                        musicController.CurrentTrack.VolumeTo(1);
-                                        musicController.Play();
-                                    }, Math.Abs(masterGameplayClockContainer.CurrentTime));
-                                }
-
-                                playState = GamePlayState.Playing;
-                                masterGameplayClockContainer.Start();
-                            }, 1000);
-                        });
-                        dialog.Hide();
-                    }
+                            playState = GamePlayState.Playing;
+                            masterGameplayClockContainer.Start();
+                        }, 1000);
+                    });
+                    dialog.Hide();
                 }
-            };
+            }
+        };
             dialog.Push();
         }
     }
