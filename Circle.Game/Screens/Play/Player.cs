@@ -31,25 +31,25 @@ namespace Circle.Game.Screens.Play
 
         private readonly Key[] blockedKeys =
         {
-        Key.AltLeft,
-        Key.AltRight,
-        Key.BackSpace,
-        Key.CapsLock,
-        Key.ControlLeft,
-        Key.ControlRight,
-        Key.Delete,
-        Key.Enter,
-        Key.Home,
-        Key.Insert,
-        Key.End,
-        Key.PageDown,
-        Key.PageUp,
-        Key.PrintScreen,
-        Key.ScrollLock,
-        Key.Pause,
-        Key.LWin,
-        Key.RWin
-    };
+            Key.AltLeft,
+            Key.AltRight,
+            Key.BackSpace,
+            Key.CapsLock,
+            Key.ControlLeft,
+            Key.ControlRight,
+            Key.Delete,
+            Key.Enter,
+            Key.Home,
+            Key.Insert,
+            Key.End,
+            Key.PageDown,
+            Key.PageUp,
+            Key.PrintScreen,
+            Key.ScrollLock,
+            Key.Pause,
+            Key.LWin,
+            Key.RWin
+        };
 
         [Resolved]
         private MusicController musicController { get; set; }
@@ -97,41 +97,41 @@ namespace Circle.Game.Screens.Play
             hitTimes = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).ToList();
             InternalChildren = new Drawable[]
             {
-            masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
-            new Container
-            {
-                RelativeSizeAxes = Axes.Both,
-                Children = new Drawable[]
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
+                new Container
                 {
-                    new SpriteText
+                    RelativeSizeAxes = Axes.Both,
+                    Children = new Drawable[]
                     {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        Margin = new MarginPadding { Top = 34 },
-                        Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
-                        Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
-                        Shadow = true,
-                        ShadowColour = Color4.Black.Opacity(0.4f),
-                    },
-                    complete = new SpriteText
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Alpha = 0,
-                        Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
-                        Shadow = true,
-                        ShadowColour = Color4.Black.Opacity(0.4f),
-                    },
-                    bar = new GameProgressBar(15, 30)
-                    {
-                        Anchor = Anchor.BottomLeft,
-                        Origin = Anchor.BottomLeft,
-                        StartFloor = 0,
-                        EndFloor = hitTimes.Count(),
-                        Duration = 200
+                        new SpriteText
+                        {
+                            Anchor = Anchor.TopCentre,
+                            Origin = Anchor.TopCentre,
+                            Margin = new MarginPadding { Top = 34 },
+                            Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
+                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
+                            Shadow = true,
+                            ShadowColour = Color4.Black.Opacity(0.4f),
+                        },
+                        complete = new SpriteText
+                        {
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Alpha = 0,
+                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
+                            Shadow = true,
+                            ShadowColour = Color4.Black.Opacity(0.4f),
+                        },
+                        bar = new GameProgressBar(15, 30)
+                        {
+                            Anchor = Anchor.BottomLeft,
+                            Origin = Anchor.BottomLeft,
+                            StartFloor = 0,
+                            EndFloor = hitTimes.Count,
+                            Duration = 200
+                        }
                     }
-                }
-            },
+                },
             };
 
             if (!host.CanExit)
@@ -271,62 +271,62 @@ namespace Circle.Game.Screens.Play
 
             dialog.Buttons = new[]
             {
-            new DialogButton
-            {
-                Text = "Exit",
-                TextColour = Color4.Red,
-                Action = () =>
+                new DialogButton
                 {
-                    playState = GamePlayState.NotPlaying;
-                    OnExit();
-                    dialog.Hide();
-                    dialog.BlockInputAction = false;
-                }
-            },
-            new DialogButton
-            {
-                Text = "Settings",
-                Action = () =>
-                {
-                    this.Push(new SettingsScreen());
-                    dialog.Hide();
-                }
-            },
-            new DialogButton
-            {
-                Text = "Resume",
-                Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
-                Action = () =>
-                {
-                    musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
+                    Text = "Exit",
+                    TextColour = Color4.Red,
+                    Action = () =>
                     {
-                        if (masterGameplayClockContainer.CurrentTime - 1000 >= 0)
+                        playState = GamePlayState.NotPlaying;
+                        OnExit();
+                        dialog.Hide();
+                        dialog.BlockInputAction = false;
+                    }
+                },
+                new DialogButton
+                {
+                    Text = "Settings",
+                    Action = () =>
+                    {
+                        this.Push(new SettingsScreen());
+                        dialog.Hide();
+                    }
+                },
+                new DialogButton
+                {
+                    Text = "Resume",
+                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
+                    Action = () =>
+                    {
+                        musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
                         {
-                            musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000);
-                            musicController.Play();
-                            musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
-                        }
-
-                        scheduledDelegate = Scheduler.AddDelayed(() =>
-                        {
-                            if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
+                            if (masterGameplayClockContainer.CurrentTime - 1000 >= 0)
                             {
-                                Scheduler.AddDelayed(() =>
-                                {
-                                    musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
-                                    musicController.CurrentTrack.VolumeTo(1);
-                                    musicController.Play();
-                                }, Math.Abs(masterGameplayClockContainer.CurrentTime));
+                                musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000);
+                                musicController.Play();
+                                musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
                             }
 
-                            playState = GamePlayState.Playing;
-                            masterGameplayClockContainer.Start();
-                        }, 1000);
-                    });
-                    dialog.Hide();
+                            scheduledDelegate = Scheduler.AddDelayed(() =>
+                            {
+                                if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
+                                {
+                                    Scheduler.AddDelayed(() =>
+                                    {
+                                        musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
+                                        musicController.CurrentTrack.VolumeTo(1);
+                                        musicController.Play();
+                                    }, Math.Abs(masterGameplayClockContainer.CurrentTime));
+                                }
+
+                                playState = GamePlayState.Playing;
+                                masterGameplayClockContainer.Start();
+                            }, 1000);
+                        });
+                        dialog.Hide();
+                    }
                 }
-            }
-        };
+            };
             dialog.Push();
         }
     }
