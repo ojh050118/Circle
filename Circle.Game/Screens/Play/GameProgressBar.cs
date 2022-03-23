@@ -76,8 +76,7 @@ namespace Circle.Game.Screens.Play
         {
             base.Update();
 
-            fill.ResizeWidthTo(UsableWidth / CurrentNumber.MaxValue * CurrentNumber.Value, Duration, Easing.OutQuint);
-            //fill.Width = newX;
+            fill.ResizeWidthTo(UsableWidth / CurrentNumber.MaxValue * CurrentNumber.Value, Duration, Easing.OutSine);
         }
 
         private ScheduledDelegate scheduledSeek;

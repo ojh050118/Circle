@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -68,6 +69,7 @@ namespace Circle.Game.Screens.Play
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
         private SpriteText complete;
+        private GameProgressBar bar;
 
         private ScheduledDelegate scheduledDelegate;
 
@@ -76,6 +78,8 @@ namespace Circle.Game.Screens.Play
 
         private bool parallaxEnabled;
         private double endTime;
+        private List<double> hitTimes;
+        private int floor = 1;
 
         public Player(BeatmapInfo beatmapInfo)
         {
@@ -90,6 +94,7 @@ namespace Circle.Game.Screens.Play
             texureSource = background.TextureSource;
             textureName = background.TextureName;
             endTime = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).Last();
+            hitTimes = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).ToList();
             InternalChildren = new Drawable[]
             {
                 masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
@@ -116,6 +121,14 @@ namespace Circle.Game.Screens.Play
                             Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
                             Shadow = true,
                             ShadowColour = Color4.Black.Opacity(0.4f),
+                        },
+                        bar = new GameProgressBar(15, 30)
+                        {
+                            Anchor = Anchor.BottomLeft,
+                            Origin = Anchor.BottomLeft,
+                            StartFloor = 0,
+                            EndFloor = hitTimes.Count,
+                            Duration = 200
                         }
                     }
                 },
@@ -180,6 +193,16 @@ namespace Circle.Game.Screens.Play
                 dialog.BlockInputAction = false;
                 complete.Text = "Congratulations!";
                 complete.Alpha = 1;
+                bar.CurrentFloor = floor + 1;
+            }
+
+            if (playState == GamePlayState.Complete)
+                return;
+
+            if (masterGameplayClockContainer.CurrentTime >= hitTimes[floor])
+            {
+                bar.CurrentFloor = floor + 1;
+                floor++;
             }
         }
 
