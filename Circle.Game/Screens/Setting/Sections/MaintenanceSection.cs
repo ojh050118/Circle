@@ -15,7 +15,7 @@ namespace Circle.Game.Screens.Setting.Sections
         public override string Header => "Maintenance";
 
         [BackgroundDependencyLoader]
-        private void load(ImportOverlay import, BeatmapManager beatmap, Toast toast)
+        private void load(ImportOverlay import, BeatmapStorage storage, BeatmapManager beatmap, Toast toast)
         {
             FlowContent.AddRange(new Drawable[]
             {
@@ -59,6 +59,23 @@ namespace Circle.Game.Screens.Setting.Sections
                     Action = () => Task.Factory.StartNew(beatmap.ReloadBeatmaps, TaskCreationOptions.LongRunning)
                 },
             });
+
+            if (beatmap.LoadedBeatmaps.Count == 0)
+            {
+                FlowContent.Add(new BoxButton
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Text = "Import local beatmaps",
+                    Action = () => Task.Factory.StartNew(() =>
+                    {
+                        foreach (var file in storage.GetAvailableResources())
+                            beatmap.Import(storage.GetStream(file), file);
+
+                        beatmap.ReloadBeatmaps();
+                    }, TaskCreationOptions.LongRunning)
+                });
+            }
         }
     }
 }

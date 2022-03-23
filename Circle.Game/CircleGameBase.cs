@@ -12,6 +12,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Performance;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osuTK;
 
@@ -64,7 +65,6 @@ namespace Circle.Game
             var largeStore = new LargeTextureStore(Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
 
             Resources.AddStore(new DllResourceStore(typeof(CircleResources).Assembly));
-            largeStore.AddStore(Host.CreateTextureLoaderStore(new OnlineStore()));
 
             AddFont(Resources, @"Fonts/OpenSans-Regular");
             AddFont(Resources, @"Fonts/OpenSans-Light");
@@ -77,7 +77,7 @@ namespace Circle.Game
 
             dependencies.CacheAs(largeStore);
 
-            dependencies.CacheAs(BeatmapStorage = new BeatmapStorage(files, Audio, Host));
+            dependencies.CacheAs(BeatmapStorage = new BeatmapStorage(files, Audio, new NamespacedResourceStore<byte[]>(Resources, @"Beatmaps"), Host));
             dependencies.CacheAs(BeatmapManager = new BeatmapManager(BeatmapStorage));
 
             dependencies.CacheAs(Storage);

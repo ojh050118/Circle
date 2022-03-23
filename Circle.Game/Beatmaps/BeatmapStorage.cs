@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
@@ -11,19 +13,29 @@ using osu.Framework.Platform;
 
 namespace Circle.Game.Beatmaps
 {
-    public class BeatmapStorage
+    public class BeatmapStorage : IResourceStore<byte[]>
     {
         public Storage Storage { get; }
 
         private readonly LargeTextureStore largeTextureStore;
         private readonly ITrackStore trackStore;
+        private readonly IResourceStore<byte[]> localStore;
 
-        public BeatmapStorage(Storage files, AudioManager audioManager, GameHost host = null)
+        public BeatmapStorage(Storage files, AudioManager audioManager, IResourceStore<byte[]> store, GameHost host = null)
         {
             Storage = files;
             largeTextureStore = new LargeTextureStore(host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
             trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(files));
+            localStore = store;
         }
+
+        public byte[] Get(string name) => localStore.Get(name);
+
+        public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default) => localStore.GetAsync(name, cancellationToken);
+
+        public Stream GetStream(string name) => localStore.GetStream(name);
+
+        public IEnumerable<string> GetAvailableResources() => localStore.GetAvailableResources();
 
         public BeatmapInfo[] GetBeatmapInfos()
         {
@@ -218,6 +230,10 @@ namespace Circle.Game.Beatmaps
                 File.Delete(Storage.GetFullPath(beatmap.RelativeSongPath));
                 File.Delete(Storage.GetFullPath(beatmap.RelativeBackgroundPath));
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

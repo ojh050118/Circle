@@ -107,6 +107,24 @@ namespace Circle.Game.Beatmaps
             }
         }
 
+        public void Import(Stream stream, string name)
+        {
+            if (stream == null)
+            {
+                Logger.Log($"Error when importing local beatmap: {name}");
+                return;
+            }
+
+            var beatmap = beatmapStorage.Storage.GetStorageForDirectory(name).GetFullPath(string.Empty);
+
+            using (var reader = new ZipArchiveReader(stream))
+            {
+                reader.Archive.WriteToDirectory(beatmap);
+
+                OnImported?.Invoke(name);
+            }
+        }
+
         public void Migrate()
         {
             foreach (var bi in beatmapStorage.GetBeatmapInfos())
