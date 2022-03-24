@@ -236,7 +236,7 @@ namespace Circle.Game.Screens.Play
 
             musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
             {
-                musicController.CurrentTrack.VolumeTo(1);
+                musicController.CurrentTrack.VolumeTo(1, 200, Easing.Out);
                 musicController.Play();
             });
 
@@ -262,7 +262,7 @@ namespace Circle.Game.Screens.Play
         private void onPaused()
         {
             masterGameplayClockContainer.Stop();
-            musicController.CurrentTrack.VolumeTo(0, 1000, Easing.OutPow10).Then().Schedule(musicController.Stop);
+            musicController.CurrentTrack.VolumeTo(0, 750, Easing.OutPow10).Then().Schedule(musicController.Stop);
             scheduledDelegate?.Cancel();
 
             dialog.Title = "Paused";
