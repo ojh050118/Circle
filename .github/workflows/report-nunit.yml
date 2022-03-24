@@ -21,7 +21,7 @@ jobs:
       - name: Annotate CI run with test results
         uses: dorny/test-reporter@v1.4.2
         with:
-          artifact: osu-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
+          artifact: Circle-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
           name: Test Results (${{matrix.os.prettyname}}, ${{matrix.threadingMode}})
           path: "*.trx"
           reporter: dotnet-trx
