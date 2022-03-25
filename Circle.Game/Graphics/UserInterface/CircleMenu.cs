@@ -20,7 +20,7 @@ namespace Circle.Game.Graphics.UserInterface
         private bool wasOpened;
 
         public CircleMenu(Direction direction, bool topLevelMenu = false)
-        : base(direction, topLevelMenu)
+            : base(direction, topLevelMenu)
         {
             BackgroundColour = Color4.Black.Opacity(0.4f);
             MaskingContainer.CornerRadius = 5;
