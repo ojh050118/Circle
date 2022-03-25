@@ -1,8 +1,11 @@
 ﻿using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
+using Shape = osu.Framework.Graphics.Shapes;
 using osuTK;
 using osuTK.Graphics;
+using osu.Framework.Bindables;
+using Circle.Game.Utils;
+using osu.Framework.Allocation;
 
 namespace Circle.Game.Rulesets.Objects
 {
@@ -10,6 +13,7 @@ namespace Circle.Game.Rulesets.Objects
     {
         private float expansion;
         private readonly Container adjustableContent;
+        private readonly Shape.Circle planet;
 
         public const float PLANET_SIZE = 50;
         public const float DISTANCE = 100;
@@ -24,6 +28,8 @@ namespace Circle.Game.Rulesets.Objects
             }
         }
 
+        public Bindable<Color4Enum> PlanetColour;
+
         public Planet(Color4 planetColor)
         {
             Anchor = Anchor.Centre;
@@ -35,26 +41,21 @@ namespace Circle.Game.Rulesets.Objects
                 Origin = Anchor.CentreLeft,
                 Height = 50,
                 Width = DISTANCE,
-                Children = new Drawable[]
+                Child = planet = new Shape.Circle
                 {
-                    new Container
-                    {
-                        Anchor = Anchor.CentreRight,
-                        Origin = Anchor.Centre,
-                        Size = new Vector2(PLANET_SIZE),
-                        Child = new CircularContainer
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Masking = true,
-                            Child = new Box
-                            {
-                                RelativeSizeAxes = Axes.Both,
-                                Colour = planetColor
-                            }
-                        }
-                    }
+                    Anchor = Anchor.CentreRight,
+                    Origin = Anchor.Centre,
+                    Size = new Vector2(PLANET_SIZE),
+                    Colour = planetColor,
                 }
             };
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            if (PlanetColour != null)
+                PlanetColour.ValueChanged += color4Enum => planet.Colour = Color4Utils.GetColor4(color4Enum.NewValue);
         }
     }
 }

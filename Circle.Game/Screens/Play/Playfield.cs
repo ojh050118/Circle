@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Circle.Game.Beatmaps;
+using Circle.Game.Configuration;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
+using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Play
 {
@@ -29,7 +30,7 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(CircleConfigManager config)
         {
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
@@ -49,8 +50,14 @@ namespace Circle.Game.Screens.Play
                         Origin = Anchor.Centre,
                         Children = new[]
                         {
-                            redPlanet = new Planet(Color4.Red),
-                            bluePlanet = new Planet(Color4.DeepSkyBlue),
+                            redPlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetRed)))
+                            {
+                                PlanetColour = config.GetBindable<Color4Enum>(CircleSetting.PlanetRed)
+                            },
+                            bluePlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetBlue)))
+                            {
+                                PlanetColour = config.GetBindable<Color4Enum>(CircleSetting.PlanetBlue)
+                            },
                         }
                     }
                 }

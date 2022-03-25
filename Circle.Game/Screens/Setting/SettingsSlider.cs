@@ -85,7 +85,8 @@ namespace Circle.Game.Screens.Setting
                     Anchor = Anchor.CentreLeft,
                     Origin = Anchor.CentreLeft,
                     Font = FontUsage.Default.With(size: 22),
-                    Margin = new MarginPadding { Left = 20 }
+                    Margin = new MarginPadding { Left = 20 },
+                    Truncate = true,
                 },
                 new Container
                 {
