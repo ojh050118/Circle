@@ -76,6 +76,18 @@ namespace Circle.Game.Graphics.UserInterface
             Current.DisabledChanged += disabled => { Alpha = disabled ? 0.3f : 1; };
         }
 
+        public void Commit(bool increase)
+        {
+            float step = KeyboardStep != 0 ? KeyboardStep : (Convert.ToSingle(CurrentNumber.MaxValue) - Convert.ToSingle(CurrentNumber.MinValue)) / 20;
+            if (CurrentNumber.IsInteger)
+                step = MathF.Ceiling(step);
+
+            if (increase)
+                CurrentNumber.Add(step);
+            else
+                CurrentNumber.Add(-step);
+        }
+
         protected override void Update()
         {
             base.Update();
