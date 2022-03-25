@@ -8,7 +8,6 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
-using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osuTK;
 using osuTK.Graphics;
@@ -21,9 +20,36 @@ namespace Circle.Game.Graphics.UserInterface
     {
         private const float corner_radius = 5;
 
+        private CircleDropdownMenu menu;
+
+        public CircleDropdown()
+        {
+            menu = new CircleDropdownMenu();
+        }
+
+        public float? MaxWidth
+        {
+            get => menu.MaxWidth;
+            set
+            {
+                if (value != null)
+                    menu.MaxWidth = value.Value;
+            }
+        }
+
+        public float? MaxHeight
+        {
+            get => menu.MaxHeight;
+            set
+            {
+                if (value != null)
+                    menu.MaxHeight = value.Value;
+            }
+        }
+
         protected override DropdownHeader CreateHeader() => new CircleDropdownHeader();
 
-        protected override DropdownMenu CreateMenu() => new CircleDropdownMenu();
+        protected override DropdownMenu CreateMenu() => menu = new CircleDropdownMenu();
 
         #region CircleDropdownMenu
 

@@ -1,8 +1,6 @@
-﻿using System;
-using Circle.Game.Screens.Setting;
-using osu.Framework.Bindables;
-using osu.Framework.Graphics.Sprites;
-using osuTK.Graphics;
+﻿using Circle.Game.Screens.Setting;
+using Circle.Game.Utils;
+using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
@@ -10,15 +8,12 @@ namespace Circle.Game.Tests.Visual.UserInterface
     {
         public TestSceneSettingsDropdown()
         {
-            SettingsDropdown<Color4> dropdown;
-
-            Add(dropdown = new SettingsDropdown<Color4>
+            Add(new SettingsEnumDropdown<Color4Enum>
             {
+                Anchor = Anchor.TopCentre,
+                Origin = Anchor.TopCentre,
                 Text = "Red planet color",
             });
-
-            foreach (Color4 color in Enum.GetValues(typeof(Color4)))
-                dropdown.AddDropdownItem(color);
         }
     }
 }

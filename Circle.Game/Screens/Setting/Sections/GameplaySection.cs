@@ -1,10 +1,7 @@
 ﻿using Circle.Game.Configuration;
-using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Utils;
 using osu.Framework.Allocation;
-using osu.Framework.Configuration;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
-using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Setting.Sections
 {
@@ -17,17 +14,19 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new SettingsDropdown<Color4>
+                new SettingsEnumDropdown<Color4Enum>
                 {
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
-                    Text = "Red planet color"
+                    Text = "Red planet color",
+                    Current = localConfig.GetBindable<Color4Enum>(CircleSetting.PlanetRed)
                 },
-                new SettingsDropdown<Color4>
+                new SettingsEnumDropdown<Color4Enum>
                 {
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
-                    Text = "Blue planet color"
+                    Text = "Blue planet color",
+                    Current = localConfig.GetBindable<Color4Enum>(CircleSetting.PlanetBlue)
                 }
             });
         }

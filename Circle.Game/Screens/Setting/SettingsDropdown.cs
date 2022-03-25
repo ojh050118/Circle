@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Circle.Game.Graphics.UserInterface;
+using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -23,6 +25,8 @@ namespace Circle.Game.Screens.Setting
             get => dropdown?.Items;
             set => dropdown.Items = value;
         }
+
+        public Bindable<T> Current;
 
         private readonly SpriteText text;
         private readonly CircleDropdown<T> dropdown;
@@ -60,11 +64,19 @@ namespace Circle.Game.Screens.Setting
                         },
                         dropdown = new CircleDropdown<T>
                         {
-                            RelativeSizeAxes = Axes.X
+                            RelativeSizeAxes = Axes.X,
+                            MaxHeight = 200,
                         }
                     }
                 }
             };
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            if (Current != null)
+                dropdown.Current.BindTo(Current);
         }
 
         public void AddDropdownItem(T value) => dropdown.AddDropdownItem(value);

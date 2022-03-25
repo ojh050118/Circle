@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using Circle.Game.Utils;
 using osu.Framework.Configuration;
 using osu.Framework.Configuration.Tracking;
 using osu.Framework.Platform;
-using osuTK.Graphics;
 
 namespace Circle.Game.Configuration
 {
@@ -23,8 +23,8 @@ namespace Circle.Game.Configuration
             SetDefault(CircleSetting.LoadBeatmapsOnStartup, true);
             SetDefault(CircleSetting.BlurVisibility, true);
             SetDefault(CircleSetting.Parallax, true);
-            SetDefault(CircleSetting.PlanetRed, Color4.Red);
-            SetDefault(CircleSetting.PlanetBlue, Color4.DeepSkyBlue);
+            SetDefault(CircleSetting.PlanetRed, Color4Enum.Red);
+            SetDefault(CircleSetting.PlanetBlue, Color4Enum.DeepSkyBlue);
         }
 
         public override TrackedSettings CreateTrackedSettings()
