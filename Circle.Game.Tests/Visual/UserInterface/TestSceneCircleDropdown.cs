@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Circle.Game.Graphics.UserInterface;
+using osu.Framework.Graphics;
+using osuTK;
+
+namespace Circle.Game.Tests.Visual.UserInterface
+{
+    public class TestSceneCircleDropdown : CircleTestScene
+    {
+        public TestSceneCircleDropdown()
+        {
+            Add(new CircleEnumDropdown<TestEnum>
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Width = 400
+            });
+        }
+
+        private enum TestEnum
+        {
+            Enum1,
+            Enum2,
+            Enum3,
+            Enum4,
+            Enum5
+        }
+    }
+}

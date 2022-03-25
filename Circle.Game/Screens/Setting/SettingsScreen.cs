@@ -56,6 +56,7 @@ namespace Circle.Game.Screens.Setting
                                     {
                                         new AudioSection(),
                                         new GraphicsSection(),
+                                        new GameplaySection(),
                                         new MaintenanceSection(),
                                         new DebugSection()
                                     }
