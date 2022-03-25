@@ -24,7 +24,7 @@ namespace Circle.Game.Tests.Visual.Overlays
             AddStep("Restart", music.RestartTrack);
             AddLabel("tracks");
 
-            foreach (var bi in beatmaps.GetBeatmapInfos())
+            foreach (var bi in beatmaps.GetAvailableResources())
             {
                 AddStep($"{bi.Beatmap.Settings.SongFileName}", () => music.ChangeTrack(bi));
             }

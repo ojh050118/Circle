@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Circle.Game.IO.Archives;
 using Newtonsoft.Json;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
@@ -36,6 +37,17 @@ namespace Circle.Game.Beatmaps
         public Stream GetStream(string name) => localStore.GetStream(name);
 
         public IEnumerable<string> GetAvailableResources() => localStore.GetAvailableResources();
+
+        public BeatmapInfo Open(string name)
+        {
+            // Todo: .circle 파일을 찾아 열고 비디오, 배경, 음악 파일 이름을 저장합니다.
+            // Todo: 스트림을 가져와 BeatmapInfo에 저장하는 방법
+            using (var reader = new ZipArchiveReader(GetStream(name)))
+            {
+            }
+
+            return null;
+        }
 
         public BeatmapInfo[] GetBeatmapInfos()
         {
