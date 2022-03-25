@@ -16,7 +16,7 @@ namespace Circle.Game.Graphics.UserInterface
         private Sample hoverSample;
         private Sample clickSample;
 
-        private bool useBackground;
+        private readonly bool useBackground;
 
         protected new Container Content;
 
