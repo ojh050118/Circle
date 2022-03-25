@@ -60,7 +60,6 @@ namespace Circle.Game.Screens.Select
                         }
                     }
                 },
-                
             };
 
             if (beatmapManager.LoadedBeatmaps == null)
