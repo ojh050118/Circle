@@ -3,18 +3,18 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osuTK.Graphics;
 
-namespace Circle.Game.Tests.Visual.Object
+namespace Circle.Game.Tests.Visual.Objects
 {
-    public class TestSceneBasicTile : CircleTestScene
+    public class TestSceneCircularTile : CircleTestScene
     {
-        public TestSceneBasicTile()
+        public TestSceneCircularTile()
         {
             Add(new Box
             {
                 RelativeSizeAxes = Axes.Both,
                 Colour = Color4.Black
             });
-            Add(new BasicTile
+            Add(new CircularTile
             {
                 Anchor = Anchor.Centre,
             });

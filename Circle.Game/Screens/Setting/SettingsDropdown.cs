@@ -61,6 +61,7 @@ namespace Circle.Game.Screens.Setting
                         text = new SpriteText
                         {
                             Font = FontUsage.Default.With(size: 22),
+                            Truncate = true,
                         },
                         dropdown = new CircleDropdown<T>
                         {

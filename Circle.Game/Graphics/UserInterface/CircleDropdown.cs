@@ -20,12 +20,9 @@ namespace Circle.Game.Graphics.UserInterface
     {
         private const float corner_radius = 5;
 
+#pragma warning disable CS8618
         private CircleDropdownMenu menu;
-
-        public CircleDropdown()
-        {
-            menu = new CircleDropdownMenu();
-        }
+#pragma warning restore CS8618
 
         public float? MaxWidth
         {
@@ -76,8 +73,8 @@ namespace Circle.Game.Graphics.UserInterface
             private void load(AudioManager audio)
             {
                 BackgroundColour = Color4.Black.Opacity(0.4f);
-                HoverColour = Color4.Gray.Opacity(0.4f);
-                SelectionColour = Color4.DarkGray.Opacity(0.8f);
+                HoverColour = Color4.DeepSkyBlue.Opacity(0.6f);
+                SelectionColour = Color4.DeepSkyBlue.Opacity(0.8f);
 
                 sampleOpen = audio.Samples.Get(@"overlay-pop-in");
                 sampleClose = audio.Samples.Get(@"overlay-pop-out");
