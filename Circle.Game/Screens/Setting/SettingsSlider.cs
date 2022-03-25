@@ -8,8 +8,11 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Input.Events;
+using osu.Framework.Input.States;
 using osuTK;
 using osuTK.Graphics;
+using osuTK.Input;
 
 namespace Circle.Game.Screens.Setting
 {
@@ -22,24 +25,24 @@ namespace Circle.Game.Screens.Setting
             set => text.Text = value;
         }
 
-        private CircleSliderBar<T> circleSliderBar { get; }
+        private CircleSliderBar<T> sliderBar { get; }
 
         public Bindable<T> Current
         {
-            get => circleSliderBar.Current;
-            set => circleSliderBar.Current = value;
+            get => sliderBar.Current;
+            set => sliderBar.Current = value;
         }
 
         public float KeyboardStep
         {
-            get => circleSliderBar.KeyboardStep;
-            set => circleSliderBar.KeyboardStep = value;
+            get => sliderBar.KeyboardStep;
+            set => sliderBar.KeyboardStep = value;
         }
 
         public bool TransferValueOnCommit
         {
-            get => circleSliderBar.TransferValueOnCommit;
-            set => circleSliderBar.TransferValueOnCommit = value;
+            get => sliderBar.TransferValueOnCommit;
+            set => sliderBar.TransferValueOnCommit = value;
         }
 
         public IconUsage LeftIcon
@@ -54,8 +57,8 @@ namespace Circle.Game.Screens.Setting
             set => rightIcon.Icon = value;
         }
 
-        private readonly SpriteIcon leftIcon;
-        private readonly SpriteIcon rightIcon;
+        private readonly IconButton leftIcon;
+        private readonly IconButton rightIcon;
         private readonly SpriteText text;
 
         [Resolved]
@@ -80,47 +83,63 @@ namespace Circle.Game.Screens.Setting
                     RelativeSizeAxes = Axes.Both,
                     Alpha = 0.2f
                 },
-                text = new SpriteText
+                new GridContainer
                 {
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft,
-                    Font = FontUsage.Default.With(size: 22),
-                    Margin = new MarginPadding { Left = 20 },
-                    Truncate = true,
-                },
-                new Container
-                {
-                    Anchor = Anchor.CentreRight,
-                    Origin = Anchor.CentreRight,
                     RelativeSizeAxes = Axes.Both,
-                    Margin = new MarginPadding { Right = 20 },
-                    Width = 0.5f,
-                    Children = new Drawable[]
+                    RowDimensions = new[]
                     {
-                        leftIcon = new SpriteIcon
+                        new Dimension(),
+                        new Dimension(GridSizeMode.Relative),
+                    },
+                    Content = new[]
+                    {
+                        new Drawable[]
                         {
-                            Anchor = Anchor.CentreLeft,
-                            Origin = Anchor.CentreLeft,
-                            Size = new Vector2(25),
-                        },
-                        rightIcon = new SpriteIcon
-                        {
-                            Anchor = Anchor.CentreRight,
-                            Origin = Anchor.CentreRight,
-                            Size = new Vector2(25),
-                        },
-                        new Container
-                        {
-                            Anchor = Anchor.Centre,
-                            Origin = Anchor.Centre,
-                            Padding = new MarginPadding { Horizontal = 50 },
-                            RelativeSizeAxes = Axes.X,
-                            AutoSizeAxes = Axes.Y,
-                            Child = circleSliderBar = new CircleSliderBar<T>
+                            text = new SpriteText
                             {
-                                Anchor = Anchor.Centre,
-                                Origin = Anchor.Centre,
-                                RelativeSizeAxes = Axes.X,
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
+                                Font = FontUsage.Default.With(size: 22),
+                                Padding = new MarginPadding { Left = 20 },
+                                Truncate = true,
+                            },
+                            new Container
+                            {
+                                Anchor = Anchor.CentreRight,
+                                Origin = Anchor.CentreRight,
+                                RelativeSizeAxes = Axes.Both,
+                                Padding = new MarginPadding { Right = 20 },
+                                Children = new Drawable[]
+                                {
+                                    leftIcon = new IconButton
+                                    {
+                                        Anchor = Anchor.CentreLeft,
+                                        Origin = Anchor.CentreLeft,
+                                        Size = new Vector2(30),
+                                        Action = () => sliderBar.Commit(false)
+                                    },
+                                    rightIcon = new IconButton
+                                    {
+                                        Anchor = Anchor.CentreRight,
+                                        Origin = Anchor.CentreRight,
+                                        Size = new Vector2(30),
+                                        Action = () => sliderBar.Commit(true)
+                                    },
+                                    new Container
+                                    {
+                                        Anchor = Anchor.Centre,
+                                        Origin = Anchor.Centre,
+                                        Padding = new MarginPadding { Horizontal = 50 },
+                                        RelativeSizeAxes = Axes.X,
+                                        AutoSizeAxes = Axes.Y,
+                                        Child = sliderBar = new CircleSliderBar<T>
+                                        {
+                                            Anchor = Anchor.Centre,
+                                            Origin = Anchor.Centre,
+                                            RelativeSizeAxes = Axes.X,
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -132,7 +151,7 @@ namespace Circle.Game.Screens.Setting
         {
             base.LoadComplete();
 
-            circleSliderBar.Current.ValueChanged += _ => localConfig.LoadInto(trackedSettings);
+            sliderBar.Current.ValueChanged += _ => localConfig.LoadInto(trackedSettings);
         }
     }
 }

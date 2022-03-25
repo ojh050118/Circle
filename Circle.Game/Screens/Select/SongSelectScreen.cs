@@ -6,6 +6,7 @@ using Circle.Game.Overlays;
 using Circle.Game.Screens.Play;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
 
@@ -36,20 +37,30 @@ namespace Circle.Game.Screens.Select
             InternalChildren = new Drawable[]
             {
                 new ScreenHeader(this),
-                details = new BeatmapDetails
+                new GridContainer
                 {
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft,
-                    Padding = new MarginPadding { Top = 130, Bottom = 65 },
-                    Margin = new MarginPadding { Left = 80 },
-                    Width = 0.5f
+                    RelativeSizeAxes = Axes.Both,
+                    Content = new[]
+                    {
+                        new Drawable[]
+                        {
+                            details = new BeatmapDetails
+                            {
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
+                                Padding = new MarginPadding { Left = 80, Top = 130, Bottom = 65 },
+                            },
+                            carousel = new BeatmapCarousel
+                            {
+                                Anchor = Anchor.CentreRight,
+                                Origin = Anchor.CentreRight,
+                                Padding = new MarginPadding { Left = 40 },
+                                Depth = 1
+                            }
+                        }
+                    }
                 },
-                carousel = new BeatmapCarousel
-                {
-                    Width = 0.4f,
-                    Anchor = Anchor.CentreRight,
-                    Origin = Anchor.CentreRight,
-                }
+                
             };
 
             if (beatmapManager.LoadedBeatmaps == null)

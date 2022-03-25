@@ -11,7 +11,7 @@ using osuTK;
 
 namespace Circle.Game.Screens.Select
 {
-    public class BeatmapCarousel : CompositeDrawable
+    public class BeatmapCarousel : Container
     {
         protected CarouselScrollContainer Scroll;
 

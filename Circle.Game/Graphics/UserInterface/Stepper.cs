@@ -56,7 +56,7 @@ namespace Circle.Game.Graphics.UserInterface
         {
             Masking = true;
             RelativeSizeAxes = Axes.X;
-            AutoSizeAxes = Axes.Y;
+            Height = 40;
             Children = new Drawable[]
             {
                 new Box
@@ -65,46 +65,59 @@ namespace Circle.Game.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                     Alpha = 0.2f
                 },
-                new SpriteText
+                new GridContainer
                 {
-                    Text = Text,
-                    Anchor = Anchor.CentreLeft,
-                    Origin = Anchor.CentreLeft,
-                    Margin = new MarginPadding { Left = 20 },
-                    Font = FontUsage.Default.With(size: 22),
-                    Truncate = true
-                },
-                new Container
-                {
-                    Margin = new MarginPadding { Right = 20 },
-                    Anchor = Anchor.CentreRight,
-                    Origin = Anchor.CentreRight,
-                    RelativeSizeAxes = Axes.X,
-                    Height = 40,
-                    Width = 0.5f,
-                    Children = new Drawable[]
+                    RelativeSizeAxes = Axes.Both,
+                    RowDimensions = new[]
                     {
-                        new IconButton
+                        new Dimension(),
+                        new Dimension(GridSizeMode.Relative)
+                    },
+                    Content = new[]
+                    {
+                        new Drawable[]
                         {
-                            Anchor = Anchor.CentreLeft,
-                            Origin = Anchor.CentreLeft,
-                            Icon = FontAwesome.Solid.AngleLeft,
-                            Action = SelectPrevious,
-                            Size = new Vector2(30)
-                        },
-                        new IconButton
-                        {
-                            Anchor = Anchor.CentreRight,
-                            Origin = Anchor.CentreRight,
-                            Icon = FontAwesome.Solid.AngleRight,
-                            Action = SelectNext,
-                            Size = new Vector2(30)
-                        },
-                        text = new SpriteText
-                        {
-                            Anchor = Anchor.Centre,
-                            Origin = Anchor.Centre,
-                            Font = FontUsage.Default.With(size: 22),
+                            new SpriteText
+                            {
+                                Text = Text,
+                                Anchor = Anchor.CentreLeft,
+                                Origin = Anchor.CentreLeft,
+                                Padding = new MarginPadding { Left = 20 },
+                                Font = FontUsage.Default.With(size: 22),
+                                Truncate = true
+                            },
+                            new Container
+                            {
+                                Padding = new MarginPadding { Right = 20 },
+                                Anchor = Anchor.CentreRight,
+                                Origin = Anchor.CentreRight,
+                                RelativeSizeAxes = Axes.Both,
+                                Children = new Drawable[]
+                                {
+                                    new IconButton
+                                    {
+                                        Anchor = Anchor.CentreLeft,
+                                        Origin = Anchor.CentreLeft,
+                                        Icon = FontAwesome.Solid.AngleLeft,
+                                        Action = SelectPrevious,
+                                        Size = new Vector2(30)
+                                    },
+                                    new IconButton
+                                    {
+                                        Anchor = Anchor.CentreRight,
+                                        Origin = Anchor.CentreRight,
+                                        Icon = FontAwesome.Solid.AngleRight,
+                                        Action = SelectNext,
+                                        Size = new Vector2(30)
+                                    },
+                                    text = new SpriteText
+                                    {
+                                        Anchor = Anchor.Centre,
+                                        Origin = Anchor.Centre,
+                                        Font = FontUsage.Default.With(size: 22),
+                                    }
+                                }
+                            }
                         }
                     }
                 },
