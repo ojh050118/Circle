@@ -61,10 +61,10 @@ namespace Circle.Game.Configuration
                         value: $"{blur}"
                     )
                 ),
-                new TrackedSetting<bool>(CircleSetting.Parallax, papallax => new SettingDescription(
-                        rawValue: papallax,
+                new TrackedSetting<bool>(CircleSetting.Parallax, parallax => new SettingDescription(
+                        rawValue: parallax,
                         name: "Parallax",
-                        value: $"{papallax}"
+                        value: $"{parallax}"
                     )
                 )
             };
