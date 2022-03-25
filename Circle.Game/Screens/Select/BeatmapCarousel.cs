@@ -17,7 +17,7 @@ namespace Circle.Game.Screens.Select
 
         private SelectionCycleFillFlowContainer<CarouselItem> carouselItems;
 
-        public int Count => carouselItems.Count;
+        public int ItemCount => carouselItems.Count;
 
         public Bindable<CarouselItem> SelectedItem { get; private set; } = new Bindable<CarouselItem>();
 
@@ -61,6 +61,7 @@ namespace Circle.Game.Screens.Select
         public void Select(BeatmapInfo info)
         {
             var item = carouselItems.FirstOrDefault(i => i.BeatmapInfo.Equals(info));
+
             if (item == null)
                 return;
 

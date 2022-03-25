@@ -54,7 +54,7 @@ namespace Circle.Game.Screens.Select
                             {
                                 Anchor = Anchor.CentreRight,
                                 Origin = Anchor.CentreRight,
-                                Padding = new MarginPadding { Left = 40 },
+                                Padding = new MarginPadding { Left = 60 },
                                 Depth = 1
                             }
                         }
