@@ -57,7 +57,7 @@ namespace Circle.Game.Graphics.UserInterface
             private Sample? sampleOpen;
             private Sample? sampleClose;
 
-            // todo: this uses the same styling as OsuMenu. hopefully we can just use OsuMenu in the future with some refactoring
+            // todo: this uses the same styling as CircleMenu. hopefully we can just use CircleMenu in the future with some refactoring
             public CircleDropdownMenu()
             {
                 CornerRadius = corner_radius;
@@ -65,7 +65,7 @@ namespace Circle.Game.Graphics.UserInterface
                 MaskingContainer.CornerRadius = corner_radius;
                 Alpha = 0;
 
-                // todo: this uses the same styling as OsuMenu. hopefully we can just use OsuMenu in the future with some refactoring
+                // todo: this uses the same styling as CircleMenu. hopefully we can just use CircleMenu in the future with some refactoring
                 ItemsContainer.Padding = new MarginPadding(5);
             }
 
@@ -76,8 +76,8 @@ namespace Circle.Game.Graphics.UserInterface
                 HoverColour = Color4.DeepSkyBlue.Opacity(0.6f);
                 SelectionColour = Color4.DeepSkyBlue.Opacity(0.8f);
 
-                sampleOpen = audio.Samples.Get(@"overlay-pop-in");
-                sampleClose = audio.Samples.Get(@"overlay-pop-out");
+                sampleOpen = audio.Samples.Get(@"dropdown-open");
+                sampleClose = audio.Samples.Get(@"dropdown-close");
             }
 
             // todo: this shouldn't be required after https://github.com/ppy/osu-framework/issues/4519 is fixed.

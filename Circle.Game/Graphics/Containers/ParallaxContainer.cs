@@ -21,7 +21,7 @@ namespace Circle.Game.Graphics.Containers
 
         private Bindable<bool> parallaxEnabled;
 
-        private const float parallax_duration = 100;
+        private const float parallax_duration = 1000;
 
         private bool firstUpdate = true;
 
