@@ -13,8 +13,6 @@ namespace Circle.Game.Graphics.UserInterface
 {
     internal class CircleDirectorySelectorDirectory : DirectorySelectorDirectory
     {
-        private Box hover;
-
         public CircleDirectorySelectorDirectory(DirectoryInfo directory, string displayName = null)
             : base(directory, displayName)
         {
@@ -32,13 +30,6 @@ namespace Circle.Game.Graphics.UserInterface
             {
                 new Background
                 {
-                    Depth = 2
-                },
-                hover = new Box
-                {
-                    Colour = Color4.White,
-                    RelativeSizeAxes = Axes.Both,
-                    Alpha = 0,
                     Depth = 1
                 }
             });
@@ -50,31 +41,33 @@ namespace Circle.Game.Graphics.UserInterface
             ? FontAwesome.Solid.Database
             : FontAwesome.Regular.Folder;
 
-        protected override bool OnHover(HoverEvent e)
-        {
-            hover.FadeTo(0.25f, 250, Easing.OutQuint);
-
-            return base.OnHover(e);
-        }
-
-        protected override void OnHoverLost(HoverLostEvent e)
-        {
-            base.OnHoverLost(e);
-
-            hover.FadeTo(0, 500, Easing.OutQuint);
-        }
-
         internal class Background : CompositeDrawable
         {
+            private Box box;
+
             [BackgroundDependencyLoader]
             private void load()
             {
                 RelativeSizeAxes = Axes.Both;
-                InternalChild = new Box
+                InternalChild = box = new Box
                 {
                     Colour = Color4.Black.Opacity(0.4f),
                     RelativeSizeAxes = Axes.Both,
                 };
+            }
+
+            protected override bool OnHover(HoverEvent e)
+            {
+                box.FadeColour(Color4.Gray.Opacity(0.4f), 250, Easing.OutQuint);
+
+                return base.OnHover(e);
+            }
+
+            protected override void OnHoverLost(HoverLostEvent e)
+            {
+                base.OnHoverLost(e);
+
+                box.FadeColour(Color4.Black.Opacity(0.4f), 250, Easing.OutQuint);
             }
         }
     }

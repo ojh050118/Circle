@@ -1,11 +1,11 @@
-﻿using osu.Framework.Graphics;
+﻿using Circle.Game.Utils;
+using osu.Framework.Allocation;
+using osu.Framework.Bindables;
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using Shape = osu.Framework.Graphics.Shapes;
 using osuTK;
 using osuTK.Graphics;
-using osu.Framework.Bindables;
-using Circle.Game.Utils;
-using osu.Framework.Allocation;
+using Shape = osu.Framework.Graphics.Shapes;
 
 namespace Circle.Game.Rulesets.Objects
 {

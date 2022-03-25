@@ -3,11 +3,8 @@ using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
-using osu.Framework.Input.Events;
-using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -38,8 +35,6 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected class CircleDirectoryListingFile : DirectoryListingFile
         {
-            private Box hover;
-
             public CircleDirectoryListingFile(FileInfo file)
                 : base(file)
             {
@@ -57,30 +52,9 @@ namespace Circle.Game.Graphics.UserInterface
                 {
                     new CircleDirectorySelectorDirectory.Background
                     {
-                        Depth = 2
-                    },
-                    hover = new Box
-                    {
-                        Colour = Color4.White,
-                        RelativeSizeAxes = Axes.Both,
-                        Alpha = 0,
                         Depth = 1
                     }
                 });
-            }
-
-            protected override bool OnHover(HoverEvent e)
-            {
-                hover.FadeTo(0.25f, 250, Easing.OutQuint);
-
-                return base.OnHover(e);
-            }
-
-            protected override void OnHoverLost(HoverLostEvent e)
-            {
-                base.OnHoverLost(e);
-
-                hover.FadeTo(0, 500, Easing.OutQuint);
             }
 
             protected override IconUsage? Icon

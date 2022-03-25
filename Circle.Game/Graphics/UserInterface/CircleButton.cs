@@ -12,7 +12,7 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class CircleButton : ClickableContainer
     {
-        private readonly Box hover;
+        private readonly Box box;
         private Sample hoverSample;
         private Sample clickSample;
 
@@ -33,20 +33,11 @@ namespace Circle.Game.Graphics.UserInterface
                 RelativeSizeAxes = Axes.Both,
                 Masking = true,
                 CornerRadius = 5,
-                Children = new Drawable[]
+                Child = box = new Box
                 {
-                    new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Colour = Color4.Black.Opacity(0.4f),
-                        Alpha = useBackground ? 1 : 0
-                    },
-                    hover = new Box
-                    {
-                        Colour = Color4.White,
-                        RelativeSizeAxes = Axes.Both,
-                        Alpha = 0
-                    }
+                    RelativeSizeAxes = Axes.Both,
+                    Colour = Color4.Black.Opacity(0.4f),
+                    Alpha = useBackground ? 1 : 0
                 }
             };
         }
@@ -62,7 +53,7 @@ namespace Circle.Game.Graphics.UserInterface
         protected override bool OnHover(HoverEvent e)
         {
             hoverSample?.Play();
-            hover.FadeTo(0.25f, 250, Easing.OutQuint);
+            box.FadeColour(Color4.Gray.Opacity(0.4f), 250, Easing.OutQuint);
 
             return base.OnHover(e);
         }
@@ -71,7 +62,8 @@ namespace Circle.Game.Graphics.UserInterface
         {
             base.OnHoverLost(e);
 
-            hover.FadeTo(0, 500, Easing.OutQuint);
+            box.FadeColour(Color4.Black.Opacity(0.4f), 500, Easing.OutQuint);
+
         }
 
         protected override bool OnMouseDown(MouseDownEvent e)
