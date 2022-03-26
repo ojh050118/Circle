@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using osu.Framework.Extensions.Color4Extensions;
+﻿using osu.Framework.Extensions.Color4Extensions;
 using osuTK.Graphics;
 
 namespace Circle.Game.Graphics
