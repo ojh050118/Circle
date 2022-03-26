@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Input;
 using osu.Framework;
@@ -92,7 +93,7 @@ namespace Circle.Game.Overlays.Volume
         }
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
+        private void load(AudioManager audio, CircleColour colours)
         {
             sampleHover = audio.Samples.Get("button-hover");
             Children = new Drawable[]
@@ -130,7 +131,7 @@ namespace Circle.Game.Overlays.Volume
                                 Anchor = Anchor.Centre,
                                 Origin = Anchor.Centre,
                                 RelativeSizeAxes = Axes.Both,
-                                Colour = Color4.Black.Opacity(0.4f),
+                                Colour = colours.TransparentBlack,
                                 InnerRadius = inner_radius,
                                 Current = new Bindable<double>(1)
                             }
