@@ -12,6 +12,9 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
+    /// <summary>
+    /// 방향으로 값을 바꿀 수있는 컨트롤.
+    /// </summary>
     public class Stepper<T> : Container
     {
         /// <summary>
@@ -19,10 +22,8 @@ namespace Circle.Game.Graphics.UserInterface
         /// </summary>
         public string Text { get; set; }
 
-        //private Container<StepperItem<T>> items;
-
         /// <summary>
-        /// 아이템들.
+        /// <see cref="Stepper{T}"/>의 모든 <see cref="StepperItem{T}"/>의 리스트입니다.
         /// </summary>
         public IReadOnlyList<StepperItem<T>> Items;
 
@@ -34,15 +35,11 @@ namespace Circle.Game.Graphics.UserInterface
 
         public T Selected => (selectedIndex >= 0 && selectedIndex < Items.Count) ? Items[selectedIndex.Value].Value : default;
 
-        /// <summary>
-        /// 방향으로 값을 바꿀 수있는 컨트롤.
-        /// </summary>
-        public Stepper(T current = default)
+        public Stepper()
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             CornerRadius = 5;
-            Current.Value = current;
         }
 
         [BackgroundDependencyLoader]

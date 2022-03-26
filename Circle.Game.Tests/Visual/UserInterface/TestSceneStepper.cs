@@ -1,5 +1,6 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 
@@ -37,11 +38,12 @@ namespace Circle.Game.Tests.Visual.UserInterface
                                 new StepperItem<int>(3),
                             }
                         },
-                        stringStepper = new Stepper<string>("string2")
+                        stringStepper = new Stepper<string>
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
                             Text = "string stepper",
+                            Current = new Bindable<string>("String2"),
                             Items = new[]
                             {
                                 new StepperItem<string>("string1"),
