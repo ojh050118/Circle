@@ -136,8 +136,11 @@ namespace Circle.Game.Rulesets.Extensions
             // 소용돌이를 적용합니다.
             for (int i = 0; i < floor; i++)
             {
-                if (tilesInfo[i].Twirl)
-                    isClockwise = !isClockwise;
+                foreach (var action in tilesInfo[i].Action)
+                {
+                    if (action.EventType == EventType.Twirl)
+                        isClockwise = !isClockwise;
+                }
             }
 
             return isClockwise;
@@ -152,13 +155,15 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>현재bpm에서 승수가 적용된 값 또는 새로운 bpm.</returns>
         public static float GetNewBpm(TileInfo[] tilesInfo, float bpm, int floor)
         {
-            switch (tilesInfo[floor].SpeedType)
+            var speedAction = tilesInfo[floor].Action.FirstOrDefault(action => action.SpeedType.HasValue);
+
+            switch (speedAction.SpeedType)
             {
                 case SpeedType.Multiplier:
-                    return bpm * tilesInfo[floor].BpmMultiplier;
+                    return bpm * speedAction.BpmMultiplier;
 
                 case SpeedType.Bpm:
-                    return tilesInfo[floor].Bpm;
+                    return speedAction.BeatsPerMinute;
 
                 default:
                     return bpm;
@@ -288,49 +293,20 @@ namespace Circle.Game.Rulesets.Extensions
                 infos[floor] = new TileInfo
                 {
                     TileType = types[floor],
-                    Floor = floor,
                     Angle = types[floor] == TileType.Midspin ? GetAvailableAngle(convertedAngleData, floor) : convertedAngleData[floor],
-                    Position = tilePositions[floor],
+                    Position = tilePositions[floor]
                 };
-            }
 
-            foreach (var action in beatmap.Actions)
-            {
-                infos[action.Floor].EventType = action.EventType;
+                // 타일에 액션들을 추가합니다.
+                List<Actions> floorAction = new List<Actions>();
 
-                switch (action.EventType)
+                foreach (var action in beatmap.Actions)
                 {
-                    case EventType.Twirl:
-                        infos[action.Floor].Twirl = true;
-                        break;
-
-                    case EventType.SetSpeed:
-                        switch (action.SpeedType)
-                        {
-                            case SpeedType.Multiplier:
-                                infos[action.Floor].SpeedType = SpeedType.Multiplier;
-                                infos[action.Floor].BpmMultiplier = action.BpmMultiplier;
-                                break;
-
-                            case SpeedType.Bpm:
-                                infos[action.Floor].SpeedType = SpeedType.Bpm;
-                                infos[action.Floor].Bpm = action.BeatsPerMinute;
-                                break;
-                        }
-
-                        break;
-
-                    case EventType.SetPlanetRotation:
-                        infos[action.Floor].Easing = action.Ease;
-                        break;
-
-                    case EventType.MoveCamera:
-                        // Todo: 카메라 기능 추가
-                        break;
-
-                    case EventType.Other:
-                        break;
+                    if (floor == action.Floor)
+                        floorAction.Add(action);
                 }
+
+                infos[floor].Action = floorAction.ToArray();
             }
 
             return infos;

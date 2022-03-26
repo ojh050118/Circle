@@ -58,12 +58,17 @@ namespace Circle.Game.Beatmaps
     public struct Actions : IEquatable<Actions>
     {
         public int Floor { get; set; }
-        public EventType EventType { get; set; }
+        public EventType? EventType { get; set; }
         public SpeedType? SpeedType { get; set; }
         public float BeatsPerMinute { get; set; }
         public float BpmMultiplier { get; set; }
         public Relativity? RelativeTo { get; set; }
         public Easing Ease { get; set; }
+        public double Duration { get; set; }
+        public float Rotation { get; set; }
+        public float AngleOffset { get; set; }
+        public float[] Position { get; set; }
+        public int Zoom { get; set; }
 
         public bool Equals(Actions actions) => Floor == actions.Floor &&
                                                EventType == actions.EventType &&
@@ -71,7 +76,11 @@ namespace Circle.Game.Beatmaps
                                                Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute) &&
                                                Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier) &&
                                                RelativeTo == actions.RelativeTo &&
-                                               Ease == actions.Ease;
+                                               Ease == actions.Ease &&
+                                               Duration == actions.Duration &&
+                                               Rotation == actions.Rotation &&
+                                               AngleOffset == actions.AngleOffset &&
+                                               Zoom == actions.Zoom;
     }
 
     public enum EventType
