@@ -1,5 +1,7 @@
-﻿using Circle.Game.Graphics.UserInterface;
+﻿using Circle.Game.Beatmaps;
+using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
+using Circle.Game.Overlays;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -25,6 +27,12 @@ namespace Circle.Game.Screens
 
         [Resolved]
         private Background background { get; set; }
+
+        [Resolved]
+        private ImportOverlay importOverlay { get; set; }
+
+        [Resolved]
+        private BeatmapManager beatmapManager { get; set; }
 
         public CircleScreen()
         {
@@ -84,10 +92,24 @@ namespace Circle.Game.Screens
 
         public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
         {
-            if (e.Action == InputAction.Back && !BlockExit)
+            switch (e.Action)
             {
-                OnExit();
-                return true;
+                case InputAction.ToggleImportOverlay:
+                    importOverlay.ToggleVisibility();
+                    return true;
+
+                case InputAction.ReloadBeatmap:
+                    beatmapManager.ReloadBeatmaps();
+                    return true;
+
+                case InputAction.Back:
+                    if (!BlockExit)
+                    {
+                        OnExit();
+                        return true;
+                    }
+
+                    return false;
             }
 
             return false;

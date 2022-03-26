@@ -14,6 +14,8 @@
         DecreaseVolume,
         NextVolumeMeter,
         PreviousVolumeMeter,
-        Select
+        Select,
+        ToggleImportOverlay,
+        ReloadBeatmap
     }
 }

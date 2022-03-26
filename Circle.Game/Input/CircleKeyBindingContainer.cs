@@ -33,6 +33,8 @@ namespace Circle.Game.Input
             new KeyBinding(InputKey.Enter, InputAction.Select),
             new KeyBinding(InputKey.KeypadEnter, InputAction.Select),
             new KeyBinding(InputKey.Space, InputAction.Select),
+            new KeyBinding(new[] { InputKey.Control, InputKey.I }, InputAction.ToggleImportOverlay),
+            new KeyBinding(new[] { InputKey.Control, InputKey.R }, InputAction.ReloadBeatmap),
         };
 
         public CircleKeyBindingContainer(CircleGameBase game)
