@@ -8,7 +8,7 @@ namespace Circle.Game.Rulesets.Objects
 {
     public abstract class Tile : Container, IHasTileInfo
     {
-        public Actions[] Action { get; set; }
+        public Actions[] Action { get; set; } = new Actions[0];
 
         public TileType TileType { get; }
 
