@@ -1,10 +1,6 @@
 ﻿using System;
-using Circle.Game.Configuration;
 using Circle.Game.Graphics.Containers;
 using osu.Framework;
-using osu.Framework.Allocation;
-using osu.Framework.Configuration;
-using osu.Framework.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -12,11 +8,8 @@ namespace Circle.Game.Graphics.UserInterface
     ///
     /// </summary>
     /// <typeparam name="T">CS0453</typeparam>
-    public class StepperItem<T> : Component, IStateful<SelectionState>
+    public class StepperItem<T> : IStateful<SelectionState>
     {
-        /// <summary>
-        /// 값을 올바르게 할당해야합니다. 값이 같은 아이템이 있으면 올바른 작동을 하지 않을 수 있습니다.
-        /// </summary>
         public T Value { get; set; }
 
         /// <summary>
@@ -25,15 +18,9 @@ namespace Circle.Game.Graphics.UserInterface
         public Action Action { get; }
 
         /// <summary>
-        /// 임의로 값을 표시할 수 있습니다.
+        /// <see cref="Stepper{T}"/>에 표시할 텍스트 입니다.
         /// </summary>
-        public string Text;
-
-        [Resolved]
-        private CircleConfigManager localConfig { get; set; }
-
-        [Resolved]
-        private FrameworkConfigManager config { get; set; }
+        public string Text { get; set; }
 
         private SelectionState state;
 
@@ -53,25 +40,18 @@ namespace Circle.Game.Graphics.UserInterface
 
         public event Action<SelectionState> StateChanged;
 
-        public StepperItem(T value, Action selected = null, string text = null)
+        public StepperItem(T value, Action selected = null)
         {
             Value = value;
             Action += selected;
-            Text = text ?? value.ToString();
+            Text = value.ToString();
         }
 
-        public StepperItem(CircleSetting lookup, T value, string text = null)
+        public StepperItem(string text, T value, Action selected = null)
         {
+            Text = text;
             Value = value;
-            Action += () => localConfig.SetValue(lookup, value);
-            Text = text ?? value.ToString();
-        }
-
-        public StepperItem(FrameworkSetting lookup, T value, string text = null)
-        {
-            Value = value;
-            Action += () => config.SetValue(lookup, value);
-            Text = text ?? value.ToString();
+            Action += selected;
         }
 
         private void stateChanged(SelectionState state)

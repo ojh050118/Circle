@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Circle.Game.Configuration;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
-using osu.Framework.Configuration.Tracking;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -14,31 +14,25 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class Stepper<T> : Container
     {
-        [Resolved]
-        private CircleConfigManager localConfig { get; set; }
-
-        [Resolved]
-        private TrackedSettings trackedSettings { get; set; }
-
         /// <summary>
         /// 이 설정이 무엇인지 표시합니다.
         /// </summary>
         public string Text { get; set; }
 
-        private Container<StepperItem<T>> items;
+        //private Container<StepperItem<T>> items;
 
         /// <summary>
         /// 아이템들.
         /// </summary>
-        public StepperItem<T>[] Items;
+        public IReadOnlyList<StepperItem<T>> Items;
 
         private SpriteText text;
 
-        private readonly T initialCurrent;
-
         private int? selectedIndex;
 
-        public T Selected => (selectedIndex >= 0 && selectedIndex < items.Count) ? Items[selectedIndex.Value].Value : default;
+        public Bindable<T> Current { get; set; } = new Bindable<T>();
+
+        public T Selected => (selectedIndex >= 0 && selectedIndex < Items.Count) ? Items[selectedIndex.Value].Value : default;
 
         /// <summary>
         /// 방향으로 값을 바꿀 수있는 컨트롤.
@@ -48,7 +42,7 @@ namespace Circle.Game.Graphics.UserInterface
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             CornerRadius = 5;
-            initialCurrent = current;
+            Current.Value = current;
         }
 
         [BackgroundDependencyLoader]
@@ -65,78 +59,79 @@ namespace Circle.Game.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                     Alpha = 0.2f
                 },
-                new GridContainer
+                new Container
                 {
+                    Padding = new MarginPadding { Horizontal = 20 },
                     RelativeSizeAxes = Axes.Both,
-                    RowDimensions = new[]
+                    Child = new GridContainer
                     {
-                        new Dimension(),
-                        new Dimension(GridSizeMode.Relative)
-                    },
-                    Content = new[]
-                    {
-                        new Drawable[]
+                        RelativeSizeAxes = Axes.Both,
+                        RowDimensions = new[]
                         {
-                            new SpriteText
+                            new Dimension(),
+                            new Dimension(GridSizeMode.Relative)
+                        },
+                        Content = new[]
+                        {
+                            new Drawable[]
                             {
-                                Text = Text,
-                                Anchor = Anchor.CentreLeft,
-                                Origin = Anchor.CentreLeft,
-                                Padding = new MarginPadding { Left = 20 },
-                                Font = FontUsage.Default.With(size: 22),
-                                Truncate = true
-                            },
-                            new Container
-                            {
-                                Padding = new MarginPadding { Right = 20 },
-                                Anchor = Anchor.CentreRight,
-                                Origin = Anchor.CentreRight,
-                                RelativeSizeAxes = Axes.Both,
-                                Children = new Drawable[]
+                                new SpriteText
                                 {
-                                    new IconButton
+                                    Text = Text,
+                                    Anchor = Anchor.CentreLeft,
+                                    Origin = Anchor.CentreLeft,
+                                    Padding = new MarginPadding { Right = 20 },
+                                    Font = FontUsage.Default.With(size: 22),
+                                    RelativeSizeAxes = Axes.X,
+                                    Truncate = true,
+                                },
+                                new Container
+                                {
+                                    Anchor = Anchor.CentreRight,
+                                    Origin = Anchor.CentreRight,
+                                    RelativeSizeAxes = Axes.Both,
+                                    Children = new Drawable[]
                                     {
-                                        Anchor = Anchor.CentreLeft,
-                                        Origin = Anchor.CentreLeft,
-                                        Icon = FontAwesome.Solid.AngleLeft,
-                                        Action = SelectPrevious,
-                                        Size = new Vector2(30)
-                                    },
-                                    new IconButton
-                                    {
-                                        Anchor = Anchor.CentreRight,
-                                        Origin = Anchor.CentreRight,
-                                        Icon = FontAwesome.Solid.AngleRight,
-                                        Action = SelectNext,
-                                        Size = new Vector2(30)
-                                    },
-                                    text = new SpriteText
-                                    {
-                                        Anchor = Anchor.Centre,
-                                        Origin = Anchor.Centre,
-                                        Font = FontUsage.Default.With(size: 22),
+                                        text = new SpriteText
+                                        {
+                                            Anchor = Anchor.Centre,
+                                            Origin = Anchor.Centre,
+                                            Font = FontUsage.Default.With(size: 22),
+                                            Truncate = true,
+                                        },
+                                        new IconButton
+                                        {
+                                            Anchor = Anchor.CentreLeft,
+                                            Origin = Anchor.CentreLeft,
+                                            Icon = FontAwesome.Solid.AngleLeft,
+                                            Action = SelectPrevious,
+                                            Size = new Vector2(30)
+                                        },
+                                        new IconButton
+                                        {
+                                            Anchor = Anchor.CentreRight,
+                                            Origin = Anchor.CentreRight,
+                                            Icon = FontAwesome.Solid.AngleRight,
+                                            Action = SelectNext,
+                                            Size = new Vector2(30)
+                                        },
                                     }
                                 }
                             }
                         }
                     }
-                },
-                items = new Container<StepperItem<T>>
-                {
-                    Name = "Stepper items",
-                    Children = Items
                 }
             };
-            Select(initialCurrent);
+            Select(Current.Value);
         }
 
         public void Select(T value)
         {
-            var item = items.FirstOrDefault(v => v.Value.Equals(value));
+            var item = Items.FirstOrDefault(v => v.Value.Equals(value));
             if (item == null)
                 return;
 
-            int newIndex = items.IndexOf(item);
+            int newIndex = Items.ToList().IndexOf(item);
 
             if (newIndex < 0)
                 setSelected(null);
@@ -147,14 +142,14 @@ namespace Circle.Game.Graphics.UserInterface
         public void SelectPrevious()
         {
             if (!selectedIndex.HasValue || selectedIndex == 0)
-                setSelected(items.Count - 1);
+                setSelected(Items.Count - 1);
             else
                 setSelected(selectedIndex - 1);
         }
 
         public void SelectNext()
         {
-            if (!selectedIndex.HasValue || selectedIndex == items.Count - 1)
+            if (!selectedIndex.HasValue || selectedIndex == Items.Count - 1)
                 setSelected(0);
             else
                 setSelected(selectedIndex + 1);
@@ -166,14 +161,14 @@ namespace Circle.Game.Graphics.UserInterface
                 return;
 
             if (selectedIndex.HasValue)
-                items[selectedIndex.Value].State = SelectionState.NotSelected;
+                Items[selectedIndex.Value].State = SelectionState.NotSelected;
 
             selectedIndex = index;
-            localConfig.LoadInto(trackedSettings);
+            Current.Value = Items[selectedIndex.Value].Value;
 
             if (selectedIndex.HasValue)
             {
-                items[selectedIndex.Value].State = SelectionState.Selected;
+                Items[selectedIndex.Value].State = SelectionState.Selected;
                 text.Text = Items[selectedIndex.Value].Text;
             }
         }

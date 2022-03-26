@@ -1,12 +1,12 @@
-using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics;
+using Circle.Game.Graphics.Containers;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Resources;
 using osu.Framework.Allocation;
-using osu.Framework.Configuration.Tracking;
+using osu.Framework.Bindables;
 using osu.Framework.Development;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -14,19 +14,16 @@ using osu.Framework.Graphics.Performance;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 using osu.Framework.Platform;
-using osuTK;
 
 namespace Circle.Game
 {
     public class CircleGameBase : osu.Framework.Game
     {
-        public Container<Drawable> ContentContainer;
+        public ScalingContainer ContentContainer;
 
         public bool IsDevelopmentBuild { get; }
 
         protected CircleConfigManager LocalConfig { get; private set; }
-
-        protected TrackedSettings TrackedSettings { get; set; }
 
         protected Storage Storage { get; set; }
 
@@ -83,7 +80,6 @@ namespace Circle.Game
             dependencies.CacheAs(Storage);
 
             dependencies.CacheAs(LocalConfig);
-            dependencies.CacheAs(TrackedSettings);
 
             dependencies.CacheAs(new CircleColour());
 
@@ -91,11 +87,11 @@ namespace Circle.Game
 
             dependencies.CacheAs(this);
 
-            ContentContainer = new DrawSizePreservingFillContainer
+            ContentContainer = new ScalingContainer
             {
-                TargetDrawSize = new Vector2(1366, 768),
                 Anchor = Anchor.Centre,
-                Origin = Anchor.Centre
+                Origin = Anchor.Centre,
+                RelativeSizeAxes = Axes.Both
             };
 
             AddInternal(MusicController);
@@ -107,7 +103,9 @@ namespace Circle.Game
         {
             base.LoadComplete();
 
-            applySettings();
+            var fpsDisplay = LocalConfig.GetBindable<bool>(CircleSetting.FpsDisplay);
+            fpsDisplay.BindValueChanged(fpsDisplayChanged, true);
+            FrameStatistics.ValueChanged += e => fpsDisplay.Value = e.NewValue != FrameStatisticsMode.None;
         }
 
         public override void SetHost(GameHost host)
@@ -116,10 +114,11 @@ namespace Circle.Game
 
             Storage ??= host.Storage;
             LocalConfig ??= new CircleConfigManager(Storage);
-            TrackedSettings = LocalConfig.CreateTrackedSettings();
-            LocalConfig.LoadInto(TrackedSettings);
+        }
 
-            TrackedSettings.SettingChanged += setTrackedSettingChange;
+        private void fpsDisplayChanged(ValueChangedEvent<bool> e)
+        {
+            FrameStatistics.Value = e.NewValue ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
         }
 
         public void GracefullyExit()
@@ -135,31 +134,6 @@ namespace Circle.Game
             base.Dispose(isDisposing);
 
             LocalConfig?.Dispose();
-        }
-
-        private void applySettings()
-        {
-            var scale = LocalConfig.Get<float>(CircleSetting.Scale);
-            var fpsDisplay = LocalConfig.Get<bool>(CircleSetting.FpsDisplay);
-
-            ContentContainer.ScaleTo(scale);
-            ContentContainer.ResizeTo(new Vector2(scale / (scale * scale)));
-            FrameStatistics.Value = fpsDisplay ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
-        }
-
-        private void setTrackedSettingChange(SettingDescription description)
-        {
-            switch (description.Name.ToString())
-            {
-                case "Scale":
-                    ContentContainer.ScaleTo((float)description.RawValue, 1000, Easing.OutPow10);
-                    ContentContainer.ResizeTo(new Vector2((float)((float)description.RawValue / Math.Pow((float)description.RawValue, 2))), 1000, Easing.OutPow10);
-                    break;
-
-                case "FpsDisplay":
-                    FrameStatistics.Value = (bool)description.RawValue ? FrameStatisticsMode.Minimal : FrameStatisticsMode.None;
-                    break;
-            }
         }
     }
 }

@@ -23,8 +23,8 @@ namespace Circle.Game.Screens.Setting.Sections
                     Text = "Load beatmaps on startup",
                     Items = new[]
                     {
-                        new StepperItem<bool>(CircleSetting.LoadBeatmapsOnStartup, true, "On"),
-                        new StepperItem<bool>(CircleSetting.LoadBeatmapsOnStartup, false, "Off")
+                        new StepperItem<bool>("On", true),
+                        new StepperItem<bool>("Off", false)
                     }
                 },
                 new BoxButton
