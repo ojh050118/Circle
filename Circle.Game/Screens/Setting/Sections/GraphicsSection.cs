@@ -17,44 +17,37 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new Stepper<WindowMode>(config.Get<WindowMode>(FrameworkSetting.WindowMode))
+                new EnumStepper<WindowMode>
                 {
                     Text = "Screen mode",
-                    Items = new[]
-                    {
-                        new StepperItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Windowed),
-                        new StepperItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Borderless),
-                        new StepperItem<WindowMode>(FrameworkSetting.WindowMode, WindowMode.Fullscreen)
-                    }
+                    Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode)
                 },
-                new Stepper<FrameSync>(config.Get<FrameSync>(FrameworkSetting.FrameSync))
+                new Stepper<FrameSync>
                 {
                     Text = "Frame limiter",
+                    Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
                     Items = new[]
                     {
-                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit2x, "2x"),
-                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit4x, "4x"),
-                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Limit8x, "8x"),
-                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.Unlimited),
-                        new StepperItem<FrameSync>(FrameworkSetting.FrameSync, FrameSync.VSync)
+                        new StepperItem<FrameSync>("2x", FrameSync.Limit2x),
+                        new StepperItem<FrameSync>("4x", FrameSync.Limit4x),
+                        new StepperItem<FrameSync>("8x", FrameSync.Limit8x),
+                        new StepperItem<FrameSync>(FrameSync.Unlimited),
+                        new StepperItem<FrameSync>(FrameSync.VSync)
                     }
                 },
-                new Stepper<ExecutionMode>(config.Get<ExecutionMode>(FrameworkSetting.ExecutionMode))
+                new EnumStepper<ExecutionMode>
                 {
                     Text = "Threading mode",
-                    Items = new[]
-                    {
-                        new StepperItem<ExecutionMode>(FrameworkSetting.ExecutionMode, ExecutionMode.MultiThreaded),
-                        new StepperItem<ExecutionMode>(FrameworkSetting.ExecutionMode, ExecutionMode.SingleThread)
-                    }
+                    Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode)
                 },
-                new Stepper<bool>(localConfig.Get<bool>(CircleSetting.FpsDisplay))
+                new Stepper<bool>
                 {
                     Text = "Frame overlay",
+                    Current = localConfig.GetBindable<bool>(CircleSetting.FpsDisplay),
                     Items = new[]
                     {
-                        new StepperItem<bool>(CircleSetting.FpsDisplay, true, "On"),
-                        new StepperItem<bool>(CircleSetting.FpsDisplay, false, "Off"),
+                        new StepperItem<bool>("On", true),
+                        new StepperItem<bool>("Off", false),
                     }
                 },
                 new SettingsSlider<float>
@@ -65,22 +58,24 @@ namespace Circle.Game.Screens.Setting.Sections
                     RightIcon = FontAwesome.Solid.Expand,
                     TransferValueOnCommit = true,
                 },
-                new Stepper<bool>(localConfig.Get<bool>(CircleSetting.BlurVisibility))
+                new Stepper<bool>
                 {
                     Text = "Overlay background blur",
+                    Current = localConfig.GetBindable<bool>(CircleSetting.BlurVisibility),
                     Items = new[]
                     {
-                        new StepperItem<bool>(CircleSetting.BlurVisibility, false, "Off"),
-                        new StepperItem<bool>(CircleSetting.BlurVisibility, true, "On"),
+                        new StepperItem<bool>("Off", false),
+                        new StepperItem<bool>("On", true),
                     }
                 },
-                new Stepper<bool>(localConfig.Get<bool>(CircleSetting.Parallax))
+                new Stepper<bool>
                 {
                     Text = "Background parallax",
+                    Current = localConfig.GetBindable<bool>(CircleSetting.Parallax),
                     Items = new[]
                     {
-                        new StepperItem<bool>(CircleSetting.Parallax, false, "Off"),
-                        new StepperItem<bool>(CircleSetting.Parallax, true, "On"),
+                        new StepperItem<bool>("Off", false),
+                        new StepperItem<bool>("On", true),
                     }
                 }
             });

@@ -1,9 +1,6 @@
 ﻿using System;
-using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
-using osu.Framework.Allocation;
 using osu.Framework.Bindables;
-using osu.Framework.Configuration.Tracking;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -57,12 +54,6 @@ namespace Circle.Game.Screens.Setting
         private readonly IconButton leftIcon;
         private readonly IconButton rightIcon;
         private readonly SpriteText text;
-
-        [Resolved]
-        private CircleConfigManager localConfig { get; set; }
-
-        [Resolved]
-        private TrackedSettings trackedSettings { get; set; }
 
         public SettingsSlider()
         {
@@ -142,13 +133,6 @@ namespace Circle.Game.Screens.Setting
                     }
                 }
             };
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            sliderBar.Current.ValueChanged += _ => localConfig.LoadInto(trackedSettings);
         }
     }
 }

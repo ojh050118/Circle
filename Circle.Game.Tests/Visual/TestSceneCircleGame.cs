@@ -7,7 +7,6 @@ using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
-using osu.Framework.Configuration.Tracking;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Platform;
 
@@ -25,7 +24,6 @@ namespace Circle.Game.Tests.Visual
             typeof(BeatmapManager),
             typeof(MusicController),
             typeof(CircleGameBase),
-            typeof(TrackedSettings),
             typeof(CircleConfigManager),
             typeof(Toast),
             typeof(Background),

@@ -18,13 +18,14 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new Stepper<bool>(config.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
+                new Stepper<bool>
                 {
                     Text = "Load beatmaps on startup",
+                    Current = config.GetBindable<bool>(CircleSetting.LoadBeatmapsOnStartup),
                     Items = new[]
                     {
-                        new StepperItem<bool>(CircleSetting.LoadBeatmapsOnStartup, true, "On"),
-                        new StepperItem<bool>(CircleSetting.LoadBeatmapsOnStartup, false, "Off")
+                        new StepperItem<bool>("On", true),
+                        new StepperItem<bool>("Off", false)
                     }
                 },
                 new BoxButton
