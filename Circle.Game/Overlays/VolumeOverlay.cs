@@ -39,8 +39,7 @@ namespace Circle.Game.Overlays
                 {
                     Anchor = Anchor.TopRight,
                     Origin = Anchor.TopRight,
-                    RelativeSizeAxes = Axes.Y,
-                    Width = 300,
+                    RelativeSizeAxes = Axes.Both,
                     Colour = ColourInfo.GradientHorizontal(Color4.Transparent, colours.TransparentGray.Opacity(0.2f)),
                 },
                 volumeMeters = new SelectionCycleFillFlowContainer<VolumeMeter>
