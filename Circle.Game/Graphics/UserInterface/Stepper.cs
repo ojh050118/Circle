@@ -124,7 +124,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         public void Select(T value)
         {
-            var item = Items.FirstOrDefault(v => v.Value.Equals(value));
+            var item = Items?.FirstOrDefault(v => v.Value.Equals(value));
             if (item == null)
                 return;
 
@@ -139,7 +139,7 @@ namespace Circle.Game.Graphics.UserInterface
         public void SelectPrevious()
         {
             if (!selectedIndex.HasValue || selectedIndex == 0)
-                setSelected(Items.Count - 1);
+                setSelected(Items?.Count - 1);
             else
                 setSelected(selectedIndex - 1);
         }
@@ -154,17 +154,18 @@ namespace Circle.Game.Graphics.UserInterface
 
         private void setSelected(int? index)
         {
-            if (selectedIndex == index)
+            if (selectedIndex == index || Items == null)
                 return;
 
             if (selectedIndex.HasValue)
                 Items[selectedIndex.Value].State = SelectionState.NotSelected;
 
             selectedIndex = index;
-            Current.Value = Items[selectedIndex.Value].Value;
 
-            if (selectedIndex.HasValue)
+            if (selectedIndex != null)
             {
+                Current.Value = Items[selectedIndex.Value].Value;
+
                 Items[selectedIndex.Value].State = SelectionState.Selected;
                 text.Text = Items[selectedIndex.Value].Text;
             }

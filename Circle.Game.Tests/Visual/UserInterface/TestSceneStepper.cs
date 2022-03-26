@@ -11,6 +11,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
         private Stepper<int> intStepper;
         private Stepper<string> stringStepper;
         private Stepper<TestEnum> enumStepper;
+        private Stepper<float> emptyStepper;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -51,17 +52,20 @@ namespace Circle.Game.Tests.Visual.UserInterface
                                 new StepperItem<string>("string3"),
                             }
                         },
-                        enumStepper = new Stepper<TestEnum>
+                        enumStepper = new EnumStepper<TestEnum>
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
                             Text = "enum stepper",
-                            Items = new[]
-                            {
-                                new StepperItem<TestEnum>(TestEnum.Enum1),
-                                new StepperItem<TestEnum>(TestEnum.Enum2),
-                                new StepperItem<TestEnum>(TestEnum.Enum3),
-                            }
+                        }
+                    },
+                    new Drawable[]
+                    {
+                        emptyStepper = new Stepper<float>
+                        {
+                            Anchor = Anchor.TopLeft,
+                            Origin = Anchor.TopLeft,
+                            Text = "empty float stepper",
                         }
                     }
                 }
@@ -92,6 +96,15 @@ namespace Circle.Game.Tests.Visual.UserInterface
             });
             AddRepeatStep("Select next", enumStepper.SelectNext, 5);
             AddRepeatStep("Select previous", enumStepper.SelectPrevious, 5);
+
+            AddLabel("empty float stepper");
+            AddAssert("Select 0.1", () =>
+            {
+                emptyStepper.Select(0.1f);
+                return emptyStepper.Selected != 0.1f;
+            });
+            AddRepeatStep("Select next", emptyStepper.SelectNext, 5);
+            AddRepeatStep("Select previous", emptyStepper.SelectPrevious, 5);
         }
 
         private enum TestEnum

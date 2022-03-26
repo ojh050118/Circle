@@ -17,16 +17,10 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new Stepper<WindowMode>
+                new EnumStepper<WindowMode>
                 {
                     Text = "Screen mode",
-                    Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode),
-                    Items = new[]
-                    {
-                        new StepperItem<WindowMode>(WindowMode.Windowed),
-                        new StepperItem<WindowMode>(WindowMode.Borderless),
-                        new StepperItem<WindowMode>(WindowMode.Fullscreen)
-                    }
+                    Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode)
                 },
                 new Stepper<FrameSync>
                 {
@@ -41,15 +35,10 @@ namespace Circle.Game.Screens.Setting.Sections
                         new StepperItem<FrameSync>(FrameSync.VSync)
                     }
                 },
-                new Stepper<ExecutionMode>
+                new EnumStepper<ExecutionMode>
                 {
                     Text = "Threading mode",
-                    Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode),
-                    Items = new[]
-                    {
-                        new StepperItem<ExecutionMode>(ExecutionMode.MultiThreaded),
-                        new StepperItem<ExecutionMode>(ExecutionMode.SingleThread)
-                    }
+                    Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode)
                 },
                 new Stepper<bool>
                 {
