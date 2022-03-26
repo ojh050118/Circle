@@ -1,5 +1,6 @@
 ﻿using System;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Threading;
@@ -53,7 +54,7 @@ namespace Circle.Game.Screens.Play
                     Origin = Anchor.BottomLeft,
                     RelativeSizeAxes = Axes.X,
                     Height = barHeight,
-                    Colour = Color4.Black,
+                    Colour = ColourInfo.GradientVertical(Color4.Transparent, Color4.Black),
                     Alpha = 0.4f,
                     Depth = 1,
                 },
@@ -63,6 +64,7 @@ namespace Circle.Game.Screens.Play
                     Anchor = Anchor.BottomLeft,
                     Origin = Anchor.BottomLeft,
                     Height = barHeight,
+                    Colour = ColourInfo.GradientVertical(Color4.Transparent, Color4.White)
                 },
             };
         }

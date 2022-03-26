@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -63,12 +63,13 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private CircleConfigManager localConfig { get; set; }
 
-        private TextureSource texureSource;
+        private TextureSource textureSource;
 
         private string textureName;
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
         private SpriteText complete;
+        private SpriteText progress;
         private GameProgressBar bar;
 
         private ScheduledDelegate scheduledDelegate;
@@ -79,7 +80,9 @@ namespace Circle.Game.Screens.Play
         private bool parallaxEnabled;
         private double endTime;
         private List<double> hitTimes;
+
         private int floor = 1;
+        private float percent;
 
         public Player(BeatmapInfo beatmapInfo)
         {
@@ -88,10 +91,10 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(GameHost host)
+        private void load(GameHost host, CircleColour colours)
         {
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
-            texureSource = background.TextureSource;
+            textureSource = background.TextureSource;
             textureName = background.TextureName;
             endTime = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).Last();
             hitTimes = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).ToList();
@@ -111,7 +114,7 @@ namespace Circle.Game.Screens.Play
                             Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
                             Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
                             Shadow = true,
-                            ShadowColour = Color4.Black.Opacity(0.4f),
+                            ShadowColour = colours.TransparentBlack
                         },
                         complete = new SpriteText
                         {
@@ -120,15 +123,25 @@ namespace Circle.Game.Screens.Play
                             Alpha = 0,
                             Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
                             Shadow = true,
-                            ShadowColour = Color4.Black.Opacity(0.4f),
+                            ShadowColour = colours.TransparentBlack
                         },
-                        bar = new GameProgressBar(15, 30)
+                        bar = new GameProgressBar(20, 10)
                         {
                             Anchor = Anchor.BottomLeft,
                             Origin = Anchor.BottomLeft,
                             StartFloor = 0,
                             EndFloor = hitTimes.Count,
                             Duration = 200
+                        },
+                        progress = new SpriteText
+                        {
+                            Anchor = Anchor.BottomCentre,
+                            Origin = Anchor.BottomCentre,
+                            Margin = new MarginPadding { Bottom = 20 },
+                            Text = "0%",
+                            Shadow = true,
+                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
+                            ShadowColour = colours.TransparentBlack
                         }
                     }
                 },
@@ -187,23 +200,30 @@ namespace Circle.Game.Screens.Play
         {
             base.Update();
 
-            if (masterGameplayClockContainer.CurrentTime >= endTime)
+            if (playState != GamePlayState.Complete)
             {
-                playState = GamePlayState.Complete;
-                dialog.BlockInputAction = false;
-                complete.Text = "Congratulations!";
-                complete.Alpha = 1;
-                bar.CurrentFloor = floor + 1;
+                if (masterGameplayClockContainer.CurrentTime >= endTime)
+                {
+                    playState = GamePlayState.Complete;
+                    dialog.BlockInputAction = false;
+                    complete.Text = "Congratulations!";
+                    complete.Alpha = 1;
+                    bar.CurrentFloor = ++floor;
+                    percent = (float)floor / hitTimes.Count;
+                    progress.ScaleTo(1.1f).ScaleTo(1, 500, Easing.OutQuint);
+                    return;
+                }
+
+                if (masterGameplayClockContainer.CurrentTime >= hitTimes[floor])
+                {
+                    floor++;
+                    bar.CurrentFloor = floor;
+                    percent = (float)floor / hitTimes.Count;
+                    progress.ScaleTo(1.1f).ScaleTo(1, 500, Easing.OutQuint);
+                }
             }
 
-            if (playState == GamePlayState.Complete)
-                return;
-
-            if (masterGameplayClockContainer.CurrentTime >= hitTimes[floor])
-            {
-                bar.CurrentFloor = floor + 1;
-                floor++;
-            }
+            progress.Text = $"{percent * 100:0.#}%";
         }
 
         private void updateState()
@@ -253,7 +273,7 @@ namespace Circle.Game.Screens.Play
 
         public override void OnResuming(IScreen last)
         {
-            background.ChangeTexture(texureSource, textureName, 1000, Easing.OutPow10);
+            background.ChangeTexture(textureSource, textureName, 1000, Easing.OutPow10);
             onPaused();
 
             base.OnResuming(last);
