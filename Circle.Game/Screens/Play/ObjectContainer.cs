@@ -41,9 +41,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Normal:
                         Add(new BasicTile
                         {
-                            Floor = i,
                             Position = positions[i],
                             Rotation = angleData[i],
+                            Action = addActions(i)
                         });
 
                         break;
@@ -51,9 +51,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Midspin:
                         Add(new MidspinTile
                         {
-                            Floor = i,
                             Position = positions[i],
                             Rotation = getAvailableAngle(i),
+                            Action = addActions(i)
                         });
 
                         break;
@@ -61,9 +61,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Short:
                         Add(new ShortTile
                         {
-                            Floor = i,
                             Position = positions[i],
                             Rotation = angleData[i],
+                            Action = addActions(i)
                         });
 
                         break;
@@ -71,16 +71,14 @@ namespace Circle.Game.Screens.Play
                     case TileType.Circular:
                         Add(new CircularTile
                         {
-                            Floor = i,
                             Position = positions[i],
                             Rotation = getAvailableAngle(i),
+                            Action = addActions(i)
                         });
 
                         break;
                 }
             }
-
-            addActionsToTile();
         }
 
         private IReadOnlyList<TileType> getTileType() => CalculationExtensions.GetTileType(angleData);
@@ -91,52 +89,17 @@ namespace Circle.Game.Screens.Play
 
         private float getAvailableAngle(int floor) => CalculationExtensions.GetAvailableAngle(angleData, floor);
 
-        private void addActionsToTile()
+        private Actions[] addActions(int floor)
         {
-            if (currentBeatmap.Actions is null)
-                return;
+            List<Actions> actions = new List<Actions>();
 
             foreach (var action in currentBeatmap.Actions)
             {
-                switch (action.EventType)
-                {
-                    case EventType.Twirl:
-                        Children[action.Floor].Twirl = true;
-                        break;
-
-                    case EventType.SetSpeed:
-                        switch (action.SpeedType)
-                        {
-                            case SpeedType.Multiplier:
-                                if (action.Floor < Children.Count)
-                                {
-                                    Children[action.Floor].SpeedType = SpeedType.Multiplier;
-                                    Children[action.Floor].BpmMultiplier = action.BpmMultiplier;
-                                }
-
-                                break;
-
-                            case SpeedType.Bpm:
-                                if (action.Floor < Children.Count)
-                                {
-                                    Children[action.Floor].SpeedType = SpeedType.Bpm;
-                                    Children[action.Floor].Bpm = action.BeatsPerMinute;
-                                }
-
-                                break;
-                        }
-
-                        break;
-
-                    case EventType.SetPlanetRotation:
-                        Children[action.Floor].Easing = action.Ease;
-                        break;
-
-                    case EventType.MoveCamera:
-                        // Todo: 카메라 기능 추가
-                        break;
-                }
+                if (floor == action.Floor)
+                    actions.Add(action);
             }
+
+            return actions.ToArray();
         }
     }
 }

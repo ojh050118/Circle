@@ -128,8 +128,9 @@ namespace Circle.Game.Screens.Play
                 bpm = getNewBpm(bpm, floor);
                 prevAngle = newRotation;
 
-                if (tilesInfo[floor].EventType == EventType.SetPlanetRotation)
-                    easing = tilesInfo[floor].Easing;
+                // Apply easing
+                var easingAction = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.SetPlanetRotation);
+                easing = easingAction.Ease;
 
                 #region Planet rotation
 

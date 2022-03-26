@@ -8,22 +8,9 @@ namespace Circle.Game.Rulesets.Objects
 {
     public abstract class Tile : Container, IHasTileInfo
     {
-        public int Floor { get; set; }
-
-        public EventType? EventType { get; set; }
+        public Actions[] Action { get; set; }
 
         public TileType TileType { get; }
-        public SpeedType? SpeedType { get; set; }
-
-        public Easing Easing { get; set; } = Easing.None;
-
-        public bool Twirl { get; set; }
-
-        public float Bpm { get; set; }
-
-        public float BpmMultiplier { get; set; }
-
-        public float Angle { get; set; }
 
         private readonly SpriteIcon icon;
 
@@ -47,11 +34,14 @@ namespace Circle.Game.Rulesets.Objects
 
         protected override void LoadComplete()
         {
-            if (SpeedType != null)
-                icon.Icon = FontAwesome.Solid.TachometerAlt;
+            foreach (var action in Action)
+            {
+                if (action.SpeedType != null)
+                    icon.Icon = FontAwesome.Solid.TachometerAlt;
 
-            if (Twirl)
-                icon.Icon = FontAwesome.Solid.UndoAlt;
+                if (action.EventType == EventType.Twirl)
+                    icon.Icon = FontAwesome.Solid.UndoAlt;
+            }
 
             Add(icon);
 
