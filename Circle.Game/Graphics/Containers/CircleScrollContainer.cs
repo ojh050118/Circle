@@ -131,11 +131,11 @@ namespace Circle.Game.Graphics.Containers
             }
 
             [BackgroundDependencyLoader]
-            private void load()
+            private void load(CircleColour colours)
             {
-                Colour = defaultColour = Color4.White.Opacity(0.3f);
-                hoverColour = Color4.White.Opacity(0.5f);
-                highlightColour = Color4.Gray;
+                Colour = defaultColour = colours.TransparentGray;
+                hoverColour = colours.TransparentWhite;
+                highlightColour = colours.TransparentDeepSkyBlue.Opacity(0.8f);
             }
 
             public override void ResizeTo(float val, int duration = 0, Easing easing = Easing.None)

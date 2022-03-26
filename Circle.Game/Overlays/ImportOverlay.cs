@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
@@ -22,6 +23,9 @@ namespace Circle.Game.Overlays
         private readonly SpriteIcon icon;
         private readonly TextFlowContainer text;
 
+        private readonly Box background;
+        private readonly Box fileBackground;
+
         [Resolved]
         private BeatmapManager manager { get; set; }
 
@@ -38,10 +42,9 @@ namespace Circle.Game.Overlays
                 Scale = new Vector2(1.2f),
                 Children = new Drawable[]
                 {
-                    new Box
+                    background = new Box
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Colour = Color4.White.Opacity(0.4f),
                     },
                     fileSelector = new CircleFileSelector(validFileExtensions: new[] { ".circle", ".circlez" })
                     {
@@ -58,10 +61,9 @@ namespace Circle.Game.Overlays
                         CornerRadius = 10,
                         Children = new Drawable[]
                         {
-                            new Box
+                            fileBackground = new Box
                             {
                                 RelativeSizeAxes = Axes.Both,
-                                Colour = Color4.Black.Opacity(0.4f),
                             },
                             new CircleScrollContainer
                             {
@@ -141,6 +143,13 @@ namespace Circle.Game.Overlays
 
             fileSelector.CurrentPath.BindValueChanged(pathChanged);
             fileSelector.CurrentFile.BindValueChanged(fileChanged);
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(CircleColour colours)
+        {
+            background.Colour = colours.TransparentGray;
+            fileBackground.Colour = colours.TransparentBlack;
         }
 
         private void pathChanged(ValueChangedEvent<DirectoryInfo> path)

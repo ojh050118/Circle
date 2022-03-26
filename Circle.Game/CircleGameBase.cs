@@ -1,6 +1,7 @@
 using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
 using Circle.Resources;
@@ -83,6 +84,8 @@ namespace Circle.Game
 
             dependencies.CacheAs(LocalConfig);
             dependencies.CacheAs(TrackedSettings);
+
+            dependencies.CacheAs(new CircleColour());
 
             dependencies.CacheAs(MusicController = new MusicController());
 

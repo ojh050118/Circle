@@ -1,4 +1,5 @@
-﻿using Circle.Game.Graphics.Containers;
+﻿using Circle.Game.Graphics;
+using Circle.Game.Graphics.Containers;
 using Circle.Game.Input;
 using Circle.Game.Overlays.Volume;
 using osu.Framework.Allocation;
@@ -26,7 +27,7 @@ namespace Circle.Game.Overlays
         private ScheduledDelegate popOutDelegate;
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
+        private void load(AudioManager audio, CircleColour colours)
         {
             Anchor = Anchor.TopRight;
             Origin = Anchor.TopRight;
@@ -40,7 +41,7 @@ namespace Circle.Game.Overlays
                     Origin = Anchor.TopRight,
                     RelativeSizeAxes = Axes.Y,
                     Width = 300,
-                    Colour = ColourInfo.GradientHorizontal(Color4.Black.Opacity(0), Color4.White.Opacity(0.2f)),
+                    Colour = ColourInfo.GradientHorizontal(Color4.Transparent, colours.TransparentGray.Opacity(0.2f)),
                 },
                 volumeMeters = new SelectionCycleFillFlowContainer<VolumeMeter>
                 {

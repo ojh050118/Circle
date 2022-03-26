@@ -70,9 +70,9 @@ namespace Circle.Game.Graphics.UserInterface
             }
 
             [BackgroundDependencyLoader]
-            private void load(AudioManager audio)
+            private void load(AudioManager audio, CircleColour colours)
             {
-                BackgroundColour = Color4.Black.Opacity(0.4f);
+                BackgroundColour = colours.TransparentBlack;
                 HoverColour = Color4.DeepSkyBlue.Opacity(0.6f);
                 SelectionColour = Color4.DeepSkyBlue.Opacity(0.8f);
 
@@ -346,10 +346,10 @@ namespace Circle.Game.Graphics.UserInterface
             }
 
             [BackgroundDependencyLoader]
-            private void load()
+            private void load(CircleColour colours)
             {
-                BackgroundColour = Color4.Black.Opacity(0.4f);
-                BackgroundColourHover = Color4.Gray.Opacity(0.4f);
+                BackgroundColour = colours.TransparentBlack;
+                BackgroundColourHover = colours.TransparentGray;
             }
         }
     }

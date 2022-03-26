@@ -45,20 +45,23 @@ namespace Circle.Game.Graphics.UserInterface
         {
             private Box box;
 
+            private CircleColour colours;
+
             [BackgroundDependencyLoader]
-            private void load()
+            private void load(CircleColour colours)
             {
+                this.colours = colours;
                 RelativeSizeAxes = Axes.Both;
                 InternalChild = box = new Box
                 {
-                    Colour = Color4.Black.Opacity(0.4f),
+                    Colour = colours.TransparentBlack,
                     RelativeSizeAxes = Axes.Both,
                 };
             }
 
             protected override bool OnHover(HoverEvent e)
             {
-                box.FadeColour(Color4.Gray.Opacity(0.4f), 250, Easing.OutQuint);
+                box.FadeColour(colours.TransparentGray, 250, Easing.OutQuint);
 
                 return base.OnHover(e);
             }
@@ -67,7 +70,7 @@ namespace Circle.Game.Graphics.UserInterface
             {
                 base.OnHoverLost(e);
 
-                box.FadeColour(Color4.Black.Opacity(0.4f), 250, Easing.OutQuint);
+                box.FadeColour(colours.TransparentBlack, 250, Easing.OutQuint);
             }
         }
     }

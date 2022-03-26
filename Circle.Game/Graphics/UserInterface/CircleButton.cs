@@ -20,6 +20,8 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected new Container Content;
 
+        private CircleColour colours;
+
         public new float CornerRadius
         {
             get => Content.CornerRadius;
@@ -39,23 +41,25 @@ namespace Circle.Game.Graphics.UserInterface
                 Child = box = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = Color4.Black.Opacity(useBackground ? 0.4f : 0),
                 }
             };
         }
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
+        private void load(AudioManager audio, CircleColour colours)
         {
+            this.colours = colours;
             hoverSample = audio.Samples.Get("button-hover");
             clickSample = audio.Samples.Get("button-click");
+            box.Colour = useBackground ? colours.TransparentBlack : Color4.Transparent;
+
             Content.CornerRadius = CornerRadius;
         }
 
         protected override bool OnHover(HoverEvent e)
         {
             hoverSample?.Play();
-            box.FadeColour(Color4.Gray.Opacity(0.4f), 250, Easing.OutQuint);
+            box.FadeColour(colours.TransparentGray, 250, Easing.OutQuint);
 
             return base.OnHover(e);
         }
@@ -64,7 +68,7 @@ namespace Circle.Game.Graphics.UserInterface
         {
             base.OnHoverLost(e);
 
-            box.FadeColour(Color4.Black.Opacity(useBackground ? 0.4f : 0), 500, Easing.OutQuint);
+            box.FadeColour(useBackground ? colours.TransparentBlack : Color4.Transparent, 500, Easing.OutQuint);
         }
 
         protected override bool OnMouseDown(MouseDownEvent e)
