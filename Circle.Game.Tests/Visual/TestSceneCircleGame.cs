@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
@@ -30,7 +31,8 @@ namespace Circle.Game.Tests.Visual
             typeof(Background),
             typeof(VolumeOverlay),
             typeof(ImportOverlay),
-            typeof(DialogOverlay)
+            typeof(DialogOverlay),
+            typeof(CircleColour)
         };
 
         [BackgroundDependencyLoader]

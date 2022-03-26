@@ -1,4 +1,5 @@
 ﻿using Circle.Game.Beatmaps;
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
@@ -29,7 +30,7 @@ namespace Circle.Game.Screens.Select
         private Storage files;
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps)
+        private void load(BeatmapStorage beatmaps, CircleColour colours)
         {
             files = beatmaps.Storage;
             RelativeSizeAxes = Axes.Both;
@@ -42,7 +43,7 @@ namespace Circle.Game.Screens.Select
                 {
                     new Box
                     {
-                        Colour = Color4.White.Opacity(0.2f),
+                        Colour = colours.TransparentGray,
                         RelativeSizeAxes = Axes.Both,
                     },
                     new FillFlowContainer
@@ -139,34 +140,34 @@ namespace Circle.Game.Screens.Select
                                             Margin = new MarginPadding { Bottom = 10 },
                                             Font = FontUsage.Default.With("OpenSans-Bold", 30),
                                             Shadow = true,
-                                            ShadowColour = Color4.Black.Opacity(0.4f),
+                                            ShadowColour = colours.TransparentBlack,
                                         },
                                         author = new SpriteText
                                         {
                                             Text = "Author: ",
                                             Font = FontUsage.Default.With(size: 24),
                                             Shadow = true,
-                                            ShadowColour = Color4.Black.Opacity(0.4f),
+                                            ShadowColour = colours.TransparentBlack,
                                         },
                                         bpm = new SpriteText
                                         {
                                             Text = "BPM: ",
                                             Font = FontUsage.Default.With(size: 24),
                                             Shadow = true,
-                                            ShadowColour = Color4.Black.Opacity(0.4f),
+                                            ShadowColour = colours.TransparentBlack,
                                         },
                                         difficulty = new SpriteText
                                         {
                                             Text = "Difficulty: ",
                                             Font = FontUsage.Default.With(size: 24),
                                             Shadow = true,
-                                            ShadowColour = Color4.Black.Opacity(0.4f),
+                                            ShadowColour = colours.TransparentBlack,
                                         },
                                         description = new TextFlowContainer(t =>
                                         {
                                             t.Font = FontUsage.Default.With(size: 24);
                                             t.Shadow = true;
-                                            t.ShadowColour = Color4.Black.Opacity(0.4f);
+                                            t.ShadowColour = colours.TransparentBlack;
                                         })
                                         {
                                             RelativeSizeAxes = Axes.X,
