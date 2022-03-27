@@ -118,9 +118,9 @@ namespace Circle.Game.Screens.Play
 
             while (floor < tilesInfo.Length)
             {
-                var (fixedRotation, newRotation) = computeRotation(floor, prevAngle);
+                var fixedRotation = computeRotation(floor, prevAngle);
                 bpm = getNewBpm(bpm, floor);
-                prevAngle = newRotation;
+                prevAngle = tilesInfo[floor].Angle;
 
                 // Apply easing
                 var easingAction = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.SetPlanetRotation);
@@ -135,7 +135,7 @@ namespace Circle.Game.Screens.Play
                         {
                             redPlanet.ExpandTo(1);
                             redPlanet.RotateTo(fixedRotation);
-                            redPlanet.RotateTo(newRotation, CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm), easing);
+                            redPlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm), easing);
                         }
 
                         break;
@@ -145,7 +145,7 @@ namespace Circle.Game.Screens.Play
                         {
                             bluePlanet.ExpandTo(1);
                             bluePlanet.RotateTo(fixedRotation);
-                            bluePlanet.RotateTo(newRotation, CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm), easing);
+                            bluePlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm), easing);
                         }
 
                         break;
@@ -154,7 +154,7 @@ namespace Circle.Game.Screens.Play
                 #endregion
 
                 // 회전을 마치면 다른 행성으로 회전할 준비를 해야합니다.
-                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm);
+                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
                 floor++;
 
                 #region Planet reducation
@@ -222,16 +222,18 @@ namespace Circle.Game.Screens.Play
             float bpm = currentBeatmap.Settings.Bpm;
             var offset = CalculationExtensions.GetTileHitTime(currentBeatmap, gameplayStartTime);
             float previousAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
+
             float oldCameraRotation = 0;
             float cameraRotation = 0;
+
             float oldCameraZoom = 1;
             float cameraZoom = 1;
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
                 bpm = getNewBpm(bpm, floor);
-                var (fixedRotation, newRotation) = computeRotation(floor, previousAngle);
-                previousAngle = newRotation;
+                var fixedRotation = computeRotation(floor, previousAngle);
+                previousAngle = tilesInfo[floor].Angle;
 
                 // Camera
                 using (Child.BeginAbsoluteSequence(offset[floor], false))
@@ -243,6 +245,7 @@ namespace Circle.Game.Screens.Play
                 int repeatCount = 1;
                 int repeat = 0;
 
+                // 한 타일의 액션에 접근
                 for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
                 {
                     var action = tilesInfo[floor].Action[actionIndex];
@@ -277,7 +280,7 @@ namespace Circle.Game.Screens.Play
                     if (!Precision.AlmostEquals(oldCameraZoom, cameraZoom))
                     {
                         using (BeginAbsoluteSequence(offset[floor] + angleTimeOffset + intervalBeat * repeat, false))
-                            this.ScaleTo(cameraZoom, CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm) * action.Duration, action.Ease);
+                            this.ScaleTo(cameraZoom, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm) * action.Duration, action.Ease);
 
                         oldCameraZoom = cameraZoom;
                     }
@@ -286,7 +289,7 @@ namespace Circle.Game.Screens.Play
                     if (!Precision.AlmostEquals(oldCameraRotation, cameraRotation))
                     {
                         using (BeginAbsoluteSequence(offset[floor] + angleTimeOffset + intervalBeat * repeat, false))
-                            this.RotateTo(cameraRotation, CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm) * action.Duration, action.Ease);
+                            this.RotateTo(cameraRotation, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm) * action.Duration, action.Ease);
 
                         oldCameraRotation = cameraRotation;
                     }
@@ -332,7 +335,7 @@ namespace Circle.Game.Screens.Play
             }
         }
 
-        private (float fixedRotation, float newRotation) computeRotation(int floor, float prevAngle) => CalculationExtensions.ComputeRotation(tilesInfo, floor, prevAngle);
+        private float computeRotation(int floor, float prevAngle) => CalculationExtensions.ComputeRotation(tilesInfo, floor, prevAngle);
 
         private RotationDirection getIsClockwise(int floor) => CalculationExtensions.GetIsClockwise(tilesInfo, floor) ? RotationDirection.Clockwise : RotationDirection.Counterclockwise;
 

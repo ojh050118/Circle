@@ -12,5 +12,10 @@ namespace Circle.Game.Rulesets.Objects
         public float Angle { get; set; }
 
         public Vector2 Position { get; set; }
+
+        public override string ToString()
+        {
+            return $"Tile type: {TileType} | Angle: {Angle} | Position: {Position}";
+        }
     }
 }

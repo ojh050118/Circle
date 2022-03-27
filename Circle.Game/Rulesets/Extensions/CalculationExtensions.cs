@@ -60,16 +60,16 @@ namespace Circle.Game.Rulesets.Extensions
             float prevAngle = tilesInfo[0].Angle;
             List<double> hitStartTimes = new List<double> { startTimeOffset };
 
-            startTimeOffset += GetRelativeDuration(tilesInfo[0].Angle - 180, tilesInfo[0].Angle, bpm);
+            startTimeOffset += GetRelativeDuration(prevAngle - 180, tilesInfo[0].Angle, bpm);
             hitStartTimes.Add(startTimeOffset);
 
             for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
             {
-                var (fixedRotation, newRotation) = ComputeRotation(tilesInfo, floor, prevAngle);
+                var fixedRotation = ComputeRotation(tilesInfo, floor, prevAngle);
 
-                prevAngle = newRotation;
+                prevAngle = tilesInfo[floor].Angle;
                 bpm = GetNewBpm(tilesInfo, bpm, floor);
-                startTimeOffset += GetRelativeDuration(fixedRotation, newRotation, bpm);
+                startTimeOffset += GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
                 hitStartTimes.Add(startTimeOffset);
             }
 
@@ -82,10 +82,10 @@ namespace Circle.Game.Rulesets.Extensions
         /// <param name="tilesInfo">타일 정보들.</param>
         /// <param name="floor">현재 타일.</param>
         /// <param name="prevAngle">이전 타일 각도.</param>
-        /// <returns>fixedRotation: 행성이 회전하기 전 각도. newRotation: 행성이 회전할 각도.</returns>
-        public static (float fixedRotation, float newRotation) ComputeRotation(TileInfo[] tilesInfo, int floor, float prevAngle)
+        /// <returns>행성이 회전하기 전에 위치하는 각도.</returns>
+        public static float ComputeRotation(TileInfo[] tilesInfo, int floor, float prevAngle)
         {
-            var currentAngle = GetSafeAngle(tilesInfo[floor].Angle);
+            var newRotation = GetSafeAngle(tilesInfo[floor].Angle);
 
             // 소용돌이에 대한 아무런 설정이 없으면 시계방향으로 회전합니다.
             bool isClockwise = GetIsClockwise(tilesInfo, floor + 1);
@@ -96,31 +96,27 @@ namespace Circle.Game.Rulesets.Extensions
             if (floor > 0)
             {
                 if (tilesInfo[floor].TileType != TileType.Midspin && tilesInfo[floor - 1].TileType != TileType.Midspin)
-                    fixedRotation -= 180;
+                    fixedRotation = fixedRotation - 180 < 0 ? fixedRotation + 180 : fixedRotation - 180;
                 else if (tilesInfo[floor].TileType == TileType.Midspin && tilesInfo[floor - 1].TileType == TileType.Midspin)
-                    fixedRotation -= 180;
+                    fixedRotation += fixedRotation - 180 < 0 ? fixedRotation + 180 : fixedRotation - 180;
             }
 
             if (tilesInfo[floor].TileType == TileType.Midspin)
-                return (fixedRotation, fixedRotation);
-
-            float newRotation = currentAngle >= 180 ? currentAngle - 360 : currentAngle;
+                return fixedRotation;
 
             // 회전방향에 따라 새로운 각도 계산
             if (isClockwise)
             {
                 while (fixedRotation >= newRotation)
-                    newRotation += 360;
+                    fixedRotation -= 360;
             }
             else
             {
-                newRotation = currentAngle >= 180 ? currentAngle : newRotation;
-
                 while (fixedRotation <= newRotation)
-                    newRotation -= 360;
+                    fixedRotation += 360;
             }
 
-            return (fixedRotation, newRotation);
+            return fixedRotation;
         }
 
         /// <summary>

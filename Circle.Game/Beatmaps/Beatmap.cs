@@ -73,6 +73,11 @@ namespace Circle.Game.Beatmaps
         public double Interval { get; set; }
         public string Tag { get; set; }
 
+        public override string ToString()
+        {
+            return $"Floor: {Floor} | Event type: {EventType}";
+        }
+
         public bool Equals(Actions actions) => Floor == actions.Floor &&
                                                EventType == actions.EventType &&
                                                SpeedType == actions.SpeedType &&
