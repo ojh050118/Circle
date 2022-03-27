@@ -72,6 +72,7 @@ namespace Circle.Game.Beatmaps
         public int Repetitions { get; set; }
         public double Interval { get; set; }
         public string Tag { get; set; }
+        public string EventTag { get; set; }
 
         public override string ToString()
         {

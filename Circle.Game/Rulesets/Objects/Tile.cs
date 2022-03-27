@@ -1,4 +1,5 @@
-﻿using Circle.Game.Beatmaps;
+﻿using System;
+using Circle.Game.Beatmaps;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -8,7 +9,7 @@ namespace Circle.Game.Rulesets.Objects
 {
     public abstract class Tile : Container, IHasTileInfo
     {
-        public Actions[] Action { get; set; } = new Actions[0];
+        public Actions[] Action { get; set; } = Array.Empty<Actions>();
 
         public TileType TileType { get; }
 

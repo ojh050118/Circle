@@ -175,7 +175,7 @@ namespace Circle.Game.Screens.Play
 
                 #endregion
 
-                #region Move PlanetContainer 
+                #region Move PlanetContainer
 
                 if (floor < tilesInfo.Length)
                 {
@@ -220,19 +220,15 @@ namespace Circle.Game.Screens.Play
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var offset = CalculationExtensions.GetTileHitTime(currentBeatmap, gameplayStartTime);
-            float prevAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
                 bpm = getNewBpm(bpm, floor);
-                var fixedRotation = computeRotation(floor, prevAngle);
-                prevAngle = tilesInfo[floor].Angle;
+                var prevAngle = tilesInfo[floor].Angle;
 
                 // Camera
                 using (Child.BeginAbsoluteSequence(offset[floor], false))
                     Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
-
-                var angleTimeOffset = 0f;
 
                 // 한 타일의 액션에 접근
                 for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
@@ -242,20 +238,20 @@ namespace Circle.Game.Screens.Play
                     switch (action.EventType)
                     {
                         case EventType.MoveCamera:
-                            angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
-                            addCameraEvents(action, prevAngle, bpm, offset[floor] + angleTimeOffset);
+                            addCameraEvents(action, prevAngle, bpm, offset[floor]);
 
                             break;
 
+                        // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
                         case EventType.RepeatEvents:
                             var intervalBeat = 60000 / bpm * action.Interval;
+
                             for (int i = 1; i <= action.Repetitions; i++)
                             {
-                                var cameraActions = Array.FindAll(tilesInfo[floor].Action, a => a.EventType == EventType.MoveCamera);
-                                foreach (var cameraAction in cameraActions)
+                                foreach (var cameraAction in Array.FindAll(tilesInfo[floor].Action, a => a.EventType == EventType.MoveCamera))
                                 {
-                                    angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraAction.AngleOffset, bpm);
-                                    addCameraEvents(cameraAction, prevAngle, bpm, offset[floor] + angleTimeOffset + intervalBeat * i);
+                                    if (cameraAction.EventTag == action.Tag)
+                                        addCameraEvents(cameraAction, prevAngle, bpm, offset[floor] + intervalBeat * i);
                                 }
                             }
 
@@ -270,13 +266,11 @@ namespace Circle.Game.Screens.Play
             var fixedRotation = computeRotation(action.Floor, prevAngle);
             float cameraRotation = action.Rotation ?? 0;
             float cameraZoom = (float)(action.Zoom ?? 100) / 100;
+            var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
             double duration = getRelativeDuration(fixedRotation, action.Floor, bpm) * action.Duration;
 
-            using (BeginAbsoluteSequence(transformStartOffset, false))
-                this.ScaleTo(cameraZoom, duration, action.Ease);
-
-            using (BeginAbsoluteSequence(transformStartOffset, false))
-                this.RotateTo(cameraRotation, duration, action.Ease);
+            using (BeginAbsoluteSequence(transformStartOffset + angleTimeOffset, false))
+                this.ScaleTo(cameraZoom, duration, action.Ease).RotateTo(cameraRotation, duration, action.Ease);
         }
 
         private void addTileTransforms(double gameplayStartTime)
