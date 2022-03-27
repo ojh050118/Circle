@@ -69,6 +69,9 @@ namespace Circle.Game.Beatmaps
         public float AngleOffset { get; set; }
         public float[] Position { get; set; }
         public int? Zoom { get; set; }
+        public int Repetitions { get; set; }
+        public double Interval { get; set; }
+        public string Tag { get; set; }
 
         public bool Equals(Actions actions) => Floor == actions.Floor &&
                                                EventType == actions.EventType &&
@@ -80,7 +83,10 @@ namespace Circle.Game.Beatmaps
                                                Duration == actions.Duration &&
                                                Rotation == actions.Rotation &&
                                                AngleOffset == actions.AngleOffset &&
-                                               Zoom == actions.Zoom;
+                                               Zoom == actions.Zoom &&
+                                               Repetitions == actions.Repetitions &&
+                                               Precision.AlmostEquals(Interval, actions.Interval) &&
+                                               Tag == actions.Tag;
     }
 
     public enum EventType
@@ -89,6 +95,7 @@ namespace Circle.Game.Beatmaps
         SetSpeed,
         MoveCamera,
         SetPlanetRotation,
+        RepeatEvents,
         Other
     }
 

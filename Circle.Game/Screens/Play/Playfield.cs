@@ -224,7 +224,7 @@ namespace Circle.Game.Screens.Play
             float previousAngle = CalculationExtensions.GetSafeAngle(tilesInfo.First().Angle - 180);
             float oldCameraRotation = 0;
             float cameraRotation = 0;
-            float oldCameraZoom = 0;
+            float oldCameraZoom = 1;
             float cameraZoom = 1;
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
@@ -238,27 +238,46 @@ namespace Circle.Game.Screens.Play
                     Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
                 var angleTimeOffset = 0f;
+                bool repeatStart = false;
+                double intervalBeat = 1;
+                int repeatCount = 1;
+                int repeat = 0;
 
-                foreach (var action in tilesInfo[floor].Action)
+                for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
                 {
-                    if (action.EventType == EventType.MoveCamera)
+                    var action = tilesInfo[floor].Action[actionIndex];
+
+                    switch (action.EventType)
                     {
-                        if (action.Rotation.HasValue)
-                            cameraRotation = action.Rotation.Value;
+                        case EventType.MoveCamera:
+                            if (action.Rotation.HasValue)
+                                cameraRotation = action.Rotation.Value;
 
-                        if (action.Zoom.HasValue)
-                            cameraZoom = (float)action.Zoom / 100;
+                            if (action.Zoom.HasValue)
+                                cameraZoom = (float)action.Zoom / 100;
 
-                        angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            break;
+
+                        case EventType.RepeatEvents:
+                            if (repeat < repeatCount)
+                            {
+                                if (repeatStart)
+                                    repeat++;
+
+                                repeatStart = true;
+                                repeatCount = action.Repetitions;
+                                intervalBeat = 60000 / bpm * action.Interval;
+                                actionIndex = -1;
+                            }
+                            continue;
                     }
 
                     // Camera zoom
                     if (!Precision.AlmostEquals(oldCameraZoom, cameraZoom))
                     {
-                        using (BeginAbsoluteSequence(offset[floor] + angleTimeOffset, false))
-                        {
+                        using (BeginAbsoluteSequence(offset[floor] + angleTimeOffset + intervalBeat * repeat, false))
                             this.ScaleTo(cameraZoom, CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm) * action.Duration, action.Ease);
-                        }
 
                         oldCameraZoom = cameraZoom;
                     }
@@ -266,12 +285,16 @@ namespace Circle.Game.Screens.Play
                     // Camera rotation
                     if (!Precision.AlmostEquals(oldCameraRotation, cameraRotation))
                     {
-                        using (BeginAbsoluteSequence(offset[floor] + angleTimeOffset, false))
-                        {
+                        using (BeginAbsoluteSequence(offset[floor] + angleTimeOffset + intervalBeat * repeat, false))
                             this.RotateTo(cameraRotation, CalculationExtensions.GetRelativeDuration(fixedRotation, newRotation, bpm) * action.Duration, action.Ease);
-                        }
 
                         oldCameraRotation = cameraRotation;
+                    }
+
+                    if (repeatStart)
+                    {
+                        if (repeat >= repeatCount)
+                            repeatStart = false;
                     }
                 }
             }
