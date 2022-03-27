@@ -65,10 +65,10 @@ namespace Circle.Game.Beatmaps
         public Relativity? RelativeTo { get; set; }
         public Easing Ease { get; set; }
         public double Duration { get; set; }
-        public float Rotation { get; set; }
+        public float? Rotation { get; set; }
         public float AngleOffset { get; set; }
         public float[] Position { get; set; }
-        public int Zoom { get; set; }
+        public int? Zoom { get; set; }
 
         public bool Equals(Actions actions) => Floor == actions.Floor &&
                                                EventType == actions.EventType &&

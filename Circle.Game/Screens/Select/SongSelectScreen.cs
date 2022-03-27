@@ -94,7 +94,7 @@ namespace Circle.Game.Screens.Select
 
         private void setBeatmap()
         {
-            if (carousel.Count == 0)
+            if (carousel.ItemCount == 0)
                 return;
 
             BeatmapInfo beatmapInfo;
