@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -225,6 +226,7 @@ namespace Circle.Game.Screens.Play
             {
                 bpm = getNewBpm(bpm, floor);
                 var prevAngle = tilesInfo[floor].Angle;
+                List<Actions> pendingActions = new List<Actions>();
 
                 // Camera
                 using (Child.BeginAbsoluteSequence(offset[floor], false))
@@ -239,23 +241,27 @@ namespace Circle.Game.Screens.Play
                     {
                         case EventType.MoveCamera:
                             addCameraEvents(action, prevAngle, bpm, offset[floor]);
-
                             break;
 
                         // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
                         case EventType.RepeatEvents:
-                            var intervalBeat = 60000 / bpm * action.Interval;
-
-                            for (int i = 1; i <= action.Repetitions; i++)
-                            {
-                                foreach (var cameraAction in Array.FindAll(tilesInfo[floor].Action, a => a.EventType == EventType.MoveCamera))
-                                {
-                                    if (cameraAction.EventTag == action.Tag)
-                                        addCameraEvents(cameraAction, prevAngle, bpm, offset[floor] + intervalBeat * i);
-                                }
-                            }
-
+                            pendingActions.Add(action);
                             break;
+                    }
+                }
+
+                foreach (var pendingAction in pendingActions)
+                {
+                    var intervalBeat = 60000 / bpm * pendingAction.Interval;
+                    var events = Array.FindAll(tilesInfo[floor].Action, a => a.EventType == EventType.MoveCamera);
+
+                    for (int i = 1; i <= pendingAction.Repetitions; i++)
+                    {
+                        foreach (var cameraAction in events)
+                        {
+                            if (cameraAction.EventTag == pendingAction.Tag)
+                                addCameraEvents(cameraAction, prevAngle, bpm, offset[floor] + intervalBeat * i);
+                        }
                     }
                 }
             }
@@ -263,11 +269,19 @@ namespace Circle.Game.Screens.Play
 
         private void addCameraEvents(Actions action, float prevAngle, float bpm, double transformStartOffset)
         {
-            var fixedRotation = computeRotation(action.Floor, prevAngle);
+            int floor = action.Floor;
+            var fixedRotation = computeRotation(floor, prevAngle);
             float cameraRotation = action.Rotation ?? 0;
-            float cameraZoom = (float)(action.Zoom ?? 100) / 100;
+            float cameraZoom = 1 / ((float)(action.Zoom ?? 100) / 100);
             var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
-            double duration = getRelativeDuration(fixedRotation, action.Floor, bpm) * action.Duration;
+
+            if (tilesInfo[floor].TileType == TileType.Midspin)
+                floor++;
+
+            if (float.IsInfinity(cameraZoom))
+                cameraZoom = 0;
+
+            double duration = getRelativeDuration(fixedRotation, floor, bpm) * action.Duration;
 
             using (BeginAbsoluteSequence(transformStartOffset + angleTimeOffset, false))
                 this.ScaleTo(cameraZoom, duration, action.Ease).RotateTo(cameraRotation, duration, action.Ease);
