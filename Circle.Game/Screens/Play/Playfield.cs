@@ -9,6 +9,7 @@ using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Logging;
 
 namespace Circle.Game.Screens.Play
 {
@@ -18,6 +19,7 @@ namespace Circle.Game.Screens.Play
         private Planet redPlanet;
         private Planet bluePlanet;
         private Container<Planet> planetContainer;
+        private Container cameraContainer;
 
         private TileInfo[] tilesInfo;
 
@@ -36,29 +38,35 @@ namespace Circle.Game.Screens.Play
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
-            Child = new Container
+            Child = cameraContainer = new Container
             {
-                AutoSizeAxes = Axes.Both,
+                RelativeSizeAxes = Axes.Both,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                Children = new Drawable[]
+                Child = new Container
                 {
-                    tileContainer = new ObjectContainer(currentBeatmap),
-                    planetContainer = new Container<Planet>
+                    AutoSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Children = new Drawable[]
                     {
-                        AutoSizeAxes = Axes.Both,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Children = new[]
+                        tileContainer = new ObjectContainer(currentBeatmap),
+                        planetContainer = new Container<Planet>
                         {
-                            redPlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetRed)))
+                            AutoSizeAxes = Axes.Both,
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Children = new[]
                             {
-                                PlanetColour = config.GetBindable<Color4Enum>(CircleSetting.PlanetRed)
-                            },
-                            bluePlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetBlue)))
-                            {
-                                PlanetColour = config.GetBindable<Color4Enum>(CircleSetting.PlanetBlue)
-                            },
+                                redPlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetRed)))
+                                {
+                                    PlanetColour = config.GetBindable<Color4Enum>(CircleSetting.PlanetRed)
+                                },
+                                bluePlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetBlue)))
+                                {
+                                    PlanetColour = config.GetBindable<Color4Enum>(CircleSetting.PlanetBlue)
+                                },
+                            }
                         }
                     }
                 }
@@ -229,8 +237,8 @@ namespace Circle.Game.Screens.Play
                 List<Actions> pendingActions = new List<Actions>();
 
                 // Camera
-                using (Child.BeginAbsoluteSequence(offset[floor], false))
-                    Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
+                using (cameraContainer.Child.BeginAbsoluteSequence(offset[floor], false))
+                    cameraContainer.Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
                 // 한 타일의 액션에 접근
                 for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
@@ -251,19 +259,26 @@ namespace Circle.Game.Screens.Play
                     }
                 }
 
-                // 한 타일의 이벤트반복 이벤트를 처리합니다.
-                foreach (var pendingAction in pendingActions)
-                {
-                    var intervalBeat = 60000 / bpm * pendingAction.Interval;
-                    var events = Array.FindAll(tilesInfo[floor].Action, a => a.EventType == EventType.MoveCamera);
+                addRepeatedEvents(bpm, offset[floor], pendingActions);
+            }
+        }
 
-                    for (int i = 1; i <= pendingAction.Repetitions; i++)
+        private void addRepeatedEvents(float bpm, double offset, List<Actions> actionQueue)
+        {
+            // 원소가 바뀔 때 Trnasforms가 덮어씌워짐
+            foreach (var action in actionQueue)
+            {
+                var prevAngle = tilesInfo[action.Floor].Angle;
+                var intervalBeat = 60000 / bpm * action.Interval;
+                var events = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
+
+                for (int i = 1; i <= action.Repetitions; i++)
+                {
+                    var startOffset = offset + intervalBeat * i;
+                    foreach (var cameraAction in events)
                     {
-                        foreach (var cameraAction in events)
-                        {
-                            if (cameraAction.EventTag == pendingAction.Tag)
-                                addCameraEvents(cameraAction, prevAngle, bpm, offset[floor] + intervalBeat * i);
-                        }
+                        if (cameraAction.EventTag == action.Tag)
+                            addCameraEvents(cameraAction, prevAngle, bpm, startOffset);
                     }
                 }
             }
@@ -285,8 +300,14 @@ namespace Circle.Game.Screens.Play
 
             double duration = getRelativeDuration(fixedRotation, floor, bpm) * action.Duration;
 
-            using (BeginAbsoluteSequence(transformStartOffset + angleTimeOffset, false))
-                this.ScaleTo(cameraZoom, duration, action.Ease).RotateTo(cameraRotation, duration, action.Ease);
+            using (cameraContainer.BeginAbsoluteSequence(transformStartOffset + angleTimeOffset))
+            {
+                cameraContainer.ScaleTo(cameraZoom, duration, action.Ease);
+                cameraContainer.RotateTo(cameraRotation, duration, action.Ease);
+            }
+
+            Logger.Log($"Transform is added. Count: {cameraContainer.Transforms.Count()}");
+            Logger.Log($"Floor: {floor}, {transformStartOffset + angleTimeOffset}-{transformStartOffset + angleTimeOffset + duration}");
         }
 
         private void addTileTransforms(double gameplayStartTime)
