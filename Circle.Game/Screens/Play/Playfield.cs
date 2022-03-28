@@ -244,12 +244,14 @@ namespace Circle.Game.Screens.Play
                             break;
 
                         // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
+                        // 이벤트반복 이벤트가 앞이나 중간에 있으면 이벤트 반복을 안하는 것으로 보여 이벤트를 나중에 처리합니다.
                         case EventType.RepeatEvents:
                             pendingActions.Add(action);
                             break;
                     }
                 }
 
+                // 한 타일의 이벤트반복 이벤트를 처리합니다.
                 foreach (var pendingAction in pendingActions)
                 {
                     var intervalBeat = 60000 / bpm * pendingAction.Interval;
