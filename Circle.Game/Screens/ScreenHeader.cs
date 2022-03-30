@@ -25,34 +25,50 @@ namespace Circle.Game.Screens
         [BackgroundDependencyLoader]
         private void load()
         {
-            Margin = new MarginPadding { Top = MARGIN, Left = 30, Bottom = 10 };
-            AutoSizeAxes = Axes.Both;
-            InternalChild = new FillFlowContainer
+            Padding = new MarginPadding { Top = MARGIN, Horizontal = MARGIN, Bottom = 10 };
+            AutoSizeAxes = Axes.Y;
+            RelativeSizeAxes = Axes.X;
+            InternalChild = new GridContainer
             {
-                Direction = FillDirection.Horizontal,
-                AutoSizeAxes = Axes.Both,
-                Children = new Drawable[]
+                RelativeSizeAxes = Axes.X,
+                AutoSizeAxes = Axes.Y,
+                RowDimensions = new[]
                 {
-                    new IconButton
+                    new Dimension(GridSizeMode.AutoSize),
+                    new Dimension(GridSizeMode.AutoSize),
+                },
+                ColumnDimensions = new[]
+                {
+                    new Dimension(GridSizeMode.AutoSize)
+                },
+                Content = new[]
+                {
+                    new Drawable[]
                     {
-                        Icon = FontAwesome.Solid.AngleLeft,
-                        Size = new Vector2(40),
-                        Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft,
-                        Action = screen.OnExit
-                    },
-                    new SpriteText
-                    {
-                        Text = string.IsNullOrEmpty(Text) ? screen.Header : Text,
-                        Font = FontUsage.Default.With(size: 40),
-                        Anchor = Anchor.CentreLeft,
-                        Origin = Anchor.CentreLeft,
-                    }.WithEffect(new GlowEffect
-                    {
-                        PadExtent = true,
-                        Colour = Color4.White,
-                        BlurSigma = new Vector2(10)
-                    })
+                        new IconButton
+                        {
+                            Icon = FontAwesome.Solid.AngleLeft,
+                            Size = new Vector2(40),
+                            Anchor = Anchor.CentreLeft,
+                            Origin = Anchor.CentreLeft,
+                            Action = screen.OnExit
+                        },
+                        new SpriteText
+                        {
+                            Text = string.IsNullOrEmpty(Text) ? screen.Header : Text,
+                            Font = FontUsage.Default.With(size: 40),
+                            Anchor = Anchor.CentreLeft,
+                            Origin = Anchor.CentreLeft,
+                            Truncate = true,
+                            RelativeSizeAxes = Axes.X,
+                            Margin = new MarginPadding { Left = 10 }
+                        }.WithEffect(new GlowEffect
+                        {
+                            PadExtent = true,
+                            Colour = Color4.White,
+                            BlurSigma = new Vector2(10)
+                        })
+                    }
                 }
             };
         }
