@@ -9,7 +9,7 @@ using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Logging;
+using osuTK;
 
 namespace Circle.Game.Screens.Play
 {
@@ -229,14 +229,15 @@ namespace Circle.Game.Screens.Play
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var offset = CalculationExtensions.GetTileHitTime(currentBeatmap, gameplayStartTime);
+            var cameraTransforms = new List<CameraTransform>();
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
                 bpm = getNewBpm(bpm, floor);
                 var prevAngle = tilesInfo[floor].Angle;
-                List<Actions> pendingActions = new List<Actions>();
+                var fixedRotation = computeRotation(floor, prevAngle);
 
-                // Camera
+                // Camera move (relative to player)
                 using (cameraContainer.Child.BeginAbsoluteSequence(offset[floor], false))
                     cameraContainer.Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
 
@@ -248,71 +249,71 @@ namespace Circle.Game.Screens.Play
                     switch (action.EventType)
                     {
                         case EventType.MoveCamera:
-                            addCameraEvents(action, prevAngle, bpm, offset[floor]);
+                            var angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            cameraTransforms.Add(new CameraTransform
+                            {
+                                Action = action,
+                                StartTime = offset[floor] + angleOffset,
+                                Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * action.Duration,
+                                Easing = action.Ease
+                            });
                             break;
 
                         // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
                         // 이벤트반복 이벤트가 앞이나 중간에 있으면 이벤트 반복을 안하는 것으로 보여 이벤트를 나중에 처리합니다.
                         case EventType.RepeatEvents:
-                            pendingActions.Add(action);
+                            var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
+                            var intervalBeat = 60000 / bpm * action.Interval;
+
+                            for (int i = 1; i <= action.Repetitions; i++)
+                            {
+                                var startTime = offset[floor] + intervalBeat * i;
+
+                                foreach (var cameraEvent in cameraEvents)
+                                {
+                                    var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
+
+                                    if (cameraEvent.EventTag == action.Tag)
+                                    {
+                                        cameraTransforms.Add(new CameraTransform
+                                        {
+                                            Action = cameraEvent,
+                                            StartTime = startTime + angleTimeOffset,
+                                            Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * cameraEvent.Duration,
+                                            Easing = cameraEvent.Ease
+                                        });
+                                    }
+
+                                }
+                            }
+
                             break;
                     }
                 }
-
-                addRepeatedEvents(bpm, offset[floor], pendingActions);
             }
-        }
 
-        private void addRepeatedEvents(float bpm, double offset, List<Actions> actionQueue)
-        {
-            // 원소가 바뀔 때 Trnasforms가 덮어씌워짐
-            foreach (var action in actionQueue)
+            // 트랜스폼을 시작 시간순으로 추가해야 올바르게 추가됩니다.
+            foreach (var cameraTransform in cameraTransforms.OrderBy(a => a.StartTime))
             {
-                var prevAngle = tilesInfo[action.Floor].Angle;
-                var intervalBeat = 60000 / bpm * action.Interval;
-                var events = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
+                var action = cameraTransform.Action;
 
-                for (int i = 1; i <= action.Repetitions; i++)
+                using (cameraContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                 {
-                    var startOffset = offset + intervalBeat * i;
-                    foreach (var cameraAction in events)
+                    if (action.Zoom.HasValue)
                     {
-                        if (cameraAction.EventTag == action.Tag)
-                            addCameraEvents(cameraAction, prevAngle, bpm, startOffset);
+                        float cameraZoom = 1 / ((float)action.Zoom.Value / 100);
+
+                        if (float.IsInfinity(cameraZoom))
+                            cameraZoom = 0;
+
+                        cameraContainer.ScaleTo(cameraZoom, cameraTransform.Duration, action.Ease);
                     }
+
+
+                    if (action.Rotation.HasValue)
+                        cameraContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
                 }
             }
-        }
-
-        private void addCameraEvents(Actions action, float prevAngle, float bpm, double transformStartOffset)
-        {
-            int floor = action.Floor;
-            var fixedRotation = computeRotation(floor, prevAngle);
-            var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
-
-            if (tilesInfo[floor].TileType == TileType.Midspin)
-                floor++;
-
-            double duration = getRelativeDuration(fixedRotation, floor, bpm) * action.Duration;
-
-            using (cameraContainer.BeginAbsoluteSequence(transformStartOffset + angleTimeOffset, false))
-            {
-                if (action.Zoom.HasValue)
-                {
-                    float cameraZoom = 1 / ((float)action.Zoom.Value / 100);
-
-                    if (float.IsInfinity(cameraZoom))
-                        cameraZoom = 0;
-
-                    cameraContainer.ScaleTo(cameraZoom, duration, action.Ease);
-                }
-
-
-                if (action.Rotation.HasValue)
-                    cameraContainer.RotateTo(action.Rotation.Value, duration, action.Ease);
-            }
-
-            Logger.Log($"Transform is added. Count: {cameraContainer.Transforms.Count()}");
         }
 
         private void addTileTransforms(double gameplayStartTime)
@@ -354,5 +355,20 @@ namespace Circle.Game.Screens.Play
         private float getRelativeDuration(float oldRotation, int floor, float bpm) => CalculationExtensions.GetRelativeDuration(oldRotation, tilesInfo[floor].Angle, bpm);
 
         private float getNewBpm(float current, int floor) => CalculationExtensions.GetNewBpm(tilesInfo, current, floor);
+
+        private class CameraTransform
+        {
+            public Actions Action { get; set; }
+
+            public double StartTime { get; set; }
+
+            public double Duration { get; set; }
+
+            public Vector2? TargetPosition { get; set; }
+
+            public Vector2? TargetOffset { get; set; }
+
+            public Easing Easing { get; set; }
+        }
     }
 }
