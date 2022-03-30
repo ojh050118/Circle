@@ -254,13 +254,11 @@ namespace Circle.Game.Screens.Play
                             {
                                 Action = action,
                                 StartTime = offset[floor] + angleOffset,
-                                Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * action.Duration,
-                                Easing = action.Ease
+                                Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * action.Duration
                             });
                             break;
 
                         // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
-                        // 이벤트반복 이벤트가 앞이나 중간에 있으면 이벤트 반복을 안하는 것으로 보여 이벤트를 나중에 처리합니다.
                         case EventType.RepeatEvents:
                             var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
                             var intervalBeat = 60000 / bpm * action.Interval;
@@ -279,11 +277,9 @@ namespace Circle.Game.Screens.Play
                                         {
                                             Action = cameraEvent,
                                             StartTime = startTime + angleTimeOffset,
-                                            Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * cameraEvent.Duration,
-                                            Easing = cameraEvent.Ease
+                                            Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * cameraEvent.Duration
                                         });
                                     }
-
                                 }
                             }
 
@@ -308,7 +304,6 @@ namespace Circle.Game.Screens.Play
 
                         cameraContainer.ScaleTo(cameraZoom, cameraTransform.Duration, action.Ease);
                     }
-
 
                     if (action.Rotation.HasValue)
                         cameraContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
@@ -367,8 +362,6 @@ namespace Circle.Game.Screens.Play
             public Vector2? TargetPosition { get; set; }
 
             public Vector2? TargetOffset { get; set; }
-
-            public Easing Easing { get; set; }
         }
     }
 }
