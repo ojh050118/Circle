@@ -288,26 +288,31 @@ namespace Circle.Game.Screens.Play
         {
             int floor = action.Floor;
             var fixedRotation = computeRotation(floor, prevAngle);
-            float cameraRotation = action.Rotation ?? 0;
-            float cameraZoom = 1 / ((float)(action.Zoom ?? 100) / 100);
             var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
 
             if (tilesInfo[floor].TileType == TileType.Midspin)
                 floor++;
 
-            if (float.IsInfinity(cameraZoom))
-                cameraZoom = 0;
-
             double duration = getRelativeDuration(fixedRotation, floor, bpm) * action.Duration;
 
-            using (cameraContainer.BeginAbsoluteSequence(transformStartOffset + angleTimeOffset))
+            using (cameraContainer.BeginAbsoluteSequence(transformStartOffset + angleTimeOffset, false))
             {
-                cameraContainer.ScaleTo(cameraZoom, duration, action.Ease);
-                cameraContainer.RotateTo(cameraRotation, duration, action.Ease);
+                if (action.Zoom.HasValue)
+                {
+                    float cameraZoom = 1 / ((float)action.Zoom.Value / 100);
+
+                    if (float.IsInfinity(cameraZoom))
+                        cameraZoom = 0;
+
+                    cameraContainer.ScaleTo(cameraZoom, duration, action.Ease);
+                }
+
+
+                if (action.Rotation.HasValue)
+                    cameraContainer.RotateTo(action.Rotation.Value, duration, action.Ease);
             }
 
             Logger.Log($"Transform is added. Count: {cameraContainer.Transforms.Count()}");
-            Logger.Log($"Floor: {floor}, {transformStartOffset + angleTimeOffset}-{transformStartOffset + angleTimeOffset + duration}");
         }
 
         private void addTileTransforms(double gameplayStartTime)
