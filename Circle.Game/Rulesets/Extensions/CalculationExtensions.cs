@@ -179,7 +179,7 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        ///
+        /// 시간 차로 회전해야할 각도롤 구합니다.
         /// </summary>
         /// <param name="offset">회전하기 전 각도.</param>
         /// <param name="goalTime">다음각도까지 회전해야하는 시간.</param>

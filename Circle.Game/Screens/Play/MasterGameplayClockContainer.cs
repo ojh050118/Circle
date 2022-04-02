@@ -12,7 +12,7 @@ namespace Circle.Game.Screens.Play
         private readonly BeatmapInfo info;
         private readonly Beatmap beatmap;
         private readonly double gameplayStartTime;
-        private readonly double startOffset;
+        private readonly double countdownDuration;
 
         public Playfield Playfield;
 
@@ -20,13 +20,13 @@ namespace Circle.Game.Screens.Play
 
         private bool isStarted;
 
-        public MasterGameplayClockContainer(BeatmapInfo info, double gameplayStartTime, double startOffset, IClock clock)
+        public MasterGameplayClockContainer(BeatmapInfo info, double gameplayStartTime, double countdownDuration, IClock clock)
             : base(clock)
         {
             beatmap = info.Beatmap;
             this.info = info;
             this.gameplayStartTime = gameplayStartTime;
-            this.startOffset = startOffset;
+            this.countdownDuration = countdownDuration;
         }
 
         [BackgroundDependencyLoader]
@@ -34,10 +34,10 @@ namespace Circle.Game.Screens.Play
         {
             Children = new Drawable[]
             {
-                container = new FrameStabilityContainer(beatmap.Settings.VidOffset + gameplayStartTime - startOffset),
+                container = new FrameStabilityContainer(beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration),
                 new FrameStabilityContainer(gameplayStartTime)
                 {
-                    Child = Playfield = new Playfield(beatmap, gameplayStartTime, startOffset),
+                    Child = Playfield = new Playfield(beatmap, gameplayStartTime, countdownDuration),
                 }
             };
 
@@ -52,7 +52,7 @@ namespace Circle.Game.Screens.Play
                     FillMode = FillMode.Fill,
                     RelativeSizeAxes = Axes.Both,
                     Loop = false,
-                    PlaybackPosition = beatmap.Settings.VidOffset + gameplayStartTime - startOffset,
+                    PlaybackPosition = beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration,
                 });
             }
 

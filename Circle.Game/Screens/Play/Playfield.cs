@@ -35,15 +35,15 @@ namespace Circle.Game.Screens.Play
         /// <summary>
         /// 카운트다운 지속시간.
         /// </summary>
-        private readonly double startOffset;
+        private readonly double countdownDuration;
 
-        private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, startOffset);
+        private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, countdownDuration);
 
-        public Playfield(Beatmap beatmap, double gameplayStartTime, double startOffset)
+        public Playfield(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
             currentBeatmap = beatmap;
             this.gameplayStartTime = gameplayStartTime;
-            this.startOffset = startOffset;
+            this.countdownDuration = countdownDuration;
         }
 
         [BackgroundDependencyLoader]
