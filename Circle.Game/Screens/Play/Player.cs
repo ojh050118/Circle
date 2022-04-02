@@ -18,7 +18,6 @@ using osu.Framework.Input.Events;
 using osu.Framework.Platform;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
-using osu.Framework.Utils;
 using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
@@ -210,9 +209,6 @@ namespace Circle.Game.Screens.Play
                     progress.Increase();
                 }
             }
-
-
-
         }
 
         private void updateState()
@@ -319,7 +315,7 @@ namespace Circle.Game.Screens.Play
 
                             scheduledDelegate = Scheduler.AddDelayed(() =>
                             {
-                                if (masterGameplayClockContainer.CurrentTime - 1000  - beat * 4 < 0)
+                                if (masterGameplayClockContainer.CurrentTime - 1000 - beat * 4 < 0)
                                 {
                                     Scheduler.AddDelayed(() =>
                                     {

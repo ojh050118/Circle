@@ -51,15 +51,16 @@ namespace Circle.Game.Rulesets.Extensions
         /// </summary>
         /// <param name="beatmap">비트맵.</param>
         /// <param name="gameplayStartTime">게임 시작 시간.</param>
+        /// <param name="countdownDuration">카운트다운 지속시간.</param>
         /// <returns>행성이 타일이 도착하는 시간의 집합.</returns>
-        public static IReadOnlyList<double> GetTileStartTime(Beatmap beatmap, double gameplayStartTime, double startOffset)
+        public static IReadOnlyList<double> GetTileStartTime(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
             var tilesInfo = GetTilesInfo(beatmap).ToArray();
             double startTimeOffset = gameplayStartTime;
             float bpm = beatmap.Settings.Bpm;
             float prevAngle = tilesInfo[0].Angle;
-            List<double> hitStartTimes = new List<double> { gameplayStartTime - startOffset };
-            startTimeOffset += GetRelativeDuration(prevAngle - GetTimebasedRotation(gameplayStartTime, gameplayStartTime - startOffset, bpm), tilesInfo[0].Angle, bpm);
+            List<double> hitStartTimes = new List<double> { gameplayStartTime - countdownDuration };
+            startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), tilesInfo[0].Angle, bpm);
             hitStartTimes.Add(startTimeOffset);
 
             for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
@@ -178,13 +179,13 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="offset">회전하기 전 각도.</param>
         /// <param name="goalTime">다음각도까지 회전해야하는 시간.</param>
         /// <param name="bpm">현재 bpm.</param>
         /// <returns></returns>
-        public static float GetTimebasedRotation(double offset, double goalTime, float bpm)
+        public static float GetTimebaseRotation(double offset, double goalTime, float bpm)
         {
             return (float)Math.Abs(offset - goalTime) / (60000 / bpm) * 180;
         }

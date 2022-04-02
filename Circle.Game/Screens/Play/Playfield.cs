@@ -30,12 +30,12 @@ namespace Circle.Game.Screens.Play
         /// <summary>
         /// 준비 시간을 포함한 게임이 시작하는 시간.
         /// </summary>
-        private double gameplayStartTime;
+        private readonly double gameplayStartTime;
 
         /// <summary>
-        /// 첫 타일을 클릭하는 시간.
+        /// 카운트다운 지속시간.
         /// </summary>
-        private double startOffset;
+        private readonly double startOffset;
 
         private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, startOffset);
 
@@ -88,7 +88,7 @@ namespace Circle.Game.Screens.Play
 
             tilesInfo = tileContainer.GetTilesInfo().ToArray();
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebasedRotation(gameplayStartTime, (float)startTimes[0], currentBeatmap.Settings.Bpm);
+            bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, (float)startTimes[0], currentBeatmap.Settings.Bpm);
         }
 
         protected override void LoadComplete()

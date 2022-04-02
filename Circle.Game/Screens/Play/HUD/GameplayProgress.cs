@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Circle.Game.Graphics;
+﻿using Circle.Game.Graphics;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -14,7 +11,7 @@ namespace Circle.Game.Screens.Play.HUD
         private GameProgressBar progressBar;
         private SpriteText percent;
 
-        private int floorCount;
+        private readonly int floorCount;
 
         public int CurrentFloor
         {
