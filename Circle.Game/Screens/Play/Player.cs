@@ -165,7 +165,11 @@ namespace Circle.Game.Screens.Play
                            {
                                musicController.Stop();
                                musicController.ChangeTrack(beatmapInfo);
-                               musicController.SeekTo(currentBeatmap.Settings.Offset);
+                               if (currentBeatmap.Settings.Offset - beat * 4 >= 0)
+                                   musicController.SeekTo(currentBeatmap.Settings.Offset - beat * 4);
+                               else
+                                   musicController.SeekTo(currentBeatmap.Settings.Offset);
+
                                playState = GamePlayState.Ready;
                            });
         }
@@ -205,8 +209,8 @@ namespace Circle.Game.Screens.Play
 
                 if (masterGameplayClockContainer.CurrentTime >= hitTimes[floor])
                 {
+                    progress.ProgressTo(floor);
                     floor++;
-                    progress.Increase();
                 }
             }
         }
@@ -218,7 +222,8 @@ namespace Circle.Game.Screens.Play
                 case GamePlayState.Ready:
                     masterGameplayClockContainer.Start();
                     musicController.CurrentTrack.VolumeTo(1);
-                    Scheduler.AddDelayed(() => musicController.Play(), beat * 4);
+                    var timeUntilRun = currentBeatmap.Settings.Offset - beat * 4 >= 0 ? 0 : beat * 4;
+                    Scheduler.AddDelayed(() => musicController.Play(), timeUntilRun);
                     playState = GamePlayState.Playing;
                     break;
 
@@ -304,36 +309,41 @@ namespace Circle.Game.Screens.Play
                     Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
                     Action = () =>
                     {
-                        musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
-                        {
-                            if (masterGameplayClockContainer.CurrentTime - 1000 - beat * 4 >= 0)
-                            {
-                                musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000 - beat * 4);
-                                musicController.Play();
-                                musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
-                            }
-
-                            scheduledDelegate = Scheduler.AddDelayed(() =>
-                            {
-                                if (masterGameplayClockContainer.CurrentTime - 1000 - beat * 4 < 0)
-                                {
-                                    Scheduler.AddDelayed(() =>
-                                    {
-                                        musicController.SeekTo(masterGameplayClockContainer.CurrentTime - beat * 4);
-                                        musicController.CurrentTrack.VolumeTo(1);
-                                        musicController.Play();
-                                    }, Math.Abs(masterGameplayClockContainer.CurrentTime - beat * 4));
-                                }
-
-                                playState = GamePlayState.Playing;
-                                masterGameplayClockContainer.Start();
-                            }, 1000);
-                        });
+                        resume();
                         dialog.Hide();
                     }
                 }
             };
             dialog.Push();
+        }
+
+        private void resume()
+        {
+            musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
+            {
+                if (masterGameplayClockContainer.CurrentTime - 1000 - beat * 4 >= 0)
+                {
+                    musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000 - beat * 4);
+                    musicController.Play();
+                    musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
+                }
+
+                scheduledDelegate = Scheduler.AddDelayed(() =>
+                {
+                    if (masterGameplayClockContainer.CurrentTime - 1000 - beat * 4 < 0)
+                    {
+                        Scheduler.AddDelayed(() =>
+                        {
+                            musicController.SeekTo(masterGameplayClockContainer.CurrentTime - beat * 4);
+                            musicController.CurrentTrack.VolumeTo(1);
+                            musicController.Play();
+                        }, Math.Abs(masterGameplayClockContainer.CurrentTime - beat * 4));
+                    }
+
+                    playState = GamePlayState.Playing;
+                    masterGameplayClockContainer.Start();
+                }, 1000);
+            });
         }
     }
 

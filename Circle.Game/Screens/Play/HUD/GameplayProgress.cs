@@ -70,6 +70,12 @@ namespace Circle.Game.Screens.Play.HUD
             updateCurrent();
         }
 
+        public void ProgressTo(int progress)
+        {
+            progressBar.Current.Value = progress;
+            updateCurrent();
+        }
+
         private void updateCurrent()
         {
             percent.Text = $"{(float)progressBar.CurrentFloor / floorCount * 100:0.#}%";
