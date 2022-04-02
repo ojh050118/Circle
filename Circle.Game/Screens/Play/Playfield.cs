@@ -27,9 +27,23 @@ namespace Circle.Game.Screens.Play
 
         private readonly Beatmap currentBeatmap;
 
-        public Playfield(Beatmap beatmap)
+        /// <summary>
+        /// 준비 시간을 포함한 게임이 시작하는 시간.
+        /// </summary>
+        private readonly double gameplayStartTime;
+
+        /// <summary>
+        /// 카운트다운 지속시간.
+        /// </summary>
+        private readonly double countdownDuration;
+
+        private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, countdownDuration);
+
+        public Playfield(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
             currentBeatmap = beatmap;
+            this.gameplayStartTime = gameplayStartTime;
+            this.countdownDuration = countdownDuration;
         }
 
         [BackgroundDependencyLoader]
@@ -74,14 +88,14 @@ namespace Circle.Game.Screens.Play
 
             tilesInfo = tileContainer.GetTilesInfo().ToArray();
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            bluePlanet.Rotation = tilesInfo.First().Angle - 180;
+            bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, (float)startTimes[0], currentBeatmap.Settings.Bpm);
         }
 
         protected override void LoadComplete()
         {
-            addTileTransforms(currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm);
-            addTransforms(currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm);
-            addCameraTransforms(currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm);
+            addTileTransforms(gameplayStartTime);
+            addTransforms(gameplayStartTime);
+            addCameraTransforms(gameplayStartTime);
 
             base.LoadComplete();
         }
@@ -228,7 +242,7 @@ namespace Circle.Game.Screens.Play
         private void addCameraTransforms(double gameplayStartTime)
         {
             float bpm = currentBeatmap.Settings.Bpm;
-            var offset = CalculationExtensions.GetTileHitTime(currentBeatmap, gameplayStartTime);
+            var offset = startTimes;
             var cameraTransforms = new List<CameraTransform>();
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
@@ -314,7 +328,7 @@ namespace Circle.Game.Screens.Play
         private void addTileTransforms(double gameplayStartTime)
         {
             float bpm = currentBeatmap.Settings.Bpm;
-            var tilesOffset = CalculationExtensions.GetTileHitTime(currentBeatmap, gameplayStartTime);
+            var tilesOffset = startTimes;
 
             for (int i = 8; i < tilesInfo.Length; i++)
                 tileContainer.Children[i].Alpha = 0;

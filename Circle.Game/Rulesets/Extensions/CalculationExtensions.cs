@@ -47,20 +47,20 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        /// 행성이 타일에 도착하는 시간을 계산합니다
+        /// 행성이 타일에 도착하는 시간을 계산합니다.
         /// </summary>
         /// <param name="beatmap">비트맵.</param>
         /// <param name="gameplayStartTime">게임 시작 시간.</param>
+        /// <param name="countdownDuration">카운트다운 지속시간.</param>
         /// <returns>행성이 타일이 도착하는 시간의 집합.</returns>
-        public static IReadOnlyList<double> GetTileHitTime(Beatmap beatmap, double gameplayStartTime)
+        public static IReadOnlyList<double> GetTileStartTime(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
             var tilesInfo = GetTilesInfo(beatmap).ToArray();
             double startTimeOffset = gameplayStartTime;
             float bpm = beatmap.Settings.Bpm;
             float prevAngle = tilesInfo[0].Angle;
-            List<double> hitStartTimes = new List<double> { startTimeOffset };
-
-            startTimeOffset += GetRelativeDuration(prevAngle - 180, tilesInfo[0].Angle, bpm);
+            List<double> hitStartTimes = new List<double> { gameplayStartTime - countdownDuration };
+            startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), tilesInfo[0].Angle, bpm);
             hitStartTimes.Add(startTimeOffset);
 
             for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
@@ -176,6 +176,18 @@ namespace Circle.Game.Rulesets.Extensions
         public static float GetRelativeDuration(float oldRotation, float newRotation, float bpm)
         {
             return 60000 / bpm * Math.Abs(oldRotation - newRotation) / 180;
+        }
+
+        /// <summary>
+        /// 시간 차로 회전해야할 각도롤 구합니다.
+        /// </summary>
+        /// <param name="offset">회전하기 전 각도.</param>
+        /// <param name="goalTime">다음각도까지 회전해야하는 시간.</param>
+        /// <param name="bpm">현재 bpm.</param>
+        /// <returns></returns>
+        public static float GetTimebaseRotation(double offset, double goalTime, float bpm)
+        {
+            return (float)Math.Abs(offset - goalTime) / (60000 / bpm) * 180;
         }
 
         /// <summary>

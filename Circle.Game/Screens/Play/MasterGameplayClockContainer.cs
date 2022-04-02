@@ -11,6 +11,8 @@ namespace Circle.Game.Screens.Play
     {
         private readonly BeatmapInfo info;
         private readonly Beatmap beatmap;
+        private readonly double gameplayStartTime;
+        private readonly double countdownDuration;
 
         public Playfield Playfield;
 
@@ -18,11 +20,13 @@ namespace Circle.Game.Screens.Play
 
         private bool isStarted;
 
-        public MasterGameplayClockContainer(BeatmapInfo info, IClock clock)
+        public MasterGameplayClockContainer(BeatmapInfo info, double gameplayStartTime, double countdownDuration, IClock clock)
             : base(clock)
         {
             beatmap = info.Beatmap;
             this.info = info;
+            this.gameplayStartTime = gameplayStartTime;
+            this.countdownDuration = countdownDuration;
         }
 
         [BackgroundDependencyLoader]
@@ -30,10 +34,10 @@ namespace Circle.Game.Screens.Play
         {
             Children = new Drawable[]
             {
-                container = new FrameStabilityContainer(beatmap.Settings.VidOffset + beatmap.Settings.Offset - 60000 / beatmap.Settings.Bpm),
-                new FrameStabilityContainer(beatmap.Settings.Offset)
+                container = new FrameStabilityContainer(beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration),
+                new FrameStabilityContainer(gameplayStartTime)
                 {
-                    Child = Playfield = new Playfield(beatmap),
+                    Child = Playfield = new Playfield(beatmap, gameplayStartTime, countdownDuration),
                 }
             };
 
@@ -48,12 +52,12 @@ namespace Circle.Game.Screens.Play
                     FillMode = FillMode.Fill,
                     RelativeSizeAxes = Axes.Both,
                     Loop = false,
-                    PlaybackPosition = beatmap.Settings.VidOffset + (beatmap.Settings.Offset - 60000 / beatmap.Settings.Bpm),
+                    PlaybackPosition = beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration,
                 });
             }
 
             // 음악 시작 시간보다 한 박자 먼저 시작됩니다.
-            Seek(beatmap.Settings.Offset - 60000 / beatmap.Settings.Bpm);
+            Seek(gameplayStartTime);
         }
 
         public override void Start()
