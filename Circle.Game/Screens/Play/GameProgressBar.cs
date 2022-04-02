@@ -24,16 +24,19 @@ namespace Circle.Game.Screens.Play
 
         public int StartFloor
         {
+            get => CurrentNumber.MinValue;
             set => CurrentNumber.MinValue = value;
         }
 
         public int EndFloor
         {
+            get => CurrentNumber.MaxValue;
             set => CurrentNumber.MaxValue = value;
         }
 
         public int CurrentFloor
         {
+            get => CurrentNumber.Value;
             set => CurrentNumber.Value = value;
         }
 
@@ -41,7 +44,6 @@ namespace Circle.Game.Screens.Play
         {
             CurrentNumber.MinValue = 0;
             CurrentNumber.MaxValue = 1;
-
             RelativeSizeAxes = Axes.X;
             Height = barHeight + handleBarHeight;
 

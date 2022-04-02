@@ -7,6 +7,7 @@ using Circle.Game.Graphics;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Rulesets.Extensions;
+using Circle.Game.Screens.Play.HUD;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -17,6 +18,7 @@ using osu.Framework.Input.Events;
 using osu.Framework.Platform;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
+using osu.Framework.Utils;
 using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
@@ -69,8 +71,7 @@ namespace Circle.Game.Screens.Play
 
         private MasterGameplayClockContainer masterGameplayClockContainer;
         private SpriteText complete;
-        private SpriteText progress;
-        private GameProgressBar bar;
+        private GameplayProgress progress;
 
         private ScheduledDelegate scheduledDelegate;
 
@@ -80,9 +81,13 @@ namespace Circle.Game.Screens.Play
         private bool parallaxEnabled;
         private double endTime;
         private List<double> hitTimes;
+        private float beat => 60000 / currentBeatmap.Settings.Bpm;
 
+        /// <summary>
+        /// 타일 시작 시간과 게임플레이 시간을 비교하기 위해 존재합니다.
+        /// 게임 시작 전에는 0%이어야 하므로 1번 타일과 비교합니다.
+        /// </summary>
         private int floor = 1;
-        private float percent;
 
         public Player(BeatmapInfo beatmapInfo)
         {
@@ -96,11 +101,11 @@ namespace Circle.Game.Screens.Play
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             textureSource = background.TextureSource;
             textureName = background.TextureName;
-            endTime = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).Last();
-            hitTimes = CalculationExtensions.GetTileHitTime(currentBeatmap, currentBeatmap.Settings.Offset - 60000 / currentBeatmap.Settings.Bpm).ToList();
+            hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * 4).ToList();
+            endTime = hitTimes.Last();
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * 4, Clock),
                 new Container
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -110,7 +115,7 @@ namespace Circle.Game.Screens.Play
                         {
                             Anchor = Anchor.TopCentre,
                             Origin = Anchor.TopCentre,
-                            Margin = new MarginPadding { Top = 34 },
+                            Margin = new MarginPadding { Top = 30 },
                             Text = $"{currentBeatmap.Settings.Artist} - {currentBeatmap.Settings.Song}",
                             Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
                             Shadow = true,
@@ -125,24 +130,11 @@ namespace Circle.Game.Screens.Play
                             Shadow = true,
                             ShadowColour = colours.TransparentBlack
                         },
-                        bar = new GameProgressBar(20, 10)
-                        {
-                            Anchor = Anchor.BottomLeft,
-                            Origin = Anchor.BottomLeft,
-                            StartFloor = 0,
-                            EndFloor = hitTimes.Count,
-                            Duration = 200
-                        },
-                        progress = new SpriteText
+                        progress = new GameplayProgress(hitTimes.Count - 1)
                         {
                             Anchor = Anchor.BottomCentre,
                             Origin = Anchor.BottomCentre,
-                            Margin = new MarginPadding { Bottom = 20 },
-                            Text = "0%",
-                            Shadow = true,
-                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
-                            ShadowColour = colours.TransparentBlack
-                        }
+                        },
                     }
                 },
             };
@@ -153,7 +145,7 @@ namespace Circle.Game.Screens.Play
                 {
                     Anchor = Anchor.TopRight,
                     Origin = Anchor.TopRight,
-                    Margin = new MarginPadding(10),
+                    Margin = new MarginPadding(30),
                     Size = new Vector2(50),
                     Icon = FontAwesome.Solid.Pause,
                     Action = onPaused
@@ -208,22 +200,19 @@ namespace Circle.Game.Screens.Play
                     dialog.BlockInputAction = false;
                     complete.Text = "Congratulations!";
                     complete.Alpha = 1;
-                    bar.CurrentFloor = ++floor;
-                    percent = (float)floor / hitTimes.Count;
-                    progress.ScaleTo(1.1f).ScaleTo(1, 500, Easing.OutQuint);
+                    progress.Increase();
                     return;
                 }
 
                 if (masterGameplayClockContainer.CurrentTime >= hitTimes[floor])
                 {
                     floor++;
-                    bar.CurrentFloor = floor;
-                    percent = (float)floor / hitTimes.Count;
-                    progress.ScaleTo(1.1f).ScaleTo(1, 500, Easing.OutQuint);
+                    progress.Increase();
                 }
             }
 
-            progress.Text = $"{percent * 100:0.#}%";
+
+
         }
 
         private void updateState()
@@ -233,7 +222,7 @@ namespace Circle.Game.Screens.Play
                 case GamePlayState.Ready:
                     masterGameplayClockContainer.Start();
                     musicController.CurrentTrack.VolumeTo(1);
-                    Scheduler.AddDelayed(() => musicController.Play(), 60000 / currentBeatmap.Settings.Bpm);
+                    Scheduler.AddDelayed(() => musicController.Play(), beat * 4);
                     playState = GamePlayState.Playing;
                     break;
 
@@ -256,6 +245,7 @@ namespace Circle.Game.Screens.Play
 
             musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
             {
+                musicController.SeekTo(musicController.CurrentTrack.CurrentTime - 500);
                 musicController.CurrentTrack.VolumeTo(1, 200, Easing.Out);
                 musicController.Play();
             });
@@ -320,23 +310,23 @@ namespace Circle.Game.Screens.Play
                     {
                         musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
                         {
-                            if (masterGameplayClockContainer.CurrentTime - 1000 >= 0)
+                            if (masterGameplayClockContainer.CurrentTime - 1000 - beat * 4 >= 0)
                             {
-                                musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000);
+                                musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000 - beat * 4);
                                 musicController.Play();
                                 musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
                             }
 
                             scheduledDelegate = Scheduler.AddDelayed(() =>
                             {
-                                if (masterGameplayClockContainer.CurrentTime - 1000 < 0)
+                                if (masterGameplayClockContainer.CurrentTime - 1000  - beat * 4 < 0)
                                 {
                                     Scheduler.AddDelayed(() =>
                                     {
-                                        musicController.SeekTo(masterGameplayClockContainer.CurrentTime);
+                                        musicController.SeekTo(masterGameplayClockContainer.CurrentTime - beat * 4);
                                         musicController.CurrentTrack.VolumeTo(1);
                                         musicController.Play();
-                                    }, Math.Abs(masterGameplayClockContainer.CurrentTime));
+                                    }, Math.Abs(masterGameplayClockContainer.CurrentTime - beat * 4));
                                 }
 
                                 playState = GamePlayState.Playing;
