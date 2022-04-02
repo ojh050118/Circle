@@ -11,6 +11,7 @@ using Circle.Game.Screens.Play.HUD;
 using Circle.Game.Screens.Setting;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -88,6 +89,8 @@ namespace Circle.Game.Screens.Play
         /// </summary>
         private int floor = 1;
 
+        private Sample sampleHit;
+
         public Player(BeatmapInfo beatmapInfo)
         {
             this.beatmapInfo = beatmapInfo;
@@ -95,13 +98,14 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(GameHost host, CircleColour colours)
+        private void load(GameHost host, AudioManager audio, CircleColour colours)
         {
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             textureSource = background.TextureSource;
             textureName = background.TextureName;
             hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * 4).ToList();
             endTime = hitTimes.Last();
+            sampleHit = audio.Samples.Get("normal-hitnormal.wav");
             InternalChildren = new Drawable[]
             {
                 masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * 4, Clock),
@@ -204,6 +208,7 @@ namespace Circle.Game.Screens.Play
                     complete.Text = "Congratulations!";
                     complete.Alpha = 1;
                     progress.Increase();
+                    sampleHit?.Play();
                     return;
                 }
 
@@ -211,6 +216,7 @@ namespace Circle.Game.Screens.Play
                 {
                     progress.ProgressTo(floor);
                     floor++;
+                    sampleHit?.Play();
                 }
             }
         }
