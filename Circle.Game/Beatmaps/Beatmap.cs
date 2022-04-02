@@ -33,6 +33,10 @@ namespace Circle.Game.Beatmaps
         public int CountdownTicks { get; set; }
         public string BgImage { get; set; }
         public string BgVideo { get; set; }
+        public Relativity RelativeTo { get; set; }
+        public float[] Position { get; set; }
+        public float Rotation { get; set; }
+        public float? Zoom { get; set; }
         public Easing PlanetEasing { get; set; }
 
         public bool Equals(Settings settings) => Artist == settings.Artist &&
@@ -52,6 +56,8 @@ namespace Circle.Game.Beatmaps
                                                  CountdownTicks == settings.CountdownTicks &&
                                                  BgImage == settings.BgImage &&
                                                  BgVideo == settings.BgVideo &&
+                                                 RelativeTo == settings.RelativeTo &&
+                                                 Precision.AlmostEquals(Rotation, settings.Rotation) &&
                                                  PlanetEasing == settings.PlanetEasing;
     }
 
