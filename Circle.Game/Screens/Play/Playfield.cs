@@ -97,7 +97,7 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            //addTileTransforms(gameplayStartTime);
+            addTileTransforms(gameplayStartTime);
             addTransforms(gameplayStartTime);
             addCameraTransforms(gameplayStartTime);
 
