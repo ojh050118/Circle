@@ -97,7 +97,7 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            addTileTransforms(gameplayStartTime);
+            //addTileTransforms(gameplayStartTime);
             addTransforms(gameplayStartTime);
             addCameraTransforms(gameplayStartTime);
 
@@ -249,6 +249,7 @@ namespace Circle.Game.Screens.Play
             var offset = startTimes;
             var cameraTransforms = new List<CameraTransform>();
             var lastRelativity = currentBeatmap.Settings.RelativeTo;
+            var lastPosition = currentBeatmap.Settings.Position != null ? new Vector2(currentBeatmap.Settings.Position[0], currentBeatmap.Settings.Position[1]) : Vector2.Zero;
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
@@ -270,6 +271,7 @@ namespace Circle.Game.Screens.Play
                         StartTime = offset[floor],
                         Duration = 400 + 60 / bpm * 500,
                         RelativeTo = Relativity.Player,
+                        Position = lastPosition
                     });
                 }
 
@@ -277,7 +279,12 @@ namespace Circle.Game.Screens.Play
                 for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
                 {
                     var action = tilesInfo[floor].Action[actionIndex];
-                    lastRelativity = action.RelativeTo ?? lastRelativity;
+
+                    if (action.EventType == EventType.MoveCamera)
+                    {
+                        lastRelativity = action.RelativeTo ?? lastRelativity;
+                        lastPosition = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : Vector2.Zero;
+                    }
 
                     switch (action.EventType)
                     {
@@ -338,7 +345,7 @@ namespace Circle.Game.Screens.Play
             {
                 var action = cameraTransform.Action;
                 Vector2 cameraPosition = tilesInfo[action.Floor].Position;
-                cameraPosition += new Vector2(-Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
+                cameraPosition += new Vector2(Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
 
                 using (cameraContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                 {
@@ -358,29 +365,32 @@ namespace Circle.Game.Screens.Play
 
                 using (cameraContainer.Child.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                 {
-
-
                     switch (cameraTransform.RelativeTo)
                     {
                         // 카메라가 타일에 고정됩니다.
                         case Relativity.Tile:
+                            lastPosition = cameraPosition;
                             cameraContainer.Child.MoveTo(-cameraPosition, cameraTransform.Duration, action.Ease);
                             break;
 
+                        // 마지막 카메라 위치로 고정합니다.
                         case Relativity.LastPosition:
-                            cameraContainer.Child.MoveTo(-(lastPosition + new Vector2(-Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y)), cameraTransform.Duration, action.Ease);
+                            lastPosition += new Vector2(Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
+                            cameraContainer.Child.MoveTo(-lastPosition, cameraTransform.Duration, action.Ease);
                             break;
 
+                        // 플레이어(행성)의 위치로 고정합니다.
                         case Relativity.Player:
+                            lastPosition = cameraPosition;
                             cameraContainer.Child.MoveTo(-cameraPosition, cameraTransform.Duration, action.Ease);
                             break;
 
+                        // 첫 타일의 위치로 고정합니다.
                         case Relativity.Global:
-                            cameraContainer.Child.MoveTo(-new Vector2(-Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y), cameraTransform.Duration, action.Ease);
+                            lastPosition = new Vector2(Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
+                            cameraContainer.Child.MoveTo(-lastPosition, cameraTransform.Duration, action.Ease);
                             break;
                     }
-
-                    lastPosition = cameraPosition;
                 }
             }
         }
