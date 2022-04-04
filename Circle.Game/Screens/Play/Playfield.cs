@@ -97,7 +97,7 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            addTileTransforms(gameplayStartTime);
+            //addTileTransforms(gameplayStartTime);
             addTransforms(gameplayStartTime);
             addCameraTransforms(gameplayStartTime);
 
@@ -250,6 +250,7 @@ namespace Circle.Game.Screens.Play
             var cameraTransforms = new List<CameraTransform>();
             var lastRelativity = currentBeatmap.Settings.RelativeTo;
             var lastPosition = currentBeatmap.Settings.Position != null ? new Vector2(currentBeatmap.Settings.Position[0], currentBeatmap.Settings.Position[1]) : Vector2.Zero;
+            float lastRotation = currentBeatmap.Settings.Rotation;
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
@@ -266,7 +267,8 @@ namespace Circle.Game.Screens.Play
                         {
                             Floor = floor,
                             BeatsPerMinute = bpm,
-                            Ease = Easing.OutSine
+                            Ease = Easing.OutSine,
+                            Rotation = lastRotation
                         },
                         StartTime = offset[floor],
                         Duration = 400 + 60 / bpm * 500,
@@ -283,7 +285,10 @@ namespace Circle.Game.Screens.Play
                     if (action.EventType == EventType.MoveCamera)
                     {
                         lastRelativity = action.RelativeTo ?? lastRelativity;
-                        lastPosition = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : Vector2.Zero;
+                        lastPosition = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : lastPosition;
+
+                        if (action.Rotation.HasValue)
+                            lastRotation -= action.RelativeTo == Relativity.LastPosition ? 0 : action.Rotation.Value;
                     }
 
                     switch (action.EventType)
@@ -337,8 +342,8 @@ namespace Circle.Game.Screens.Play
 
         private void processCameraTransforms(List<CameraTransform> cameraTransforms)
         {
-            var lastRelativeTo = currentBeatmap.Settings.RelativeTo;
-            Vector2 lastPosition = Vector2.Zero;
+            Vector2 lastPosition = currentBeatmap.Settings.Position != null ? new Vector2(currentBeatmap.Settings.Position[0], currentBeatmap.Settings.Position[1]) : Vector2.Zero;
+            float lastRotation = currentBeatmap.Settings.Rotation;
 
             // 트랜스폼을 시작 시간순으로 추가해야 올바르게 추가됩니다.
             foreach (var cameraTransform in cameraTransforms.OrderBy(a => a.StartTime))
@@ -360,7 +365,10 @@ namespace Circle.Game.Screens.Play
                     }
 
                     if (action.Rotation.HasValue)
-                        cameraContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
+                    {
+                        lastRotation = cameraTransform.RelativeTo == Relativity.LastPosition ? lastRotation + action.Rotation.Value : action.Rotation.Value;
+                        cameraContainer.RotateTo(lastRotation, cameraTransform.Duration, action.Ease);
+                    }
                 }
 
                 using (cameraContainer.Child.BeginAbsoluteSequence(cameraTransform.StartTime, false))

@@ -113,7 +113,7 @@ namespace Circle.Game.Screens.Select
         private void beatmapChanged((BeatmapInfo oldBeatmap, BeatmapInfo newBeatmap) beatmap)
         {
             details.ChangeBeatmap(beatmap.newBeatmap);
-            if (!beatmaps.Storage.Exists(beatmap.newBeatmap.RelativeBackgroundPath))
+            if (!beatmaps.Storage.Exists(beatmap.newBeatmap.RelativeBackgroundPath ?? string.Empty))
                 background.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
             else
                 background.ChangeTexture(TextureSource.External, beatmap.newBeatmap.RelativeBackgroundPath, 500, Easing.Out);
