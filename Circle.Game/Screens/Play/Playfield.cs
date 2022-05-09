@@ -97,9 +97,9 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            //addTileTransforms(gameplayStartTime);
+            addTileTransforms();
             addTransforms(gameplayStartTime);
-            addCameraTransforms(gameplayStartTime);
+            addCameraTransforms();
 
             base.LoadComplete();
         }
@@ -243,7 +243,7 @@ namespace Circle.Game.Screens.Play
             }
         }
 
-        private void addCameraTransforms(double gameplayStartTime)
+        private void addCameraTransforms()
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var offset = startTimes;
@@ -403,7 +403,7 @@ namespace Circle.Game.Screens.Play
             }
         }
 
-        private void addTileTransforms(double gameplayStartTime)
+        private void addTileTransforms()
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var tilesOffset = startTimes;
