@@ -244,7 +244,89 @@ namespace Circle.Game.Screens.Play
 
         private void addCameraTransforms()
         {
-            cameraContainer.AddCameraTransforms(currentBeatmap.Settings, tilesInfo, ElementTransformExtensions.GenerateCameraTransforms(currentBeatmap.Settings, startTimes, tilesInfo).ToList());
+            float bpm = currentBeatmap.Settings.Bpm;
+            var offset = startTimes;
+            var cameraTransforms = new List<CameraTransform>();
+
+            for (int floor = 0; floor < tilesInfo.Length; floor++)
+            {
+                bpm = getNewBpm(bpm, floor);
+                var prevAngle = tilesInfo[floor].Angle;
+                var fixedRotation = computeRotation(floor, prevAngle);
+
+                // Camera move (relative to player)
+                using (cameraContainer.Child.BeginAbsoluteSequence(offset[floor], false))
+                    cameraContainer.Child.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
+
+                // 한 타일의 액션에 접근
+                for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
+                {
+                    var action = tilesInfo[floor].Action[actionIndex];
+
+                    switch (action.EventType)
+                    {
+                        case EventType.MoveCamera:
+                            var angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            cameraTransforms.Add(new CameraTransform
+                            {
+                                Action = action,
+                                StartTime = offset[floor] + angleOffset,
+                                Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * action.Duration
+                            });
+                            break;
+
+                        // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
+                        case EventType.RepeatEvents:
+                            var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
+                            var intervalBeat = 60000 / bpm * action.Interval;
+
+                            for (int i = 1; i <= action.Repetitions; i++)
+                            {
+                                var startTime = offset[floor] + intervalBeat * i;
+
+                                foreach (var cameraEvent in cameraEvents)
+                                {
+                                    var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
+
+                                    if (cameraEvent.EventTag == action.Tag)
+                                    {
+                                        cameraTransforms.Add(new CameraTransform
+                                        {
+                                            Action = cameraEvent,
+                                            StartTime = startTime + angleTimeOffset,
+                                            Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * cameraEvent.Duration
+                                        });
+                                    }
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            // 트랜스폼을 시작 시간순으로 추가해야 올바르게 추가됩니다.
+            foreach (var cameraTransform in cameraTransforms.OrderBy(a => a.StartTime))
+            {
+                var action = cameraTransform.Action;
+
+                using (cameraContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
+                {
+                    if (action.Zoom.HasValue)
+                    {
+                        float cameraZoom = 1 / ((float)action.Zoom.Value / 100);
+
+                        if (float.IsInfinity(cameraZoom))
+                            cameraZoom = 0;
+
+                        cameraContainer.ScaleTo(cameraZoom, cameraTransform.Duration, action.Ease);
+                    }
+
+                    if (action.Rotation.HasValue)
+                        cameraContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
+                }
+            }
+            //cameraContainer.AddCameraTransforms(currentBeatmap.Settings, tilesInfo, ElementTransformExtensions.GenerateCameraTransforms(currentBeatmap.Settings, startTimes, tilesInfo).ToList());
         }
 
         private void addTileTransforms()
