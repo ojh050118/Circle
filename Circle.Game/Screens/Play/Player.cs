@@ -260,20 +260,20 @@ namespace Circle.Game.Screens.Play
             base.OnExit();
         }
 
-        public override bool OnExiting(IScreen next)
+        public override bool OnExiting(ScreenExitEvent e)
         {
             this.FadeOut(1000, Easing.OutPow10);
             localConfig.SetValue(CircleSetting.Parallax, parallaxEnabled);
 
-            return base.OnExiting(next);
+            return base.OnExiting(e);
         }
 
-        public override void OnResuming(IScreen last)
+        public override void OnResuming(ScreenTransitionEvent e)
         {
             background.ChangeTexture(textureSource, textureName, 1000, Easing.OutPow10);
             onPaused();
 
-            base.OnResuming(last);
+            base.OnResuming(e);
         }
 
         private void onPaused()

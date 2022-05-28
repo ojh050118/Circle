@@ -26,7 +26,8 @@ namespace Circle.Game.Tests.Visual.Overlays
 
             foreach (var bi in beatmaps.GetBeatmapInfos())
             {
-                AddStep($"{bi.Beatmap.Settings.SongFileName}", () => music.ChangeTrack(bi));
+                if (!string.IsNullOrEmpty(bi.SongPath))
+                    AddStep($"{bi.Beatmap.Settings.SongFileName}", () => music.ChangeTrack(bi));
             }
         }
 

@@ -28,7 +28,9 @@ namespace Circle.Game.Graphics.UserInterface
         private void load()
         {
             BackgroundColour = Color4.Transparent;
-            BackgroundColourHover = Color4Extensions.FromHex(@"172023");
+            BackgroundColourHover = Color4.DeepSkyBlue;
+            Masking = true;
+            CornerRadius = 5;
 
             updateTextColour();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Rulesets;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using Circle.Game.Utils;
@@ -88,14 +89,16 @@ namespace Circle.Game.Screens.Play
 
             tilesInfo = tileContainer.GetTilesInfo().ToArray();
             redPlanet.Expansion = bluePlanet.Expansion = 0;
-            bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, (float)startTimes[0], currentBeatmap.Settings.Bpm);
+            bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Settings.Bpm);
+            cameraContainer.Rotation = currentBeatmap.Settings.Rotation;
+            cameraContainer.Scale = new Vector2(1 / (currentBeatmap.Settings.Zoom / 100));
         }
 
         protected override void LoadComplete()
         {
-            addTileTransforms(gameplayStartTime);
+            addTileTransforms();
             addTransforms(gameplayStartTime);
-            addCameraTransforms(gameplayStartTime);
+            addCameraTransforms();
 
             base.LoadComplete();
         }
@@ -239,7 +242,7 @@ namespace Circle.Game.Screens.Play
             }
         }
 
-        private void addCameraTransforms(double gameplayStartTime)
+        private void addCameraTransforms()
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var offset = startTimes;
@@ -323,9 +326,11 @@ namespace Circle.Game.Screens.Play
                         cameraContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
                 }
             }
+
+            //cameraContainer.AddCameraTransforms(currentBeatmap.Settings, tilesInfo, ElementTransformExtensions.GenerateCameraTransforms(currentBeatmap.Settings, startTimes, tilesInfo).ToList());
         }
 
-        private void addTileTransforms(double gameplayStartTime)
+        private void addTileTransforms()
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var tilesOffset = startTimes;
@@ -364,18 +369,5 @@ namespace Circle.Game.Screens.Play
         private float getRelativeDuration(float oldRotation, int floor, float bpm) => CalculationExtensions.GetRelativeDuration(oldRotation, tilesInfo[floor].Angle, bpm);
 
         private float getNewBpm(float current, int floor) => CalculationExtensions.GetNewBpm(tilesInfo, current, floor);
-
-        private class CameraTransform
-        {
-            public Actions Action { get; set; }
-
-            public double StartTime { get; set; }
-
-            public double Duration { get; set; }
-
-            public Vector2? TargetPosition { get; set; }
-
-            public Vector2? TargetOffset { get; set; }
-        }
     }
 }

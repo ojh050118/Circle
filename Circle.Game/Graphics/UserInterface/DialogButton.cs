@@ -60,13 +60,13 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override bool OnHover(HoverEvent e)
         {
-            hover.FadeTo(0.3f, 100, Easing.OutPow10);
+            hover.FadeTo(0.3f, 0, Easing.OutPow10);
             return base.OnHover(e);
         }
 
         protected override void OnHoverLost(HoverLostEvent e)
         {
-            hover.FadeOut(1000, Easing.OutPow10);
+            hover.FadeOut(200, Easing.OutPow10);
             base.OnHoverLost(e);
         }
     }

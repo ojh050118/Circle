@@ -41,9 +41,9 @@ namespace Circle.Game.Screens.Play
             };
         }
 
-        public override void OnEntering(IScreen last)
+        public override void OnEntering(ScreenTransitionEvent e)
         {
-            base.OnEntering(last);
+            base.OnEntering(e);
 
             if (beatmapInfo.Beatmap.AngleData == null || beatmapInfo.Beatmap.AngleData.Length == 0)
             {
@@ -69,16 +69,16 @@ namespace Circle.Game.Screens.Play
             checkIsLoaded();
         }
 
-        public override bool OnExiting(IScreen next)
+        public override bool OnExiting(ScreenExitEvent e)
         {
             Scheduler.CancelDelayedTasks();
 
-            return base.OnExiting(next);
+            return base.OnExiting(e);
         }
 
-        public override void OnResuming(IScreen last)
+        public override void OnResuming(ScreenTransitionEvent e)
         {
-            base.OnResuming(last);
+            base.OnResuming(e);
             OnExit();
         }
 

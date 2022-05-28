@@ -1,10 +1,12 @@
-﻿using osu.Framework.Allocation;
+﻿using System;
+using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Input.Events;
 using osuTK;
 using osuTK.Graphics;
 
@@ -17,6 +19,8 @@ namespace Circle.Game.Overlays.OSD
         private const int toast_minimum_width = 300;
         private const int toast_default_padding = 15;
         private const int toast_height = 70;
+
+        public event Action<bool> CloseRequested;
 
         public DrawableToast(ToastInfo toastInfo)
         {
@@ -118,6 +122,31 @@ namespace Circle.Game.Overlays.OSD
                 Colour = Color4.Black.Opacity(0.2f),
                 Radius = 10
             };
+        }
+
+        protected override bool OnDragStart(DragStartEvent e)
+        {
+            return true;
+        }
+
+        protected override void OnDrag(DragEvent e)
+        {
+            base.OnDrag(e);
+
+            this.MoveToOffset(new Vector2(0, e.Delta.Y));
+        }
+
+        protected override void OnDragEnd(DragEndEvent e)
+        {
+            base.OnDragEnd(e);
+
+            if (Y > 0)
+                this.MoveTo(Vector2.Zero, Y * 2, Easing.OutElastic);
+            else if (Y < 0)
+            {
+                CloseRequested?.Invoke(true);
+                this.MoveToY(-100, 250, Easing.OutCubic).Expire();
+            }
         }
     }
 }
