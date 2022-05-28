@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Rulesets;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using Circle.Game.Utils;
@@ -90,9 +91,7 @@ namespace Circle.Game.Screens.Play
             redPlanet.Expansion = bluePlanet.Expansion = 0;
             bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Settings.Bpm);
             cameraContainer.Rotation = currentBeatmap.Settings.Rotation;
-
-            if (currentBeatmap.Settings.Zoom.HasValue)
-                cameraContainer.Scale = new Vector2(1 / (currentBeatmap.Settings.Zoom.Value / 100));
+            cameraContainer.Scale = new Vector2(1 / (currentBeatmap.Settings.Zoom / 100));
         }
 
         protected override void LoadComplete()
@@ -245,162 +244,7 @@ namespace Circle.Game.Screens.Play
 
         private void addCameraTransforms()
         {
-            float bpm = currentBeatmap.Settings.Bpm;
-            var offset = startTimes;
-            var cameraTransforms = new List<CameraTransform>();
-            var lastRelativity = currentBeatmap.Settings.RelativeTo;
-            var lastPosition = currentBeatmap.Settings.Position != null ? new Vector2(currentBeatmap.Settings.Position[0], currentBeatmap.Settings.Position[1]) : Vector2.Zero;
-            float lastRotation = currentBeatmap.Settings.Rotation;
-
-            for (int floor = 0; floor < tilesInfo.Length; floor++)
-            {
-                bpm = getNewBpm(bpm, floor);
-                var prevAngle = tilesInfo[floor].Angle;
-                var fixedRotation = computeRotation(floor, prevAngle);
-
-                // Camera move (relative to player)
-                if (lastRelativity == Relativity.Player)
-                {
-                    cameraTransforms.Add(new CameraTransform
-                    {
-                        Action = new Actions
-                        {
-                            Floor = floor,
-                            BeatsPerMinute = bpm,
-                            Ease = Easing.OutSine,
-                            Rotation = lastRotation
-                        },
-                        StartTime = offset[floor],
-                        Duration = 400 + 60 / bpm * 500,
-                        RelativeTo = Relativity.Player,
-                        Position = lastPosition
-                    });
-                }
-
-                // 한 타일의 액션에 접근
-                for (int actionIndex = 0; actionIndex < tilesInfo[floor].Action.Length; actionIndex++)
-                {
-                    var action = tilesInfo[floor].Action[actionIndex];
-
-                    if (action.EventType == EventType.MoveCamera)
-                    {
-                        lastRelativity = action.RelativeTo ?? lastRelativity;
-                        lastPosition = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : lastPosition;
-
-                        if (action.Rotation.HasValue)
-                            lastRotation -= action.RelativeTo == Relativity.LastPosition ? 0 : action.Rotation.Value;
-                    }
-
-                    switch (action.EventType)
-                    {
-                        case EventType.MoveCamera:
-                            var angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
-                            cameraTransforms.Add(new CameraTransform
-                            {
-                                Action = action,
-                                StartTime = offset[floor] + angleOffset,
-                                Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * action.Duration,
-                                Position = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : Vector2.Zero,
-                                RelativeTo = action.RelativeTo
-                            });
-                            break;
-
-                        // 이벤트 반복은 원래 이벤트를 포함해 반복하지 않습니다. (ex: 반복횟수가 1이면 이벤트는 총 2번 실행됨)
-                        case EventType.RepeatEvents:
-                            var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
-                            var intervalBeat = 60000 / bpm * action.Interval;
-
-                            for (int i = 1; i <= action.Repetitions; i++)
-                            {
-                                var startTime = offset[floor] + intervalBeat * i;
-
-                                foreach (var cameraEvent in cameraEvents)
-                                {
-                                    var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
-
-                                    if (cameraEvent.EventTag == action.Tag)
-                                    {
-                                        cameraTransforms.Add(new CameraTransform
-                                        {
-                                            Action = cameraEvent,
-                                            StartTime = startTime + angleTimeOffset,
-                                            Duration = getRelativeDuration(fixedRotation, tilesInfo[floor].TileType == TileType.Midspin ? floor + 1 : floor, bpm) * cameraEvent.Duration,
-                                            Position = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : Vector2.Zero,
-                                            RelativeTo = action.RelativeTo
-                                        });
-                                    }
-                                }
-                            }
-
-                            break;
-                    }
-                }
-            }
-
-            processCameraTransforms(cameraTransforms);
-        }
-
-        private void processCameraTransforms(List<CameraTransform> cameraTransforms)
-        {
-            Vector2 lastPosition = currentBeatmap.Settings.Position != null ? new Vector2(currentBeatmap.Settings.Position[0], currentBeatmap.Settings.Position[1]) : Vector2.Zero;
-            float lastRotation = currentBeatmap.Settings.Rotation;
-
-            // 트랜스폼을 시작 시간순으로 추가해야 올바르게 추가됩니다.
-            foreach (var cameraTransform in cameraTransforms.OrderBy(a => a.StartTime))
-            {
-                var action = cameraTransform.Action;
-                Vector2 cameraPosition = tilesInfo[action.Floor].Position;
-                cameraPosition += new Vector2(Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
-
-                using (cameraContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
-                {
-                    if (action.Zoom.HasValue)
-                    {
-                        float cameraZoom = 1 / ((float)action.Zoom.Value / 100);
-
-                        if (float.IsInfinity(cameraZoom))
-                            cameraZoom = 0;
-
-                        cameraContainer.ScaleTo(cameraZoom, cameraTransform.Duration, action.Ease);
-                    }
-
-                    if (action.Rotation.HasValue)
-                    {
-                        lastRotation = cameraTransform.RelativeTo == Relativity.LastPosition ? lastRotation + action.Rotation.Value : action.Rotation.Value;
-                        cameraContainer.RotateTo(lastRotation, cameraTransform.Duration, action.Ease);
-                    }
-                }
-
-                using (cameraContainer.Child.BeginAbsoluteSequence(cameraTransform.StartTime, false))
-                {
-                    switch (cameraTransform.RelativeTo)
-                    {
-                        // 카메라가 타일에 고정됩니다.
-                        case Relativity.Tile:
-                            lastPosition = cameraPosition;
-                            cameraContainer.Child.MoveTo(-cameraPosition, cameraTransform.Duration, action.Ease);
-                            break;
-
-                        // 마지막 카메라 위치로 고정합니다.
-                        case Relativity.LastPosition:
-                            lastPosition += new Vector2(Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
-                            cameraContainer.Child.MoveTo(-lastPosition, cameraTransform.Duration, action.Ease);
-                            break;
-
-                        // 플레이어(행성)의 위치로 고정합니다.
-                        case Relativity.Player:
-                            lastPosition = cameraPosition;
-                            cameraContainer.Child.MoveTo(-cameraPosition, cameraTransform.Duration, action.Ease);
-                            break;
-
-                        // 첫 타일의 위치로 고정합니다.
-                        case Relativity.Global:
-                            lastPosition = new Vector2(Tile.WIDTH * cameraTransform.Position.X, -Tile.WIDTH * cameraTransform.Position.Y);
-                            cameraContainer.Child.MoveTo(-lastPosition, cameraTransform.Duration, action.Ease);
-                            break;
-                    }
-                }
-            }
+            cameraContainer.AddCameraTransforms(currentBeatmap.Settings, tilesInfo, ElementTransformExtensions.GenerateCameraTransforms(currentBeatmap.Settings, startTimes, tilesInfo).ToList());
         }
 
         private void addTileTransforms()
@@ -442,18 +286,5 @@ namespace Circle.Game.Screens.Play
         private float getRelativeDuration(float oldRotation, int floor, float bpm) => CalculationExtensions.GetRelativeDuration(oldRotation, tilesInfo[floor].Angle, bpm);
 
         private float getNewBpm(float current, int floor) => CalculationExtensions.GetNewBpm(tilesInfo, current, floor);
-
-        private class CameraTransform
-        {
-            public Actions Action { get; set; }
-
-            public double StartTime { get; set; }
-
-            public double Duration { get; set; }
-
-            public Vector2 Position { get; set; }
-
-            public Relativity? RelativeTo { get; set; }
-        }
     }
 }

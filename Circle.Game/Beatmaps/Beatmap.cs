@@ -36,7 +36,7 @@ namespace Circle.Game.Beatmaps
         public Relativity RelativeTo { get; set; }
         public float[] Position { get; set; }
         public float Rotation { get; set; }
-        public float? Zoom { get; set; }
+        public float Zoom { get; set; }
         public Easing PlanetEasing { get; set; }
 
         public bool Equals(Settings settings) => Artist == settings.Artist &&
@@ -64,7 +64,7 @@ namespace Circle.Game.Beatmaps
     public struct Actions : IEquatable<Actions>
     {
         public int Floor { get; set; }
-        public EventType? EventType { get; set; }
+        public EventType EventType { get; set; }
         public SpeedType? SpeedType { get; set; }
         public float BeatsPerMinute { get; set; }
         public float BpmMultiplier { get; set; }
@@ -73,7 +73,7 @@ namespace Circle.Game.Beatmaps
         public double Duration { get; set; }
         public float? Rotation { get; set; }
         public float AngleOffset { get; set; }
-        public float[] Position { get; set; }
+        public float[]? Position { get; set; }
         public int? Zoom { get; set; }
         public int Repetitions { get; set; }
         public double Interval { get; set; }
