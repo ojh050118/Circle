@@ -35,8 +35,7 @@ namespace Circle.Game.Overlays
 
         private readonly SpriteText title;
         private readonly SpriteText description;
-        private FillFlowContainer buttonContainer;
-        private FillFlowContainer divisor;
+        private readonly Container buttonContent;
 
         public DialogOverlay()
         {
@@ -58,30 +57,52 @@ namespace Circle.Game.Overlays
                         Colour = Color4.White,
                         Alpha = 0.8f
                     },
-                    new FillFlowContainer
+                    new GridContainer
                     {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
                         RelativeSizeAxes = Axes.X,
                         AutoSizeAxes = Axes.Y,
-                        Direction = FillDirection.Vertical,
-                        Children = new Drawable[]
+                        RowDimensions = new[]
                         {
-                            title = new SpriteText
+                            new Dimension(GridSizeMode.AutoSize),
+                            new Dimension(GridSizeMode.AutoSize)
+                        },
+                        Content = new[]
+                        {
+                            new Drawable[]
                             {
-                                Anchor = Anchor.TopCentre,
-                                Origin = Anchor.TopCentre,
-                                Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
-                                Colour = Color4.Black,
-                                Margin = new MarginPadding { Vertical = 10 },
+                                new FillFlowContainer
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    AutoSizeAxes = Axes.Y,
+                                    Direction = FillDirection.Vertical,
+                                    Children = new Drawable[]
+                                    {
+                                        title = new SpriteText
+                                        {
+                                            Anchor = Anchor.TopCentre,
+                                            Origin = Anchor.TopCentre,
+                                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
+                                            Colour = Color4.Black,
+                                            Margin = new MarginPadding { Vertical = 10 },
+                                        },
+                                        description = new SpriteText
+                                        {
+                                            Anchor = Anchor.TopCentre,
+                                            Origin = Anchor.TopCentre,
+                                            Font = FontUsage.Default.With(size: 22),
+                                            Colour = Color4.Black,
+                                            Margin = new MarginPadding { Bottom = 10 },
+                                        }
+                                    },
+                                }
                             },
-                            description = new SpriteText
+                            new Drawable[]
                             {
-                                Anchor = Anchor.TopCentre,
-                                Origin = Anchor.TopCentre,
-                                Font = FontUsage.Default.With(size: 22),
-                                Colour = Color4.Black,
-                                Margin = new MarginPadding { Bottom = 10 },
+                                buttonContent = new Container
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    AutoSizeAxes = Axes.Y,
+                                }
                             }
                         }
                     }
@@ -92,34 +113,31 @@ namespace Circle.Game.Overlays
         [BackgroundDependencyLoader]
         private void load()
         {
-            if (Buttons == null || Buttons.Count == 0)
-                return;
-
-            Content.Add(createButtonContainer());
+            refreshButtons();
         }
 
         public void Push()
         {
-            if (buttonContainer == null)
-                Content.Add(createButtonContainer());
-            else
-            {
-                divisor.Children = createButtonDivisor(Buttons);
-                buttonContainer.Children = computeWidth(Buttons);
-            }
+            refreshButtons();
 
             Show();
         }
 
-        private Container createButtonContainer()
+        private void refreshButtons()
         {
-            return new Container
+            buttonContent.Clear();
+
+            if (Buttons != null && Buttons.Count != 0)
+                buttonContent.Add(createButtonContainer());
+        }
+
+        private FillFlowContainer createButtonContainer()
+        {
+            return new FillFlowContainer
             {
+                Direction = FillDirection.Vertical,
                 RelativeSizeAxes = Axes.X,
-                Anchor = Anchor.BottomCentre,
-                Origin = Anchor.BottomCentre,
                 AutoSizeAxes = Axes.Y,
-                Padding = new MarginPadding { Top = 80 },
                 Children = new Drawable[]
                 {
                     new Box
@@ -131,66 +149,70 @@ namespace Circle.Game.Overlays
                         RelativeSizeAxes = Axes.X,
                         Height = 2,
                     },
-                    divisor = new FillFlowContainer
+                    new GridContainer
                     {
                         Anchor = Anchor.TopCentre,
                         Origin = Anchor.TopCentre,
-                        Direction = FillDirection.Horizontal,
                         RelativeSizeAxes = Axes.X,
                         AutoSizeAxes = Axes.Y,
-                        Children = createButtonDivisor(Buttons)
+                        RowDimensions = new[]
+                        {
+                            new Dimension(GridSizeMode.AutoSize)
+                        },
+                        ColumnDimensions = getDimension(createButtonGrid(Buttons)),
+                        Content = new[]
+                        {
+                            createButtonGrid(Buttons)
+                        }
                     },
-                    buttonContainer = new FillFlowContainer
-                    {
-                        Anchor = Anchor.TopCentre,
-                        Origin = Anchor.TopCentre,
-                        Direction = FillDirection.Horizontal,
-                        RelativeSizeAxes = Axes.X,
-                        AutoSizeAxes = Axes.Y,
-                        Children = computeWidth(Buttons)
-                    }
                 }
             };
         }
 
-        private Container[] createButtonDivisor(IReadOnlyList<DialogButton> buttons)
+        private Drawable[] createButtonGrid(IReadOnlyList<DialogButton> buttons)
         {
-            List<Container> boxContainer = new List<Container>();
+            List<Drawable> buttonGrid = new List<Drawable>();
 
-            for (int i = 1; i < buttons.Count; i++)
+            for (int i = 0; i < buttons.Count; i++)
             {
-                boxContainer.Add(new Container
+                buttonGrid.Add(buttons[i]);
+
+                if (i < buttons.Count - 1)
                 {
-                    RelativeSizeAxes = Axes.X,
-                    Height = 50,
-                    Width = (float)buttons.Count / (buttons.Count * buttons.Count),
-                    Child = new Box
+                    buttonGrid.Add(new Box
                     {
-                        Anchor = Anchor.BottomRight,
-                        Origin = Anchor.BottomCentre,
+                        Anchor = Anchor.BottomLeft,
+                        Origin = Anchor.BottomLeft,
                         Alpha = 0.3f,
                         Colour = Color4.Black,
                         RelativeSizeAxes = Axes.Y,
                         Width = 2,
-                        Height = 0.96f
-                    }
-                });
+                    });
+                }
             }
 
-            return boxContainer.ToArray();
+            return buttonGrid.ToArray();
         }
 
-        private DialogButton[] computeWidth(IReadOnlyList<DialogButton> buttons)
+        private Dimension[] getDimension(Drawable[] content)
         {
-            var result = new List<DialogButton>();
+            List<Dimension> dimensions = new List<Dimension>();
 
-            foreach (var button in buttons)
+            foreach (var d in content)
             {
-                button.Width = (float)buttons.Count / (buttons.Count * buttons.Count);
-                result.Add(button);
+                switch (d)
+                {
+                    case Box box:
+                        dimensions.Add(new Dimension(GridSizeMode.AutoSize));
+                        break;
+
+                    case DialogButton button:
+                        dimensions.Add(new Dimension(GridSizeMode.Distributed));
+                        break;
+                }
             }
 
-            return result.ToArray();
+            return dimensions.ToArray();
         }
 
         protected override void PopIn()
