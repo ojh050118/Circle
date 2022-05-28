@@ -326,6 +326,7 @@ namespace Circle.Game.Screens.Play
                         cameraContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
                 }
             }
+
             //cameraContainer.AddCameraTransforms(currentBeatmap.Settings, tilesInfo, ElementTransformExtensions.GenerateCameraTransforms(currentBeatmap.Settings, startTimes, tilesInfo).ToList());
         }
 

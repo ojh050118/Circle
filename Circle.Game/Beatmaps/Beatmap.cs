@@ -73,7 +73,9 @@ namespace Circle.Game.Beatmaps
         public double Duration { get; set; }
         public float? Rotation { get; set; }
         public float AngleOffset { get; set; }
+#pragma warning disable CS8632
         public float[]? Position { get; set; }
+#pragma warning restore CS8632
         public int? Zoom { get; set; }
         public int Repetitions { get; set; }
         public double Interval { get; set; }

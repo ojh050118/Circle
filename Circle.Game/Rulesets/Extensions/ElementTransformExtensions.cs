@@ -15,7 +15,6 @@ namespace Circle.Game.Rulesets.Extensions
         {
             var lastPosition = new Vector2(settings.Position[0], settings.Position[1]);
             var lastRotation = settings.Rotation;
-            var lastRelativity = settings.RelativeTo;
 
             // 트랜스폼을 시작 시간순으로 추가해야 올바르게 추가됩니다.
             foreach (var cameraTransform in cameraTransforms.OrderBy(a => a.StartTime))
@@ -31,7 +30,7 @@ namespace Circle.Game.Rulesets.Extensions
                 {
                     if (cameraTransform.Zoom.HasValue)
                     {
-                        float cameraZoom = 1 / ((float)cameraTransform.Zoom.Value / 100);
+                        float cameraZoom = 1 / (cameraTransform.Zoom.Value / 100);
 
                         if (float.IsInfinity(cameraZoom))
                             cameraZoom = 0;
@@ -59,14 +58,12 @@ namespace Circle.Game.Rulesets.Extensions
                         // 카메라가 타일에 고정됩니다.
                         case Relativity.Player:
                         case Relativity.Tile:
-                            lastRelativity = cameraTransform.RelativeTo.Value;
                             lastPosition = tileCameraPosition;
                             cameraContainer.Child.MoveTo(-tileCameraPosition, cameraTransform.Duration, action.Ease);
                             break;
 
                         // 첫 타일의 위치로 고정합니다.
                         case Relativity.Global:
-                            lastRelativity = cameraTransform.RelativeTo.Value;
                             lastPosition = Vector2.Zero;
 
                             if (cameraTransform.Position.HasValue)
@@ -167,16 +164,14 @@ namespace Circle.Game.Rulesets.Extensions
                             var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
                             var intervalBeat = 60000 / bpm * action.Interval;
 
-                            var relativity = action.RelativeTo ?? lastRelativity;
-                            var position = action.Position != null ? new Vector2(action.Position[0], action.Position[1]) : lastPosition;
-                            var rotation = 0f;
-
                             if (action.Rotation.HasValue)
                             {
                                 if (action.RelativeTo == null)
-                                    rotation = action.Rotation.Value;
+                                {
+                                }
                                 else if (action.RelativeTo == Relativity.LastPosition)
-                                    rotation += action.Rotation.Value;
+                                {
+                                }
                             }
 
                             for (int i = 1; i <= action.Repetitions; i++)
