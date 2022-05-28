@@ -91,16 +91,16 @@ namespace Circle.Game.Screens
                 beatmapManager.ReloadBeatmaps();
         }
 
-        public override void OnEntering(IScreen last)
+        public override void OnEntering(ScreenTransitionEvent e)
         {
-            base.OnEntering(last);
+            base.OnEntering(e);
 
             background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
         }
 
-        public override void OnResuming(IScreen last)
+        public override void OnResuming(ScreenTransitionEvent e)
         {
-            base.OnResuming(last);
+            base.OnResuming(e);
 
             background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
         }

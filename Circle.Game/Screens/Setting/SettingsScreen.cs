@@ -68,11 +68,11 @@ namespace Circle.Game.Screens.Setting
             });
         }
 
-        public override void OnEntering(IScreen last)
+        public override void OnEntering(ScreenTransitionEvent e)
         {
             background.ChangeTexture(TextureSource.Internal, "bg2", 1000, Easing.OutPow10);
 
-            base.OnEntering(last);
+            base.OnEntering(e);
         }
     }
 }

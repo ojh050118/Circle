@@ -47,9 +47,9 @@ namespace Circle.Game.Screens
                 sampleBack = audio.Samples.Get("screen-back");
         }
 
-        public override void OnEntering(IScreen last)
+        public override void OnEntering(ScreenTransitionEvent e)
         {
-            base.OnEntering(last);
+            base.OnEntering(e);
             this.MoveToX(DrawWidth).MoveToX(0, 1000, Easing.OutPow10);
 
             if (FadeBackground)
@@ -59,7 +59,7 @@ namespace Circle.Game.Screens
             }
         }
 
-        public override bool OnExiting(IScreen next)
+        public override bool OnExiting(ScreenExitEvent e)
         {
             this.MoveToX(DrawWidth, 1000, Easing.OutPow10);
 
@@ -71,20 +71,20 @@ namespace Circle.Game.Screens
 
             sampleBack?.Play();
 
-            return base.OnExiting(next);
+            return base.OnExiting(e);
         }
 
-        public override void OnResuming(IScreen last)
+        public override void OnResuming(ScreenTransitionEvent e)
         {
-            base.OnResuming(last);
+            base.OnResuming(e);
 
             this.MoveToX(0, 1000, Easing.OutPow10);
             this.FadeIn(1000, Easing.OutPow10);
         }
 
-        public override void OnSuspending(IScreen next)
+        public override void OnSuspending(ScreenTransitionEvent e)
         {
-            base.OnSuspending(next);
+            base.OnSuspending(e);
 
             this.MoveToX(-DrawWidth * 0.5f, 2500, Easing.OutPow10);
             this.FadeOut(1250, Easing.OutPow10);

@@ -84,9 +84,9 @@ namespace Circle.Game.Screens.Select
             setBeatmap();
         }
 
-        public override void OnEntering(IScreen last)
+        public override void OnEntering(ScreenTransitionEvent e)
         {
-            base.OnEntering(last);
+            base.OnEntering(e);
 
             details.RotateTo(-45).Then().RotateTo(0, 1000, Easing.OutPow10);
             details.MoveToY(500).Then().MoveToY(0, 1000, Easing.OutPow10);
@@ -149,17 +149,17 @@ namespace Circle.Game.Screens.Select
             return base.OnPressed(e);
         }
 
-        public override void OnSuspending(IScreen next)
+        public override void OnSuspending(ScreenTransitionEvent e)
         {
-            base.OnSuspending(next);
+            base.OnSuspending(e);
 
             carousel.FadeOut(500, Easing.OutPow10);
             details.MoveToX(-500, 500, Easing.OutPow10);
         }
 
-        public override void OnResuming(IScreen last)
+        public override void OnResuming(ScreenTransitionEvent e)
         {
-            base.OnResuming(last);
+            base.OnResuming(e);
 
             carousel.FadeIn(1000, Easing.OutPow10);
             details.MoveToX(0, 500, Easing.OutPow10);
