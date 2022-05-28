@@ -202,11 +202,11 @@ namespace Circle.Game.Overlays
             {
                 switch (d)
                 {
-                    case Box box:
+                    case Box _:
                         dimensions.Add(new Dimension(GridSizeMode.AutoSize));
                         break;
 
-                    case DialogButton button:
+                    case DialogButton _:
                         dimensions.Add(new Dimension(GridSizeMode.Distributed));
                         break;
                 }

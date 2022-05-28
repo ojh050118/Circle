@@ -147,7 +147,6 @@ namespace Circle.Game.Overlays.OSD
                 CloseRequested?.Invoke(true);
                 this.MoveToY(-100, 250, Easing.OutCubic).Expire();
             }
-
         }
     }
 }

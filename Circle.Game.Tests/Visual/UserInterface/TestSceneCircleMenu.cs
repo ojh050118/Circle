@@ -1,7 +1,5 @@
 ﻿using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Graphics;
-using osuTK;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {

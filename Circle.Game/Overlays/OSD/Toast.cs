@@ -40,7 +40,6 @@ namespace Circle.Game.Overlays.OSD
                 toast.Delay(delay).MoveToY(0, 250, Easing.OutCubic).Then().Delay(1500).MoveToY(-100, 250, Easing.OutCubic).Then().Expire();
                 Scheduler.AddDelayed(() => sample?.Play(), delay);
             });
-
         }
     }
 }
