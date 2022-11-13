@@ -19,12 +19,6 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override DirectorySelectorDirectory CreateDirectoryItem(DirectoryInfo directory, string displayName = null) => new CircleBreadcrumbDisplayDirectory(directory, displayName);
 
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            Height = 50;
-        }
-
         private class CircleBreadcrumbDisplayComputer : CircleBreadcrumbDisplayDirectory
         {
             protected override IconUsage? Icon => null;

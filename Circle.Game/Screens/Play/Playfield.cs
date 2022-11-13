@@ -10,6 +10,7 @@ using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Utils;
 using osuTK;
 
 namespace Circle.Game.Screens.Play
@@ -91,7 +92,8 @@ namespace Circle.Game.Screens.Play
             redPlanet.Expansion = bluePlanet.Expansion = 0;
             bluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Settings.Bpm);
             cameraContainer.Rotation = currentBeatmap.Settings.Rotation;
-            cameraContainer.Scale = new Vector2(1 / (currentBeatmap.Settings.Zoom / 100));
+            var zoom = Precision.AlmostEquals(currentBeatmap.Settings.Zoom, 0) ? 100 : currentBeatmap.Settings.Zoom;
+            cameraContainer.Scale = new Vector2(1 / (zoom / 100));
         }
 
         protected override void LoadComplete()
