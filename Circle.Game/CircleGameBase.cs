@@ -59,7 +59,7 @@ namespace Circle.Game
         private void load()
         {
             var files = Storage.GetStorageForDirectory("files");
-            var largeStore = new LargeTextureStore(Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
+            var largeStore = new LargeTextureStore(Host.Renderer, Host.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(Resources, @"Textures")));
 
             Resources.AddStore(new DllResourceStore(typeof(CircleResources).Assembly));
 

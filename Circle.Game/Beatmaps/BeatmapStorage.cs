@@ -24,7 +24,7 @@ namespace Circle.Game.Beatmaps
         public BeatmapStorage(Storage files, AudioManager audioManager, IResourceStore<byte[]> store, GameHost host = null)
         {
             Storage = files;
-            largeTextureStore = new LargeTextureStore(host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
+            largeTextureStore = new LargeTextureStore(host?.Renderer, host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
             trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(files));
             localStore = store;
         }
