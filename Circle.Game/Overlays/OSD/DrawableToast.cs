@@ -131,9 +131,11 @@ namespace Circle.Game.Overlays.OSD
 
         protected override void OnDrag(DragEvent e)
         {
-            base.OnDrag(e);
+            Vector2 change = e.MousePosition - e.MouseDownPosition;
 
-            this.MoveToOffset(new Vector2(0, e.Delta.Y));
+            change *= change.Length <= 0 ? 0 : MathF.Pow(change.Length, 0.7f) / change.Length;
+
+            this.MoveTo(change);
         }
 
         protected override void OnDragEnd(DragEndEvent e)
@@ -141,7 +143,7 @@ namespace Circle.Game.Overlays.OSD
             base.OnDragEnd(e);
 
             if (Y > 0)
-                this.MoveTo(Vector2.Zero, Y * 2, Easing.OutElastic);
+                this.MoveTo(Vector2.Zero, 800, Easing.OutElastic);
             else if (Y < 0)
             {
                 CloseRequested?.Invoke(true);
