@@ -17,10 +17,10 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install .NET 6.0.x
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "6.0.x"
 
@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: Circle-test-results-${{matrix.os.prettyname}}-${{matrix.threadingMode}}
@@ -46,22 +46,22 @@ jobs:
   build-only-android:
     if: false
     name: Build only (Android)
-    runs-on: macos-latest
+    runs-on: windows-latest
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set default Xamarin SDK version
-        run: |
-            $VM_ASSETS/select-xamarin-sdk-v2.sh --mono=6.12 --android=11.2
       - name: Install .NET 6.0.x
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "6.0.x"
 
-      - name: Build
-        run: msbuild Circle.Android/Circle.Android.csproj /restore /p:Configuration=Debug
+      - name: Install .NET workloads
+        run: dotnet workload install maui-android
+
+      - name: Compile
+        run: dotnet build -c Debug Circle.Android.slnf
 
   build-only-ios:
     if: false
@@ -70,22 +70,25 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install .NET 6.0.x
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "6.0.x"
 
+      - name: Install .NET Workloads
+        run: dotnet workload install maui-ios
+
       - name: Build
-        run: msbuild Circle.iOS/Circle.iOS.csproj /restore /p:Configuration=Debug
+        run: dotnet build -c Debug Circle.iOS
 
   inspect-code:
     name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install .NET 3.1.x LTS
         uses: actions/setup-dotnet@v1
@@ -93,7 +96,7 @@ jobs:
           dotnet-version: "3.1.x"
 
       - name: Install .NET 6.0.x
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "6.0.x"
 
