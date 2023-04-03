@@ -20,7 +20,6 @@ namespace Circle.Game.Graphics.Containers
         [BackgroundDependencyLoader]
         private void load(CircleConfigManager config)
         {
-            AutoSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             Children = new[]
@@ -95,7 +94,7 @@ namespace Circle.Game.Graphics.Containers
                         {
                             RedPlanet.ExpandTo(1);
                             RedPlanet.RotateTo(fixedRotation);
-                            RedPlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, floor, bpm), easing);
+                            RedPlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm), easing);
                         }
 
                         break;
@@ -105,7 +104,7 @@ namespace Circle.Game.Graphics.Containers
                         {
                             BluePlanet.ExpandTo(1);
                             BluePlanet.RotateTo(fixedRotation);
-                            BluePlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, floor, bpm), easing);
+                            BluePlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm), easing);
                         }
 
                         break;
@@ -114,7 +113,7 @@ namespace Circle.Game.Graphics.Containers
                 #endregion
 
                 // 회전을 마치면 다른 행성으로 회전할 준비를 해야합니다.
-                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, floor, bpm);
+                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
                 floor++;
 
                 #region Planet reducation
