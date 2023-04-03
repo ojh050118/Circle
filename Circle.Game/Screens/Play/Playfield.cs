@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
-using Circle.Game.Graphics.Containers;
 using Circle.Game.Rulesets;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
@@ -17,13 +16,10 @@ namespace Circle.Game.Screens.Play
 {
     public class Playfield : Container
     {
-        private ObjectContainer tileContainer;
-        private PlanetContainer planetContainer;
-        private Container cameraContainer;
-
-        private TileInfo[] tilesInfo;
-
-        public Action OnComplete { get; set; }
+        /// <summary>
+        /// 카운트다운 지속시간.
+        /// </summary>
+        private readonly double countdownDuration;
 
         private readonly Beatmap currentBeatmap;
 
@@ -32,12 +28,11 @@ namespace Circle.Game.Screens.Play
         /// </summary>
         private readonly double gameplayStartTime;
 
-        /// <summary>
-        /// 카운트다운 지속시간.
-        /// </summary>
-        private readonly double countdownDuration;
+        private Container cameraContainer;
+        private PlanetContainer planetContainer;
+        private ObjectContainer tileContainer;
 
-        private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, countdownDuration);
+        private TileInfo[] tilesInfo;
 
         public Playfield(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
@@ -45,6 +40,10 @@ namespace Circle.Game.Screens.Play
             this.gameplayStartTime = gameplayStartTime;
             this.countdownDuration = countdownDuration;
         }
+
+        public Action OnComplete { get; set; }
+
+        private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, countdownDuration);
 
         [BackgroundDependencyLoader]
         private void load(CircleConfigManager config)
