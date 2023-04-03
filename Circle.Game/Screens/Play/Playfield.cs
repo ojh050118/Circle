@@ -81,7 +81,7 @@ namespace Circle.Game.Screens.Play
 
         protected override void LoadComplete()
         {
-            addTileTransforms();
+            tileContainer.AddTileTransforms(gameplayStartTime, countdownDuration);
             planetContainer.AddPlanetTransform(currentBeatmap, gameplayStartTime);
             addCameraTransforms();
 
@@ -176,41 +176,7 @@ namespace Circle.Game.Screens.Play
             //cameraContainer.AddCameraTransforms(currentBeatmap.Settings, tilesInfo, ElementTransformExtensions.GenerateCameraTransforms(currentBeatmap.Settings, startTimes, tilesInfo).ToList());
         }
 
-        private void addTileTransforms()
-        {
-            float bpm = currentBeatmap.Settings.Bpm;
-            var tilesOffset = startTimes;
-
-            for (int i = 8; i < tilesInfo.Length; i++)
-                tileContainer.Children[i].Alpha = 0;
-
-            // Fade in
-            for (int i = 8; i < tilesInfo.Length; i++)
-            {
-                bpm = getNewBpm(bpm, i - 8);
-
-                using (tileContainer.Children[i].BeginAbsoluteSequence(tilesOffset[i - 8], false))
-                    tileContainer.Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
-            }
-
-            bpm = currentBeatmap.Settings.Bpm;
-
-            // Fade out
-            for (int i = 0; i < tilesInfo.Length; i++)
-            {
-                bpm = getNewBpm(bpm, i);
-
-                if (i > 3)
-                {
-                    using (tileContainer.Children[i - 4].BeginAbsoluteSequence(tilesOffset[i], false))
-                        tileContainer.Children[i - 4].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
-                }
-            }
-        }
-
         private float computeRotation(int floor, float prevAngle) => CalculationExtensions.ComputeRotation(tilesInfo, floor, prevAngle);
-
-        private RotationDirection getIsClockwise(int floor) => CalculationExtensions.GetIsClockwise(tilesInfo, floor) ? RotationDirection.Clockwise : RotationDirection.Counterclockwise;
 
         private float getRelativeDuration(float oldRotation, int floor, float bpm) => CalculationExtensions.GetRelativeDuration(oldRotation, tilesInfo[floor].Angle, bpm);
 
