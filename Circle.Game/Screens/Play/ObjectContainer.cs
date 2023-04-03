@@ -11,8 +11,6 @@ namespace Circle.Game.Screens.Play
 {
     public class ObjectContainer : Container<Tile>
     {
-        private float[] angleData => CalculationExtensions.ConvertAngles(currentBeatmap.AngleData);
-
         private readonly Beatmap currentBeatmap;
 
         public ObjectContainer(Beatmap beatmap)
@@ -22,6 +20,8 @@ namespace Circle.Game.Screens.Play
             AutoSizeAxes = Axes.Both;
             currentBeatmap = beatmap;
         }
+
+        private float[] angleData => CalculationExtensions.ConvertAngles(currentBeatmap.AngleData);
 
         [BackgroundDependencyLoader]
         private void load()
@@ -77,6 +77,39 @@ namespace Circle.Game.Screens.Play
                         });
 
                         break;
+                }
+            }
+        }
+
+        public void AddTileTransforms(double gameStartTime, double countdownDuration)
+        {
+            float bpm = currentBeatmap.Settings.Bpm;
+            var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
+            var tilesInfo = CalculationExtensions.GetTilesInfo(currentBeatmap);
+
+            for (int i = 8; i < tilesInfo.Count; i++)
+                Children[i].Alpha = 0;
+
+            // Fade in
+            for (int i = 8; i < tilesInfo.Count; i++)
+            {
+                bpm = tilesInfo.GetNewBpm(bpm, i - 8);
+
+                using (Children[i].BeginAbsoluteSequence(tilesOffset[i - 8], false))
+                    Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
+            }
+
+            bpm = currentBeatmap.Settings.Bpm;
+
+            // Fade out
+            for (int i = 0; i < tilesInfo.Count; i++)
+            {
+                bpm = tilesInfo.GetNewBpm(bpm, i);
+
+                if (i > 3)
+                {
+                    using (Children[i - 4].BeginAbsoluteSequence(tilesOffset[i], false))
+                        Children[i - 4].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
             }
         }
