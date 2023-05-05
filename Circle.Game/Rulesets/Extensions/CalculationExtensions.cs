@@ -352,25 +352,25 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>반전된 값의 각도 데이터.</returns>
         public static float[] ConvertAngles(float[] targetAngleData)
         {
-            List<float> newAngleData = new List<float>();
+            float[] convertedData = new float[targetAngleData.Length + 1];
 
             for (int i = 0; i < targetAngleData.Length; i++)
             {
                 if (targetAngleData[i] == 999 || targetAngleData[i] <= 0)
                 {
                     if (targetAngleData[i] >= 0)
-                        newAngleData.Add(targetAngleData[i]);
+                        convertedData[i] = targetAngleData[i];
                     else
-                        newAngleData.Add(newAngleData[i - 1] - 180);
+                        convertedData[i] = convertedData[i - 1] - 180;
+
                     continue;
                 }
 
-                newAngleData.Add(360 - targetAngleData[i]);
+                convertedData[i] = 360 - targetAngleData[i];
             }
 
-            newAngleData.Add(360 - targetAngleData.Last());
-
-            return newAngleData.ToArray();
+            convertedData[^1] = 360 - targetAngleData.Last();
+            return convertedData;
         }
     }
 }
