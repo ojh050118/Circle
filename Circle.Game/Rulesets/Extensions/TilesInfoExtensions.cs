@@ -96,5 +96,13 @@ namespace Circle.Game.Rulesets.Extensions
                     return bpm;
             }
         }
+
+        public static float GetRelativeDuration(this IReadOnlyList<TileInfo> tilesInfo, float oldRotation, int floor, float bpm)
+        {
+            if (tilesInfo[floor].TileType == TileType.Midspin)
+                floor++;
+
+            return CalculationExtensions.GetRelativeDuration(oldRotation, tilesInfo[floor].Angle, bpm);
+        }
     }
 }
