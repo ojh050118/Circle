@@ -1,4 +1,5 @@
 ﻿using Circle.Game.Beatmaps;
+using osu.Framework.Graphics;
 using osuTK;
 
 namespace Circle.Game.Rulesets
@@ -18,5 +19,7 @@ namespace Circle.Game.Rulesets
         public Relativity? RelativeTo { get; set; }
 
         public float? Zoom { get; set; }
+
+        public Easing Easing { get; set; }
     }
 }

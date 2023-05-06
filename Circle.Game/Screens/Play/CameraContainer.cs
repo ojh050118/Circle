@@ -4,6 +4,7 @@ using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets;
 using Circle.Game.Rulesets.Extensions;
+using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -45,14 +46,29 @@ namespace Circle.Game.Screens.Play
             scalingContainer.Rotation = settings.Rotation;
             var zoom = Precision.AlmostEquals(settings.Zoom, 0) ? 100 : settings.Zoom;
             scalingContainer.Scale = new Vector2(1 / (zoom / 100));
+
+            if (settings.Position != null)
+                positionContainer.Position = new Vector2(settings.Position[0], settings.Position[1]) * Tile.WIDTH;
         }
 
         public void AddCameraTransforms(Beatmap beatmap, IReadOnlyList<double> tileStartTime)
         {
             float bpm = beatmap.Settings.Bpm;
-            var offset = tileStartTime;
-            var cameraTransforms = new List<CameraTransform>();
+
+            Relativity lastRelativity = beatmap.Settings.RelativeTo;
+            Vector2 lastOffset = Vector2.Zero;
+            Vector2 relativePosition;
+            float relativeRotation;
+
             var tilesInfo = CalculationExtensions.GetTilesInfo(beatmap);
+            var cameraTransforms = new List<CameraTransform>();
+
+            if (beatmap.Settings.Position != null)
+            {
+                lastOffset = new Vector2(beatmap.Settings.Position[0], beatmap.Settings.Position[1]) * (Tile.WIDTH - Planet.PLANET_SIZE);
+                relativePosition = lastOffset;
+                relativeRotation = beatmap.Settings.Rotation;
+            }
 
             #region Process Camera Transform
 
@@ -62,26 +78,33 @@ namespace Circle.Game.Screens.Play
                 var prevAngle = tilesInfo[floor].Angle;
                 var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
 
-                // 카메라 움직임의 상대성을 타일로 고정합니다.
-                // Todo: 오프셋과 다른 카메라 상대성을 지원해야합니다.
-                using (positionContainer.BeginAbsoluteSequence(offset[floor], false))
-                {
-                    positionContainer.MoveTo(-tilesInfo[floor].Position, 400 + 60 / bpm * 500, Easing.OutSine);
-                }
-
                 foreach (var action in tilesInfo[floor].Action)
                 {
+                    var position = -tilesInfo[floor].Position;
+
+                    if (action.Position != null)
+                    {
+                        var offset = -new Vector2(action.Position[0], -action.Position[1]) * (Tile.WIDTH - Planet.PLANET_SIZE);
+                        position += offset;
+                        lastOffset = offset;
+                    }
+
                     switch (action.EventType)
                     {
                         case EventType.MoveCamera:
                             var angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
 
+                            if (action.RelativeTo.HasValue)
+                                lastRelativity = action.RelativeTo.Value;
+
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
                             {
                                 Action = action,
-                                StartTime = offset[floor] + angleOffset,
-                                Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration
+                                StartTime = tileStartTime[floor] + angleOffset,
+                                Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
+                                Position = position,
+                                Easing = action.Ease
                             });
                             break;
 
@@ -93,7 +116,7 @@ namespace Circle.Game.Screens.Play
                             // 이벤트를 일정한 주기로 반복 횟수만큼 추가합니다.
                             for (int i = 1; i <= action.Repetitions; i++)
                             {
-                                var startTime = offset[floor] + intervalBeat * i;
+                                var startTime = tileStartTime[floor] + intervalBeat * i;
 
                                 foreach (var cameraEvent in cameraEvents)
                                 {
@@ -106,7 +129,9 @@ namespace Circle.Game.Screens.Play
                                         {
                                             Action = cameraEvent,
                                             StartTime = startTime + angleTimeOffset,
-                                            Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration
+                                            Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
+                                            Position = position,
+                                            Easing = action.Ease
                                         });
                                     }
                                 }
@@ -114,6 +139,17 @@ namespace Circle.Game.Screens.Play
 
                             break;
                     }
+                }
+
+                if (lastRelativity == Relativity.Player)
+                {
+                    cameraTransforms.Add(new CameraTransform
+                    {
+                        StartTime = tileStartTime[floor],
+                        Duration = 400 + 60 / bpm * 500,
+                        Position = -tilesInfo[floor].Position + lastOffset,
+                        Easing = Easing.OutSine
+                    });
                 }
             }
 
@@ -129,8 +165,6 @@ namespace Circle.Game.Screens.Play
 
                 using (scalingContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                 {
-                    //scalingContainer.OriginPosition = new Vector2()
-
                     // 확대 값이 있으면 확대 트랜스폼을 수행합니다.
                     if (action.Zoom.HasValue)
                     {
@@ -145,6 +179,12 @@ namespace Circle.Game.Screens.Play
                     // 회전 값이 있으면 회전 트랜스폼을 실행합니다.
                     if (action.Rotation.HasValue)
                         scalingContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
+                }
+
+                using (positionContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
+                {
+                    if (cameraTransform.Position.HasValue)
+                        positionContainer.MoveTo(cameraTransform.Position.Value, cameraTransform.Duration, cameraTransform.Easing);
                 }
             }
 
