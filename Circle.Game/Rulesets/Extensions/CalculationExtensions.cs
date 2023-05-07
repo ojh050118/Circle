@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.Objects;
+using JetBrains.Annotations;
 using osuTK;
 
 namespace Circle.Game.Rulesets.Extensions
@@ -371,6 +372,22 @@ namespace Circle.Game.Rulesets.Extensions
 
             convertedData[^1] = 360 - targetAngleData.Last();
             return convertedData;
+        }
+
+        public static Vector2 ToVector2(this float?[] arr)
+        {
+            if (arr == null)
+                return Vector2.Zero;
+
+            return new Vector2(-arr[0] ?? 0, arr[1] ?? 0);
+        }
+
+        public static Vector2 ToVector2([CanBeNull] this float[] arr)
+        {
+            if (arr != null)
+                return new Vector2(-arr[0], arr[1]);
+
+            return Vector2.Zero;
         }
     }
 }
