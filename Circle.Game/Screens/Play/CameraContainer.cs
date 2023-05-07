@@ -51,26 +51,22 @@ namespace Circle.Game.Screens.Play
 
         public void AddCameraTransforms(Beatmap beatmap, IReadOnlyList<double> tileStartTime)
         {
-            #region Initial Camera Setting
+            #region Initialize Camera Setting
 
             float bpm = beatmap.Settings.Bpm;
 
             // 카메라 이동을 위한 전역 설정입니다.
             Relativity cameraRelativity = beatmap.Settings.RelativeTo;
-            Vector2 cameraPosition = Vector2.Zero;
-            Vector2 cameraOffset = Vector2.Zero;
+            Vector2 cameraOffset = beatmap.Settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+            Vector2 cameraPosition = cameraOffset;
             float cameraRotation = beatmap.Settings.Rotation;
 
             var tilesInfo = CalculationExtensions.GetTilesInfo(beatmap);
             var cameraTransforms = new List<CameraTransform>();
 
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
-            // 마지막위치는 참조만 합니다.
             if (beatmap.Settings.RelativeTo == Relativity.LastPosition)
                 cameraRelativity = Relativity.Player;
-
-            cameraOffset = beatmap.Settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
-            cameraPosition = cameraOffset;
 
             #endregion
 
@@ -135,10 +131,12 @@ namespace Circle.Game.Screens.Play
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
                             {
-                                Action = action,
                                 StartTime = tileStartTime[floor] + angleOffset,
                                 Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
+                                RelativeTo = action.RelativeTo,
                                 Position = cameraPosition + cameraOffset,
+                                Rotation = cameraRotation,
+                                Zoom = action.Zoom,
                                 Easing = action.Ease
                             });
                             break;
@@ -164,10 +162,12 @@ namespace Circle.Game.Screens.Play
                                         // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                                         cameraTransforms.Add(new CameraTransform
                                         {
-                                            Action = cameraEvent,
                                             StartTime = startTime + angleTimeOffset,
                                             Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
+                                            RelativeTo = cameraEvent.RelativeTo,
                                             Position = specificPosition,
+                                            Rotation = cameraRotation,
+                                            Zoom = cameraEvent.Zoom,
                                             Easing = action.Ease
                                         });
                                     }
@@ -184,7 +184,10 @@ namespace Circle.Game.Screens.Play
                     {
                         StartTime = tileStartTime[floor],
                         Duration = 400 + 60 / bpm * 500,
+                        RelativeTo = cameraRelativity,
                         Position = position + cameraOffset,
+                        Rotation = null,
+                        Zoom = null,
                         Easing = Easing.OutSine
                     });
                 }
@@ -198,29 +201,30 @@ namespace Circle.Game.Screens.Play
             // 여기서 특정 시간에 발생하는 이벤트의 액션을 수행합니다.
             foreach (var cameraTransform in cameraTransforms.OrderBy(a => a.StartTime))
             {
-                var action = cameraTransform.Action;
-
                 using (scalingContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                 {
                     // 확대 값이 있으면 확대 트랜스폼을 수행합니다.
-                    if (action.Zoom.HasValue)
+                    if (cameraTransform.Zoom.HasValue)
                     {
-                        float cameraZoom = 1 / ((float)action.Zoom.Value / 100);
+                        float cameraZoom = 1 / (cameraTransform.Zoom.Value / 100);
 
                         if (float.IsInfinity(cameraZoom))
                             cameraZoom = 0;
 
-                        scalingContainer.ScaleTo(cameraZoom, cameraTransform.Duration, action.Ease);
+                        scalingContainer.ScaleTo(cameraZoom, cameraTransform.Duration, cameraTransform.Easing);
                     }
 
                     // 회전 값이 있으면 회전 트랜스폼을 실행합니다.
-                    if (action.Rotation.HasValue)
-                        scalingContainer.RotateTo(action.Rotation.Value, cameraTransform.Duration, action.Ease);
+                    if (cameraTransform.Rotation.HasValue)
+                        scalingContainer.RotateTo(cameraTransform.Rotation.Value, cameraTransform.Duration, cameraTransform.Easing);
                 }
 
-                using (positionContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
+                if (cameraTransform.Position.HasValue)
                 {
-                    if (cameraTransform.Position.HasValue)
+                    if (cameraTransform.Rotation.HasValue && cameraTransform.Zoom.HasValue && cameraTransform.RelativeTo == Relativity.Player)
+                        continue;
+
+                    using (positionContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                         positionContainer.MoveTo(cameraTransform.Position.Value, cameraTransform.Duration, cameraTransform.Easing);
                 }
             }

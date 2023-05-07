@@ -374,59 +374,6 @@ namespace Circle.Game.Rulesets.Extensions
             return convertedData;
         }
 
-        public static Vector2 GetRelativePosition(Actions action, Vector2 lastPos, Vector2 destPos)
-        {
-            Vector2 offset = Vector2.Zero;
-            Vector2 position = destPos;
-
-            if (action.Position != null)
-                offset = action.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
-
-            switch (action.RelativeTo)
-            {
-                case Relativity.Global:
-                    position = Vector2.Zero;
-                    break;
-
-                case Relativity.LastPosition:
-                    position = lastPos;
-                    break;
-
-                case Relativity.Tile:
-                    position = lastPos;
-                    break;
-
-                case null:
-                case Relativity.Player:
-                    break;
-            }
-
-            return position + offset;
-        }
-
-        public static float GetRelativeRotation(Actions action, float lastRotation)
-        {
-            float rotation = lastRotation;
-
-            if (action.Rotation.HasValue)
-                rotation = action.Rotation.Value;
-
-            switch (action.RelativeTo)
-            {
-                case Relativity.Global:
-                case Relativity.Player:
-                case Relativity.Tile:
-                case null:
-                    break;
-
-                case Relativity.LastPosition:
-                    rotation += lastRotation;
-                    break;
-            }
-
-            return rotation;
-        }
-
         public static Vector2 ToVector2(this float?[] arr)
         {
             if (arr == null)
