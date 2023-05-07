@@ -379,7 +379,7 @@ namespace Circle.Game.Rulesets.Extensions
             if (arr == null)
                 return Vector2.Zero;
 
-            return new Vector2(arr[0].HasValue ? -arr[0].Value : 0, arr[1].HasValue ? arr[1].Value : 0);
+            return new Vector2(-arr[0] ?? 0, arr[1] ?? 0);
         }
 
         public static Vector2 ToVector2([CanBeNull] this float[] arr)
