@@ -21,6 +21,7 @@ namespace Circle.Game.Screens.Play
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
+            AlwaysPresent = true;
             Children = new[]
             {
                 RedPlanet = new Planet(Color4Utils.GetColor4(config.Get<Color4Enum>(CircleSetting.PlanetRed)))
