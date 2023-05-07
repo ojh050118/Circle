@@ -60,7 +60,7 @@ namespace Circle.Game.Screens.Setting.Sections
                 },
             });
 
-            if (beatmap.LoadedBeatmaps.Count == 0)
+            if (beatmap.LoadedBeatmaps?.Count == 0)
             {
                 FlowContent.Add(new BoxButton
                 {
