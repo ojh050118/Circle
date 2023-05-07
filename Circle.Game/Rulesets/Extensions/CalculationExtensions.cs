@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.Objects;
+using JetBrains.Annotations;
 using osuTK;
 
 namespace Circle.Game.Rulesets.Extensions
@@ -371,6 +372,75 @@ namespace Circle.Game.Rulesets.Extensions
 
             convertedData[^1] = 360 - targetAngleData.Last();
             return convertedData;
+        }
+
+        public static Vector2 GetRelativePosition(Actions action, Vector2 lastPos, Vector2 destPos)
+        {
+            Vector2 offset = Vector2.Zero;
+            Vector2 position = destPos;
+
+            if (action.Position != null)
+                offset = action.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+
+            switch (action.RelativeTo)
+            {
+                case Relativity.Global:
+                    position = Vector2.Zero;
+                    break;
+
+                case Relativity.LastPosition:
+                    position = lastPos;
+                    break;
+
+                case Relativity.Tile:
+                    position = lastPos;
+                    break;
+
+                case null:
+                case Relativity.Player:
+                    break;
+            }
+
+            return position + offset;
+        }
+
+        public static float GetRelativeRotation(Actions action, float lastRotation)
+        {
+            float rotation = lastRotation;
+
+            if (action.Rotation.HasValue)
+                rotation = action.Rotation.Value;
+
+            switch (action.RelativeTo)
+            {
+                case Relativity.Global:
+                case Relativity.Player:
+                case Relativity.Tile:
+                case null:
+                    break;
+
+                case Relativity.LastPosition:
+                    rotation += lastRotation;
+                    break;
+            }
+
+            return rotation;
+        }
+
+        public static Vector2 ToVector2(this float?[] arr)
+        {
+            if (arr == null)
+                return Vector2.Zero;
+
+            return new Vector2(-(arr[0].HasValue ? arr[0].Value : 0), (arr[1].HasValue ? arr[1].Value : 0));
+        }
+
+        public static Vector2 ToVector2([CanBeNull] this float[] arr)
+        {
+            if (arr != null)
+                return new Vector2(-arr[0], arr[1]);
+
+            return Vector2.Zero;
         }
     }
 }
