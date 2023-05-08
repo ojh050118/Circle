@@ -1,5 +1,4 @@
-﻿using Circle.Game.Beatmaps;
-using osu.Framework.Graphics;
+﻿using osu.Framework.Graphics;
 using osuTK;
 
 namespace Circle.Game.Rulesets
@@ -12,9 +11,9 @@ namespace Circle.Game.Rulesets
 
         public Vector2? Position { get; set; }
 
-        public float? Rotation { get; set; }
+        public Vector2? Offset { get; set; }
 
-        public Relativity? RelativeTo { get; set; }
+        public float? Rotation { get; set; }
 
         public float? Zoom { get; set; }
 
@@ -27,7 +26,7 @@ namespace Circle.Game.Rulesets
             if (Position.HasValue)
                 position = $"({Position.Value.X}, {Position.Value.Y})";
 
-            return $"RelativeTo: {RelativeTo.ToString()} | Position: {position} | Rotation: {Rotation} | Zoom: {Zoom}";
+            return $"Position: {position} | Offset: {Offset} | Rotation: {Rotation} | Zoom: {Zoom}";
         }
     }
 }
