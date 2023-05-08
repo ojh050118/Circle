@@ -15,7 +15,7 @@ namespace Circle.Game.Screens.Play
 {
     public class CameraContainer : Container
     {
-        private Container positionContainer, scalingContainer;
+        private Container offsetContainer, positionContainer, scalingContainer;
 
         public new Container Content;
 
@@ -27,16 +27,23 @@ namespace Circle.Game.Screens.Play
             Origin = Anchor.Centre;
             Child = scalingContainer = new Container
             {
-                Name = "Scaling Container",
+                Name = "Rotate/Scaling Container",
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
-                Child = positionContainer = new Container
+                Child = offsetContainer = new Container
                 {
+                    Name = "Offset Container",
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Name = "Positioning Container",
                     AutoSizeAxes = Axes.Both,
-                    Child = Content
+                    Child = positionContainer = new Container
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Name = "Positioning Container",
+                        AutoSizeAxes = Axes.Both,
+                        Child = Content
+                    }
                 }
             };
         }
@@ -46,7 +53,7 @@ namespace Circle.Game.Screens.Play
             scalingContainer.Rotation = settings.Rotation;
             var zoom = Precision.AlmostEquals(settings.Zoom, 0) ? 100 : settings.Zoom;
             scalingContainer.Scale = new Vector2(1 / (zoom / 100));
-            positionContainer.Position = settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+            offsetContainer.Position = settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
         }
 
         public void AddCameraTransforms(Beatmap beatmap, IReadOnlyList<double> tileStartTime)
@@ -127,14 +134,15 @@ namespace Circle.Game.Screens.Play
                         case EventType.MoveCamera:
                             setCameraProperty(action);
                             var angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            Vector2? specificPosition0 = cameraRelativity == Relativity.Player ? null : (Vector2?)cameraPosition;
 
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
                             {
                                 StartTime = tileStartTime[floor] + angleOffset,
                                 Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
-                                RelativeTo = action.RelativeTo,
-                                Position = cameraPosition + cameraOffset,
+                                Position = specificPosition0,
+                                Offset = cameraOffset,
                                 Rotation = cameraRotation,
                                 Zoom = action.Zoom,
                                 Easing = action.Ease
@@ -155,7 +163,7 @@ namespace Circle.Game.Screens.Play
                                 {
                                     setCameraProperty(cameraEvent);
                                     var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
-                                    Vector2? specificPosition = cameraRelativity == Relativity.Player ? null : (Vector2?)(cameraPosition + cameraOffset);
+                                    Vector2? specificPosition = cameraRelativity == Relativity.Player ? null : (Vector2?)cameraPosition;
 
                                     if (cameraEvent.EventTag == action.Tag)
                                     {
@@ -164,8 +172,8 @@ namespace Circle.Game.Screens.Play
                                         {
                                             StartTime = startTime + angleTimeOffset,
                                             Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
-                                            RelativeTo = cameraEvent.RelativeTo,
                                             Position = specificPosition,
+                                            Offset = cameraOffset,
                                             Rotation = cameraRotation,
                                             Zoom = cameraEvent.Zoom,
                                             Easing = action.Ease
@@ -184,8 +192,8 @@ namespace Circle.Game.Screens.Play
                     {
                         StartTime = tileStartTime[floor],
                         Duration = 400 + 60 / bpm * 500,
-                        RelativeTo = cameraRelativity,
-                        Position = position + cameraOffset,
+                        Position = position,
+                        Offset = null,
                         Rotation = null,
                         Zoom = null,
                         Easing = Easing.OutSine
@@ -219,11 +227,14 @@ namespace Circle.Game.Screens.Play
                         scalingContainer.RotateTo(cameraTransform.Rotation.Value, cameraTransform.Duration, cameraTransform.Easing);
                 }
 
+                if (cameraTransform.Offset.HasValue)
+                {
+                    using (offsetContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
+                        offsetContainer.MoveTo(cameraTransform.Offset.Value, cameraTransform.Duration, cameraTransform.Easing);
+                }
+
                 if (cameraTransform.Position.HasValue)
                 {
-                    if (cameraTransform.Rotation.HasValue && cameraTransform.Zoom.HasValue && cameraTransform.RelativeTo == Relativity.Player)
-                        continue;
-
                     using (positionContainer.BeginAbsoluteSequence(cameraTransform.StartTime, false))
                         positionContainer.MoveTo(cameraTransform.Position.Value, cameraTransform.Duration, cameraTransform.Easing);
                 }
