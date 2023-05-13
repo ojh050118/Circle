@@ -90,11 +90,11 @@ namespace Circle.Game.Screens.Play
             var frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
             var backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
 
-            for (int i = frontVisibilityCount; i < tilesInfo.Count; i++)
+            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
                 Children[i].Alpha = 0;
 
             // Fade in
-            for (int i = frontVisibilityCount; i < tilesInfo.Count; i++)
+            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
             {
                 bpm = tilesInfo.GetNewBpm(bpm, i - 8);
                 Children[i].LifetimeStart = tilesOffset[i - frontVisibilityCount];
@@ -106,7 +106,7 @@ namespace Circle.Game.Screens.Play
             bpm = currentBeatmap.Settings.Bpm;
 
             // Fade out
-            for (int i = 0; i < tilesInfo.Count; i++)
+            for (int i = 0; i < tilesInfo.Length; i++)
             {
                 bpm = tilesInfo.GetNewBpm(bpm, i);
 

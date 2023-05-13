@@ -62,7 +62,7 @@ namespace Circle.Game.Screens.Play
                 prevAngle = tilesInfo[floor].Angle;
                 floor++;
 
-                if (floor < tilesInfo.Count)
+                if (floor < tilesInfo.Length)
                 {
                     BluePlanet.ExpandTo(0);
                     using (BeginAbsoluteSequence(startTimeOffset))
@@ -75,7 +75,7 @@ namespace Circle.Game.Screens.Play
 
             #endregion
 
-            while (floor < tilesInfo.Count)
+            while (floor < tilesInfo.Length)
             {
                 var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
                 bpm = tilesInfo.GetNewBpm(bpm, floor);
@@ -137,7 +137,7 @@ namespace Circle.Game.Screens.Play
 
                 #region Move PlanetContainer
 
-                if (floor < tilesInfo.Count)
+                if (floor < tilesInfo.Length)
                 {
                     using (BeginAbsoluteSequence(startTimeOffset, false))
                         this.MoveTo(tilesInfo[floor].Position);

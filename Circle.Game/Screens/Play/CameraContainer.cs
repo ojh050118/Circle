@@ -79,7 +79,7 @@ namespace Circle.Game.Screens.Play
 
             #region Process Camera Transform
 
-            for (int floor = 0; floor < tilesInfo.Count; floor++)
+            for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
                 var prevAngle = tilesInfo[floor].Angle;
                 var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);

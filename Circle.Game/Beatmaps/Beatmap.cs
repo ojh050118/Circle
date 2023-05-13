@@ -13,7 +13,8 @@ namespace Circle.Game.Beatmaps
         public float[] AngleData { get; set; }
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
-        public IReadOnlyList<TileInfo> TilesInfo => CalculationExtensions.GetTilesInfo(this);
+        public TileInfo[] TilesInfo => CalculationExtensions.GetTilesInfo(this);
+        public IReadOnlyList<double> TileStartTime => CalculationExtensions.GetTileStartTime(this, Settings.Offset, 60000 / Settings.Bpm * Settings.CountdownTicks);
 
         public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }

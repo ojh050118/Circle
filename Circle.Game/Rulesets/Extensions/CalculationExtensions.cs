@@ -56,7 +56,7 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>행성이 타일이 도착하는 시간의 집합.</returns>
         public static IReadOnlyList<double> GetTileStartTime(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
-            var tilesInfo = beatmap.TilesInfo.ToArray();
+            var tilesInfo = beatmap.TilesInfo;
             double startTimeOffset = gameplayStartTime;
             float bpm = beatmap.Settings.Bpm;
             float prevAngle = tilesInfo[0].Angle;
@@ -300,7 +300,7 @@ namespace Circle.Game.Rulesets.Extensions
         /// </summary>
         /// <param name="beatmap">비트맵.</param>
         /// <returns>각 타일 정보에 대한 집합.</returns>
-        public static IReadOnlyList<TileInfo> GetTilesInfo(Beatmap beatmap)
+        public static TileInfo[] GetTilesInfo(Beatmap beatmap)
         {
             var data = ConvertAngles(beatmap.AngleData);
             var types = GetTileType(data);
