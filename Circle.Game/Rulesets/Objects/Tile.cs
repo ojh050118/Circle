@@ -10,8 +10,6 @@ namespace Circle.Game.Rulesets.Objects
     {
         public TileInfo TileInfo { get; set; }
 
-        public TileType TileType => TileInfo.TileType;
-
         private readonly SpriteIcon icon;
 
         public const float WIDTH = 150;
@@ -33,6 +31,9 @@ namespace Circle.Game.Rulesets.Objects
 
         protected override void LoadComplete()
         {
+            if (TileInfo == null)
+                return;
+
             foreach (var action in TileInfo.Action)
             {
                 if (action.SpeedType != null)

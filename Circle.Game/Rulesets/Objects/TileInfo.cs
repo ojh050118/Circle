@@ -3,7 +3,7 @@ using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public struct TileInfo : IHasTileInfo
+    public class TileInfo : IHasTileInfo
     {
         public Actions[] Action { get; set; }
 
