@@ -13,6 +13,10 @@ namespace Circle.Game.Rulesets.Objects
 
         public Vector2 Position { get; set; }
 
+        public bool Clockwise { get; set; }
+
+        public float Bpm { get; set; }
+
         public bool PreviousClockwise { get; set; }
 
         public float PreviousAngle { get; set; }

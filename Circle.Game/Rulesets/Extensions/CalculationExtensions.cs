@@ -329,6 +329,9 @@ namespace Circle.Game.Rulesets.Extensions
                 angle = types[floor] == TileType.Midspin ? angle : data[floor];
                 bpm = GetNewBpm(bpm, floorAction.FirstOrDefault(action => action.SpeedType.HasValue));
                 clockwise = Array.Exists(floorAction, action => action.EventType == EventType.Twirl) ? !clockwise : clockwise;
+
+                infos[floor].Bpm = bpm;
+                infos[floor].Clockwise = clockwise;
             }
 
             return infos;
