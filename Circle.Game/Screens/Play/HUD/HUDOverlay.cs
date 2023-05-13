@@ -17,20 +17,16 @@ namespace Circle.Game.Screens.Play.HUD
         private SpriteText complete;
         private GameplayProgress progress;
         private IReadOnlyList<double> hitTimes;
-        private int floor;
-        private float countdownInterval;
 
         public HUDOverlay(Beatmap beatmap)
         {
             this.beatmap = beatmap;
-            countdownInterval = 60000 / beatmap.Settings.Bpm;
         }
 
         [BackgroundDependencyLoader]
         private void load(CircleColour colours)
         {
-            var countdown = countdownInterval * beatmap.Settings.CountdownTicks;
-            hitTimes = CalculationExtensions.GetTileStartTime(beatmap, beatmap.Settings.Offset, countdown);
+            hitTimes = CalculationExtensions.GetTileStartTime(beatmap, beatmap.Settings.Offset, 60000 / beatmap.Settings.Bpm * beatmap.Settings.CountdownTicks);
 
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
@@ -64,7 +60,7 @@ namespace Circle.Game.Screens.Play.HUD
 
         public void Start()
         {
-            countdownInterval = 60000 / beatmap.TilesInfo[floor].Bpm;
+            var countdownInterval = 60000 / beatmap.Settings.Bpm;
             var tick = beatmap.Settings.CountdownTicks;
 
             Countdown(countdownInterval * tick);
@@ -73,23 +69,22 @@ namespace Circle.Game.Screens.Play.HUD
         public void Countdown(float startUntilTime)
         {
             var tick = beatmap.Settings.CountdownTicks;
-            countdownInterval = startUntilTime / tick;
+            startUntilTime /= tick;
 
             for (int i = 0; i < tick; i++)
             {
-                using (complete.BeginDelayedSequence(countdownInterval * i, false))
+                using (complete.BeginDelayedSequence(startUntilTime * i, false))
                 {
                     var text = i + 1 == tick ? "Go!" : (tick - i - 1).ToString();
                     complete.TransformTo("Text", (LocalisableString)text);
-                    complete.ScaleTo(1.3f).Delay(100).ScaleTo(1, countdownInterval, Easing.Out);
-                    complete.FadeTo(1).Delay(100).FadeOut(countdownInterval, Easing.Out);
+                    complete.ScaleTo(1.3f).Delay(100).ScaleTo(1, startUntilTime, Easing.Out);
+                    complete.FadeTo(1).Delay(100).FadeOut(startUntilTime, Easing.Out);
                 }
             }
         }
 
         public void UpdateProgress(int floor)
         {
-            this.floor = floor;
             progress.ProgressTo(floor);
         }
 
