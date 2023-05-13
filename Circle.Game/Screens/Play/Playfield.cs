@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Circle.Game.Beatmaps;
-using Circle.Game.Configuration;
 using Circle.Game.Rulesets.Extensions;
-using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -29,8 +26,6 @@ namespace Circle.Game.Screens.Play
         private PlanetContainer planetContainer;
         private ObjectContainer tileContainer;
 
-        private TileInfo[] tilesInfo;
-
         public Playfield(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
             currentBeatmap = beatmap;
@@ -43,7 +38,7 @@ namespace Circle.Game.Screens.Play
         private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, countdownDuration);
 
         [BackgroundDependencyLoader]
-        private void load(CircleConfigManager config)
+        private void load()
         {
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
@@ -63,10 +58,8 @@ namespace Circle.Game.Screens.Play
                 }
             };
 
-            tilesInfo = tileContainer.GetTilesInfo().ToArray();
-
             planetContainer.RedPlanet.Expansion = planetContainer.BluePlanet.Expansion = 0;
-            planetContainer.BluePlanet.Rotation = tilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Settings.Bpm);
+            planetContainer.BluePlanet.Rotation = currentBeatmap.TilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Settings.Bpm);
             cameraContainer.InitializeSettings(currentBeatmap.Settings);
         }
 

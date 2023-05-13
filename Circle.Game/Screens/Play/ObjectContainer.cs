@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Circle.Game.Beatmaps;
+﻿using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
@@ -34,7 +33,7 @@ namespace Circle.Game.Screens.Play
 
         private void createTiles()
         {
-            var info = GetTilesInfo();
+            var info = currentBeatmap.TilesInfo;
 
             for (int i = 0; i < angleData.Length; i++)
             {
@@ -87,7 +86,7 @@ namespace Circle.Game.Screens.Play
         {
             float bpm = currentBeatmap.Settings.Bpm;
             var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
-            var tilesInfo = CalculationExtensions.GetTilesInfo(currentBeatmap);
+            var tilesInfo = currentBeatmap.TilesInfo;
             var frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
             var backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
 
@@ -119,7 +118,5 @@ namespace Circle.Game.Screens.Play
                 }
             }
         }
-
-        public IReadOnlyList<TileInfo> GetTilesInfo() => CalculationExtensions.GetTilesInfo(currentBeatmap);
     }
 }

@@ -45,7 +45,7 @@ namespace Circle.Game.Screens.Play
             float bpm = beatmap.Settings.Bpm;
             int floor = 0;
             Easing easing = Easing.None;
-            var tilesInfo = CalculationExtensions.GetTilesInfo(beatmap);
+            var tilesInfo = beatmap.TilesInfo;
 
             #region Initial planet rotation
 
