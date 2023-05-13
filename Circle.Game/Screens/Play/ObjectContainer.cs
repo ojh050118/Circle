@@ -6,7 +6,6 @@ using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osuTK;
 
 namespace Circle.Game.Screens.Play
 {
@@ -120,10 +119,6 @@ namespace Circle.Game.Screens.Play
                 }
             }
         }
-
-        private IReadOnlyList<TileType> getTileType() => CalculationExtensions.GetTileType(angleData);
-
-        private IReadOnlyList<Vector2> getTilePositions() => CalculationExtensions.GetTilePositions(angleData);
 
         public IReadOnlyList<TileInfo> GetTilesInfo() => CalculationExtensions.GetTilesInfo(currentBeatmap);
     }

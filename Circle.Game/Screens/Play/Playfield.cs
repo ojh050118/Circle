@@ -14,14 +14,14 @@ namespace Circle.Game.Screens.Play
     public class Playfield : Container
     {
         /// <summary>
-        /// 카운트다운 지속시간.
+        /// 게임 시작 전 카운트다운 지속시간.
         /// </summary>
         private readonly double countdownDuration;
 
         private readonly Beatmap currentBeatmap;
 
         /// <summary>
-        /// 준비 시간을 포함한 게임이 시작하는 시간.
+        /// 게임이 시작되는 시간.
         /// </summary>
         private readonly double gameplayStartTime;
 
