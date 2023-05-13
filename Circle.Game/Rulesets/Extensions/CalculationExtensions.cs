@@ -56,20 +56,21 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>행성이 타일이 도착하는 시간의 집합.</returns>
         public static IReadOnlyList<double> GetTileStartTime(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
         {
+            var tilesInfo = beatmap.TilesInfo.ToArray();
             double startTimeOffset = gameplayStartTime;
             float bpm = beatmap.Settings.Bpm;
-            float prevAngle = beatmap.TilesInfo[0].Angle;
+            float prevAngle = tilesInfo[0].Angle;
             List<double> hitStartTimes = new List<double> { gameplayStartTime - countdownDuration };
-            startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), beatmap.TilesInfo[0].Angle, bpm);
+            startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), tilesInfo[0].Angle, bpm);
             hitStartTimes.Add(startTimeOffset);
 
-            for (int floor = 1; floor < beatmap.TilesInfo.Length - 1; floor++)
+            for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
             {
-                var fixedRotation = ComputeRotation(beatmap.TilesInfo, floor, prevAngle);
+                var fixedRotation = ComputeRotation(tilesInfo, floor, prevAngle);
 
-                prevAngle = beatmap.TilesInfo[floor].Angle;
-                bpm = GetNewBpm(beatmap.TilesInfo, bpm, floor);
-                startTimeOffset += GetRelativeDuration(fixedRotation, beatmap.TilesInfo[floor].Angle, bpm);
+                prevAngle = tilesInfo[floor].Angle;
+                bpm = GetNewBpm(tilesInfo, bpm, floor);
+                startTimeOffset += GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
                 hitStartTimes.Add(startTimeOffset);
             }
 
@@ -299,7 +300,7 @@ namespace Circle.Game.Rulesets.Extensions
         /// </summary>
         /// <param name="beatmap">비트맵.</param>
         /// <returns>각 타일 정보에 대한 집합.</returns>
-        public static TileInfo[] GetTilesInfo(Beatmap beatmap)
+        public static IReadOnlyList<TileInfo> GetTilesInfo(Beatmap beatmap)
         {
             var data = ConvertAngles(beatmap.AngleData);
             var types = GetTileType(data);

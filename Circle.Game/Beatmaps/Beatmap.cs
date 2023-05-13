@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
@@ -12,7 +13,7 @@ namespace Circle.Game.Beatmaps
         public float[] AngleData { get; set; }
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
-        public TileInfo[] TilesInfo => CalculationExtensions.GetTilesInfo(this);
+        public IReadOnlyList<TileInfo> TilesInfo => CalculationExtensions.GetTilesInfo(this);
 
         public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }
