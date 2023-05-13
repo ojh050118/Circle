@@ -8,7 +8,6 @@ namespace Circle.Game.Rulesets.Objects
     public class MidspinTile : Tile
     {
         public MidspinTile()
-            : base(TileType.Midspin)
         {
             Size = new Vector2(50);
             Child = new Container

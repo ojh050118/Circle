@@ -68,7 +68,7 @@ namespace Circle.Game.Screens.Play
             Vector2 cameraPosition = cameraOffset;
             float cameraRotation = beatmap.Settings.Rotation;
 
-            var tilesInfo = CalculationExtensions.GetTilesInfo(beatmap);
+            var tilesInfo = beatmap.TilesInfo;
             var cameraTransforms = new List<CameraTransform>();
 
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
