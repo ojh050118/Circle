@@ -203,42 +203,31 @@ namespace Circle.Game.Rulesets.Extensions
 
             for (int floor = 0; floor < angleData.Length; floor++)
             {
-                if (floor + 1 < angleData.Length)
+                switch (angleData[floor])
                 {
-                    if (angleData[floor + 1] == 999 && angleData[floor] != 999)
-                    {
-                        tileTypes.Add(TileType.Short);
+                    case 999:
+                        tileTypes[floor - 1] = TileType.Short;
+                        tileTypes.Add(TileType.Midspin);
                         continue;
-                    }
-                    else if (Math.Abs(angleData[floor] - angleData[floor + 1]) == 180)
-                    {
-                        tileTypes.Add(TileType.Short);
-                        continue;
-                    }
-                    else if (floor > 0)
-                    {
-                        if (Math.Abs(angleData[floor] - angleData[floor - 1]) == 180)
-                        {
-                            tileTypes.Add(TileType.Circular);
-                            continue;
-                        }
-                    }
-                }
-                else
-                {
-                    // 마지막 타일을 의미합니다.
-                    tileTypes.Add(TileType.Circular);
-                    break;
-                }
 
-                if (angleData[floor] == 999)
-                {
-                    tileTypes.Add(TileType.Midspin);
-                    continue;
+                    default:
+                        if (floor > 0)
+                        {
+                            if (Math.Abs(angleData[floor] - angleData[floor - 1]) == 180)
+                            {
+                                tileTypes[floor - 1] = TileType.Short;
+                                tileTypes.Add(TileType.Circular);
+                                continue;
+                            }
+                        }
+
+                        break;
                 }
 
                 tileTypes.Add(TileType.Normal);
             }
+
+            tileTypes[^1] = TileType.Circular;
 
             return tileTypes;
         }
