@@ -320,10 +320,4 @@ namespace Circle.Game.Screens.Play
             });
         }
     }
-
-    public enum PlanetState
-    {
-        Fire,
-        Ice
-    }
 }

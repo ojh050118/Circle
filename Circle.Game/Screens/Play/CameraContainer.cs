@@ -67,8 +67,6 @@ namespace Circle.Game.Screens.Play
             Vector2 cameraOffset = beatmap.Settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
             Vector2 cameraPosition = cameraOffset;
             float cameraRotation = beatmap.Settings.Rotation;
-
-            var tilesInfo = beatmap.TilesInfo;
             var cameraTransforms = new List<CameraTransform>();
 
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
@@ -79,14 +77,14 @@ namespace Circle.Game.Screens.Play
 
             #region Process Camera Transform
 
-            for (int floor = 0; floor < tilesInfo.Count; floor++)
+            for (int floor = 0; floor < beatmap.TilesInfo.Length; floor++)
             {
-                var prevAngle = tilesInfo[floor].Angle;
-                var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
-                var position = -tilesInfo[floor].Position;
-                bpm = tilesInfo.GetNewBpm(bpm, floor);
+                var prevAngle = beatmap.TilesInfo[floor].Angle;
+                var fixedRotation = beatmap.TilesInfo.ComputeRotation(floor, prevAngle);
+                var position = -beatmap.TilesInfo[floor].Position;
+                bpm = beatmap.TilesInfo.GetNewBpm(bpm, floor);
 
-                foreach (var action in tilesInfo[floor].Action)
+                foreach (var action in beatmap.TilesInfo[floor].Action)
                 {
                     void setCameraProperty(Actions cameraAction)
                     {
@@ -140,7 +138,7 @@ namespace Circle.Game.Screens.Play
                             cameraTransforms.Add(new CameraTransform
                             {
                                 StartTime = tileStartTime[floor] + angleOffset,
-                                Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
+                                Duration = beatmap.TilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
                                 Position = specificPosition0,
                                 Offset = cameraOffset,
                                 Rotation = cameraRotation,
@@ -151,7 +149,7 @@ namespace Circle.Game.Screens.Play
 
                         // 이벤트 반복엔 타일에 종속되지 않는 이벤트(카메라 트랜스폼)가 실행됩니다.
                         case EventType.RepeatEvents:
-                            var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
+                            var cameraEvents = Array.FindAll(beatmap.TilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
                             var intervalBeat = 60000 / bpm * action.Interval;
 
                             // 이벤트를 일정한 주기로 반복 횟수만큼 추가합니다.
@@ -171,7 +169,7 @@ namespace Circle.Game.Screens.Play
                                         cameraTransforms.Add(new CameraTransform
                                         {
                                             StartTime = startTime + angleTimeOffset,
-                                            Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
+                                            Duration = beatmap.TilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
                                             Position = specificPosition,
                                             Offset = cameraOffset,
                                             Rotation = cameraRotation,

@@ -45,44 +45,43 @@ namespace Circle.Game.Screens.Play
             float bpm = beatmap.Settings.Bpm;
             int floor = 0;
             Easing easing = Easing.None;
-            var tilesInfo = beatmap.TilesInfo;
 
             #region Initial planet rotation
 
             using (BluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
-                var duration = CalculationExtensions.GetRelativeDuration(BluePlanet.Rotation, tilesInfo[floor].Angle, bpm);
+                var duration = CalculationExtensions.GetRelativeDuration(BluePlanet.Rotation, beatmap.TilesInfo[floor].Angle, bpm);
                 startTimeOffset += duration;
                 BluePlanet.ExpandTo(1, 60000 / bpm, Easing.Out);
-                BluePlanet.RotateTo(tilesInfo[floor].Angle, duration, easing);
+                BluePlanet.RotateTo(beatmap.TilesInfo[floor].Angle, duration, easing);
             }
 
             using (BluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
-                prevAngle = tilesInfo[floor].Angle;
+                prevAngle = beatmap.TilesInfo[floor].Angle;
                 floor++;
 
-                if (floor < tilesInfo.Count)
+                if (floor < beatmap.TilesInfo.Length)
                 {
                     BluePlanet.ExpandTo(0);
                     using (BeginAbsoluteSequence(startTimeOffset))
-                        this.MoveTo(tilesInfo[floor].Position);
+                        this.MoveTo(beatmap.TilesInfo[floor].Position);
 
-                    if (tilesInfo[floor].TileType != TileType.Midspin)
+                    if (beatmap.TilesInfo[floor].TileType != TileType.Midspin)
                         planetState = PlanetState.Fire;
                 }
             }
 
             #endregion
 
-            while (floor < tilesInfo.Count)
+            while (floor < beatmap.TilesInfo.Length)
             {
-                var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
-                bpm = tilesInfo.GetNewBpm(bpm, floor);
-                prevAngle = tilesInfo[floor].Angle;
+                var fixedRotation = beatmap.TilesInfo.ComputeRotation(floor, prevAngle);
+                bpm = beatmap.TilesInfo.GetNewBpm(bpm, floor);
+                prevAngle = beatmap.TilesInfo[floor].Angle;
 
                 // Apply easing
-                var easingAction = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.SetPlanetRotation);
+                var easingAction = beatmap.TilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.SetPlanetRotation);
                 easing = easingAction.Ease;
 
                 #region Planet rotation
@@ -94,7 +93,7 @@ namespace Circle.Game.Screens.Play
                         {
                             RedPlanet.ExpandTo(1);
                             RedPlanet.RotateTo(fixedRotation);
-                            RedPlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm), easing);
+                            RedPlanet.RotateTo(beatmap.TilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, beatmap.TilesInfo[floor].Angle, bpm), easing);
                         }
 
                         break;
@@ -104,7 +103,7 @@ namespace Circle.Game.Screens.Play
                         {
                             BluePlanet.ExpandTo(1);
                             BluePlanet.RotateTo(fixedRotation);
-                            BluePlanet.RotateTo(tilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm), easing);
+                            BluePlanet.RotateTo(beatmap.TilesInfo[floor].Angle, CalculationExtensions.GetRelativeDuration(fixedRotation, beatmap.TilesInfo[floor].Angle, bpm), easing);
                         }
 
                         break;
@@ -113,7 +112,7 @@ namespace Circle.Game.Screens.Play
                 #endregion
 
                 // 회전을 마치면 다른 행성으로 회전할 준비를 해야합니다.
-                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
+                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, beatmap.TilesInfo[floor].Angle, bpm);
                 floor++;
 
                 #region Planet reducation
@@ -137,14 +136,14 @@ namespace Circle.Game.Screens.Play
 
                 #region Move PlanetContainer
 
-                if (floor < tilesInfo.Count)
+                if (floor < beatmap.TilesInfo.Length)
                 {
                     using (BeginAbsoluteSequence(startTimeOffset, false))
-                        this.MoveTo(tilesInfo[floor].Position);
+                        this.MoveTo(beatmap.TilesInfo[floor].Position);
 
-                    if (tilesInfo[floor].TileType != TileType.Midspin && tilesInfo[floor - 1].TileType != TileType.Midspin)
+                    if (beatmap.TilesInfo[floor].TileType != TileType.Midspin && beatmap.TilesInfo[floor - 1].TileType != TileType.Midspin)
                         planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
-                    else if (tilesInfo[floor].TileType == TileType.Midspin && tilesInfo[floor - 1].TileType == TileType.Midspin)
+                    else if (beatmap.TilesInfo[floor].TileType == TileType.Midspin && beatmap.TilesInfo[floor - 1].TileType == TileType.Midspin)
                         planetState = planetState == PlanetState.Fire ? PlanetState.Ice : PlanetState.Fire;
                 }
                 else
@@ -156,7 +155,7 @@ namespace Circle.Game.Screens.Play
                             using (RedPlanet.BeginAbsoluteSequence(startTimeOffset, false))
                             {
                                 RedPlanet.ExpandTo(1);
-                                RedPlanet.Spin(60000 / bpm * 2, getIsClockwise(tilesInfo, floor), prevAngle);
+                                RedPlanet.Spin(60000 / bpm * 2, getIsClockwise(beatmap.TilesInfo, floor), prevAngle);
                             }
 
                             break;
@@ -165,7 +164,7 @@ namespace Circle.Game.Screens.Play
                             using (BluePlanet.BeginAbsoluteSequence(startTimeOffset, false))
                             {
                                 BluePlanet.ExpandTo(1);
-                                BluePlanet.Spin(60000 / bpm * 2, getIsClockwise(tilesInfo, floor), prevAngle);
+                                BluePlanet.Spin(60000 / bpm * 2, getIsClockwise(beatmap.TilesInfo, floor), prevAngle);
                             }
 
                             break;
@@ -177,5 +176,11 @@ namespace Circle.Game.Screens.Play
         }
 
         private RotationDirection getIsClockwise(IReadOnlyList<TileInfo> tilesInfo, int floor) => tilesInfo.GetIsClockwise(floor) ? RotationDirection.Clockwise : RotationDirection.Counterclockwise;
+    }
+
+    public enum PlanetState
+    {
+        Fire,
+        Ice
     }
 }
