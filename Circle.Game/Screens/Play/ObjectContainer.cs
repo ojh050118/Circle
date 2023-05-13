@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Circle.Game.Beatmaps;
+using Circle.Game.Configuration;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
@@ -12,6 +13,9 @@ namespace Circle.Game.Screens.Play
     public class ObjectContainer : Container<Tile>
     {
         private readonly Beatmap currentBeatmap;
+
+        [Resolved]
+        private CircleConfigManager config { get; set; }
 
         public ObjectContainer(Beatmap beatmap)
         {
@@ -86,16 +90,18 @@ namespace Circle.Game.Screens.Play
             float bpm = currentBeatmap.Settings.Bpm;
             var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
             var tilesInfo = CalculationExtensions.GetTilesInfo(currentBeatmap);
+            var frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
+            var backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
 
-            for (int i = 8; i < tilesInfo.Count; i++)
+            for (int i = frontVisibilityCount; i < tilesInfo.Count; i++)
                 Children[i].Alpha = 0;
 
             // Fade in
-            for (int i = 8; i < tilesInfo.Count; i++)
+            for (int i = frontVisibilityCount; i < tilesInfo.Count; i++)
             {
                 bpm = tilesInfo.GetNewBpm(bpm, i - 8);
 
-                using (Children[i].BeginAbsoluteSequence(tilesOffset[i - 8], false))
+                using (Children[i].BeginAbsoluteSequence(tilesOffset[i - frontVisibilityCount], false))
                     Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
             }
 
@@ -106,10 +112,10 @@ namespace Circle.Game.Screens.Play
             {
                 bpm = tilesInfo.GetNewBpm(bpm, i);
 
-                if (i > 3)
+                if (i > backVisibilityCount - 1)
                 {
-                    using (Children[i - 4].BeginAbsoluteSequence(tilesOffset[i], false))
-                        Children[i - 4].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
+                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tilesOffset[i], false))
+                        Children[i - backVisibilityCount].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
             }
         }

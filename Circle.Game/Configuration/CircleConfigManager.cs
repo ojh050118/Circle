@@ -24,6 +24,8 @@ namespace Circle.Game.Configuration
             SetDefault(CircleSetting.Parallax, true);
             SetDefault(CircleSetting.PlanetRed, Color4Enum.Red);
             SetDefault(CircleSetting.PlanetBlue, Color4Enum.DeepSkyBlue);
+            SetDefault(CircleSetting.TileFrontDistance, 8, 0, 500);
+            SetDefault(CircleSetting.TileBackDistance, 4, 0, 500);
         }
     }
 
@@ -36,6 +38,8 @@ namespace Circle.Game.Configuration
         BlurVisibility,
         Parallax,
         PlanetRed,
-        PlanetBlue
+        PlanetBlue,
+        TileFrontDistance,
+        TileBackDistance
     }
 }
