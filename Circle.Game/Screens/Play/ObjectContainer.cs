@@ -100,6 +100,7 @@ namespace Circle.Game.Screens.Play
             for (int i = frontVisibilityCount; i < tilesInfo.Count; i++)
             {
                 bpm = tilesInfo.GetNewBpm(bpm, i - 8);
+                Children[i].LifetimeStart = tilesOffset[i - frontVisibilityCount];
 
                 using (Children[i].BeginAbsoluteSequence(tilesOffset[i - frontVisibilityCount], false))
                     Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
@@ -114,6 +115,7 @@ namespace Circle.Game.Screens.Play
 
                 if (i > backVisibilityCount - 1)
                 {
+                    Children[i - backVisibilityCount].LifetimeEnd = tilesOffset[i] + 60000 / bpm;
                     using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tilesOffset[i], false))
                         Children[i - backVisibilityCount].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
