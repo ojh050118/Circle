@@ -10,7 +10,6 @@ namespace Circle.Game.Rulesets.Objects
     public class ShortTile : Tile
     {
         public ShortTile()
-            : base(TileType.Short)
         {
             Child = new CircularContainer
             {

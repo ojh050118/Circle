@@ -35,19 +35,18 @@ namespace Circle.Game.Screens.Play
 
         private void createTiles()
         {
-            var types = getTileType();
-            var positions = getTilePositions();
+            var info = GetTilesInfo();
 
             for (int i = 0; i < angleData.Length; i++)
             {
-                switch (types[i])
+                switch (info[i].TileType)
                 {
                     case TileType.Normal:
                         Add(new BasicTile
                         {
-                            Position = positions[i],
-                            Rotation = angleData[i],
-                            Action = addActions(i)
+                            Position = info[i].Position,
+                            Rotation = info[i].Angle,
+                            TileInfo = info[i]
                         });
 
                         break;
@@ -55,9 +54,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Midspin:
                         Add(new MidspinTile
                         {
-                            Position = positions[i],
-                            Rotation = getAvailableAngle(i),
-                            Action = addActions(i)
+                            Position = info[i].Position,
+                            Rotation = info[i].Angle,
+                            TileInfo = info[i]
                         });
 
                         break;
@@ -65,9 +64,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Short:
                         Add(new ShortTile
                         {
-                            Position = positions[i],
-                            Rotation = angleData[i],
-                            Action = addActions(i)
+                            Position = info[i].Position,
+                            Rotation = info[i].Angle,
+                            TileInfo = info[i]
                         });
 
                         break;
@@ -75,9 +74,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Circular:
                         Add(new CircularTile
                         {
-                            Position = positions[i],
-                            Rotation = getAvailableAngle(i),
-                            Action = addActions(i)
+                            Position = info[i].Position,
+                            Rotation = info[i].Angle,
+                            TileInfo = info[i]
                         });
 
                         break;
@@ -127,20 +126,5 @@ namespace Circle.Game.Screens.Play
         private IReadOnlyList<Vector2> getTilePositions() => CalculationExtensions.GetTilePositions(angleData);
 
         public IReadOnlyList<TileInfo> GetTilesInfo() => CalculationExtensions.GetTilesInfo(currentBeatmap);
-
-        private float getAvailableAngle(int floor) => CalculationExtensions.GetAvailableAngle(angleData, floor);
-
-        private Actions[] addActions(int floor)
-        {
-            List<Actions> actions = new List<Actions>();
-
-            foreach (var action in currentBeatmap.Actions)
-            {
-                if (floor == action.Floor)
-                    actions.Add(action);
-            }
-
-            return actions.ToArray();
-        }
     }
 }

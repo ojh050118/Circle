@@ -13,9 +13,15 @@ namespace Circle.Game.Rulesets.Objects
 
         public Vector2 Position { get; set; }
 
+        public bool PreviousClockwise { get; set; }
+
+        public float PreviousAngle { get; set; }
+
+        public float PreviousBpm { get; set; }
+
         public override string ToString()
         {
-            return $"Tile type: {TileType} | Angle: {Angle} | Position: {Position}";
+            return $"Tile type: {TileType} | Action: {Action.Length}";
         }
     }
 }

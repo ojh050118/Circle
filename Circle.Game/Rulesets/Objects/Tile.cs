@@ -1,5 +1,4 @@
-﻿using System;
-using Circle.Game.Beatmaps;
+﻿using Circle.Game.Beatmaps;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -7,24 +6,23 @@ using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public abstract class Tile : Container, IHasTileInfo
+    public abstract class Tile : Container
     {
-        public Actions[] Action { get; set; } = Array.Empty<Actions>();
+        public TileInfo TileInfo { get; set; }
 
-        public TileType TileType { get; }
+        public TileType TileType => TileInfo.TileType;
 
         private readonly SpriteIcon icon;
 
         public const float WIDTH = 150;
         public const float HEIGHT = 50;
 
-        protected Tile(TileType type)
+        protected Tile()
         {
             Anchor = Anchor.Centre;
             OriginPosition = new Vector2(25);
             Alpha = 0.45f;
             Size = new Vector2(WIDTH, HEIGHT);
-            TileType = type;
             icon = new SpriteIcon
             {
                 Size = new Vector2(35),
@@ -35,7 +33,7 @@ namespace Circle.Game.Rulesets.Objects
 
         protected override void LoadComplete()
         {
-            foreach (var action in Action)
+            foreach (var action in TileInfo.Action)
             {
                 if (action.SpeedType != null)
                     icon.Icon = FontAwesome.Solid.TachometerAlt;

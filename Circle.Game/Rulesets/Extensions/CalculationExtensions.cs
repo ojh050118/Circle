@@ -121,7 +121,7 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        /// 행성이 특정 타일에서 회전방뱡을 구합니다.
+        /// 행성이 특정 타일에서 회전방향을 구합니다.
         /// </summary>
         /// <param name="tilesInfo">타일 정보.</param>
         /// <param name="floor">현재 타일</param>
@@ -161,6 +161,27 @@ namespace Circle.Game.Rulesets.Extensions
 
                 case SpeedType.Bpm:
                     return speedAction.BeatsPerMinute;
+
+                default:
+                    return bpm;
+            }
+        }
+
+        /// <summary>
+        /// 타일의 bpm을 적용합니다.
+        /// </summary>
+        /// <param name="bpm">현재 bpm.</param>
+        /// <param name="action">이벤트 타입이 SetSpeed인 액션.</param>
+        /// <returns>현재bpm에서 승수가 적용된 값 또는 새로운 bpm.</returns>
+        public static float GetNewBpm(float bpm, Actions action)
+        {
+            switch (action.SpeedType)
+            {
+                case SpeedType.Multiplier:
+                    return bpm * action.BpmMultiplier;
+
+                case SpeedType.Bpm:
+                    return action.BeatsPerMinute;
 
                 default:
                     return bpm;
@@ -254,7 +275,7 @@ namespace Circle.Game.Rulesets.Extensions
                         break;
 
                     case TileType.Midspin:
-                        offset -= GetComputedTilePosition(GetAvailableAngle(angleData, i));
+                        offset -= GetComputedTilePosition(angleData[i - 1]);
                         break;
 
                     case TileType.Short:
@@ -281,57 +302,36 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>각 타일 정보에 대한 집합.</returns>
         public static IReadOnlyList<TileInfo> GetTilesInfo(Beatmap beatmap)
         {
-            var convertedAngleData = ConvertAngles(beatmap.AngleData);
-            TileInfo[] infos = new TileInfo[convertedAngleData.Length];
-            var types = GetTileType(convertedAngleData);
-            var tilePositions = GetTilePositions(convertedAngleData);
+            var data = ConvertAngles(beatmap.AngleData);
+            var types = GetTileType(data);
+            var positions = GetTilePositions(data);
 
-            for (int floor = 0; floor < convertedAngleData.Length; floor++)
+            float angle = 0;
+            var bpm = beatmap.Settings.Bpm;
+            var clockwise = true;
+            TileInfo[] infos = new TileInfo[data.Length];
+
+            for (int floor = 0; floor < data.Length; floor++)
             {
+                var floorAction = Array.FindAll(beatmap.Actions, action => floor == action.Floor);
+
                 infos[floor] = new TileInfo
                 {
+                    Action = floorAction,
                     TileType = types[floor],
-                    Angle = types[floor] == TileType.Midspin ? GetAvailableAngle(convertedAngleData, floor) : convertedAngleData[floor],
-                    Position = tilePositions[floor]
+                    Angle = types[floor] == TileType.Midspin ? data[floor - 1] : data[floor],
+                    Position = positions[floor],
+                    PreviousAngle = angle,
+                    PreviousBpm = bpm,
+                    PreviousClockwise = clockwise
                 };
 
-                // 타일에 액션들을 추가합니다.
-                List<Actions> floorAction = new List<Actions>();
-
-                foreach (var action in beatmap.Actions)
-                {
-                    if (floor == action.Floor)
-                        floorAction.Add(action);
-                }
-
-                infos[floor].Action = floorAction.ToArray();
+                angle = types[floor] == TileType.Midspin ? angle : data[floor];
+                bpm = GetNewBpm(bpm, floorAction.FirstOrDefault(action => action.SpeedType.HasValue));
+                clockwise = Array.Exists(floorAction, action => action.EventType == EventType.Twirl) ? !clockwise : clockwise;
             }
 
             return infos;
-        }
-
-        /// <summary>
-        /// 각도 값이 999(미드스핀)일 때 이전의 각도로 수정합니다.
-        /// </summary>
-        /// <param name="angleData">각도 데이터.</param>
-        /// <param name="floor">현재 타일.</param>
-        /// <returns>수정된 각도.</returns>
-        public static float GetAvailableAngle(float[] angleData, int floor)
-        {
-            var availableAngle = 0f;
-
-            for (int i = floor - 1; i >= 0; i--)
-            {
-                if (angleData[i] != 999)
-                {
-                    availableAngle += angleData[i];
-                    break;
-                }
-                else
-                    availableAngle += 180;
-            }
-
-            return availableAngle;
         }
 
         /// <summary>
