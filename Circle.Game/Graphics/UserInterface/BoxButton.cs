@@ -1,4 +1,6 @@
-﻿using osu.Framework.Graphics;
+#nullable disable
+
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Graphics.UserInterface
@@ -6,12 +8,6 @@ namespace Circle.Game.Graphics.UserInterface
     public class BoxButton : CircleButton
     {
         private readonly SpriteText sprite;
-
-        public string Text
-        {
-            get => sprite.Text.ToString();
-            set => sprite.Text = value;
-        }
 
         public BoxButton(bool useBackground = true)
             : base(useBackground)
@@ -25,6 +21,12 @@ namespace Circle.Game.Graphics.UserInterface
                 Padding = new MarginPadding(10),
                 Font = FontUsage.Default.With(size: 22)
             });
+        }
+
+        public string Text
+        {
+            get => sprite.Text.ToString();
+            set => sprite.Text = value;
         }
     }
 }

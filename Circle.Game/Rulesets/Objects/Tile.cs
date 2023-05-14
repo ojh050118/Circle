@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -8,12 +10,10 @@ namespace Circle.Game.Rulesets.Objects
 {
     public abstract class Tile : Container
     {
-        public TileInfo TileInfo { get; set; }
-
-        private readonly SpriteIcon icon;
-
         public const float WIDTH = 150;
         public const float HEIGHT = 50;
+
+        private readonly SpriteIcon icon;
 
         protected Tile()
         {
@@ -28,6 +28,8 @@ namespace Circle.Game.Rulesets.Objects
                 Position = new Vector2(25),
             };
         }
+
+        public TileInfo TileInfo { get; set; }
 
         protected override void LoadComplete()
         {

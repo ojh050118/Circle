@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Globalization;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
@@ -24,43 +26,35 @@ namespace Circle.Game.Overlays.Volume
 {
     public class VolumeMeter : Container, IKeyBindingHandler<InputAction>, IStateful<SelectionState>
     {
-        private CircularProgress volumeCircle;
-        private CircularProgress volumeCircleGlow;
-        private SpriteText volumeText;
-        private CircularContainer meterContainer;
-        private Sample sampleHover;
-
-        private readonly string name;
-        private readonly float circleSize;
-        private readonly Color4 meterColour;
-
-        public BindableDouble Current { get; } = new BindableDouble { MinValue = 0, MaxValue = 1, Precision = 0.01 };
-
-        public event Action<SelectionState> StateChanged;
-
-        private SelectionState state;
-
-        public SelectionState State
-        {
-            get => state;
-            set
-            {
-                if (state == value)
-                    return;
-
-                state = value;
-                StateChanged?.Invoke(value);
-
-                updateState();
-            }
-        }
-
-        private double displayVolume;
-
         private const int blur_amount = 5;
         private const float volume_circle_size = 0.93f;
         private const float inner_radius = 0.12f;
         private const float background_opacity = 0.3f;
+        private readonly float circleSize;
+        private readonly Color4 meterColour;
+
+        private readonly string name;
+
+        private double displayVolume;
+        private CircularContainer meterContainer;
+        private Sample sampleHover;
+
+        private SelectionState state;
+        private CircularProgress volumeCircle;
+        private CircularProgress volumeCircleGlow;
+        private SpriteText volumeText;
+
+        public VolumeMeter(string name, float circleSize, Color4 meterColour)
+        {
+            this.name = name;
+            this.circleSize = circleSize;
+            this.meterColour = meterColour;
+
+            AutoSizeAxes = Axes.Both;
+            Alpha = 0.5f;
+        }
+
+        public BindableDouble Current { get; } = new BindableDouble { MinValue = 0, MaxValue = 1, Precision = 0.01 };
 
         public double DisplayVolume
         {
@@ -82,14 +76,46 @@ namespace Circle.Game.Overlays.Volume
             private set => Current.Value = value;
         }
 
-        public VolumeMeter(string name, float circleSize, Color4 meterColour)
+        public bool OnPressed(KeyBindingPressEvent<InputAction> e)
         {
-            this.name = name;
-            this.circleSize = circleSize;
-            this.meterColour = meterColour;
+            if (!IsHovered)
+                return false;
 
-            AutoSizeAxes = Axes.Both;
-            Alpha = 0.5f;
+            switch (e.Action)
+            {
+                case InputAction.PreviousBeatmap:
+                    State = SelectionState.Selected;
+                    Increase();
+                    return true;
+
+                case InputAction.NextBeatmap:
+                    State = SelectionState.Selected;
+                    Decrease();
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void OnReleased(KeyBindingReleaseEvent<InputAction> e)
+        {
+        }
+
+        public event Action<SelectionState> StateChanged;
+
+        public SelectionState State
+        {
+            get => state;
+            set
+            {
+                if (state == value)
+                    return;
+
+                state = value;
+                StateChanged?.Invoke(value);
+
+                updateState();
+            }
         }
 
         [BackgroundDependencyLoader]
@@ -257,31 +283,6 @@ namespace Circle.Game.Overlays.Volume
             State = SelectionState.Selected;
 
             return base.OnMouseMove(e);
-        }
-
-        public bool OnPressed(KeyBindingPressEvent<InputAction> e)
-        {
-            if (!IsHovered)
-                return false;
-
-            switch (e.Action)
-            {
-                case InputAction.PreviousBeatmap:
-                    State = SelectionState.Selected;
-                    Increase();
-                    return true;
-
-                case InputAction.NextBeatmap:
-                    State = SelectionState.Selected;
-                    Decrease();
-                    return true;
-            }
-
-            return false;
-        }
-
-        public void OnReleased(KeyBindingReleaseEvent<InputAction> e)
-        {
         }
     }
 }

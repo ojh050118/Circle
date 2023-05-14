@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics.UserInterface;
+#nullable disable
+
+using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 
 namespace Circle.Game.Tests.Visual.Overlays

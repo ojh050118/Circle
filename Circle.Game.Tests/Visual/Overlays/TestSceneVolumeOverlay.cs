@@ -1,4 +1,6 @@
-﻿using Circle.Game.Overlays;
+#nullable disable
+
+using Circle.Game.Overlays;
 using Circle.Game.Overlays.Volume;
 using osu.Framework.Graphics;
 

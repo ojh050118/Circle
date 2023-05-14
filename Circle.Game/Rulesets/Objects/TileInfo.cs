@@ -1,14 +1,12 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
     public class TileInfo : IHasTileInfo
     {
-        public Actions[] Action { get; set; }
-
-        public TileType TileType { get; set; }
-
         public float Angle { get; set; }
 
         public Vector2 Position { get; set; }
@@ -22,6 +20,9 @@ namespace Circle.Game.Rulesets.Objects
         public float PreviousAngle { get; set; }
 
         public float PreviousBpm { get; set; }
+        public Actions[] Action { get; set; }
+
+        public TileType TileType { get; set; }
 
         public override string ToString()
         {

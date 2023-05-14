@@ -1,4 +1,6 @@
-﻿namespace Circle.Game.Beatmaps
+﻿#nullable disable
+
+namespace Circle.Game.Beatmaps
 {
     public static class BeatmapUtils
     {

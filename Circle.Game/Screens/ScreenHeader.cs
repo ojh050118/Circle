@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics.UserInterface;
+﻿#nullable disable
+
+using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -13,14 +15,14 @@ namespace Circle.Game.Screens
     {
         public const int MARGIN = 30;
 
-        public string Text { get; set; } = string.Empty;
-
         private readonly CircleScreen screen;
 
         public ScreenHeader(CircleScreen screen)
         {
             this.screen = screen;
         }
+
+        public string Text { get; set; } = string.Empty;
 
         [BackgroundDependencyLoader]
         private void load()

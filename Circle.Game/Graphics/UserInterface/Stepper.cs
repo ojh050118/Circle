@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
@@ -18,22 +20,13 @@ namespace Circle.Game.Graphics.UserInterface
     public class Stepper<T> : Container
     {
         /// <summary>
-        /// 이 설정이 무엇인지 표시합니다.
-        /// </summary>
-        public string Text { get; set; }
-
-        /// <summary>
         /// <see cref="Stepper{T}"/>의 모든 <see cref="StepperItem{T}"/>의 리스트입니다.
         /// </summary>
         public IReadOnlyList<StepperItem<T>> Items;
 
-        private SpriteText text;
-
         private int? selectedIndex;
 
-        public Bindable<T> Current { get; set; } = new Bindable<T>();
-
-        public T Selected => (selectedIndex >= 0 && selectedIndex < Items.Count) ? Items[selectedIndex.Value].Value : default;
+        private SpriteText text;
 
         public Stepper()
         {
@@ -41,6 +34,15 @@ namespace Circle.Game.Graphics.UserInterface
             Origin = Anchor.Centre;
             CornerRadius = 5;
         }
+
+        /// <summary>
+        /// 이 설정이 무엇인지 표시합니다.
+        /// </summary>
+        public string Text { get; set; }
+
+        public Bindable<T> Current { get; set; } = new Bindable<T>();
+
+        public T Selected => (selectedIndex >= 0 && selectedIndex < Items.Count) ? Items[selectedIndex.Value].Value : default;
 
         [BackgroundDependencyLoader]
         private void load()

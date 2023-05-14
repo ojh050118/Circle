@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -15,8 +17,8 @@ namespace Circle.Game.Graphics.UserInterface
     {
         protected readonly Nub CircleNub;
         private readonly Box leftBox;
-        private readonly Box rightBox;
         private readonly Container nubContainer;
+        private readonly Box rightBox;
 
         public CircleSliderBar()
         {

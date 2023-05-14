@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Circle.Game.Screens.Play;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -10,16 +12,32 @@ namespace Circle.Game.Rulesets.UI
 {
     public class FrameStabilityContainer : Container
     {
-        private readonly double gameplayStartTime;
+        private const double sixty_frame_time = 1000.0 / 60;
 
-        public int MaxCatchUpFrames { get; set; } = 5;
-
-        internal bool FrameStablePlayback = true;
-
-        public IFrameStableClock FrameStableClock => frameStableClock;
+        private readonly FramedClock framedClock;
 
         [Cached(typeof(GameplayClock))]
         private readonly FrameStabilityClock frameStableClock;
+
+        private readonly double gameplayStartTime;
+
+        private readonly ManualClock manualClock;
+
+        /// <summary>
+        /// The current direction of playback to be exposed to frame stable children.
+        /// </summary>
+        /// <remarks>
+        /// Initially it is presumed that playback will proceed in the forward direction.
+        /// </remarks>
+        private int direction = 1;
+
+        private bool firstConsumption = true;
+
+        internal bool FrameStablePlayback = true;
+
+        private IFrameBasedClock parentGameplayClock;
+
+        private PlaybackState state;
 
         public FrameStabilityContainer(double gameplayStartTime = double.MinValue)
         {
@@ -30,19 +48,11 @@ namespace Circle.Game.Rulesets.UI
             this.gameplayStartTime = gameplayStartTime;
         }
 
-        private readonly ManualClock manualClock;
+        public int MaxCatchUpFrames { get; set; } = 5;
 
-        private readonly FramedClock framedClock;
+        public IFrameStableClock FrameStableClock => frameStableClock;
 
-        private IFrameBasedClock parentGameplayClock;
-
-        /// <summary>
-        /// The current direction of playback to be exposed to frame stable children.
-        /// </summary>
-        /// <remarks>
-        /// Initially it is presumed that playback will proceed in the forward direction.
-        /// </remarks>
-        private int direction = 1;
+        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
 
         [BackgroundDependencyLoader(true)]
         private void load(GameplayClock clock)
@@ -59,14 +69,6 @@ namespace Circle.Game.Rulesets.UI
             base.LoadComplete();
             setClock();
         }
-
-        private PlaybackState state;
-
-        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
-
-        private const double sixty_frame_time = 1000.0 / 60;
-
-        private bool firstConsumption = true;
 
         public override bool UpdateSubTree()
         {

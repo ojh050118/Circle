@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.IO;
 
 namespace Circle.Game.Beatmaps
@@ -9,12 +11,44 @@ namespace Circle.Game.Beatmaps
     /// </summary>
     public class BeatmapInfo : IEquatable<BeatmapInfo>
     {
+        private readonly FileInfo fileInfo;
+
+        public BeatmapInfo(Beatmap beatmap, FileInfo info)
+        {
+            Beatmap = beatmap;
+            fileInfo = info;
+            Directory = fileInfo.Directory?.Name;
+            DirectoryName = fileInfo.DirectoryName;
+            Name = fileInfo.Name;
+            Extension = fileInfo.Extension;
+            Exists = fileInfo.Exists;
+            BeatmapPath = fileInfo.FullName;
+            if (!string.IsNullOrEmpty(Directory))
+                RelativeBeatmapPath = Path.Combine(Directory, Name);
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.SongFileName))
+            {
+                SongPath = Path.Combine(DirectoryName, Beatmap.Settings.SongFileName);
+                RelativeSongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
+            }
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.BgImage))
+            {
+                BackgroundPath = Path.Combine(DirectoryName, Beatmap.Settings.BgImage);
+                RelativeBackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
+            }
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.BgVideo))
+            {
+                VideoPath = Path.Combine(DirectoryName, Beatmap.Settings.BgVideo);
+                RelativeVideoPath = Path.Combine(Directory, Beatmap.Settings.BgVideo);
+            }
+        }
+
         /// <summary>
         /// 비트맵.
         /// </summary>
         public Beatmap Beatmap { get; }
-
-        private readonly FileInfo fileInfo;
 
         /// <summary>
         /// 부모 디렉터리 이름입니다.
@@ -81,45 +115,6 @@ namespace Circle.Game.Beatmaps
         /// </summary>
         public string RelativeVideoPath { get; } = string.Empty;
 
-        public BeatmapInfo(Beatmap beatmap, FileInfo info)
-        {
-            Beatmap = beatmap;
-            fileInfo = info;
-            Directory = fileInfo.Directory?.Name;
-            DirectoryName = fileInfo.DirectoryName;
-            Name = fileInfo.Name;
-            Extension = fileInfo.Extension;
-            Exists = fileInfo.Exists;
-            BeatmapPath = fileInfo.FullName;
-            if (!string.IsNullOrEmpty(Directory))
-                RelativeBeatmapPath = Path.Combine(Directory, Name);
-
-            if (!string.IsNullOrEmpty(Beatmap.Settings.SongFileName))
-            {
-                SongPath = Path.Combine(DirectoryName, Beatmap.Settings.SongFileName);
-                RelativeSongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
-            }
-
-            if (!string.IsNullOrEmpty(Beatmap.Settings.BgImage))
-            {
-                BackgroundPath = Path.Combine(DirectoryName, Beatmap.Settings.BgImage);
-                RelativeBackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
-            }
-
-            if (!string.IsNullOrEmpty(Beatmap.Settings.BgVideo))
-            {
-                VideoPath = Path.Combine(DirectoryName, Beatmap.Settings.BgVideo);
-                RelativeVideoPath = Path.Combine(Directory, Beatmap.Settings.BgVideo);
-            }
-        }
-
-        /// <summary>
-        /// 비트맵 파일을 삭제합니다.
-        /// </summary>
-        public void Delete() => fileInfo.Delete();
-
-        public override string ToString() => $"[{Beatmap.Settings.Author}] {Beatmap.Settings.Artist} - {Beatmap.Settings.Song}";
-
         public bool Equals(BeatmapInfo info)
         {
             if (info == null)
@@ -140,5 +135,12 @@ namespace Circle.Game.Beatmaps
                    RelativeBackgroundPath == info.RelativeBackgroundPath &&
                    RelativeVideoPath == info.RelativeVideoPath;
         }
+
+        /// <summary>
+        /// 비트맵 파일을 삭제합니다.
+        /// </summary>
+        public void Delete() => fileInfo.Delete();
+
+        public override string ToString() => $"[{Beatmap.Settings.Author}] {Beatmap.Settings.Artist} - {Beatmap.Settings.Song}";
     }
 }

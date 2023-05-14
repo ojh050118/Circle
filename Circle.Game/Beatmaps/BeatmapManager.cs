@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +16,17 @@ namespace Circle.Game.Beatmaps
 
         private BeatmapInfo currentBeatmap;
 
+        private List<BeatmapInfo> loadedBeatmaps;
+
+        public BeatmapManager(BeatmapStorage beatmaps)
+        {
+            beatmapStorage = beatmaps;
+            OnBeatmapChanged += beatmap =>
+            {
+                Logger.Log($"Beatmap changed: {beatmap.oldBeatmap} to {beatmap.newBeatmap}.");
+            };
+        }
+
         public BeatmapInfo CurrentBeatmap
         {
             get => currentBeatmap;
@@ -27,8 +40,6 @@ namespace Circle.Game.Beatmaps
             }
         }
 
-        private List<BeatmapInfo> loadedBeatmaps;
-
         public IList<BeatmapInfo> LoadedBeatmaps => loadedBeatmaps;
 
         public event Action<(BeatmapInfo oldBeatmap, BeatmapInfo newBeatmap)> OnBeatmapChanged;
@@ -36,15 +47,6 @@ namespace Circle.Game.Beatmaps
         public event Action<IList<BeatmapInfo>> OnLoadedBeatmaps;
 
         public event Action<string> OnImported;
-
-        public BeatmapManager(BeatmapStorage beatmaps)
-        {
-            beatmapStorage = beatmaps;
-            OnBeatmapChanged += beatmap =>
-            {
-                Logger.Log($"Beatmap changed: {beatmap.oldBeatmap} to {beatmap.newBeatmap}.");
-            };
-        }
 
         /// <summary>
         /// 폴더에 존재하는 비트맵을 로드합니다.
@@ -150,7 +152,7 @@ namespace Circle.Game.Beatmaps
             if (string.IsNullOrEmpty(songFileName) || !beatmapStorage.Storage.Exists(tracks))
                 return;
 
-            var fileName = Path.GetFileNameWithoutExtension(info.Name).Trim(' ');
+            var fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
             var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
 
             try
@@ -171,7 +173,7 @@ namespace Circle.Game.Beatmaps
             if (string.IsNullOrEmpty(bgImage) || !beatmapStorage.Storage.Exists(backgrounds))
                 return;
 
-            var fileName = Path.GetFileNameWithoutExtension(info.Name).Trim(' ');
+            var fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
             var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
 
             try

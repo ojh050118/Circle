@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using osu.Framework.IO.Stores;
@@ -8,8 +10,8 @@ namespace Circle.Game.IO.Archives
 {
     public sealed class ZipArchiveReader : ArchiveReader
     {
-        private readonly Stream archiveStream;
         public readonly ZipArchive Archive;
+        private readonly Stream archiveStream;
 
         public ZipArchiveReader(Stream archiveStream, string name = null)
             : base(name)
@@ -17,6 +19,8 @@ namespace Circle.Game.IO.Archives
             this.archiveStream = archiveStream;
             Archive = ZipArchive.Open(archiveStream);
         }
+
+        public override IEnumerable<string> Filenames => Archive.Entries.Select(e => e.Key).ExcludeSystemFileNames();
 
         public override Stream GetStream(string name)
         {
@@ -39,7 +43,5 @@ namespace Circle.Game.IO.Archives
             Archive.Dispose();
             archiveStream.Dispose();
         }
-
-        public override IEnumerable<string> Filenames => Archive.Entries.Select(e => e.Key).ExcludeSystemFileNames();
     }
 }

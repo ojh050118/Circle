@@ -1,4 +1,6 @@
-﻿using System.IO;
+#nullable disable
+
+using System.IO;
 using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -40,23 +42,6 @@ namespace Circle.Game.Graphics.UserInterface
             {
             }
 
-            [BackgroundDependencyLoader]
-            private void load()
-            {
-                Flow.AutoSizeAxes = Axes.X;
-                Flow.Height = CircleDirectorySelector.ITEM_HEIGHT;
-                Masking = true;
-                CornerRadius = 5;
-
-                AddRangeInternal(new Drawable[]
-                {
-                    new CircleDirectorySelectorDirectory.Background
-                    {
-                        Depth = 1
-                    }
-                });
-            }
-
             protected override IconUsage? Icon
             {
                 get
@@ -87,6 +72,23 @@ namespace Circle.Game.Graphics.UserInterface
                             return FontAwesome.Regular.File;
                     }
                 }
+            }
+
+            [BackgroundDependencyLoader]
+            private void load()
+            {
+                Flow.AutoSizeAxes = Axes.X;
+                Flow.Height = CircleDirectorySelector.ITEM_HEIGHT;
+                Masking = true;
+                CornerRadius = 5;
+
+                AddRangeInternal(new Drawable[]
+                {
+                    new CircleDirectorySelectorDirectory.Background
+                    {
+                        Depth = 1
+                    }
+                });
             }
 
             protected override SpriteText CreateSpriteText() => new SpriteText();

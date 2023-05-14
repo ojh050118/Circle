@@ -1,4 +1,6 @@
-﻿using osu.Framework;
+#nullable disable
+
+using osu.Framework;
 using osu.Framework.Platform;
 
 namespace Circle.Game.Tests

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Rulesets.Extensions;
@@ -11,6 +13,9 @@ namespace Circle.Game.Beatmaps
 {
     public class Beatmap : IEquatable<Beatmap>
     {
+        private TileInfo[] tilesInfo;
+
+        private IReadOnlyList<double> tileStartTime;
         public float[] AngleData { get; set; }
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
@@ -18,12 +23,8 @@ namespace Circle.Game.Beatmaps
         [JsonIgnore]
         public TileInfo[] TilesInfo => tilesInfo ??= CalculationExtensions.GetTilesInfo(this);
 
-        private TileInfo[] tilesInfo;
-
         [JsonIgnore]
         public IReadOnlyList<double> TileStartTime => tileStartTime ??= CalculationExtensions.GetTileStartTime(this, Settings.Offset, 60000 / Settings.Bpm * Settings.CountdownTicks);
-
-        private IReadOnlyList<double> tileStartTime;
 
         public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }

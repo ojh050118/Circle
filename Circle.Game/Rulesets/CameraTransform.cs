@@ -1,4 +1,6 @@
-﻿using osu.Framework.Graphics;
+﻿#nullable disable
+
+using osu.Framework.Graphics;
 using osuTK;
 
 namespace Circle.Game.Rulesets

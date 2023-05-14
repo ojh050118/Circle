@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
 using osu.Framework;
@@ -17,9 +19,23 @@ namespace Circle.Game.Screens.Select.Carousel
 {
     public class CarouselItem : PoolableDrawable, IStateful<SelectionState>
     {
+        public const float ITEM_HEIGHT = 250;
         public Container BorderContainer;
 
+        private Sample sampleClick;
+        private Sample sampleDoubleClick;
+
         private SelectionState state;
+
+        public CarouselItem(BeatmapInfo info, Action doubleClicked)
+        {
+            BeatmapInfo = info;
+            DoubleClicked = doubleClicked;
+        }
+
+        public BeatmapInfo BeatmapInfo { get; }
+
+        public Action DoubleClicked { get; private set; }
 
         public SelectionState State
         {
@@ -35,21 +51,6 @@ namespace Circle.Game.Screens.Select.Carousel
         }
 
         public event Action<SelectionState> StateChanged;
-
-        public BeatmapInfo BeatmapInfo { get; }
-
-        public Action DoubleClicked { get; private set; }
-
-        private Sample sampleClick;
-        private Sample sampleDoubleClick;
-
-        public const float ITEM_HEIGHT = 250;
-
-        public CarouselItem(BeatmapInfo info, Action doubleClicked)
-        {
-            BeatmapInfo = info;
-            DoubleClicked = doubleClicked;
-        }
 
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)

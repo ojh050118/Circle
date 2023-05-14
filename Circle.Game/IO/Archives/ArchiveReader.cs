@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,12 +11,6 @@ namespace Circle.Game.IO.Archives
 {
     public abstract class ArchiveReader : IResourceStore<byte[]>
     {
-        public abstract Stream GetStream(string name);
-
-        public IEnumerable<string> GetAvailableResources() => Filenames;
-
-        public abstract void Dispose();
-
         public readonly string Name;
 
         protected ArchiveReader(string name)
@@ -23,6 +19,11 @@ namespace Circle.Game.IO.Archives
         }
 
         public abstract IEnumerable<string> Filenames { get; }
+        public abstract Stream GetStream(string name);
+
+        public IEnumerable<string> GetAvailableResources() => Filenames;
+
+        public abstract void Dispose();
 
         public virtual byte[] Get(string name)
         {

@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
@@ -12,9 +14,6 @@ namespace Circle.Game.Screens.Play
     {
         private readonly Beatmap currentBeatmap;
 
-        [Resolved]
-        private CircleConfigManager config { get; set; }
-
         public ObjectContainer(Beatmap beatmap)
         {
             Anchor = Anchor.Centre;
@@ -22,6 +21,9 @@ namespace Circle.Game.Screens.Play
             AutoSizeAxes = Axes.Both;
             currentBeatmap = beatmap;
         }
+
+        [Resolved]
+        private CircleConfigManager config { get; set; }
 
         private float[] angleData => CalculationExtensions.ConvertAngles(currentBeatmap.AngleData);
 

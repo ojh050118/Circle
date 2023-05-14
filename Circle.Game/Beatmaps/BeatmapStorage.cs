@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -15,11 +17,9 @@ namespace Circle.Game.Beatmaps
 {
     public class BeatmapStorage : IResourceStore<byte[]>
     {
-        public Storage Storage { get; }
-
         private readonly LargeTextureStore largeTextureStore;
-        private readonly ITrackStore trackStore;
         private readonly IResourceStore<byte[]> localStore;
+        private readonly ITrackStore trackStore;
 
         public BeatmapStorage(Storage files, AudioManager audioManager, IResourceStore<byte[]> store, GameHost host = null)
         {
@@ -29,6 +29,8 @@ namespace Circle.Game.Beatmaps
             localStore = store;
         }
 
+        public Storage Storage { get; }
+
         public byte[] Get(string name) => localStore.Get(name);
 
         public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default) => localStore.GetAsync(name, cancellationToken);
@@ -36,6 +38,10 @@ namespace Circle.Game.Beatmaps
         public Stream GetStream(string name) => localStore.GetStream(name);
 
         public IEnumerable<string> GetAvailableResources() => localStore.GetAvailableResources();
+
+        public void Dispose()
+        {
+        }
 
         public BeatmapInfo[] GetBeatmapInfos()
         {
@@ -230,10 +236,6 @@ namespace Circle.Game.Beatmaps
                 File.Delete(Storage.GetFullPath(beatmap.RelativeSongPath));
                 File.Delete(Storage.GetFullPath(beatmap.RelativeBackgroundPath));
             }
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

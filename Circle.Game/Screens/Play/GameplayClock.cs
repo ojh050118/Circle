@@ -1,13 +1,14 @@
-﻿using osu.Framework.Bindables;
+﻿#nullable disable
+
+using osu.Framework.Bindables;
 using osu.Framework.Timing;
 
 namespace Circle.Game.Screens.Play
 {
     public class GameplayClock : IFrameBasedClock
     {
-        internal readonly IFrameBasedClock UnderlyingClock;
-
         public readonly BindableBool IsPaused = new BindableBool();
+        internal readonly IFrameBasedClock UnderlyingClock;
 
         public GameplayClock(IFrameBasedClock underlyingClock)
         {

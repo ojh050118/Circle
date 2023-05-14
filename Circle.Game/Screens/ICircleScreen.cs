@@ -1,4 +1,6 @@
-﻿using osu.Framework.Screens;
+﻿#nullable disable
+
+using osu.Framework.Screens;
 
 namespace Circle.Game.Screens
 {

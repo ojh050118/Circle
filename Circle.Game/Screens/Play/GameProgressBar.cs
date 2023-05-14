@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Shapes;
@@ -10,35 +12,13 @@ namespace Circle.Game.Screens.Play
 {
     public class GameProgressBar : SliderBar<int>
     {
+        private readonly Box fill;
+        public float Duration;
         public Action<double> OnSeek;
 
+        private ScheduledDelegate scheduledSeek;
+
         public bool Seekable;
-        public float Duration;
-
-        private readonly Box fill;
-
-        public Color4 FillColour
-        {
-            set => fill.Colour = value;
-        }
-
-        public int StartFloor
-        {
-            get => CurrentNumber.MinValue;
-            set => CurrentNumber.MinValue = value;
-        }
-
-        public int EndFloor
-        {
-            get => CurrentNumber.MaxValue;
-            set => CurrentNumber.MaxValue = value;
-        }
-
-        public int CurrentFloor
-        {
-            get => CurrentNumber.Value;
-            set => CurrentNumber.Value = value;
-        }
 
         public GameProgressBar(float barHeight, float handleBarHeight)
         {
@@ -71,6 +51,29 @@ namespace Circle.Game.Screens.Play
             };
         }
 
+        public Color4 FillColour
+        {
+            set => fill.Colour = value;
+        }
+
+        public int StartFloor
+        {
+            get => CurrentNumber.MinValue;
+            set => CurrentNumber.MinValue = value;
+        }
+
+        public int EndFloor
+        {
+            get => CurrentNumber.MaxValue;
+            set => CurrentNumber.MaxValue = value;
+        }
+
+        public int CurrentFloor
+        {
+            get => CurrentNumber.Value;
+            set => CurrentNumber.Value = value;
+        }
+
         protected override void UpdateValue(float value)
         {
             // handled in update
@@ -82,8 +85,6 @@ namespace Circle.Game.Screens.Play
 
             fill.ResizeWidthTo(UsableWidth / CurrentNumber.MaxValue * CurrentNumber.Value, Duration, Easing.OutSine);
         }
-
-        private ScheduledDelegate scheduledSeek;
 
         protected override void OnUserChange(int value)
         {

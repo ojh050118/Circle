@@ -1,4 +1,6 @@
-﻿using Circle.Game.Input;
+#nullable disable
+
+using Circle.Game.Input;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -15,10 +17,9 @@ namespace Circle.Game.Graphics.Containers
 {
     public abstract class CircleFocusedOverlayContainer : FocusedOverlayContainer, IKeyBindingHandler<InputAction>
     {
+        private Box dim;
         private Sample samplePopIn;
         private Sample samplePopOut;
-
-        private Box dim;
 
         protected override bool BlockNonPositionalInput => true;
 
@@ -28,6 +29,21 @@ namespace Circle.Game.Graphics.Containers
 
         [Resolved(canBeNull: true)]
         private GameScreenContainer gameScreen { get; set; }
+
+        public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
+        {
+            if (e.Action == InputAction.Back && !BlockInputAction)
+            {
+                Hide();
+                return true;
+            }
+
+            return false;
+        }
+
+        public void OnReleased(KeyBindingReleaseEvent<InputAction> e)
+        {
+        }
 
         [BackgroundDependencyLoader(true)]
         private void load(AudioManager audio)
@@ -65,21 +81,6 @@ namespace Circle.Game.Graphics.Containers
             }
 
             base.UpdateState(state);
-        }
-
-        public virtual bool OnPressed(KeyBindingPressEvent<InputAction> e)
-        {
-            if (e.Action == InputAction.Back && !BlockInputAction)
-            {
-                Hide();
-                return true;
-            }
-
-            return false;
-        }
-
-        public void OnReleased(KeyBindingReleaseEvent<InputAction> e)
-        {
         }
 
         protected override void PopIn()

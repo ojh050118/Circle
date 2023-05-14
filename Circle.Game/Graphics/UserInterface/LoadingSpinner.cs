@@ -1,4 +1,6 @@
-﻿using osu.Framework.Graphics;
+﻿#nullable disable
+
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -9,15 +11,12 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class LoadingSpinner : VisibilityContainer
     {
-        private readonly SpriteIcon spinner;
-
-        protected override bool StartHidden => true;
-
-        protected Container MainContents;
-
         public const float TRANSITION_DURATION = 500;
 
         private const float spin_duration = 900;
+        private readonly SpriteIcon spinner;
+
+        protected Container MainContents;
 
         public LoadingSpinner(bool withBox = false, bool inverted = false)
         {
@@ -53,6 +52,8 @@ namespace Circle.Game.Graphics.UserInterface
                 }
             };
         }
+
+        protected override bool StartHidden => true;
 
         protected override void LoadComplete()
         {

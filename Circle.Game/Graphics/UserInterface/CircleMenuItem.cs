@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using osu.Framework.Graphics.UserInterface;
 
 namespace Circle.Game.Graphics.UserInterface

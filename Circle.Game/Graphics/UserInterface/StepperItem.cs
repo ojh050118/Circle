@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Circle.Game.Graphics.Containers;
 using osu.Framework;
 
@@ -10,6 +12,22 @@ namespace Circle.Game.Graphics.UserInterface
     /// <typeparam name="T">CS0453</typeparam>
     public class StepperItem<T> : IStateful<SelectionState>
     {
+        private SelectionState state;
+
+        public StepperItem(T value, Action selected = null)
+        {
+            Value = value;
+            Action += selected;
+            Text = value.ToString();
+        }
+
+        public StepperItem(string text, T value, Action selected = null)
+        {
+            Text = text;
+            Value = value;
+            Action += selected;
+        }
+
         public T Value { get; set; }
 
         /// <summary>
@@ -21,8 +39,6 @@ namespace Circle.Game.Graphics.UserInterface
         /// <see cref="Stepper{T}"/>에 표시할 텍스트 입니다.
         /// </summary>
         public string Text { get; set; }
-
-        private SelectionState state;
 
         public SelectionState State
         {
@@ -39,20 +55,6 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         public event Action<SelectionState> StateChanged;
-
-        public StepperItem(T value, Action selected = null)
-        {
-            Value = value;
-            Action += selected;
-            Text = value.ToString();
-        }
-
-        public StepperItem(string text, T value, Action selected = null)
-        {
-            Text = text;
-            Value = value;
-            Action += selected;
-        }
 
         private void stateChanged(SelectionState state)
         {

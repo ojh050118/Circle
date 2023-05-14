@@ -1,4 +1,6 @@
-﻿using osu.Framework.Allocation;
+#nullable disable
+
+using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -89,18 +91,9 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected class TextContainer : Container, IHasText
         {
-            public LocalisableString Text
-            {
-                get => NormalText.Text;
-                set
-                {
-                    NormalText.Text = value;
-                    BoldText.Text = value;
-                }
-            }
+            public readonly SpriteText BoldText;
 
             public readonly SpriteText NormalText;
-            public readonly SpriteText BoldText;
 
             public TextContainer()
             {
@@ -129,6 +122,16 @@ namespace Circle.Game.Graphics.UserInterface
                         Margin = new MarginPadding { Horizontal = MARGIN_HORIZONTAL, Vertical = MARGIN_VERTICAL },
                     }
                 };
+            }
+
+            public LocalisableString Text
+            {
+                get => NormalText.Text;
+                set
+                {
+                    NormalText.Text = value;
+                    BoldText.Text = value;
+                }
             }
         }
     }

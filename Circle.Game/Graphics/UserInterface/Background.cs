@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -12,6 +14,23 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class Background : Container
     {
+        private readonly TextureSource source;
+
+        private Container backgroundContainer;
+        private Vector2 blurSigma;
+
+        private BufferedContainer currentTexture;
+        private float dim;
+        private Box dimBox;
+
+        public Background(TextureSource source = TextureSource.Internal, string textureName = @"")
+        {
+            this.source = source;
+            TextureName = textureName;
+            TextureSource = source;
+            RelativeSizeAxes = Axes.Both;
+        }
+
         public Vector2 BlurSigma
         {
             get => blurSigma;
@@ -33,23 +52,6 @@ namespace Circle.Game.Graphics.UserInterface
 
         [Resolved]
         private BeatmapStorage beatmaps { get; set; }
-
-        private Container backgroundContainer;
-
-        private BufferedContainer currentTexture;
-        private Box dimBox;
-
-        private readonly TextureSource source;
-        private Vector2 blurSigma;
-        private float dim;
-
-        public Background(TextureSource source = TextureSource.Internal, string textureName = @"")
-        {
-            this.source = source;
-            TextureName = textureName;
-            TextureSource = source;
-            RelativeSizeAxes = Axes.Both;
-        }
 
         [BackgroundDependencyLoader]
         private void load()

@@ -1,4 +1,6 @@
-﻿using osu.Framework.Graphics;
+﻿#nullable disable
+
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
 
@@ -7,12 +9,6 @@ namespace Circle.Game.Graphics.UserInterface
     public class IconButton : CircleButton
     {
         public const float DEFAULT_BUTTON_SIZE = 30;
-
-        public IconUsage Icon
-        {
-            get => icon.Icon;
-            set => icon.Icon = value;
-        }
 
         private readonly SpriteIcon icon;
 
@@ -27,6 +23,12 @@ namespace Circle.Game.Graphics.UserInterface
                 RelativeSizeAxes = Axes.Both,
                 Size = new Vector2(0.6f)
             });
+        }
+
+        public IconUsage Icon
+        {
+            get => icon.Icon;
+            set => icon.Icon = value;
         }
     }
 }

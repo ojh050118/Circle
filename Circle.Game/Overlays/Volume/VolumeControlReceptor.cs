@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Circle.Game.Input;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input;
@@ -31,14 +33,14 @@ namespace Circle.Game.Overlays.Volume
         {
         }
 
+        public bool OnScroll(KeyBindingScrollEvent<InputAction> e) =>
+            ScrollActionRequested?.Invoke(InputAction.IncreaseVolume, e.ScrollAmount, e.IsPrecise) ?? false;
+
         protected override bool OnScroll(ScrollEvent e)
         {
             ScrollActionRequested?.Invoke(InputAction.IncreaseVolume, e.ScrollDelta.Y, e.IsPrecise);
 
             return true;
         }
-
-        public bool OnScroll(KeyBindingScrollEvent<InputAction> e) =>
-            ScrollActionRequested?.Invoke(InputAction.IncreaseVolume, e.ScrollAmount, e.IsPrecise) ?? false;
     }
 }

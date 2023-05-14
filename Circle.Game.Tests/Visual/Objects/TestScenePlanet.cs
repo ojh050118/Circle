@@ -1,4 +1,6 @@
-﻿using Circle.Game.Rulesets.Extensions;
+#nullable disable
+
+using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;

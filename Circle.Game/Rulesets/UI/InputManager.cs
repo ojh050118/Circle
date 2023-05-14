@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
@@ -10,16 +12,10 @@ namespace Circle.Game.Rulesets.UI
 {
     public class InputManager : Container
     {
-        public override bool PropagatePositionalInputSubTree => false;
-        public override bool PropagateNonPositionalInputSubTree => false;
-
-        public Beatmap Beatmap { get; set; }
-
         private readonly IReadOnlyList<Key> allowedKeys;
-        private IReadOnlyList<double> tileHitTimes => Beatmap.TileStartTime;
-        public double TimeUntilNextBeat;
-        public double TimeSinceLastBeat;
         public int Floor = 1;
+        public double TimeSinceLastBeat;
+        public double TimeUntilNextBeat;
 
         public InputManager()
         {
@@ -30,6 +26,12 @@ namespace Circle.Game.Rulesets.UI
 
             allowedKeys = keys;
         }
+
+        public override bool PropagatePositionalInputSubTree => false;
+        public override bool PropagateNonPositionalInputSubTree => false;
+
+        public Beatmap Beatmap { get; set; }
+        private IReadOnlyList<double> tileHitTimes => Beatmap.TileStartTime;
 
         protected override void LoadComplete()
         {

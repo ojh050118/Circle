@@ -1,4 +1,6 @@
-﻿namespace Circle.Game.Utils
+﻿#nullable disable
+
+namespace Circle.Game.Utils
 {
     public enum Color4Enum
     {

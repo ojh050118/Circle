@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -25,9 +27,7 @@ namespace Circle.Game.Screens.Play
 {
     public class Player : CircleScreen
     {
-        public override bool FadeBackground => false;
-
-        private GamePlayState playState = GamePlayState.NotPlaying;
+        private readonly BeatmapInfo beatmapInfo;
 
         private readonly Key[] blockedKeys =
         {
@@ -51,7 +51,39 @@ namespace Circle.Game.Screens.Play
             Key.RWin
         };
 
+        private readonly Beatmap currentBeatmap;
+
+        /// <summary>
+        /// 타일 시작 시간과 게임플레이 시간을 비교하기 위해 존재합니다.
+        /// 게임 시작 전에는 0%이어야 하므로 1번 타일과 비교합니다.
+        /// </summary>
+        private int floor = 1;
+
         private GameplayMusicController gameMusic;
+        private List<double> hitTimes;
+        private HUDOverlay hud;
+
+        private MasterGameplayClockContainer masterGameplayClockContainer;
+
+        private bool parallaxEnabled;
+
+        private GamePlayState playState = GamePlayState.NotPlaying;
+
+        private Sample sampleHit;
+
+        private ScheduledDelegate scheduledDelegate;
+
+        private string textureName;
+
+        private TextureSource textureSource;
+
+        public Player(BeatmapInfo beatmapInfo)
+        {
+            this.beatmapInfo = beatmapInfo;
+            currentBeatmap = beatmapInfo.Beatmap;
+        }
+
+        public override bool FadeBackground => false;
 
         [Resolved]
         private MusicController musicController { get; set; }
@@ -65,37 +97,9 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private CircleConfigManager localConfig { get; set; }
 
-        private TextureSource textureSource;
-
-        private string textureName;
-
-        private MasterGameplayClockContainer masterGameplayClockContainer;
-        private HUDOverlay hud;
-
-        private ScheduledDelegate scheduledDelegate;
-
-        private readonly BeatmapInfo beatmapInfo;
-        private readonly Beatmap currentBeatmap;
-
-        private bool parallaxEnabled;
-        private List<double> hitTimes;
         private float beat => 60000 / currentBeatmap.Settings.Bpm;
         private int tick => currentBeatmap.Settings.CountdownTicks;
         private double gameTime => masterGameplayClockContainer.CurrentTime;
-
-        /// <summary>
-        /// 타일 시작 시간과 게임플레이 시간을 비교하기 위해 존재합니다.
-        /// 게임 시작 전에는 0%이어야 하므로 1번 타일과 비교합니다.
-        /// </summary>
-        private int floor = 1;
-
-        private Sample sampleHit;
-
-        public Player(BeatmapInfo beatmapInfo)
-        {
-            this.beatmapInfo = beatmapInfo;
-            currentBeatmap = beatmapInfo.Beatmap;
-        }
 
         [BackgroundDependencyLoader]
         private void load(GameHost host, AudioManager audio, CircleColour colours)

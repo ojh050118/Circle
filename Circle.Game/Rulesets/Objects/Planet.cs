@@ -1,4 +1,6 @@
-﻿using Circle.Game.Utils;
+#nullable disable
+
+using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -11,22 +13,11 @@ namespace Circle.Game.Rulesets.Objects
 {
     public class Planet : CompositeDrawable
     {
-        private float expansion;
-        private readonly Container adjustableContent;
-        private readonly Shape.Circle planet;
-
         public const float PLANET_SIZE = 50;
         public const float DISTANCE = 100;
-
-        public float Expansion
-        {
-            get => expansion;
-            set
-            {
-                expansion = value;
-                adjustableContent.Width = value * DISTANCE;
-            }
-        }
+        private readonly Container adjustableContent;
+        private readonly Shape.Circle planet;
+        private float expansion;
 
         public Bindable<Color4Enum> PlanetColour;
 
@@ -49,6 +40,16 @@ namespace Circle.Game.Rulesets.Objects
                     Colour = planetColor,
                 }
             };
+        }
+
+        public float Expansion
+        {
+            get => expansion;
+            set
+            {
+                expansion = value;
+                adjustableContent.Width = value * DISTANCE;
+            }
         }
 
         [BackgroundDependencyLoader]

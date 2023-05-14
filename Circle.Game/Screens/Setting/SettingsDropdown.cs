@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -14,22 +16,11 @@ namespace Circle.Game.Screens.Setting
     public class SettingsDropdown<T> : Container
         where T : struct
     {
-        public string Text
-        {
-            get => text.Text.ToString();
-            set => text.Text = value;
-        }
-
-        public IEnumerable<T> Items
-        {
-            get => dropdown?.Items;
-            set => dropdown.Items = value;
-        }
-
-        public Bindable<T> Current;
+        private readonly CircleDropdown<T> dropdown;
 
         private readonly SpriteText text;
-        private readonly CircleDropdown<T> dropdown;
+
+        public Bindable<T> Current;
 
         public SettingsDropdown()
         {
@@ -71,6 +62,18 @@ namespace Circle.Game.Screens.Setting
                     }
                 }
             };
+        }
+
+        public string Text
+        {
+            get => text.Text.ToString();
+            set => text.Text = value;
+        }
+
+        public IEnumerable<T> Items
+        {
+            get => dropdown?.Items;
+            set => dropdown.Items = value;
         }
 
         [BackgroundDependencyLoader]

@@ -1,6 +1,12 @@
 <!-- Contains required properties for osu!framework projects. -->
 <Project>
-  <PropertyGroup>
-    <ApplicationManifest>$(MSBuildThisFileDirectory)app.manifest</ApplicationManifest>
+  <PropertyGroup Label="C#">
+    <LangVersion>8.0</LangVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Label="Sourcelink3">
+    <EnableSourceLink Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>$(EnableSourceLink)</EnableSourceControlManagerQueries>
   </PropertyGroup>
 </Project>

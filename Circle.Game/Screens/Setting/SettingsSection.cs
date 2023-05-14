@@ -1,4 +1,6 @@
-﻿using osu.Framework.Allocation;
+﻿#nullable disable
+
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -10,14 +12,11 @@ namespace Circle.Game.Screens.Setting
 {
     public abstract class SettingsSection : Container
     {
-        protected FillFlowContainer FlowContent;
-
-        public abstract string Header { get; }
-
         private const int header_size = 30;
         private const int margin = 20;
 
         public const int CONTENT_MARGINS = 15;
+        protected FillFlowContainer FlowContent;
 
         protected SettingsSection()
         {
@@ -35,6 +34,8 @@ namespace Circle.Game.Screens.Setting
                 Spacing = new Vector2(5)
             };
         }
+
+        public abstract string Header { get; }
 
         [BackgroundDependencyLoader]
         private void load()

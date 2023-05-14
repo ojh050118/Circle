@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -23,6 +25,11 @@ namespace Circle.Game.Screens
 {
     public class MainScreen : CircleScreen
     {
+        private IconWithTextButton edit;
+        private IconWithTextButton exit;
+
+        private IconWithTextButton play;
+        private IconWithTextButton settings;
         public override string Header => "Circle";
 
         public override bool BlockExit => true;
@@ -34,11 +41,6 @@ namespace Circle.Game.Screens
 
         [Resolved]
         private Background background { get; set; }
-
-        private IconWithTextButton play;
-        private IconWithTextButton edit;
-        private IconWithTextButton settings;
-        private IconWithTextButton exit;
 
         [BackgroundDependencyLoader]
         private void load(CircleConfigManager localConfig, BeatmapManager beatmapManager)
@@ -155,19 +157,11 @@ namespace Circle.Game.Screens
 
         private class IconWithTextButton : Container
         {
+            private readonly Color4 colour;
             private readonly SpriteIcon icon;
+            private readonly string sampleName;
 
             private Sample sampleSelect;
-            private readonly string sampleName;
-            private readonly Color4 colour;
-
-            public IconUsage Icon
-            {
-                get => icon.Icon;
-                set => icon.Icon = value;
-            }
-
-            public Action Action { get; set; }
 
             public IconWithTextButton(string text = @"", string sample = @"", Color4 colour = default)
             {
@@ -217,6 +211,14 @@ namespace Circle.Game.Screens
                     }
                 };
             }
+
+            public IconUsage Icon
+            {
+                get => icon.Icon;
+                set => icon.Icon = value;
+            }
+
+            public Action Action { get; set; }
 
             [BackgroundDependencyLoader]
             private void load(AudioManager audio)
