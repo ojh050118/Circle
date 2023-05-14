@@ -152,7 +152,7 @@ namespace Circle.Game.Beatmaps
             if (string.IsNullOrEmpty(songFileName) || !beatmapStorage.Storage.Exists(tracks))
                 return;
 
-            var fileName = Path.GetFileNameWithoutExtension(info.Name).Trim(' ');
+            var fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
             var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
 
             try
@@ -173,7 +173,7 @@ namespace Circle.Game.Beatmaps
             if (string.IsNullOrEmpty(bgImage) || !beatmapStorage.Storage.Exists(backgrounds))
                 return;
 
-            var fileName = Path.GetFileNameWithoutExtension(info.Name).Trim(' ');
+            var fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
             var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
 
             try
