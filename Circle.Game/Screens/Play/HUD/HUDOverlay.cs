@@ -66,7 +66,7 @@ namespace Circle.Game.Screens.Play.HUD
             Countdown(countdownInterval * tick);
         }
 
-        public void Countdown(float startUntilTime)
+        public void Countdown(double startUntilTime)
         {
             var tick = beatmap.Settings.CountdownTicks;
             startUntilTime /= tick;

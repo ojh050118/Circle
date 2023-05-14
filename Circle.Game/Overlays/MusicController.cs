@@ -13,7 +13,7 @@ namespace Circle.Game.Overlays
     public class MusicController : CompositeDrawable
     {
         [NotNull]
-        public DrawableTrack CurrentTrack { get; private set; } = new DrawableTrack(new TrackVirtual(1000));
+        public DrawableTrack CurrentTrack { get; protected set; } = new DrawableTrack(new TrackVirtual(1000));
 
         [Resolved]
         private BeatmapStorage beatmaps { get; set; }

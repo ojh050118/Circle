@@ -178,4 +178,10 @@ namespace Circle.Game.Screens.Play
 
         private RotationDirection getIsClockwise(IReadOnlyList<TileInfo> tilesInfo, int floor) => tilesInfo.GetIsClockwise(floor) ? RotationDirection.Clockwise : RotationDirection.Counterclockwise;
     }
+
+    public enum PlanetState
+    {
+        Fire,
+        Ice
+    }
 }
