@@ -49,7 +49,7 @@ namespace Circle.Game
         {
             get
             {
-                var version = typeof(osu.Framework.Game).Assembly.GetName().Version;
+                var version = typeof(osu.Framework.Game).Assembly.GetName().Version!;
                 return $"{version.Major}.{version.Minor}.{version.Build}";
             }
         }
