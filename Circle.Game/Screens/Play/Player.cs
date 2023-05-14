@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -52,6 +51,8 @@ namespace Circle.Game.Screens.Play
             Key.RWin
         };
 
+        private GameplayMusicController gameMusic;
+
         [Resolved]
         private MusicController musicController { get; set; }
 
@@ -80,6 +81,7 @@ namespace Circle.Game.Screens.Play
         private List<double> hitTimes;
         private float beat => 60000 / currentBeatmap.Settings.Bpm;
         private int tick => currentBeatmap.Settings.CountdownTicks;
+        private double gameTime => masterGameplayClockContainer.CurrentTime;
 
         /// <summary>
         /// 타일 시작 시간과 게임플레이 시간을 비교하기 위해 존재합니다.
@@ -106,7 +108,8 @@ namespace Circle.Game.Screens.Play
             InternalChildren = new Drawable[]
             {
                 masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, Clock),
-                hud = new HUDOverlay(currentBeatmap)
+                hud = new HUDOverlay(currentBeatmap),
+                gameMusic = new GameplayMusicController(beatmapInfo)
             };
 
             if (!host.CanExit)
@@ -130,17 +133,12 @@ namespace Circle.Game.Screens.Play
             base.LoadComplete();
 
             localConfig.SetValue(CircleSetting.Parallax, false);
+            gameMusic.SetOffset(gameTime, beat * tick);
             musicController.CurrentTrack.VolumeTo(0, 500, Easing.Out)
                            .Then()
                            .Schedule(() =>
                            {
                                musicController.Stop();
-                               musicController.ChangeTrack(beatmapInfo);
-                               if (currentBeatmap.Settings.Offset - beat * tick >= 0)
-                                   musicController.SeekTo(currentBeatmap.Settings.Offset - beat * tick);
-                               else
-                                   musicController.SeekTo(currentBeatmap.Settings.Offset);
-
                                playState = GamePlayState.Ready;
                            });
         }
@@ -192,9 +190,7 @@ namespace Circle.Game.Screens.Play
             {
                 case GamePlayState.Ready:
                     masterGameplayClockContainer.Start();
-                    musicController.CurrentTrack.VolumeTo(1);
-                    var timeUntilRun = currentBeatmap.Settings.Offset - beat * tick >= 0 ? 0 : beat * tick;
-                    Scheduler.AddDelayed(() => musicController.Play(), timeUntilRun);
+                    gameMusic.Start();
                     hud.Start();
                     playState = GamePlayState.Playing;
                     break;
@@ -218,7 +214,7 @@ namespace Circle.Game.Screens.Play
 
             musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
             {
-                musicController.SeekTo(musicController.CurrentTrack.CurrentTime - 500);
+                musicController.SeekTo(gameTime - 1000);
                 musicController.CurrentTrack.VolumeTo(1, 200, Easing.Out);
                 musicController.Play();
             });
@@ -245,7 +241,7 @@ namespace Circle.Game.Screens.Play
         private void onPaused()
         {
             masterGameplayClockContainer.Stop();
-            musicController.CurrentTrack.VolumeTo(0, 750, Easing.OutPow10).Then().Schedule(musicController.Stop);
+            gameMusic.Pause();
             scheduledDelegate?.Cancel();
 
             dialog.Title = "Paused";
@@ -291,32 +287,30 @@ namespace Circle.Game.Screens.Play
 
         private void resume()
         {
-            musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
+            scheduledDelegate?.Cancel();
+
+            gameMusic.DelayUntilTransformsFinished().Schedule(() =>
             {
-                if (masterGameplayClockContainer.CurrentTime - 1000 - beat * tick >= 0)
+                var countdown = beat * tick;
+
+                if (gameTime - countdown * 2 >= 0)
                 {
-                    musicController.SeekTo(masterGameplayClockContainer.CurrentTime - 1000 - beat * tick);
-                    musicController.Play();
-                    hud.Countdown(1000);
-                    musicController.CurrentTrack.VolumeTo(1, 1000, Easing.OutPow10);
+                    gameMusic.SetOffset(gameTime, countdown * 2);
+                    gameMusic.Resume();
+                    hud.Countdown(countdown);
+                }
+                else
+                {
+                    gameMusic.SetOffset(gameTime, countdown);
+                    gameMusic.Resume(countdown);
+                    hud.Countdown(gameMusic.TimeUntilPlay + countdown);
                 }
 
                 scheduledDelegate = Scheduler.AddDelayed(() =>
                 {
-                    if (masterGameplayClockContainer.CurrentTime - 1000 - beat * tick < 0)
-                    {
-                        Scheduler.AddDelayed(() =>
-                        {
-                            musicController.SeekTo(masterGameplayClockContainer.CurrentTime - beat * tick);
-                            musicController.CurrentTrack.VolumeTo(1);
-                            musicController.Play();
-                            hud.Countdown((float)(masterGameplayClockContainer.CurrentTime - beat * tick));
-                        }, Math.Abs(masterGameplayClockContainer.CurrentTime - beat * tick));
-                    }
-
                     playState = GamePlayState.Playing;
                     masterGameplayClockContainer.Start();
-                }, 1000);
+                }, countdown);
             });
         }
     }

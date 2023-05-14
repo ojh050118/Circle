@@ -33,10 +33,16 @@ namespace Circle.Game.Screens.Play
         /// <param name="countdown">게임이 시작하기 전 카운트다운 지속시간.</param>
         public void SetOffset(double offset, double countdown)
         {
-            if (offset - countdown < 0)
-                TimeUntilPlay = Math.Abs(offset - countdown);
-            else
+            if (offset - countdown >= 0)
+            {
                 TimeUntilPlay = 0;
+                SeekTo(offset - countdown);
+            }
+            else
+            {
+                TimeUntilPlay = countdown;
+                SeekTo(offset);
+            }
 
             SeekTo(Math.Clamp(offset - countdown, 0, double.MaxValue));
         }
@@ -59,13 +65,13 @@ namespace Circle.Game.Screens.Play
         /// 마지막으로 설정된 오프셋을 기준으로 재생을 재개합니다.
         /// 플레이 보장을 위해 DelayUntilTransformsFinished()를 사용해주세요.
         /// </summary>
-        public ScheduledDelegate Resume()
+        public ScheduledDelegate Resume(double timeUntilResume = 0)
         {
             return Scheduler.AddDelayed(() =>
             {
                 VolumeTo(1, TimeUntilPlay == 0 ? TimeUntilPlay : 0, Easing.OutPow10);
                 Play();
-            }, TimeUntilPlay);
+            }, TimeUntilPlay + timeUntilResume);
         }
 
         public TransformSequence<DrawableTrack> DelayUntilTransformsFinished() => CurrentTrack.DelayUntilTransformsFinished();
