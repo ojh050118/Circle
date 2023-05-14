@@ -25,7 +25,7 @@ using osuTK.Input;
 
 namespace Circle.Game.Screens.Play
 {
-    public class Player : CircleScreen
+    public partial class Player : CircleScreen
     {
         private readonly BeatmapInfo beatmapInfo;
 

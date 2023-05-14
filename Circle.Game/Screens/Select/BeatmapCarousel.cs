@@ -13,7 +13,7 @@ using osuTK;
 
 namespace Circle.Game.Screens.Select
 {
-    public class BeatmapCarousel : Container
+    public partial class BeatmapCarousel : Container
     {
         private SelectionCycleFillFlowContainer<CarouselItem> carouselItems;
         protected CarouselScrollContainer Scroll;

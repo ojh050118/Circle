@@ -23,7 +23,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens
 {
-    public class MainScreen : CircleScreen
+    public partial class MainScreen : CircleScreen
     {
         private IconWithTextButton edit;
         private IconWithTextButton exit;

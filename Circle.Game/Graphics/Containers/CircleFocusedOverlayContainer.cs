@@ -15,7 +15,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.Containers
 {
-    public abstract class CircleFocusedOverlayContainer : FocusedOverlayContainer, IKeyBindingHandler<InputAction>
+    public abstract partial class CircleFocusedOverlayContainer : FocusedOverlayContainer, IKeyBindingHandler<InputAction>
     {
         private Box dim;
         private Sample samplePopIn;

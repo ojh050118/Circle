@@ -19,7 +19,7 @@ using osu.Framework.Platform;
 
 namespace Circle.Game
 {
-    public class CircleGameBase : osu.Framework.Game
+    public partial class CircleGameBase : osu.Framework.Game
     {
         public ScalingContainer ContentContainer;
 

@@ -8,7 +8,7 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneStepper : CircleTestScene
+    public partial class TestSceneStepper : CircleTestScene
     {
         private Stepper<int> intStepper;
         private Stepper<string> stringStepper;

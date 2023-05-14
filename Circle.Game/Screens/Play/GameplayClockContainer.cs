@@ -10,7 +10,7 @@ using osu.Framework.Timing;
 namespace Circle.Game.Screens.Play
 {
     [Cached]
-    public abstract class GameplayClockContainer : Container, IAdjustableClock
+    public abstract partial class GameplayClockContainer : Container, IAdjustableClock
     {
         protected readonly DecoupleableInterpolatingFramedClock AdjustableSource;
 

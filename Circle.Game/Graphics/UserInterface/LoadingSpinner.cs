@@ -9,7 +9,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class LoadingSpinner : VisibilityContainer
+    public partial class LoadingSpinner : VisibilityContainer
     {
         public const float TRANSITION_DURATION = 500;
 

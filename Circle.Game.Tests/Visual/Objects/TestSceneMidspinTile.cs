@@ -7,7 +7,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.Objects
 {
-    public class TestSceneMidspinTile : CircleTestScene
+    public partial class TestSceneMidspinTile : CircleTestScene
     {
         public TestSceneMidspinTile()
         {

@@ -10,7 +10,7 @@ using osu.Framework.Threading;
 
 namespace Circle.Game.Screens.Play
 {
-    public class GameplayMusicController : MusicController
+    public partial class GameplayMusicController : MusicController
     {
         public GameplayMusicController(BeatmapInfo beatmapInfo)
         {

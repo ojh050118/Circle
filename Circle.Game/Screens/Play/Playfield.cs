@@ -10,7 +10,7 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Screens.Play
 {
-    public class Playfield : Container
+    public partial class Playfield : Container
     {
         /// <summary>
         /// 게임 시작 전 카운트다운 지속시간.

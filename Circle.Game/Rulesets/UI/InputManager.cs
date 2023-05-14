@@ -10,7 +10,7 @@ using osuTK.Input;
 
 namespace Circle.Game.Rulesets.UI
 {
-    public class InputManager : Container
+    public partial class InputManager : Container
     {
         private readonly IReadOnlyList<Key> allowedKeys;
         public int Floor = 1;

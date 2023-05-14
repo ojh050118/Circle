@@ -9,7 +9,7 @@ using osu.Framework.Input.Events;
 
 namespace Circle.Game.Overlays.Volume
 {
-    public class VolumeControlReceptor : Container, IScrollBindingHandler<InputAction>, IHandleGlobalKeyboardInput
+    public partial class VolumeControlReceptor : Container, IScrollBindingHandler<InputAction>, IHandleGlobalKeyboardInput
     {
         public Func<InputAction, bool> ActionRequested;
         public Func<InputAction, float, bool, bool> ScrollActionRequested;

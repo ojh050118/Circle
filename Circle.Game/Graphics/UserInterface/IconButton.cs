@@ -6,7 +6,7 @@ using osuTK;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class IconButton : CircleButton
+    public partial class IconButton : CircleButton
     {
         public const float DEFAULT_BUTTON_SIZE = 30;
 

@@ -16,7 +16,7 @@ using osuTK;
 
 namespace Circle.Game.Overlays
 {
-    public class ImportOverlay : CircleFocusedOverlayContainer
+    public partial class ImportOverlay : CircleFocusedOverlayContainer
     {
         private readonly Box background;
         private readonly Box fileBackground;

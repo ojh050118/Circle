@@ -11,7 +11,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class CircleButton : ClickableContainer
+    public partial class CircleButton : ClickableContainer
     {
         private readonly Box box;
 

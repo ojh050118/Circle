@@ -11,7 +11,7 @@ using osu.Framework.Input.Events;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    internal class CircleDirectorySelectorDirectory : DirectorySelectorDirectory
+    internal partial class CircleDirectorySelectorDirectory : DirectorySelectorDirectory
     {
         public CircleDirectorySelectorDirectory(DirectoryInfo directory, string displayName = null)
             : base(directory, displayName)

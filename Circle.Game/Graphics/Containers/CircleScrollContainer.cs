@@ -12,7 +12,7 @@ using osuTK.Input;
 
 namespace Circle.Game.Graphics.Containers
 {
-    public class CircleScrollContainer : CircleScrollContainer<Drawable>
+    public partial class CircleScrollContainer : CircleScrollContainer<Drawable>
     {
         public CircleScrollContainer()
         {

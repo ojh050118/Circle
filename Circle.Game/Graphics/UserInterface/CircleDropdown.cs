@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#nullable enable
+
+using System.Linq;
 using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -12,11 +14,9 @@ using osu.Framework.Localisation;
 using osuTK;
 using osuTK.Graphics;
 
-#nullable enable
-
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class CircleDropdown<T> : Dropdown<T>
+    public partial class CircleDropdown<T> : Dropdown<T>
     {
         private const float corner_radius = 5;
 
@@ -52,10 +52,15 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected class CircleDropdownMenu : DropdownMenu
         {
-            public override bool HandleNonPositionalInput => State == MenuState.Open;
+            private Color4 hoverColour;
+            private Sample? sampleClose;
 
             private Sample? sampleOpen;
-            private Sample? sampleClose;
+
+            private Color4 selectionColour;
+
+            // todo: this shouldn't be required after https://github.com/ppy/osu-framework/issues/4519 is fixed.
+            private bool wasOpened;
 
             // todo: this uses the same styling as CircleMenu. hopefully we can just use CircleMenu in the future with some refactoring
             public CircleDropdownMenu()
@@ -69,6 +74,30 @@ namespace Circle.Game.Graphics.UserInterface
                 ItemsContainer.Padding = new MarginPadding(5);
             }
 
+            public override bool HandleNonPositionalInput => State == MenuState.Open;
+
+            public Color4 HoverColour
+            {
+                get => hoverColour;
+                set
+                {
+                    hoverColour = value;
+                    foreach (var c in Children.OfType<DrawableCircleDropdownMenuItem>())
+                        c.BackgroundColourHover = value;
+                }
+            }
+
+            public Color4 SelectionColour
+            {
+                get => selectionColour;
+                set
+                {
+                    selectionColour = value;
+                    foreach (var c in Children.OfType<DrawableCircleDropdownMenuItem>())
+                        c.BackgroundColourSelected = value;
+                }
+            }
+
             [BackgroundDependencyLoader]
             private void load(AudioManager audio, CircleColour colours)
             {
@@ -79,9 +108,6 @@ namespace Circle.Game.Graphics.UserInterface
                 sampleOpen = audio.Samples.Get(@"dropdown-open");
                 sampleClose = audio.Samples.Get(@"dropdown-close");
             }
-
-            // todo: this shouldn't be required after https://github.com/ppy/osu-framework/issues/4519 is fixed.
-            private bool wasOpened;
 
             // todo: this uses the same styling as CircleMenu. hopefully we can just use CircleMenu in the future with some refactoring
             protected override void AnimateOpen()
@@ -115,32 +141,6 @@ namespace Circle.Game.Graphics.UserInterface
                 }
             }
 
-            private Color4 hoverColour;
-
-            public Color4 HoverColour
-            {
-                get => hoverColour;
-                set
-                {
-                    hoverColour = value;
-                    foreach (var c in Children.OfType<DrawableCircleDropdownMenuItem>())
-                        c.BackgroundColourHover = value;
-                }
-            }
-
-            private Color4 selectionColour;
-
-            public Color4 SelectionColour
-            {
-                get => selectionColour;
-                set
-                {
-                    selectionColour = value;
-                    foreach (var c in Children.OfType<DrawableCircleDropdownMenuItem>())
-                        c.BackgroundColourSelected = value;
-                }
-            }
-
             protected override Menu CreateSubMenu() => new CircleMenu(Direction.Vertical);
 
             protected override DrawableDropdownMenuItem CreateDrawableDropdownMenuItem(MenuItem item) => new DrawableCircleDropdownMenuItem(item)
@@ -155,6 +155,15 @@ namespace Circle.Game.Graphics.UserInterface
 
             public class DrawableCircleDropdownMenuItem : DrawableDropdownMenuItem
             {
+                public DrawableCircleDropdownMenuItem(MenuItem item)
+                    : base(item)
+                {
+                    Foreground.Padding = new MarginPadding(2);
+
+                    Masking = true;
+                    CornerRadius = corner_radius;
+                }
+
                 // IsHovered is used
                 public override bool HandlePositionalInput => true;
 
@@ -186,15 +195,6 @@ namespace Circle.Game.Graphics.UserInterface
                     UpdateForegroundColour();
                 }
 
-                public DrawableCircleDropdownMenuItem(MenuItem item)
-                    : base(item)
-                {
-                    Foreground.Padding = new MarginPadding(2);
-
-                    Masking = true;
-                    CornerRadius = corner_radius;
-                }
-
                 protected override void UpdateBackgroundColour()
                 {
                     if (!IsPreSelected && !IsSelected)
@@ -219,16 +219,12 @@ namespace Circle.Game.Graphics.UserInterface
 
                 protected new class Content : CompositeDrawable, IHasText
                 {
-                    public LocalisableString Text
-                    {
-                        get => Label.Text;
-                        set => Label.Text = value;
-                    }
-
-                    public readonly SpriteText Label;
+                    private const float chevron_offset = -3;
                     public readonly SpriteIcon Chevron;
 
-                    private const float chevron_offset = -3;
+                    public readonly SpriteText Label;
+
+                    private bool hovering;
 
                     public Content()
                     {
@@ -256,8 +252,6 @@ namespace Circle.Game.Graphics.UserInterface
                         };
                     }
 
-                    private bool hovering;
-
                     public bool Hovering
                     {
                         get => hovering;
@@ -280,6 +274,12 @@ namespace Circle.Game.Graphics.UserInterface
                             }
                         }
                     }
+
+                    public LocalisableString Text
+                    {
+                        get => Label.Text;
+                        set => Label.Text = value;
+                    }
                 }
             }
 
@@ -290,15 +290,8 @@ namespace Circle.Game.Graphics.UserInterface
 
         public class CircleDropdownHeader : DropdownHeader
         {
-            protected readonly SpriteText Text;
-
-            protected override LocalisableString Label
-            {
-                get => Text.Text;
-                set => Text.Text = value;
-            }
-
             protected readonly SpriteIcon Icon;
+            protected readonly SpriteText Text;
 
             public CircleDropdownHeader()
             {
@@ -343,6 +336,12 @@ namespace Circle.Game.Graphics.UserInterface
                         }
                     }
                 };
+            }
+
+            protected override LocalisableString Label
+            {
+                get => Text.Text;
+                set => Text.Text = value;
             }
 
             [BackgroundDependencyLoader]

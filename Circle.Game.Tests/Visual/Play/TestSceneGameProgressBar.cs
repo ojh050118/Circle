@@ -5,7 +5,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.Play
 {
-    public class TestSceneGameProgressBar : CircleTestScene
+    public partial class TestSceneGameProgressBar : CircleTestScene
     {
         public TestSceneGameProgressBar()
         {

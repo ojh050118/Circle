@@ -10,7 +10,7 @@ using osu.Framework.Graphics.UserInterface;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class CircleFileSelector : FileSelector
+    public partial class CircleFileSelector : FileSelector
     {
         public CircleFileSelector(string initialPath = null, string[] validFileExtensions = null)
             : base(initialPath, validFileExtensions)

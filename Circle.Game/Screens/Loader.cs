@@ -8,7 +8,7 @@ using osu.Framework.Threading;
 
 namespace Circle.Game.Screens
 {
-    public class Loader : Screen
+    public partial class Loader : Screen
     {
         private CircleScreen mainScreen;
 

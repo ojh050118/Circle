@@ -12,7 +12,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Setting
 {
-    public class SettingsSlider<T> : Container
+    public partial class SettingsSlider<T> : Container
         where T : struct, IEquatable<T>, IComparable<T>, IConvertible
     {
         private readonly IconButton leftIcon;

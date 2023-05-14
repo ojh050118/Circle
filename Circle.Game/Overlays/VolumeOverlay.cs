@@ -18,7 +18,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Overlays
 {
-    public class VolumeOverlay : VisibilityContainer
+    public partial class VolumeOverlay : VisibilityContainer
     {
         private ScheduledDelegate popOutDelegate;
         private VolumeMeter volumeMeterEffect;

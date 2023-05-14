@@ -5,7 +5,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneBoxButton : CircleTestScene
+    public partial class TestSceneBoxButton : CircleTestScene
     {
         public TestSceneBoxButton()
         {

@@ -8,7 +8,7 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Graphics.Containers
 {
-    public class SelectionCycleFillFlowContainer<T> : FillFlowContainer<T> where T : Drawable, IStateful<SelectionState>
+    public partial class SelectionCycleFillFlowContainer<T> : FillFlowContainer<T> where T : Drawable, IStateful<SelectionState>
     {
         private int? selectedIndex;
         public T Selected => (selectedIndex >= 0 && selectedIndex < Count) ? this[selectedIndex.Value] : null;

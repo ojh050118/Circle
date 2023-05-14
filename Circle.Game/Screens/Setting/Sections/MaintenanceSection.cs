@@ -12,7 +12,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Setting.Sections
 {
-    public class MaintenanceSection : SettingsSection
+    public partial class MaintenanceSection : SettingsSection
     {
         public override string Header => "Maintenance";
 

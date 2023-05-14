@@ -8,7 +8,7 @@ using osuTK;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
-    public class PanelContent : Container
+    public partial class PanelContent : Container
     {
         public PanelContent(BeatmapInfo info)
         {

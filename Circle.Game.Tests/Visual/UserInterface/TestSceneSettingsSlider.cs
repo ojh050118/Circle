@@ -6,7 +6,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneSettingsSlider : CircleTestScene
+    public partial class TestSceneSettingsSlider : CircleTestScene
     {
         public TestSceneSettingsSlider()
         {

@@ -5,7 +5,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneCircleDirectorySelector : CircleTestScene
+    public partial class TestSceneCircleDirectorySelector : CircleTestScene
     {
         public TestSceneCircleDirectorySelector()
         {

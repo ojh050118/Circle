@@ -14,7 +14,7 @@ using osu.Framework.Platform;
 
 namespace Circle.Game.Tests.Visual
 {
-    public class TestSceneCircleGame : CircleTestScene
+    public partial class TestSceneCircleGame : CircleTestScene
     {
         private CircleGame game;
 

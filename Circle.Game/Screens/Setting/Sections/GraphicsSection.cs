@@ -10,7 +10,7 @@ using osu.Framework.Platform;
 
 namespace Circle.Game.Screens.Setting.Sections
 {
-    public class GraphicsSection : SettingsSection
+    public partial class GraphicsSection : SettingsSection
     {
         public override string Header => "Graphics";
 

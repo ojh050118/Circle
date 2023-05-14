@@ -10,7 +10,7 @@ using osu.Framework.Timing;
 
 namespace Circle.Game.Rulesets.UI
 {
-    public class FrameStabilityContainer : Container
+    public partial class FrameStabilityContainer : Container
     {
         private const double sixty_frame_time = 1000.0 / 60;
 

@@ -9,7 +9,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class DialogButton : ClickableContainer
+    public partial class DialogButton : ClickableContainer
     {
         private readonly Box hover;
         private readonly SpriteText sprite;

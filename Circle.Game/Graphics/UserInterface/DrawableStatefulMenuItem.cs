@@ -7,7 +7,7 @@ using osuTK;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class DrawableStatefulMenuItem : DrawableCircleMenuItem
+    public partial class DrawableStatefulMenuItem : DrawableCircleMenuItem
     {
         public DrawableStatefulMenuItem(StatefulMenuItem item)
             : base(item)

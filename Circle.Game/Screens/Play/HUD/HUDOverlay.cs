@@ -12,7 +12,7 @@ using osu.Framework.Localisation;
 
 namespace Circle.Game.Screens.Play.HUD
 {
-    public class HUDOverlay : Container
+    public partial class HUDOverlay : Container
     {
         private readonly Beatmap beatmap;
 

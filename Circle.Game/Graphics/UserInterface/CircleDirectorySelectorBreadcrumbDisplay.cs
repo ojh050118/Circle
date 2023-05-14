@@ -9,7 +9,7 @@ using osuTK;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    internal class CircleDirectorySelectorBreadcrumbDisplay : DirectorySelectorBreadcrumbDisplay
+    internal partial class CircleDirectorySelectorBreadcrumbDisplay : DirectorySelectorBreadcrumbDisplay
     {
         protected override Drawable CreateCaption() => new SpriteText
         {

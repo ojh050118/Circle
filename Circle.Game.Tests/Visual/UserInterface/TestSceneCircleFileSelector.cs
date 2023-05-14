@@ -6,7 +6,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneCircleFileSelector : CircleTestScene
+    public partial class TestSceneCircleFileSelector : CircleTestScene
     {
         [Test]
         public void TestAllFiles()

@@ -11,7 +11,7 @@ using Shape = osu.Framework.Graphics.Shapes;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public class Planet : CompositeDrawable
+    public partial class Planet : CompositeDrawable
     {
         public const float PLANET_SIZE = 50;
         public const float DISTANCE = 100;

@@ -11,7 +11,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
-    public class PanelBackground : Container
+    public partial class PanelBackground : Container
     {
         public PanelBackground(BeatmapInfo info)
         {

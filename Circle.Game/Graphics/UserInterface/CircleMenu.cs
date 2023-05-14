@@ -13,7 +13,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class CircleMenu : Menu
+    public partial class CircleMenu : Menu
     {
         private Sample sampleClose;
         private Sample sampleOpen;

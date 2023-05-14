@@ -8,7 +8,7 @@ using osu.Framework.Testing;
 
 namespace Circle.Game.Tests.Visual
 {
-    public class CircleTestScene : TestScene
+    public partial class CircleTestScene : TestScene
     {
         protected override ITestSceneTestRunner CreateRunner() => new CircleTestSceneTestRunner();
 

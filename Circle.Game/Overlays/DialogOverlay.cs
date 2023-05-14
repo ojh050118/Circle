@@ -14,7 +14,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Overlays
 {
-    public class DialogOverlay : CircleFocusedOverlayContainer
+    public partial class DialogOverlay : CircleFocusedOverlayContainer
     {
         private readonly Container buttonContent;
         private readonly SpriteText description;

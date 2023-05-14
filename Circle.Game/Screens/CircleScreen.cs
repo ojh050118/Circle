@@ -15,7 +15,7 @@ using osuTK;
 
 namespace Circle.Game.Screens
 {
-    public class CircleScreen : Screen, ICircleScreen, IKeyBindingHandler<InputAction>
+    public partial class CircleScreen : Screen, ICircleScreen, IKeyBindingHandler<InputAction>
     {
         private Sample sampleBack;
 

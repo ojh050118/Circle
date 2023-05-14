@@ -15,7 +15,7 @@ using osuTK;
 
 namespace Circle.Game.Screens.Play
 {
-    public class CameraContainer : Container
+    public partial class CameraContainer : Container
     {
         public new Container Content;
         private Container offsetContainer, positionContainer, scalingContainer;

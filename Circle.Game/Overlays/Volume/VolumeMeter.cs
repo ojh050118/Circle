@@ -24,7 +24,7 @@ using Shape = osu.Framework.Graphics.Shapes;
 
 namespace Circle.Game.Overlays.Volume
 {
-    public class VolumeMeter : Container, IKeyBindingHandler<InputAction>, IStateful<SelectionState>
+    public partial class VolumeMeter : Container, IKeyBindingHandler<InputAction>, IStateful<SelectionState>
     {
         private const int blur_amount = 5;
         private const float volume_circle_size = 0.93f;

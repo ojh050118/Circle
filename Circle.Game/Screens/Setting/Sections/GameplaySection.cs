@@ -8,7 +8,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Screens.Setting.Sections
 {
-    public class GameplaySection : SettingsSection
+    public partial class GameplaySection : SettingsSection
     {
         public override string Header => "Gameplay";
 

@@ -10,7 +10,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public class CircularTile : Tile
+    public partial class CircularTile : Tile
     {
         public CircularTile()
         {

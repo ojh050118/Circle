@@ -9,7 +9,7 @@ using osu.Framework.Input.Bindings;
 
 namespace Circle.Game.Input
 {
-    public class CircleKeyBindingContainer : KeyBindingContainer<InputAction>
+    public partial class CircleKeyBindingContainer : KeyBindingContainer<InputAction>
     {
         private readonly Drawable handler;
 

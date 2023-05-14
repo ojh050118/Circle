@@ -10,7 +10,7 @@ using osu.Framework.Threading;
 
 namespace Circle.Game.Screens.Play
 {
-    public class PlayerLoader : CircleScreen
+    public partial class PlayerLoader : CircleScreen
     {
         private readonly BeatmapInfo beatmapInfo;
         private ScreenHeader header;

@@ -8,7 +8,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Screens.Play.HUD
 {
-    public class GameplayProgress : Container
+    public partial class GameplayProgress : Container
     {
         private readonly int floorCount;
         private SpriteText percent;

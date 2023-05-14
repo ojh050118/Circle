@@ -5,7 +5,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    internal class CircleDirectorySelectorParentDirectory : CircleDirectorySelectorDirectory
+    internal partial class CircleDirectorySelectorParentDirectory : CircleDirectorySelectorDirectory
     {
         public CircleDirectorySelectorParentDirectory(DirectoryInfo directory)
             : base(directory, "..")

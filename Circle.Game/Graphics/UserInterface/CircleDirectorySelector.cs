@@ -9,7 +9,7 @@ using osu.Framework.Graphics.UserInterface;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class CircleDirectorySelector : DirectorySelector
+    public partial class CircleDirectorySelector : DirectorySelector
     {
         public const float ITEM_HEIGHT = 20;
 

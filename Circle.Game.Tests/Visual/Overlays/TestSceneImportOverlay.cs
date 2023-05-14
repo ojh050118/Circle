@@ -4,7 +4,7 @@ using Circle.Game.Overlays;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
-    public class TestSceneImportOverlay : CircleTestScene
+    public partial class TestSceneImportOverlay : CircleTestScene
     {
         public TestSceneImportOverlay()
         {

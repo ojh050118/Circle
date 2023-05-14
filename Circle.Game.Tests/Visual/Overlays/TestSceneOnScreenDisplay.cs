@@ -6,7 +6,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
-    public class TestSceneOnScreenDisplay : CircleTestScene
+    public partial class TestSceneOnScreenDisplay : CircleTestScene
     {
         public TestSceneOnScreenDisplay()
         {

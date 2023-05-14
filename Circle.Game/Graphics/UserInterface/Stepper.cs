@@ -17,7 +17,7 @@ namespace Circle.Game.Graphics.UserInterface
     /// <summary>
     /// 방향으로 값을 바꿀 수있는 컨트롤.
     /// </summary>
-    public class Stepper<T> : Container
+    public partial class Stepper<T> : Container
     {
         /// <summary>
         /// <see cref="Stepper{T}"/>의 모든 <see cref="StepperItem{T}"/>의 리스트입니다.

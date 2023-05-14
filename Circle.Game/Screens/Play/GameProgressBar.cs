@@ -10,7 +10,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Play
 {
-    public class GameProgressBar : SliderBar<int>
+    public partial class GameProgressBar : SliderBar<int>
     {
         private readonly Box fill;
         public float Duration;

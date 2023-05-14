@@ -13,7 +13,7 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Screens.Play
 {
-    public class PlanetContainer : Container<Planet>
+    public partial class PlanetContainer : Container<Planet>
     {
         public Planet RedPlanet { get; private set; }
         public Planet BluePlanet { get; private set; }

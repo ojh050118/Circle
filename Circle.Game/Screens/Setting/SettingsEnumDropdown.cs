@@ -4,7 +4,7 @@ using System;
 
 namespace Circle.Game.Screens.Setting
 {
-    public class SettingsEnumDropdown<T> : SettingsDropdown<T> where T : struct, Enum
+    public partial class SettingsEnumDropdown<T> : SettingsDropdown<T> where T : struct, Enum
     {
         public SettingsEnumDropdown()
         {

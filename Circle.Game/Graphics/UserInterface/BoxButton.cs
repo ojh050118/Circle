@@ -5,7 +5,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class BoxButton : CircleButton
+    public partial class BoxButton : CircleButton
     {
         private readonly SpriteText sprite;
 

@@ -14,7 +14,7 @@ using osu.Framework.Screens;
 
 namespace Circle.Game.Screens.Select
 {
-    public class SongSelectScreen : CircleScreen
+    public partial class SongSelectScreen : CircleScreen
     {
         private BeatmapCarousel carousel;
         private BeatmapDetails details;

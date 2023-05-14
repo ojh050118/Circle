@@ -12,7 +12,7 @@ using osu.Framework.Threading;
 
 namespace Circle.Game.Overlays
 {
-    public class MusicController : CompositeDrawable
+    public partial class MusicController : CompositeDrawable
     {
         private ScheduledDelegate seekDelegate;
 

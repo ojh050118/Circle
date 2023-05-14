@@ -7,7 +7,7 @@ using osu.Framework.Screens;
 
 namespace Circle.Game.Tests.Visual
 {
-    public class TestSceneMainScreen : CircleTestScene
+    public partial class TestSceneMainScreen : CircleTestScene
     {
         [BackgroundDependencyLoader]
         private void load()

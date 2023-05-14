@@ -12,7 +12,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class DrawableCircleMenuItem : Menu.DrawableMenuItem
+    public partial class DrawableCircleMenuItem : Menu.DrawableMenuItem
     {
         public const int MARGIN_HORIZONTAL = 17;
         public const int MARGIN_VERTICAL = 4;

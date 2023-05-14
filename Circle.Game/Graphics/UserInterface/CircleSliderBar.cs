@@ -12,7 +12,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class CircleSliderBar<T> : SliderBar<T>
+    public partial class CircleSliderBar<T> : SliderBar<T>
         where T : struct, IEquatable<T>, IComparable<T>, IConvertible
     {
         protected readonly Nub CircleNub;

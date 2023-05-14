@@ -10,7 +10,7 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Screens.Play
 {
-    public class ObjectContainer : Container<Tile>
+    public partial class ObjectContainer : Container<Tile>
     {
         private readonly Beatmap currentBeatmap;
 
