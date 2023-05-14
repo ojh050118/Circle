@@ -3,7 +3,7 @@ using osu.Framework.Platform;
 
 namespace Circle.Desktop
 {
-    public class CircleGameDesktop : CircleGame
+    public partial class CircleGameDesktop : CircleGame
     {
         public override void SetHost(GameHost host)
         {
