@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
@@ -15,15 +17,17 @@ namespace Circle.Game.Screens
 {
     public class CircleScreen : Screen, ICircleScreen, IKeyBindingHandler<InputAction>
     {
-        public virtual bool BlockExit => false;
+        private Sample sampleBack;
 
-        public virtual string Header => string.Empty;
+        public CircleScreen()
+        {
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
+        }
 
         public virtual bool FadeBackground => true;
 
         public virtual bool PlaySample => true;
-
-        private Sample sampleBack;
 
         [Resolved]
         private Background background { get; set; }
@@ -34,18 +38,9 @@ namespace Circle.Game.Screens
         [Resolved]
         private BeatmapManager beatmapManager { get; set; }
 
-        public CircleScreen()
-        {
-            Anchor = Anchor.Centre;
-            Origin = Anchor.Centre;
-        }
+        public virtual bool BlockExit => false;
 
-        [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
-        {
-            if (PlaySample)
-                sampleBack = audio.Samples.Get("screen-back");
-        }
+        public virtual string Header => string.Empty;
 
         public override void OnEntering(ScreenTransitionEvent e)
         {
@@ -117,6 +112,13 @@ namespace Circle.Game.Screens
 
         public void OnReleased(KeyBindingReleaseEvent<InputAction> e)
         {
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(AudioManager audio)
+        {
+            if (PlaySample)
+                sampleBack = audio.Samples.Get("screen-back");
         }
 
         public virtual void OnExit() => this.Exit();

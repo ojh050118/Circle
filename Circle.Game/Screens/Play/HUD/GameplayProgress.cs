@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics;
+#nullable disable
+
+using Circle.Game.Graphics;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -8,20 +10,19 @@ namespace Circle.Game.Screens.Play.HUD
 {
     public class GameplayProgress : Container
     {
-        private GameProgressBar progressBar;
-        private SpriteText percent;
-
         private readonly int floorCount;
+        private SpriteText percent;
+        private GameProgressBar progressBar;
+
+        public GameplayProgress(int floorCount)
+        {
+            this.floorCount = floorCount;
+        }
 
         public int CurrentFloor
         {
             get => progressBar.CurrentFloor;
             set => progressBar.CurrentFloor = value;
-        }
-
-        public GameplayProgress(int floorCount)
-        {
-            this.floorCount = floorCount;
         }
 
         [BackgroundDependencyLoader]

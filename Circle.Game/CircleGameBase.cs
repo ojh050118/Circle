@@ -1,3 +1,5 @@
+#nullable disable
+
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics;
@@ -21,6 +23,14 @@ namespace Circle.Game
     {
         public ScalingContainer ContentContainer;
 
+        private DependencyContainer dependencies;
+
+        protected CircleGameBase()
+        {
+            IsDevelopmentBuild = DebugUtils.IsDebugBuild;
+            Name = $"Circle{(IsDevelopmentBuild ? " (Development mode)" : string.Empty)}";
+        }
+
         public bool IsDevelopmentBuild { get; }
 
         protected CircleConfigManager LocalConfig { get; private set; }
@@ -31,14 +41,9 @@ namespace Circle.Game
 
         protected MusicController MusicController { get; private set; }
 
-        private DependencyContainer dependencies;
-
         protected BeatmapStorage BeatmapStorage { get; set; }
 
         protected BeatmapManager BeatmapManager { get; set; }
-
-        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
-            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         public string FrameworkVersion
         {
@@ -49,11 +54,8 @@ namespace Circle.Game
             }
         }
 
-        protected CircleGameBase()
-        {
-            IsDevelopmentBuild = DebugUtils.IsDebugBuild;
-            Name = $"Circle{(IsDevelopmentBuild ? " (Development mode)" : string.Empty)}";
-        }
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
+            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         [BackgroundDependencyLoader]
         private void load()

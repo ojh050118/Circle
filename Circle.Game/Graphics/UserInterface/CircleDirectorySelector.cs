@@ -1,4 +1,6 @@
-﻿using System.IO;
+#nullable disable
+
+using System.IO;
 using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;

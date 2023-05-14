@@ -1,4 +1,6 @@
-﻿using osu.Framework.Graphics.Sprites;
+#nullable disable
+
+using osu.Framework.Graphics.Sprites;
 using osuTK.Graphics;
 
 namespace Circle.Game.Overlays.OSD

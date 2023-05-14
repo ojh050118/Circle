@@ -1,4 +1,6 @@
-﻿using osu.Framework.Bindables;
+#nullable disable
+
+using osu.Framework.Bindables;
 using osu.Framework.Timing;
 
 namespace Circle.Game.Rulesets.UI

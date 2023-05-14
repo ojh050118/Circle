@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -10,17 +12,13 @@ namespace Circle.Game.Screens.Play
 {
     public class PlayerLoader : CircleScreen
     {
-        public override bool FadeBackground => false;
-
-        public override bool PlaySample => false;
+        private readonly BeatmapInfo beatmapInfo;
+        private ScreenHeader header;
 
         private CircleScreen player;
 
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
-        private ScreenHeader header;
-
-        private readonly BeatmapInfo beatmapInfo;
 
         public PlayerLoader(BeatmapInfo beatmapInfo)
         {
@@ -30,6 +28,10 @@ namespace Circle.Game.Screens.Play
                 header = new ScreenHeader(this)
             };
         }
+
+        public override bool FadeBackground => false;
+
+        public override bool PlaySample => false;
 
         [BackgroundDependencyLoader]
         private void load(BeatmapManager beatmap)

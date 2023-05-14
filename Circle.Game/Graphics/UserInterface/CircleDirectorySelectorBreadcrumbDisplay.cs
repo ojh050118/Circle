@@ -1,4 +1,6 @@
-﻿using System.IO;
+#nullable disable
+
+using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
@@ -21,12 +23,12 @@ namespace Circle.Game.Graphics.UserInterface
 
         private class CircleBreadcrumbDisplayComputer : CircleBreadcrumbDisplayDirectory
         {
-            protected override IconUsage? Icon => null;
-
             public CircleBreadcrumbDisplayComputer()
                 : base(null, "Computer")
             {
             }
+
+            protected override IconUsage? Icon => null;
         }
 
         private class CircleBreadcrumbDisplayDirectory : CircleDirectorySelectorDirectory
@@ -35,6 +37,8 @@ namespace Circle.Game.Graphics.UserInterface
                 : base(directory, displayName)
             {
             }
+
+            protected override IconUsage? Icon => Directory.Name.Contains(Path.DirectorySeparatorChar) ? base.Icon : null;
 
             [BackgroundDependencyLoader]
             private void load()
@@ -47,8 +51,6 @@ namespace Circle.Game.Graphics.UserInterface
                     Size = new Vector2(FONT_SIZE / 2)
                 });
             }
-
-            protected override IconUsage? Icon => Directory.Name.Contains(Path.DirectorySeparatorChar) ? base.Icon : null;
         }
     }
 }

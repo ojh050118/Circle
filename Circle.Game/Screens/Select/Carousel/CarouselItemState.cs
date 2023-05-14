@@ -1,4 +1,6 @@
-﻿namespace Circle.Game.Screens.Select.Carousel
+﻿#nullable disable
+
+namespace Circle.Game.Screens.Select.Carousel
 {
     public enum CarouselItemState
     {

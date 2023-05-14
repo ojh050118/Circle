@@ -1,3 +1,5 @@
+#nullable disable
+
 using Circle.Game.Beatmaps;
 using Circle.Game.Overlays;
 using osu.Framework.Audio;
@@ -10,17 +12,17 @@ namespace Circle.Game.Screens.Play
 {
     public class GameplayMusicController : MusicController
     {
+        public GameplayMusicController(BeatmapInfo beatmapInfo)
+        {
+            BeatmapInfo = beatmapInfo;
+        }
+
         public BeatmapInfo BeatmapInfo { get; }
 
         /// <summary>
         /// 재생 지연 시간.
         /// </summary>
         public double TimeUntilPlay { get; private set; }
-
-        public GameplayMusicController(BeatmapInfo beatmapInfo)
-        {
-            BeatmapInfo = beatmapInfo;
-        }
 
         protected override void LoadComplete() => ChangeTrack(BeatmapInfo);
 

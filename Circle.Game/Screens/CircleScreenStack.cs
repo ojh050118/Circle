@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics.Containers;
+﻿#nullable disable
+
+using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -9,11 +11,6 @@ namespace Circle.Game.Screens
     public class CircleScreenStack : ScreenStack
     {
         private readonly Background background;
-
-        /// <summary>
-        /// 화면 스택 개수.
-        /// </summary>
-        public int Count { get; private set; }
 
         public CircleScreenStack()
         {
@@ -26,6 +23,11 @@ namespace Circle.Game.Screens
             ScreenPushed += (prev, next) => Count++;
             ScreenExited += (prev, next) => Count--;
         }
+
+        /// <summary>
+        /// 화면 스택 개수.
+        /// </summary>
+        public int Count { get; private set; }
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
         {

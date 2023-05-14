@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics.Containers;
@@ -16,18 +18,18 @@ namespace Circle.Game
 {
     public class CircleGame : CircleGameBase
     {
+        private readonly Toast toast = new Toast();
         private DependencyContainer dependencies;
+        private DialogOverlay dialog;
+        private ImportOverlay import;
 
-        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
-            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+        public GameScreenContainer ScreenContainer;
 
         private CircleScreenStack screenStack;
         private VolumeOverlay volume;
-        private ImportOverlay import;
-        private DialogOverlay dialog;
-        private readonly Toast toast = new Toast();
 
-        public GameScreenContainer ScreenContainer;
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
+            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         [BackgroundDependencyLoader]
         private void load()

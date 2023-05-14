@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using osu.Framework.Graphics;
@@ -13,6 +15,13 @@ namespace Circle.Game.Input
 
         [CanBeNull]
         private InputManager parentInputManager;
+
+        public CircleKeyBindingContainer(CircleGameBase game)
+            : base(matchingMode: KeyCombinationMatchingMode.Modifiers)
+        {
+            if (game is IKeyBindingHandler<InputAction>)
+                handler = game;
+        }
 
         public override IEnumerable<IKeyBinding> DefaultKeyBindings => GlobalKeyBindings;
 
@@ -37,20 +46,6 @@ namespace Circle.Game.Input
             new KeyBinding(new[] { InputKey.Control, InputKey.R }, InputAction.ReloadBeatmap),
         };
 
-        public CircleKeyBindingContainer(CircleGameBase game)
-            : base(matchingMode: KeyCombinationMatchingMode.Modifiers)
-        {
-            if (game is IKeyBindingHandler<InputAction>)
-                handler = game;
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            parentInputManager = GetContainingInputManager();
-        }
-
         protected override IEnumerable<Drawable> KeyBindingInputQueue
         {
             get
@@ -59,6 +54,13 @@ namespace Circle.Game.Input
 
                 return handler != null ? inputQueue.Prepend(handler) : inputQueue;
             }
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            parentInputManager = GetContainingInputManager();
         }
     }
 }

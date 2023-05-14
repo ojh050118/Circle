@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics;
+#nullable disable
+
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Input;
 using Circle.Game.Overlays.Volume;
@@ -18,13 +20,12 @@ namespace Circle.Game.Overlays
 {
     public class VolumeOverlay : VisibilityContainer
     {
-        private VolumeMeter volumeMeterMaster;
+        private ScheduledDelegate popOutDelegate;
         private VolumeMeter volumeMeterEffect;
+        private VolumeMeter volumeMeterMaster;
         private VolumeMeter volumeMeterMusic;
 
         private SelectionCycleFillFlowContainer<VolumeMeter> volumeMeters;
-
-        private ScheduledDelegate popOutDelegate;
 
         [BackgroundDependencyLoader]
         private void load(AudioManager audio, CircleColour colours)

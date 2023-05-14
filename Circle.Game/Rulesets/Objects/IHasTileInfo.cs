@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+﻿#nullable disable
+
+using Circle.Game.Beatmaps;
 
 namespace Circle.Game.Rulesets.Objects
 {

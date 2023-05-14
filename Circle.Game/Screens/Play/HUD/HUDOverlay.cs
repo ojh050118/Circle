@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
@@ -15,8 +17,8 @@ namespace Circle.Game.Screens.Play.HUD
         private readonly Beatmap beatmap;
 
         private SpriteText complete;
-        private GameplayProgress progress;
         private IReadOnlyList<double> hitTimes;
+        private GameplayProgress progress;
 
         public HUDOverlay(Beatmap beatmap)
         {

@@ -1,4 +1,6 @@
-﻿using osu.Framework.Allocation;
+﻿#nullable disable
+
+using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -28,29 +30,29 @@ namespace Circle.Game.Graphics.Containers
         public const float SCROLL_BAR_PADDING = 3;
 
         /// <summary>
+        /// Controls the rate with which the target position is approached when performing a relative drag. Default is 0.02.
+        /// </summary>
+        public double DistanceDecayOnRightMouseScrollbar = 0.02;
+
+        private bool rightMouseDragging;
+
+        /// <summary>
         /// Allows controlling the scroll bar from any position in the container using the right mouse button.
         /// Uses the value of <see cref="DistanceDecayOnRightMouseScrollbar"/> to smoothly scroll to the dragged location.
         /// </summary>
         public bool RightMouseScrollbar;
 
-        /// <summary>
-        /// Controls the rate with which the target position is approached when performing a relative drag. Default is 0.02.
-        /// </summary>
-        public double DistanceDecayOnRightMouseScrollbar = 0.02;
+        public CircleScrollContainer(Direction scrollDirection = Direction.Vertical)
+            : base(scrollDirection)
+        {
+        }
+
+        protected override bool IsDragging => base.IsDragging || rightMouseDragging;
 
         private bool shouldPerformRightMouseScroll(MouseButtonEvent e) => RightMouseScrollbar && e.Button == MouseButton.Right;
 
         private void scrollFromMouseEvent(MouseEvent e) =>
             ScrollTo(Clamp(ToLocalSpace(e.ScreenSpaceMousePosition)[ScrollDim] / DrawSize[ScrollDim]) * Content.DrawSize[ScrollDim], true, DistanceDecayOnRightMouseScrollbar);
-
-        private bool rightMouseDragging;
-
-        protected override bool IsDragging => base.IsDragging || rightMouseDragging;
-
-        public CircleScrollContainer(Direction scrollDirection = Direction.Vertical)
-            : base(scrollDirection)
-        {
-        }
 
         protected override bool OnMouseDown(MouseDownEvent e)
         {
@@ -100,11 +102,10 @@ namespace Circle.Game.Graphics.Containers
 
         protected class CircleScrollbar : ScrollbarContainer
         {
-            private Color4 hoverColour;
+            private readonly Box box;
             private Color4 defaultColour;
             private Color4 highlightColour;
-
-            private readonly Box box;
+            private Color4 hoverColour;
 
             public CircleScrollbar(Direction scrollDir)
                 : base(scrollDir)

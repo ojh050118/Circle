@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
@@ -14,10 +16,9 @@ namespace Circle.Game.Screens.Select
 {
     public class SongSelectScreen : CircleScreen
     {
-        public override string Header => "Play";
-
         private BeatmapCarousel carousel;
         private BeatmapDetails details;
+        public override string Header => "Play";
 
         [Resolved]
         private Background background { get; set; }

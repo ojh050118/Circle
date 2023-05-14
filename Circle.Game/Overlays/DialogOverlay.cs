@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
@@ -14,17 +16,10 @@ namespace Circle.Game.Overlays
 {
     public class DialogOverlay : CircleFocusedOverlayContainer
     {
-        public string Title
-        {
-            get => title.Text.ToString();
-            set => title.Text = value;
-        }
+        private readonly Container buttonContent;
+        private readonly SpriteText description;
 
-        public string Description
-        {
-            get => description.Text.ToString();
-            set => description.Text = value;
-        }
+        private readonly SpriteText title;
 
         /// <summary>
         /// 버튼들. 버튼이 없으면 버튼 없이 대화 상자가 생성됨.
@@ -32,10 +27,6 @@ namespace Circle.Game.Overlays
         public IReadOnlyList<DialogButton> Buttons;
 
         public Action OnHide;
-
-        private readonly SpriteText title;
-        private readonly SpriteText description;
-        private readonly Container buttonContent;
 
         public DialogOverlay()
         {
@@ -108,6 +99,18 @@ namespace Circle.Game.Overlays
                     }
                 }
             };
+        }
+
+        public string Title
+        {
+            get => title.Text.ToString();
+            set => title.Text = value;
+        }
+
+        public string Description
+        {
+            get => description.Text.ToString();
+            set => description.Text = value;
         }
 
         [BackgroundDependencyLoader]

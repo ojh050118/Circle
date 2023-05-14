@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using osuTK.Graphics;
 
 namespace Circle.Game.Utils

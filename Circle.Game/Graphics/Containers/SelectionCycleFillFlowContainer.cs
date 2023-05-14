@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Diagnostics;
 using osu.Framework;
 using osu.Framework.Graphics;
@@ -8,9 +10,8 @@ namespace Circle.Game.Graphics.Containers
 {
     public class SelectionCycleFillFlowContainer<T> : FillFlowContainer<T> where T : Drawable, IStateful<SelectionState>
     {
-        public T Selected => (selectedIndex >= 0 && selectedIndex < Count) ? this[selectedIndex.Value] : null;
-
         private int? selectedIndex;
+        public T Selected => (selectedIndex >= 0 && selectedIndex < Count) ? this[selectedIndex.Value] : null;
 
         public void SelectNext()
         {

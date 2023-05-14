@@ -1,4 +1,6 @@
-﻿using osu.Framework.Allocation;
+#nullable disable
+
+using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
@@ -12,20 +14,14 @@ namespace Circle.Game.Graphics.UserInterface
     public class CircleButton : ClickableContainer
     {
         private readonly Box box;
-        private Sample hoverSample;
-        private Sample clickSample;
 
         private readonly bool useBackground;
-
-        protected new Container Content;
+        private Sample clickSample;
 
         private CircleColour colours;
 
-        public new float CornerRadius
-        {
-            get => Content.CornerRadius;
-            set => Content.CornerRadius = value;
-        }
+        protected new Container Content;
+        private Sample hoverSample;
 
         public CircleButton(bool useBackground = true)
         {
@@ -42,6 +38,12 @@ namespace Circle.Game.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                 }
             };
+        }
+
+        public new float CornerRadius
+        {
+            get => Content.CornerRadius;
+            set => Content.CornerRadius = value;
         }
 
         [BackgroundDependencyLoader]

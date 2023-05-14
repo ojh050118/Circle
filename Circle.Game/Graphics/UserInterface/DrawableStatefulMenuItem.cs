@@ -1,4 +1,6 @@
-﻿using osu.Framework.Bindables;
+﻿#nullable disable
+
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
@@ -7,12 +9,12 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class DrawableStatefulMenuItem : DrawableCircleMenuItem
     {
-        protected new StatefulMenuItem Item => (StatefulMenuItem)base.Item;
-
         public DrawableStatefulMenuItem(StatefulMenuItem item)
             : base(item)
         {
         }
+
+        protected new StatefulMenuItem Item => (StatefulMenuItem)base.Item;
 
         protected override TextContainer CreateTextContainer() => new ToggleTextContainer(Item);
 

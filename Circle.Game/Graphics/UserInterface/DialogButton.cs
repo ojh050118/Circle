@@ -1,4 +1,6 @@
-﻿using osu.Framework.Graphics;
+﻿#nullable disable
+
+using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -9,26 +11,8 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class DialogButton : ClickableContainer
     {
-        private readonly SpriteText sprite;
         private readonly Box hover;
-
-        public string Text
-        {
-            get => sprite.Text.ToString();
-            set => sprite.Text = value;
-        }
-
-        public Color4 TextColour
-        {
-            get => sprite.Colour;
-            set => sprite.Colour = value;
-        }
-
-        public FontUsage Font
-        {
-            get => sprite.Font;
-            set => sprite.Font = value;
-        }
+        private readonly SpriteText sprite;
 
         public DialogButton()
         {
@@ -50,6 +34,24 @@ namespace Circle.Game.Graphics.UserInterface
                     Colour = Color4.DodgerBlue
                 }
             };
+        }
+
+        public string Text
+        {
+            get => sprite.Text.ToString();
+            set => sprite.Text = value;
+        }
+
+        public Color4 TextColour
+        {
+            get => sprite.Colour;
+            set => sprite.Colour = value;
+        }
+
+        public FontUsage Font
+        {
+            get => sprite.Font;
+            set => sprite.Font = value;
         }
 
         protected override bool OnClick(ClickEvent e)

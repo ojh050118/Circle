@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
@@ -13,9 +15,8 @@ namespace Circle.Game.Screens.Select
 {
     public class BeatmapCarousel : Container
     {
-        protected CarouselScrollContainer Scroll;
-
         private SelectionCycleFillFlowContainer<CarouselItem> carouselItems;
+        protected CarouselScrollContainer Scroll;
 
         public int ItemCount => carouselItems.Count;
 

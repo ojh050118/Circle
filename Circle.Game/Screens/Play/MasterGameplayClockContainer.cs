@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.UI;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -9,16 +11,16 @@ namespace Circle.Game.Screens.Play
 {
     public class MasterGameplayClockContainer : GameplayClockContainer
     {
-        private readonly BeatmapInfo info;
         private readonly Beatmap beatmap;
-        private readonly double gameplayStartTime;
         private readonly double countdownDuration;
-
-        public Playfield Playfield;
+        private readonly double gameplayStartTime;
+        private readonly BeatmapInfo info;
 
         private FrameStabilityContainer container;
 
         private bool isStarted;
+
+        public Playfield Playfield;
 
         public MasterGameplayClockContainer(BeatmapInfo info, double gameplayStartTime, double countdownDuration, IClock clock)
             : base(clock)

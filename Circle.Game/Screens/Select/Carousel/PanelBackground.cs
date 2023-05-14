@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+﻿#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Beatmaps.Drawables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;

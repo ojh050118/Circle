@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.Extensions;

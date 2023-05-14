@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
@@ -18,16 +20,16 @@ namespace Circle.Game.Screens.Select
 {
     public class BeatmapDetails : Container
     {
-        private Background preview;
-        private SpriteText title;
         private SpriteText artist;
 
         private SpriteText author;
         private SpriteText bpm;
-        private SpriteText difficulty;
         private TextFlowContainer description;
+        private SpriteText difficulty;
 
         private Storage files;
+        private Background preview;
+        private SpriteText title;
 
         [BackgroundDependencyLoader]
         private void load(BeatmapStorage beatmaps, CircleColour colours)

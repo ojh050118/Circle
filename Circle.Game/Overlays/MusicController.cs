@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+#nullable disable
+
+using System.Diagnostics.CodeAnalysis;
 using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -12,6 +14,8 @@ namespace Circle.Game.Overlays
 {
     public class MusicController : CompositeDrawable
     {
+        private ScheduledDelegate seekDelegate;
+
         [NotNull]
         public DrawableTrack CurrentTrack { get; protected set; } = new DrawableTrack(new TrackVirtual(1000));
 
@@ -23,8 +27,6 @@ namespace Circle.Game.Overlays
         public bool TrackLoaded => CurrentTrack.TrackLoaded;
 
         public bool HasCompleted => CurrentTrack.HasCompleted;
-
-        private ScheduledDelegate seekDelegate;
 
         public void Play(bool restart = false)
         {

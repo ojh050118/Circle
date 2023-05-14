@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -14,18 +16,17 @@ namespace Circle.Game.Overlays.OSD
 {
     public class DrawableToast : CircularContainer
     {
-        private readonly ToastInfo toastInfo;
-
         private const int toast_minimum_width = 300;
         private const int toast_default_padding = 15;
         private const int toast_height = 70;
-
-        public event Action<bool> CloseRequested;
+        private readonly ToastInfo toastInfo;
 
         public DrawableToast(ToastInfo toastInfo)
         {
             this.toastInfo = toastInfo;
         }
+
+        public event Action<bool> CloseRequested;
 
         [BackgroundDependencyLoader]
         private void load()

@@ -1,4 +1,6 @@
-﻿using System.IO;
+#nullable disable
+
+using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -15,6 +17,10 @@ namespace Circle.Game.Graphics.UserInterface
             : base(directory, displayName)
         {
         }
+
+        protected override IconUsage? Icon => Directory.Name.Contains(Path.DirectorySeparatorChar)
+            ? FontAwesome.Solid.Database
+            : FontAwesome.Regular.Folder;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -34,10 +40,6 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         protected override SpriteText CreateSpriteText() => new SpriteText();
-
-        protected override IconUsage? Icon => Directory.Name.Contains(Path.DirectorySeparatorChar)
-            ? FontAwesome.Solid.Database
-            : FontAwesome.Regular.Folder;
 
         internal class Background : CompositeDrawable
         {

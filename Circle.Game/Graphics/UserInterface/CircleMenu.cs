@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics.Containers;
+#nullable disable
+
+using Circle.Game.Graphics.Containers;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -13,8 +15,8 @@ namespace Circle.Game.Graphics.UserInterface
 {
     public class CircleMenu : Menu
     {
-        private Sample sampleOpen;
         private Sample sampleClose;
+        private Sample sampleOpen;
 
         // todo: this shouldn't be required after https://github.com/ppy/osu-framework/issues/4519 is fixed.
         private bool wasOpened;

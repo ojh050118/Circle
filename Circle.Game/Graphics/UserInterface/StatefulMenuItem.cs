@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics.Sprites;
 

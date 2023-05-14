@@ -1,4 +1,6 @@
-﻿using System.IO;
+#nullable disable
+
+using System.IO;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
@@ -16,16 +18,12 @@ namespace Circle.Game.Overlays
 {
     public class ImportOverlay : CircleFocusedOverlayContainer
     {
+        private readonly Box background;
+        private readonly Box fileBackground;
         private readonly CircleFileSelector fileSelector;
 
         private readonly SpriteIcon icon;
         private readonly TextFlowContainer text;
-
-        private readonly Box background;
-        private readonly Box fileBackground;
-
-        [Resolved]
-        private BeatmapManager manager { get; set; }
 
         public ImportOverlay()
         {
@@ -142,6 +140,9 @@ namespace Circle.Game.Overlays
             fileSelector.CurrentPath.BindValueChanged(pathChanged);
             fileSelector.CurrentFile.BindValueChanged(fileChanged);
         }
+
+        [Resolved]
+        private BeatmapManager manager { get; set; }
 
         [BackgroundDependencyLoader]
         private void load(CircleColour colours)
