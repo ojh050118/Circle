@@ -1,4 +1,3 @@
-using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Overlays;
 using osu.Framework.Audio;
@@ -44,7 +43,8 @@ namespace Circle.Game.Screens.Play
                 SeekTo(offset);
             }
 
-            SeekTo(Math.Clamp(offset - countdown, 0, double.MaxValue));
+            // Todo: Player의 오프셋 설정을 일관되게 정리해야합니다.
+            //SeekTo(Math.Clamp(offset - countdown, 0, double.MaxValue));
         }
 
         /// <summary>
