@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
+using Newtonsoft.Json;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
 
@@ -13,8 +14,16 @@ namespace Circle.Game.Beatmaps
         public float[] AngleData { get; set; }
         public Settings Settings { get; set; }
         public Actions[] Actions { get; set; }
-        public TileInfo[] TilesInfo => CalculationExtensions.GetTilesInfo(this);
-        public IReadOnlyList<double> TileStartTime => CalculationExtensions.GetTileStartTime(this, Settings.Offset, 60000 / Settings.Bpm * Settings.CountdownTicks);
+
+        [JsonIgnore]
+        public TileInfo[] TilesInfo => tilesInfo ??= CalculationExtensions.GetTilesInfo(this);
+
+        private TileInfo[] tilesInfo;
+
+        [JsonIgnore]
+        public IReadOnlyList<double> TileStartTime => tileStartTime ??= CalculationExtensions.GetTileStartTime(this, Settings.Offset, 60000 / Settings.Bpm * Settings.CountdownTicks);
+
+        private IReadOnlyList<double> tileStartTime;
 
         public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }

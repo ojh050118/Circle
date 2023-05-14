@@ -37,7 +37,12 @@ namespace Circle.Game.Screens.Play
                 container = new FrameStabilityContainer(beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration),
                 new FrameStabilityContainer(gameplayStartTime)
                 {
-                    Child = Playfield = new Playfield(beatmap, gameplayStartTime, countdownDuration),
+                    Child = new InputManager
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Beatmap = beatmap,
+                        Child = Playfield = new Playfield(beatmap, gameplayStartTime, countdownDuration)
+                    }
                 }
             };
 
