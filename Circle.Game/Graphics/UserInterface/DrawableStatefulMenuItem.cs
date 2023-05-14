@@ -18,7 +18,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override TextContainer CreateTextContainer() => new ToggleTextContainer(Item);
 
-        private class ToggleTextContainer : TextContainer
+        private partial class ToggleTextContainer : TextContainer
         {
             private readonly StatefulMenuItem menuItem;
             private readonly Bindable<object> state;

@@ -21,7 +21,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override DirectorySelectorDirectory CreateDirectoryItem(DirectoryInfo directory, string displayName = null) => new CircleBreadcrumbDisplayDirectory(directory, displayName);
 
-        private class CircleBreadcrumbDisplayComputer : CircleBreadcrumbDisplayDirectory
+        private partial class CircleBreadcrumbDisplayComputer : CircleBreadcrumbDisplayDirectory
         {
             public CircleBreadcrumbDisplayComputer()
                 : base(null, "Computer")
@@ -31,7 +31,7 @@ namespace Circle.Game.Graphics.UserInterface
             protected override IconUsage? Icon => null;
         }
 
-        private class CircleBreadcrumbDisplayDirectory : CircleDirectorySelectorDirectory
+        private partial class CircleBreadcrumbDisplayDirectory : CircleDirectorySelectorDirectory
         {
             public CircleBreadcrumbDisplayDirectory(DirectoryInfo directory, string displayName = null)
                 : base(directory, displayName)

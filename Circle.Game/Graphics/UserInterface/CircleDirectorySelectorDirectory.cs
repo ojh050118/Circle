@@ -41,7 +41,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override SpriteText CreateSpriteText() => new SpriteText();
 
-        internal class Background : CompositeDrawable
+        internal partial class Background : CompositeDrawable
         {
             private Box box;
 

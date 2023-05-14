@@ -35,7 +35,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override void NotifySelectionError() => this.FlashColour(Colour4.Red, 300);
 
-        protected class CircleDirectoryListingFile : DirectoryListingFile
+        protected partial class CircleDirectoryListingFile : DirectoryListingFile
         {
             public CircleDirectoryListingFile(FileInfo file)
                 : base(file)

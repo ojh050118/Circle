@@ -89,7 +89,7 @@ namespace Circle.Game.Graphics.UserInterface
         protected sealed override Drawable CreateContent() => text = CreateTextContainer();
         protected virtual TextContainer CreateTextContainer() => new TextContainer();
 
-        protected class TextContainer : Container, IHasText
+        protected partial class TextContainer : Container, IHasText
         {
             public readonly SpriteText BoldText;
 

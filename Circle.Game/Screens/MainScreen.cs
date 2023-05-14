@@ -155,7 +155,7 @@ namespace Circle.Game.Screens
             return base.OnPressed(e);
         }
 
-        private class IconWithTextButton : Container
+        private partial class IconWithTextButton : Container
         {
             private readonly Color4 colour;
             private readonly SpriteIcon icon;

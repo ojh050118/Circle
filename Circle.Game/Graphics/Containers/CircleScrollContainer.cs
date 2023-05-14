@@ -24,7 +24,7 @@ namespace Circle.Game.Graphics.Containers
         }
     }
 
-    public class CircleScrollContainer<T> : ScrollContainer<T> where T : Drawable
+    public partial class CircleScrollContainer<T> : ScrollContainer<T> where T : Drawable
     {
         public const float SCROLL_BAR_HEIGHT = 10;
         public const float SCROLL_BAR_PADDING = 3;
@@ -100,7 +100,7 @@ namespace Circle.Game.Graphics.Containers
 
         protected override ScrollbarContainer CreateScrollbar(Direction direction) => new CircleScrollbar(direction);
 
-        protected class CircleScrollbar : ScrollbarContainer
+        protected partial class CircleScrollbar : ScrollbarContainer
         {
             private readonly Box box;
             private Color4 defaultColour;

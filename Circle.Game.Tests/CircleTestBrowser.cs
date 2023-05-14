@@ -16,7 +16,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Tests
 {
-    public class CircleTestBrowser : CircleGameBase
+    public partial class CircleTestBrowser : CircleGameBase
     {
         private Background background;
         private DialogOverlay dialog;

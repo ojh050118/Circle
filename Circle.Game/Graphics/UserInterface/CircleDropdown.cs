@@ -50,7 +50,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         #region CircleDropdownMenu
 
-        protected class CircleDropdownMenu : DropdownMenu
+        protected partial class CircleDropdownMenu : DropdownMenu
         {
             private Color4 hoverColour;
             private Sample? sampleClose;
@@ -153,7 +153,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             #region DrawableCircleDropdownMenuItem
 
-            public class DrawableCircleDropdownMenuItem : DrawableDropdownMenuItem
+            public partial class DrawableCircleDropdownMenuItem : DrawableDropdownMenuItem
             {
                 public DrawableCircleDropdownMenuItem(MenuItem item)
                     : base(item)
@@ -217,7 +217,7 @@ namespace Circle.Game.Graphics.UserInterface
 
                 protected override Drawable CreateContent() => new Content();
 
-                protected new class Content : CompositeDrawable, IHasText
+                protected new partial class Content : CompositeDrawable, IHasText
                 {
                     private const float chevron_offset = -3;
                     public readonly SpriteIcon Chevron;
@@ -288,7 +288,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         #endregion
 
-        public class CircleDropdownHeader : DropdownHeader
+        public partial class CircleDropdownHeader : DropdownHeader
         {
             protected readonly SpriteIcon Icon;
             protected readonly SpriteText Text;

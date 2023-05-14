@@ -140,7 +140,7 @@ namespace Circle.Game.Screens.Select
             return totalY;
         }
 
-        protected class CarouselScrollContainer : CircleScrollContainer<SelectionCycleFillFlowContainer<CarouselItem>>
+        protected partial class CarouselScrollContainer : CircleScrollContainer<SelectionCycleFillFlowContainer<CarouselItem>>
         {
             public CarouselScrollContainer()
             {

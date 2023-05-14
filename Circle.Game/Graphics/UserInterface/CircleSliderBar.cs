@@ -111,7 +111,7 @@ namespace Circle.Game.Graphics.UserInterface
                 DrawWidth - CircleNub.DrawPosition.X - RangePadding - CircleNub.DrawWidth / 2, 0, DrawWidth), 1);
         }
 
-        protected class Nub : CircularContainer
+        protected partial class Nub : CircularContainer
         {
             public Nub()
             {
