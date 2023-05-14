@@ -1,3 +1,5 @@
+#nullable disable
+
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
@@ -13,6 +15,8 @@ namespace Circle.Game.Tests.Visual
         private class CircleTestSceneTestRunner : CircleGameBase, ITestSceneTestRunner
         {
             private TestSceneTestRunner.TestRunner runner;
+
+            public void RunTestBlocking(TestScene test) => runner.RunTestBlocking(test);
 
             protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
             {
@@ -30,8 +34,6 @@ namespace Circle.Game.Tests.Visual
                 base.LoadAsyncComplete();
                 Add(runner = new TestSceneTestRunner.TestRunner());
             }
-
-            public void RunTestBlocking(TestScene test) => runner.RunTestBlocking(test);
         }
     }
 }

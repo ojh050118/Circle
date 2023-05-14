@@ -1,4 +1,6 @@
-﻿using Circle.Game.Graphics.UserInterface;
+#nullable disable
+
+using Circle.Game.Graphics.UserInterface;
 using NUnit.Framework;
 using osu.Framework.Graphics;
 

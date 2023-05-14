@@ -1,4 +1,6 @@
-﻿using Circle.Game.Screens.Setting;
+#nullable disable
+
+using Circle.Game.Screens.Setting;
 using Circle.Game.Utils;
 using osu.Framework.Graphics;
 

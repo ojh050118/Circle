@@ -1,4 +1,6 @@
-﻿using Circle.Game.Screens.Play;
+#nullable disable
+
+using Circle.Game.Screens.Play;
 using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.Play

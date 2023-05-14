@@ -1,4 +1,6 @@
-﻿using Circle.Game.Beatmaps;
+﻿#nullable disable
+
+using Circle.Game.Beatmaps;
 using Circle.Game.Screens.Select;
 using osu.Framework.Allocation;
 

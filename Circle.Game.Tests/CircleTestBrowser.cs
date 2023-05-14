@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
@@ -17,8 +19,8 @@ namespace Circle.Game.Tests
     public class CircleTestBrowser : CircleGameBase
     {
         private Background background;
-        private ImportOverlay import;
         private DialogOverlay dialog;
+        private ImportOverlay import;
         private Toast toast;
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
