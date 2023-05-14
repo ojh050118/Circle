@@ -8,7 +8,7 @@
     <ProjectReference Include="..\Circle.Game\Circle.Game.csproj" />
   </ItemGroup>
   <ItemGroup Label="Package References">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0"/>
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2"/>
   </ItemGroup>
 </Project>
