@@ -1,5 +1,4 @@
-﻿using osu.Framework.iOS;
-using UIKit;
+﻿using UIKit;
 
 namespace Circle.iOS
 {
@@ -7,7 +6,7 @@ namespace Circle.iOS
     {
         public static void Main(string[] args)
         {
-            UIApplication.Main(args, typeof(GameUIApplication), typeof(AppDelegate));
+            UIApplication.Main(args, null, typeof(AppDelegate));
         }
     }
 }
