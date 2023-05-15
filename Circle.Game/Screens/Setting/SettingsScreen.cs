@@ -14,7 +14,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Setting
 {
-    public class SettingsScreen : CircleScreen
+    public partial class SettingsScreen : CircleScreen
     {
         public override string Header => "Settings";
 

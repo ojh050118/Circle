@@ -11,7 +11,7 @@ using osu.Framework.Platform;
 
 namespace Circle.Game.Screens.Setting.Sections
 {
-    public class DebugSection : SettingsSection
+    public partial class DebugSection : SettingsSection
     {
         public override string Header => "Debug";
 

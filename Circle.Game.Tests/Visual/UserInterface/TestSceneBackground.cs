@@ -9,7 +9,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneBackground : CircleTestScene
+    public partial class TestSceneBackground : CircleTestScene
     {
         public TestSceneBackground()
         {

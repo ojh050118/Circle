@@ -6,7 +6,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneCircleSliderBar : CircleTestScene
+    public partial class TestSceneCircleSliderBar : CircleTestScene
     {
         public TestSceneCircleSliderBar()
         {

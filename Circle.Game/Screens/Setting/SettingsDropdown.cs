@@ -13,7 +13,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Setting
 {
-    public class SettingsDropdown<T> : Container
+    public partial class SettingsDropdown<T> : Container
         where T : struct
     {
         private readonly CircleDropdown<T> dropdown;

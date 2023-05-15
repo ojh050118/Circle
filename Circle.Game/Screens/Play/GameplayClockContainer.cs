@@ -10,23 +10,34 @@ using osu.Framework.Timing;
 namespace Circle.Game.Screens.Play
 {
     [Cached]
-    public abstract class GameplayClockContainer : Container, IAdjustableClock
+    public abstract partial class GameplayClockContainer : Container, IAdjustableClock
     {
+        public readonly BindableBool IsPaused = new BindableBool();
+
+        public double CurrentTime => GameplayClock.CurrentTime;
+
+        public bool IsRunning => GameplayClock.IsRunning;
+
+        public GameplayClock GameplayClock { get; private set; }
         protected readonly DecoupleableInterpolatingFramedClock AdjustableSource;
 
-        public readonly BindableBool IsPaused = new BindableBool();
+        protected IClock SourceClock { get; private set; }
+
+        double IClock.Rate => GameplayClock.Rate;
+
+        double IAdjustableClock.Rate
+        {
+            get => GameplayClock.Rate;
+            set => throw new NotSupportedException();
+        }
 
         protected GameplayClockContainer(IClock sourceClock)
         {
             SourceClock = sourceClock;
             RelativeSizeAxes = Axes.Both;
             AdjustableSource = new DecoupleableInterpolatingFramedClock { IsCoupled = false };
-            IsPaused.BindValueChanged(OnIspausedChanged);
+            IsPaused.BindValueChanged(OnIsPausedChanged);
         }
-
-        public GameplayClock GameplayClock { get; private set; }
-
-        protected IClock SourceClock { get; private set; }
 
         public virtual void Start()
         {
@@ -50,27 +61,16 @@ namespace Circle.Game.Screens.Play
                 Start();
         }
 
-        bool IAdjustableClock.Seek(double position)
-        {
-            Seek(position);
-            return true;
-        }
-
         public void ResetSpeedAdjustments()
         {
         }
 
-        double IAdjustableClock.Rate
+        public virtual void Seek(double time)
         {
-            get => GameplayClock.Rate;
-            set => throw new NotSupportedException();
+            AdjustableSource.Seek(time);
+
+            GameplayClock.UnderlyingClock.ProcessFrame();
         }
-
-        double IClock.Rate => GameplayClock.Rate;
-
-        public double CurrentTime => GameplayClock.CurrentTime;
-
-        public bool IsRunning => GameplayClock.IsRunning;
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
         {
@@ -82,13 +82,6 @@ namespace Circle.Game.Screens.Play
             return dependencies;
         }
 
-        public virtual void Seek(double time)
-        {
-            AdjustableSource.Seek(time);
-
-            GameplayClock.UnderlyingClock.ProcessFrame();
-        }
-
         protected override void Update()
         {
             if (!IsPaused.Value)
@@ -97,7 +90,7 @@ namespace Circle.Game.Screens.Play
             base.Update();
         }
 
-        protected virtual void OnIspausedChanged(ValueChangedEvent<bool> isPaused)
+        protected virtual void OnIsPausedChanged(ValueChangedEvent<bool> isPaused)
         {
             if (isPaused.NewValue)
                 AdjustableSource.Stop();
@@ -106,5 +99,11 @@ namespace Circle.Game.Screens.Play
         }
 
         protected abstract GameplayClock CreateGameplayClock(IFrameBasedClock source);
+
+        bool IAdjustableClock.Seek(double position)
+        {
+            Seek(position);
+            return true;
+        }
     }
 }

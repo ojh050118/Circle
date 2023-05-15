@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class EnumStepper<T> : Stepper<T> where T : struct, Enum
+    public partial class EnumStepper<T> : Stepper<T> where T : struct, Enum
     {
         public EnumStepper()
         {

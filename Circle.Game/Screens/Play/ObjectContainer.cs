@@ -10,9 +10,14 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Screens.Play
 {
-    public class ObjectContainer : Container<Tile>
+    public partial class ObjectContainer : Container<Tile>
     {
         private readonly Beatmap currentBeatmap;
+
+        private float[] angleData => CalculationExtensions.ConvertAngles(currentBeatmap.AngleData);
+
+        [Resolved]
+        private CircleConfigManager config { get; set; }
 
         public ObjectContainer(Beatmap beatmap)
         {
@@ -22,10 +27,42 @@ namespace Circle.Game.Screens.Play
             currentBeatmap = beatmap;
         }
 
-        [Resolved]
-        private CircleConfigManager config { get; set; }
+        public void AddTileTransforms(double gameStartTime, double countdownDuration)
+        {
+            float bpm = currentBeatmap.Settings.Bpm;
+            var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
+            var tilesInfo = currentBeatmap.TilesInfo;
+            int frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
+            int backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
 
-        private float[] angleData => CalculationExtensions.ConvertAngles(currentBeatmap.AngleData);
+            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
+                Children[i].Alpha = 0;
+
+            // Fade in
+            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
+            {
+                bpm = tilesInfo.GetNewBpm(bpm, i - 8);
+                Children[i].LifetimeStart = tilesOffset[i - frontVisibilityCount];
+
+                using (Children[i].BeginAbsoluteSequence(tilesOffset[i - frontVisibilityCount], false))
+                    Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
+            }
+
+            bpm = currentBeatmap.Settings.Bpm;
+
+            // Fade out
+            for (int i = 0; i < tilesInfo.Length; i++)
+            {
+                bpm = tilesInfo.GetNewBpm(bpm, i);
+
+                if (i > backVisibilityCount - 1)
+                {
+                    Children[i - backVisibilityCount].LifetimeEnd = tilesOffset[i] + 60000 / bpm;
+                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tilesOffset[i], false))
+                        Children[i - backVisibilityCount].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
+                }
+            }
+        }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -80,43 +117,6 @@ namespace Circle.Game.Screens.Play
                         });
 
                         break;
-                }
-            }
-        }
-
-        public void AddTileTransforms(double gameStartTime, double countdownDuration)
-        {
-            float bpm = currentBeatmap.Settings.Bpm;
-            var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
-            var tilesInfo = currentBeatmap.TilesInfo;
-            var frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
-            var backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
-
-            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
-                Children[i].Alpha = 0;
-
-            // Fade in
-            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
-            {
-                bpm = tilesInfo.GetNewBpm(bpm, i - 8);
-                Children[i].LifetimeStart = tilesOffset[i - frontVisibilityCount];
-
-                using (Children[i].BeginAbsoluteSequence(tilesOffset[i - frontVisibilityCount], false))
-                    Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
-            }
-
-            bpm = currentBeatmap.Settings.Bpm;
-
-            // Fade out
-            for (int i = 0; i < tilesInfo.Length; i++)
-            {
-                bpm = tilesInfo.GetNewBpm(bpm, i);
-
-                if (i > backVisibilityCount - 1)
-                {
-                    Children[i - backVisibilityCount].LifetimeEnd = tilesOffset[i] + 60000 / bpm;
-                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tilesOffset[i], false))
-                        Children[i - backVisibilityCount].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
             }
         }

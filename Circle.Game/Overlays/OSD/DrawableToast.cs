@@ -14,7 +14,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Overlays.OSD
 {
-    public class DrawableToast : CircularContainer
+    public partial class DrawableToast : CircularContainer
     {
         private const int toast_minimum_width = 300;
         private const int toast_default_padding = 15;

@@ -9,7 +9,7 @@ using osu.Framework.Timing;
 
 namespace Circle.Game.Screens.Play
 {
-    public class MasterGameplayClockContainer : GameplayClockContainer
+    public partial class MasterGameplayClockContainer : GameplayClockContainer
     {
         private readonly Beatmap beatmap;
         private readonly double countdownDuration;

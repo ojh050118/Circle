@@ -16,7 +16,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game
 {
-    public class CircleGame : CircleGameBase
+    public partial class CircleGame : CircleGameBase
     {
         private readonly Toast toast = new Toast();
         private DependencyContainer dependencies;

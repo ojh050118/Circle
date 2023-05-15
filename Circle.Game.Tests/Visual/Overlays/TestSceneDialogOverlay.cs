@@ -5,7 +5,7 @@ using Circle.Game.Overlays;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
-    public class TestSceneDialogOverlay : CircleTestScene
+    public partial class TestSceneDialogOverlay : CircleTestScene
     {
         public TestSceneDialogOverlay()
         {

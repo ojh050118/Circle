@@ -12,7 +12,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class Background : Container
+    public partial class Background : Container
     {
         private readonly TextureSource source;
 

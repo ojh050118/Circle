@@ -8,7 +8,7 @@ using osu.Framework.Screens;
 
 namespace Circle.Game.Screens
 {
-    public class CircleScreenStack : ScreenStack
+    public partial class CircleScreenStack : ScreenStack
     {
         private readonly Background background;
 

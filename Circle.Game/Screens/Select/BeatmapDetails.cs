@@ -18,7 +18,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Select
 {
-    public class BeatmapDetails : Container
+    public partial class BeatmapDetails : Container
     {
         private SpriteText artist;
 

@@ -6,7 +6,7 @@ using osu.Framework.Graphics.Textures;
 
 namespace Circle.Game.Beatmaps.Drawables
 {
-    public class BeatmapBackgroundSprite : Sprite
+    public partial class BeatmapBackgroundSprite : Sprite
     {
         private readonly BeatmapInfo beatmapInfo;
 

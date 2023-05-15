@@ -12,20 +12,7 @@ namespace Circle.Game.Beatmaps
 {
     public class BeatmapManager
     {
-        private readonly BeatmapStorage beatmapStorage;
-
-        private BeatmapInfo currentBeatmap;
-
-        private List<BeatmapInfo> loadedBeatmaps;
-
-        public BeatmapManager(BeatmapStorage beatmaps)
-        {
-            beatmapStorage = beatmaps;
-            OnBeatmapChanged += beatmap =>
-            {
-                Logger.Log($"Beatmap changed: {beatmap.oldBeatmap} to {beatmap.newBeatmap}.");
-            };
-        }
+        public IList<BeatmapInfo> LoadedBeatmaps => loadedBeatmaps;
 
         public BeatmapInfo CurrentBeatmap
         {
@@ -40,13 +27,20 @@ namespace Circle.Game.Beatmaps
             }
         }
 
-        public IList<BeatmapInfo> LoadedBeatmaps => loadedBeatmaps;
+        private readonly BeatmapStorage beatmapStorage;
 
-        public event Action<(BeatmapInfo oldBeatmap, BeatmapInfo newBeatmap)> OnBeatmapChanged;
+        private BeatmapInfo currentBeatmap;
 
-        public event Action<IList<BeatmapInfo>> OnLoadedBeatmaps;
+        private List<BeatmapInfo> loadedBeatmaps;
 
-        public event Action<string> OnImported;
+        public BeatmapManager(BeatmapStorage beatmaps)
+        {
+            beatmapStorage = beatmaps;
+            OnBeatmapChanged += beatmap =>
+            {
+                Logger.Log($"Beatmap changed: {beatmap.oldBeatmap} to {beatmap.newBeatmap}.");
+            };
+        }
 
         /// <summary>
         /// 폴더에 존재하는 비트맵을 로드합니다.
@@ -75,8 +69,8 @@ namespace Circle.Game.Beatmaps
 
         public void Import(string path, bool migration = false)
         {
-            var fileName = Path.GetFileNameWithoutExtension(path).Trim(' ');
-            var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
+            string fileName = Path.GetFileNameWithoutExtension(path).Trim(' ');
+            string beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
 
             if (Path.GetExtension(path).Equals(@".circle", StringComparison.OrdinalIgnoreCase))
             {
@@ -117,7 +111,7 @@ namespace Circle.Game.Beatmaps
                 return;
             }
 
-            var beatmap = beatmapStorage.Storage.GetStorageForDirectory(name).GetFullPath(string.Empty);
+            string beatmap = beatmapStorage.Storage.GetStorageForDirectory(name).GetFullPath(string.Empty);
 
             using (var reader = new ZipArchiveReader(stream))
             {
@@ -144,55 +138,6 @@ namespace Circle.Game.Beatmaps
             deleteOldStorages();
         }
 
-        private void migrateTracks(BeatmapInfo info)
-        {
-            var songFileName = info.Beatmap.Settings.SongFileName;
-            var tracks = Path.Combine(beatmapStorage.Storage.GetFullPath("tracks"), songFileName);
-
-            if (string.IsNullOrEmpty(songFileName) || !beatmapStorage.Storage.Exists(tracks))
-                return;
-
-            var fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
-            var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
-
-            try
-            {
-                File.Copy(tracks, Path.Combine(beatmap, songFileName));
-            }
-            catch (Exception e)
-            {
-                Logger.Log($"Error during migration track {songFileName}: {e.Message}");
-            }
-        }
-
-        private void migrateBackgrounds(BeatmapInfo info)
-        {
-            var bgImage = info.Beatmap.Settings.BgImage;
-            var backgrounds = Path.Combine(beatmapStorage.Storage.GetFullPath("backgrounds"), bgImage);
-
-            if (string.IsNullOrEmpty(bgImage) || !beatmapStorage.Storage.Exists(backgrounds))
-                return;
-
-            var fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
-            var beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
-
-            try
-            {
-                File.Copy(backgrounds, Path.Combine(beatmap, bgImage));
-            }
-            catch (Exception e)
-            {
-                Logger.Log($"Error during migration background {bgImage}: {e.Message}");
-            }
-        }
-
-        private void deleteOldStorages()
-        {
-            beatmapStorage.Storage.DeleteDirectory(@"backgrounds");
-            beatmapStorage.Storage.DeleteDirectory(@"beatmaps");
-            beatmapStorage.Storage.DeleteDirectory(@"tracks");
-        }
-
         /// <summary>
         /// 비트맵을 파일로 저장합니다.
         /// </summary>
@@ -214,5 +159,60 @@ namespace Circle.Game.Beatmaps
 
             return LoadedBeatmaps.Remove(beatmap);
         }
+
+        private void migrateTracks(BeatmapInfo info)
+        {
+            string songFileName = info.Beatmap.Settings.SongFileName;
+            string tracks = Path.Combine(beatmapStorage.Storage.GetFullPath("tracks"), songFileName);
+
+            if (string.IsNullOrEmpty(songFileName) || !beatmapStorage.Storage.Exists(tracks))
+                return;
+
+            string fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
+            string beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
+
+            try
+            {
+                File.Copy(tracks, Path.Combine(beatmap, songFileName));
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error during migration track {songFileName}: {e.Message}");
+            }
+        }
+
+        private void migrateBackgrounds(BeatmapInfo info)
+        {
+            string bgImage = info.Beatmap.Settings.BgImage;
+            string backgrounds = Path.Combine(beatmapStorage.Storage.GetFullPath("backgrounds"), bgImage);
+
+            if (string.IsNullOrEmpty(bgImage) || !beatmapStorage.Storage.Exists(backgrounds))
+                return;
+
+            string fileName = Path.GetFileNameWithoutExtension(info.Name)?.Trim(' ');
+            string beatmap = beatmapStorage.Storage.GetStorageForDirectory(fileName).GetFullPath(string.Empty);
+
+            try
+            {
+                File.Copy(backgrounds, Path.Combine(beatmap, bgImage));
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error during migration background {bgImage}: {e.Message}");
+            }
+        }
+
+        private void deleteOldStorages()
+        {
+            beatmapStorage.Storage.DeleteDirectory(@"backgrounds");
+            beatmapStorage.Storage.DeleteDirectory(@"beatmaps");
+            beatmapStorage.Storage.DeleteDirectory(@"tracks");
+        }
+
+        public event Action<(BeatmapInfo oldBeatmap, BeatmapInfo newBeatmap)> OnBeatmapChanged;
+
+        public event Action<IList<BeatmapInfo>> OnLoadedBeatmaps;
+
+        public event Action<string> OnImported;
     }
 }

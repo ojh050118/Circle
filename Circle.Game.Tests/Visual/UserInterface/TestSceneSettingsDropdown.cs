@@ -6,7 +6,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneSettingsDropdown : CircleTestScene
+    public partial class TestSceneSettingsDropdown : CircleTestScene
     {
         public TestSceneSettingsDropdown()
         {

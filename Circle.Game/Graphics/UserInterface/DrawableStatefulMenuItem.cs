@@ -7,7 +7,7 @@ using osuTK;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public class DrawableStatefulMenuItem : DrawableCircleMenuItem
+    public partial class DrawableStatefulMenuItem : DrawableCircleMenuItem
     {
         public DrawableStatefulMenuItem(StatefulMenuItem item)
             : base(item)
@@ -18,7 +18,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override TextContainer CreateTextContainer() => new ToggleTextContainer(Item);
 
-        private class ToggleTextContainer : TextContainer
+        private partial class ToggleTextContainer : TextContainer
         {
             private readonly StatefulMenuItem menuItem;
             private readonly Bindable<object> state;
@@ -50,7 +50,6 @@ namespace Circle.Game.Graphics.UserInterface
             {
                 base.Update();
 
-                // Todo: This is bad. This can maybe be done better with a refactor of DrawableOsuMenuItem.
                 stateIcon.X = BoldText.DrawWidth + 10;
             }
 

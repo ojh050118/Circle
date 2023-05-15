@@ -9,7 +9,7 @@ using osu.Framework.Input.Bindings;
 
 namespace Circle.Game.Input
 {
-    public class CircleKeyBindingContainer : KeyBindingContainer<InputAction>
+    public partial class CircleKeyBindingContainer : KeyBindingContainer<InputAction>
     {
         private readonly Drawable handler;
 
@@ -19,6 +19,7 @@ namespace Circle.Game.Input
         public CircleKeyBindingContainer(CircleGameBase game)
             : base(matchingMode: KeyCombinationMatchingMode.Modifiers)
         {
+            // ReSharper disable SuspiciousTypeConversion.Global
             if (game is IKeyBindingHandler<InputAction>)
                 handler = game;
         }

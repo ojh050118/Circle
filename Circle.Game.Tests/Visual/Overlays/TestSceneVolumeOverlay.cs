@@ -6,7 +6,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.Overlays
 {
-    public class TestSceneVolumeOverlay : CircleTestScene
+    public partial class TestSceneVolumeOverlay : CircleTestScene
     {
         public TestSceneVolumeOverlay()
         {

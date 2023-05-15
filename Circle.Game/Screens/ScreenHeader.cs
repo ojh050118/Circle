@@ -11,7 +11,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens
 {
-    public class ScreenHeader : CompositeDrawable
+    public partial class ScreenHeader : CompositeDrawable
     {
         public const int MARGIN = 30;
 

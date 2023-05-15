@@ -12,7 +12,7 @@ using osu.Framework.Localisation;
 
 namespace Circle.Game.Screens.Play.HUD
 {
-    public class HUDOverlay : Container
+    public partial class HUDOverlay : Container
     {
         private readonly Beatmap beatmap;
 
@@ -23,6 +23,43 @@ namespace Circle.Game.Screens.Play.HUD
         public HUDOverlay(Beatmap beatmap)
         {
             this.beatmap = beatmap;
+        }
+
+        public void Start()
+        {
+            float countdownInterval = 60000 / beatmap.Settings.Bpm;
+            int tick = beatmap.Settings.CountdownTicks;
+
+            Countdown(countdownInterval * tick);
+        }
+
+        public void Countdown(double startUntilTime)
+        {
+            int tick = beatmap.Settings.CountdownTicks;
+            startUntilTime /= tick;
+
+            for (int i = 0; i < tick; i++)
+            {
+                using (complete.BeginDelayedSequence(startUntilTime * i, false))
+                {
+                    string text = i + 1 == tick ? "Go!" : (tick - i - 1).ToString();
+                    complete.TransformTo("Text", (LocalisableString)text);
+                    complete.ScaleTo(1.3f).Delay(100).ScaleTo(1, startUntilTime, Easing.Out);
+                    complete.FadeTo(1).Delay(100).FadeOut(startUntilTime, Easing.Out);
+                }
+            }
+        }
+
+        public void UpdateProgress(int floor)
+        {
+            progress.ProgressTo(floor);
+        }
+
+        public void Complete()
+        {
+            complete.Text = "Congratulations!";
+            complete.Alpha = 1;
+            progress.Increase();
         }
 
         [BackgroundDependencyLoader]
@@ -58,43 +95,6 @@ namespace Circle.Game.Screens.Play.HUD
                     Origin = Anchor.BottomCentre,
                 },
             };
-        }
-
-        public void Start()
-        {
-            var countdownInterval = 60000 / beatmap.Settings.Bpm;
-            var tick = beatmap.Settings.CountdownTicks;
-
-            Countdown(countdownInterval * tick);
-        }
-
-        public void Countdown(double startUntilTime)
-        {
-            var tick = beatmap.Settings.CountdownTicks;
-            startUntilTime /= tick;
-
-            for (int i = 0; i < tick; i++)
-            {
-                using (complete.BeginDelayedSequence(startUntilTime * i, false))
-                {
-                    var text = i + 1 == tick ? "Go!" : (tick - i - 1).ToString();
-                    complete.TransformTo("Text", (LocalisableString)text);
-                    complete.ScaleTo(1.3f).Delay(100).ScaleTo(1, startUntilTime, Easing.Out);
-                    complete.FadeTo(1).Delay(100).FadeOut(startUntilTime, Easing.Out);
-                }
-            }
-        }
-
-        public void UpdateProgress(int floor)
-        {
-            progress.ProgressTo(floor);
-        }
-
-        public void Complete()
-        {
-            complete.Text = "Congratulations!";
-            complete.Alpha = 1;
-            progress.Increase();
         }
     }
 }

@@ -17,7 +17,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
-    public class CarouselItem : PoolableDrawable, IStateful<SelectionState>
+    public partial class CarouselItem : PoolableDrawable, IStateful<SelectionState>
     {
         public const float ITEM_HEIGHT = 250;
         public Container BorderContainer;

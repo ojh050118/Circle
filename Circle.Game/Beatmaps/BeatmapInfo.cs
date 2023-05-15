@@ -11,40 +11,6 @@ namespace Circle.Game.Beatmaps
     /// </summary>
     public class BeatmapInfo : IEquatable<BeatmapInfo>
     {
-        private readonly FileInfo fileInfo;
-
-        public BeatmapInfo(Beatmap beatmap, FileInfo info)
-        {
-            Beatmap = beatmap;
-            fileInfo = info;
-            Directory = fileInfo.Directory?.Name;
-            DirectoryName = fileInfo.DirectoryName;
-            Name = fileInfo.Name;
-            Extension = fileInfo.Extension;
-            Exists = fileInfo.Exists;
-            BeatmapPath = fileInfo.FullName;
-            if (!string.IsNullOrEmpty(Directory))
-                RelativeBeatmapPath = Path.Combine(Directory, Name);
-
-            if (!string.IsNullOrEmpty(Beatmap.Settings.SongFileName))
-            {
-                SongPath = Path.Combine(DirectoryName, Beatmap.Settings.SongFileName);
-                RelativeSongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
-            }
-
-            if (!string.IsNullOrEmpty(Beatmap.Settings.BgImage))
-            {
-                BackgroundPath = Path.Combine(DirectoryName, Beatmap.Settings.BgImage);
-                RelativeBackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
-            }
-
-            if (!string.IsNullOrEmpty(Beatmap.Settings.BgVideo))
-            {
-                VideoPath = Path.Combine(DirectoryName, Beatmap.Settings.BgVideo);
-                RelativeVideoPath = Path.Combine(Directory, Beatmap.Settings.BgVideo);
-            }
-        }
-
         /// <summary>
         /// 비트맵.
         /// </summary>
@@ -114,6 +80,40 @@ namespace Circle.Game.Beatmaps
         /// 비디오 파일에 대한 상대 경로입니다. (ex: folder\video.mp4)
         /// </summary>
         public string RelativeVideoPath { get; } = string.Empty;
+
+        private readonly FileInfo fileInfo;
+
+        public BeatmapInfo(Beatmap beatmap, FileInfo info)
+        {
+            Beatmap = beatmap;
+            fileInfo = info;
+            Directory = fileInfo.Directory?.Name ?? string.Empty;
+            DirectoryName = fileInfo.DirectoryName ?? string.Empty;
+            Name = fileInfo.Name;
+            Extension = fileInfo.Extension;
+            Exists = fileInfo.Exists;
+            BeatmapPath = fileInfo.FullName;
+            if (!string.IsNullOrEmpty(Directory))
+                RelativeBeatmapPath = Path.Combine(Directory, Name);
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.SongFileName))
+            {
+                SongPath = Path.Combine(DirectoryName, Beatmap.Settings.SongFileName);
+                RelativeSongPath = Path.Combine(Directory, Beatmap.Settings.SongFileName);
+            }
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.BgImage))
+            {
+                BackgroundPath = Path.Combine(DirectoryName, Beatmap.Settings.BgImage);
+                RelativeBackgroundPath = Path.Combine(Directory, Beatmap.Settings.BgImage);
+            }
+
+            if (!string.IsNullOrEmpty(Beatmap.Settings.BgVideo))
+            {
+                VideoPath = Path.Combine(DirectoryName, Beatmap.Settings.BgVideo);
+                RelativeVideoPath = Path.Combine(Directory, Beatmap.Settings.BgVideo);
+            }
+        }
 
         public bool Equals(BeatmapInfo info)
         {

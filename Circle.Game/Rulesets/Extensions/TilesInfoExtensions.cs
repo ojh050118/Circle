@@ -18,7 +18,7 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>행성이 회전하기 전에 위치하는 각도.</returns>
         public static float ComputeRotation(this IReadOnlyList<TileInfo> tilesInfo, int floor, float prevAngle)
         {
-            var newRotation = CalculationExtensions.GetSafeAngle(tilesInfo[floor].Angle);
+            float newRotation = CalculationExtensions.GetSafeAngle(tilesInfo[floor].Angle);
 
             // 소용돌이에 대한 아무런 설정이 없으면 시계방향으로 회전합니다.
             bool isClockwise = tilesInfo.GetIsClockwise(floor + 1);

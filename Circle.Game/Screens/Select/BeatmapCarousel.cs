@@ -13,37 +13,13 @@ using osuTK;
 
 namespace Circle.Game.Screens.Select
 {
-    public class BeatmapCarousel : Container
+    public partial class BeatmapCarousel : Container
     {
-        private SelectionCycleFillFlowContainer<CarouselItem> carouselItems;
-        protected CarouselScrollContainer Scroll;
-
         public int ItemCount => carouselItems.Count;
 
         public Bindable<CarouselItem> SelectedItem { get; private set; } = new Bindable<CarouselItem>();
-
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            RelativeSizeAxes = Axes.Both;
-            InternalChildren = new Drawable[]
-            {
-                Scroll = new CarouselScrollContainer
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Masking = false,
-                    Child = carouselItems = new SelectionCycleFillFlowContainer<CarouselItem>
-                    {
-                        AutoSizeAxes = Axes.Y,
-                        RelativeSizeAxes = Axes.X,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Spacing = new Vector2(10),
-                        Direction = FillDirection.Vertical,
-                    }
-                }
-            };
-        }
+        protected CarouselScrollContainer Scroll;
+        private SelectionCycleFillFlowContainer<CarouselItem> carouselItems;
 
         public void Add(BeatmapInfo info, Action onDoubleClicked)
         {
@@ -85,6 +61,36 @@ namespace Circle.Game.Screens.Select
             carouselItems.SelectPrevious();
         }
 
+        protected override void UpdateAfterChildren()
+        {
+            base.UpdateAfterChildren();
+
+            Scroll.ScrollContent.Height = carouselItems.Height + DrawHeight;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            RelativeSizeAxes = Axes.Both;
+            InternalChildren = new Drawable[]
+            {
+                Scroll = new CarouselScrollContainer
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Masking = false,
+                    Child = carouselItems = new SelectionCycleFillFlowContainer<CarouselItem>
+                    {
+                        AutoSizeAxes = Axes.Y,
+                        RelativeSizeAxes = Axes.X,
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Spacing = new Vector2(10),
+                        Direction = FillDirection.Vertical,
+                    }
+                }
+            };
+        }
+
         private void updateItems(bool scroll = true)
         {
             SelectedItem.Value = carouselItems.Selected;
@@ -93,16 +99,9 @@ namespace Circle.Game.Screens.Select
                 Scroll.ScrollTo(getScaledPositionY() + CarouselItem.ITEM_HEIGHT / 2);
         }
 
-        protected override void UpdateAfterChildren()
-        {
-            base.UpdateAfterChildren();
-
-            Scroll.ScrollContent.Height = carouselItems.Height + DrawHeight;
-        }
-
         private void updateItemScale()
         {
-            var idx = carouselItems.IndexOf(carouselItems.Selected);
+            int idx = carouselItems.IndexOf(carouselItems.Selected);
             float nextScale = 1;
 
             for (int i = idx; i < carouselItems.Count; i++)
@@ -124,7 +123,7 @@ namespace Circle.Game.Screens.Select
 
         private float getScaledPositionY()
         {
-            var idx = carouselItems.IndexOf(carouselItems.Selected);
+            int idx = carouselItems.IndexOf(carouselItems.Selected);
             float totalY = 0;
             float nextScale = 1;
 
@@ -140,7 +139,7 @@ namespace Circle.Game.Screens.Select
             return totalY;
         }
 
-        protected class CarouselScrollContainer : CircleScrollContainer<SelectionCycleFillFlowContainer<CarouselItem>>
+        protected partial class CarouselScrollContainer : CircleScrollContainer<SelectionCycleFillFlowContainer<CarouselItem>>
         {
             public CarouselScrollContainer()
             {

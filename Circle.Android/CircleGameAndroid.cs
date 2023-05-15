@@ -2,7 +2,6 @@
 
 namespace Circle.Android
 {
-    public class CircleGameAndroid : CircleGame
-    {
-    }
+    public partial class CircleGameAndroid : CircleGame
+    {}
 }

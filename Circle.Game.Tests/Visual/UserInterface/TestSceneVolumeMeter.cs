@@ -6,7 +6,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneVolumeMeter : CircleTestScene
+    public partial class TestSceneVolumeMeter : CircleTestScene
     {
         public TestSceneVolumeMeter()
         {

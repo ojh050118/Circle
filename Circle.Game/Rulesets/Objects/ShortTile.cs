@@ -9,7 +9,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public class ShortTile : Tile
+    public partial class ShortTile : Tile
     {
         public ShortTile()
         {

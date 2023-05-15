@@ -17,6 +17,7 @@ namespace Circle.Game.Beatmaps
 {
     public class BeatmapStorage : IResourceStore<byte[]>
     {
+        public Storage Storage { get; }
         private readonly LargeTextureStore largeTextureStore;
         private readonly IResourceStore<byte[]> localStore;
         private readonly ITrackStore trackStore;
@@ -29,7 +30,13 @@ namespace Circle.Game.Beatmaps
             localStore = store;
         }
 
-        public Storage Storage { get; }
+        #region Disposal
+
+        public void Dispose()
+        {
+        }
+
+        #endregion
 
         public byte[] Get(string name) => localStore.Get(name);
 
@@ -39,23 +46,21 @@ namespace Circle.Game.Beatmaps
 
         public IEnumerable<string> GetAvailableResources() => localStore.GetAvailableResources();
 
-        public void Dispose()
-        {
-        }
-
         public BeatmapInfo[] GetBeatmapInfos()
         {
             List<BeatmapInfo> beatmapInfo = new List<BeatmapInfo>();
 
             try
             {
-                foreach (var dir in Storage.GetDirectories(string.Empty))
+                foreach (string dir in Storage.GetDirectories(string.Empty))
                 {
                     DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
 
                     foreach (var fi in di.GetFiles("*.circle"))
                     {
-                        var beatmap = GetBeatmap(Path.Combine(fi.Directory?.Name, fi.Name));
+                        string fileDir = fi.Directory?.Name ?? string.Empty;
+
+                        var beatmap = GetBeatmap(Path.Combine(fileDir, fi.Name));
                         beatmapInfo.Add(new BeatmapInfo(beatmap, fi));
                     }
                 }
@@ -70,13 +75,15 @@ namespace Circle.Game.Beatmaps
 
         public BeatmapInfo GetBeatmapInfo(Beatmap beatmap)
         {
-            foreach (var dir in Storage.GetDirectories(string.Empty))
+            foreach (string dir in Storage.GetDirectories(string.Empty))
             {
                 DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
 
                 foreach (var fi in di.GetFiles("*.circle"))
                 {
-                    if (beatmap == GetBeatmap(Path.Combine(fi.Directory?.Name, fi.Name)))
+                    string fileDir = fi.Directory?.Name ?? string.Empty;
+
+                    if (beatmap == GetBeatmap(Path.Combine(fileDir, fi.Name)))
                         return new BeatmapInfo(beatmap, fi);
                 }
             }
@@ -100,7 +107,7 @@ namespace Circle.Game.Beatmaps
             {
                 try
                 {
-                    beatmap = JsonConvert.DeserializeObject<Beatmap>(sr.ReadLine());
+                    beatmap = JsonConvert.DeserializeObject<Beatmap>(sr.ReadLine() ?? string.Empty);
                 }
                 catch
                 {
@@ -215,8 +222,8 @@ namespace Circle.Game.Beatmaps
         {
             string json = JsonConvert.SerializeObject(beatmap);
 
-            var fileName = $"[{beatmap.Settings.Author}] {beatmap.Settings.Artist} - {beatmap.Settings.Song}.circle";
-            var path = Storage.GetStorageForDirectory(Path.GetFileNameWithoutExtension(fileName)).GetFullPath(string.Empty);
+            string fileName = $"[{beatmap.Settings.Author}] {beatmap.Settings.Artist} - {beatmap.Settings.Song}.circle";
+            string path = Storage.GetStorageForDirectory(Path.GetFileNameWithoutExtension(fileName)).GetFullPath(string.Empty);
 
             using (StreamWriter sw = File.CreateText(Path.Combine(path, fileName)))
                 sw.WriteLine(json);

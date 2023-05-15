@@ -6,7 +6,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Tests.Visual.UserInterface
 {
-    public class TestSceneIconButton : CircleTestScene
+    public partial class TestSceneIconButton : CircleTestScene
     {
         public TestSceneIconButton()
         {

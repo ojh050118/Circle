@@ -25,8 +25,9 @@ using osuTK.Input;
 
 namespace Circle.Game.Screens.Play
 {
-    public class Player : CircleScreen
+    public partial class Player : CircleScreen
     {
+        public override bool FadeBackground => false;
         private readonly BeatmapInfo beatmapInfo;
 
         private readonly Key[] blockedKeys =
@@ -53,6 +54,10 @@ namespace Circle.Game.Screens.Play
 
         private readonly Beatmap currentBeatmap;
 
+        private float beat => 60000 / currentBeatmap.Settings.Bpm;
+        private int tick => currentBeatmap.Settings.CountdownTicks;
+        private double gameTime => masterGameplayClockContainer.CurrentTime;
+
         /// <summary>
         /// 타일 시작 시간과 게임플레이 시간을 비교하기 위해 존재합니다.
         /// 게임 시작 전에는 0%이어야 하므로 1번 타일과 비교합니다.
@@ -77,14 +82,6 @@ namespace Circle.Game.Screens.Play
 
         private TextureSource textureSource;
 
-        public Player(BeatmapInfo beatmapInfo)
-        {
-            this.beatmapInfo = beatmapInfo;
-            currentBeatmap = beatmapInfo.Beatmap;
-        }
-
-        public override bool FadeBackground => false;
-
         [Resolved]
         private MusicController musicController { get; set; }
 
@@ -97,39 +94,44 @@ namespace Circle.Game.Screens.Play
         [Resolved]
         private CircleConfigManager localConfig { get; set; }
 
-        private float beat => 60000 / currentBeatmap.Settings.Bpm;
-        private int tick => currentBeatmap.Settings.CountdownTicks;
-        private double gameTime => masterGameplayClockContainer.CurrentTime;
-
-        [BackgroundDependencyLoader]
-        private void load(GameHost host, AudioManager audio, CircleColour colours)
+        public Player(BeatmapInfo beatmapInfo)
         {
-            parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
-            textureSource = background.TextureSource;
-            textureName = background.TextureName;
-            hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * tick).ToList();
-            sampleHit = audio.Samples.Get("normal-hitnormal.wav");
-            InternalChildren = new Drawable[]
-            {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, Clock),
-                hud = new HUDOverlay(currentBeatmap),
-                gameMusic = new GameplayMusicController(beatmapInfo)
-            };
+            this.beatmapInfo = beatmapInfo;
+            currentBeatmap = beatmapInfo.Beatmap;
+        }
 
-            if (!host.CanExit)
+        public override void OnExit()
+        {
+            if (playState == GamePlayState.Playing)
             {
-                AddInternal(new IconButton
-                {
-                    Anchor = Anchor.TopRight,
-                    Origin = Anchor.TopRight,
-                    Margin = new MarginPadding(30),
-                    Size = new Vector2(50),
-                    Icon = FontAwesome.Solid.Pause,
-                    Action = onPaused
-                });
+                onPaused();
+                return;
             }
 
-            masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
+            musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
+            {
+                musicController.SeekTo(gameTime - 1000);
+                musicController.CurrentTrack.VolumeTo(1, 200, Easing.Out);
+                musicController.Play();
+            });
+
+            base.OnExit();
+        }
+
+        public override bool OnExiting(ScreenExitEvent e)
+        {
+            this.FadeOut(1000, Easing.OutPow10);
+            localConfig.SetValue(CircleSetting.Parallax, parallaxEnabled);
+
+            return base.OnExiting(e);
+        }
+
+        public override void OnResuming(ScreenTransitionEvent e)
+        {
+            background.ChangeTexture(textureSource, textureName, 1000, Easing.OutPow10);
+            onPaused();
+
+            base.OnResuming(e);
         }
 
         protected override void LoadComplete()
@@ -188,6 +190,37 @@ namespace Circle.Game.Screens.Play
             }
         }
 
+        [BackgroundDependencyLoader]
+        private void load(GameHost host, AudioManager audio, CircleColour colours)
+        {
+            parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
+            textureSource = background.TextureSource;
+            textureName = background.TextureName;
+            hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * tick).ToList();
+            sampleHit = audio.Samples.Get("normal-hitnormal.wav");
+            InternalChildren = new Drawable[]
+            {
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, Clock),
+                hud = new HUDOverlay(currentBeatmap),
+                gameMusic = new GameplayMusicController(beatmapInfo)
+            };
+
+            if (!host.CanExit)
+            {
+                AddInternal(new IconButton
+                {
+                    Anchor = Anchor.TopRight,
+                    Origin = Anchor.TopRight,
+                    Margin = new MarginPadding(30),
+                    Size = new Vector2(50),
+                    Icon = FontAwesome.Solid.Pause,
+                    Action = onPaused
+                });
+            }
+
+            masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
+        }
+
         private void updateState()
         {
             switch (playState)
@@ -206,40 +239,6 @@ namespace Circle.Game.Screens.Play
                     OnExit();
                     break;
             }
-        }
-
-        public override void OnExit()
-        {
-            if (playState == GamePlayState.Playing)
-            {
-                onPaused();
-                return;
-            }
-
-            musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
-            {
-                musicController.SeekTo(gameTime - 1000);
-                musicController.CurrentTrack.VolumeTo(1, 200, Easing.Out);
-                musicController.Play();
-            });
-
-            base.OnExit();
-        }
-
-        public override bool OnExiting(ScreenExitEvent e)
-        {
-            this.FadeOut(1000, Easing.OutPow10);
-            localConfig.SetValue(CircleSetting.Parallax, parallaxEnabled);
-
-            return base.OnExiting(e);
-        }
-
-        public override void OnResuming(ScreenTransitionEvent e)
-        {
-            background.ChangeTexture(textureSource, textureName, 1000, Easing.OutPow10);
-            onPaused();
-
-            base.OnResuming(e);
         }
 
         private void onPaused()
@@ -295,7 +294,7 @@ namespace Circle.Game.Screens.Play
 
             gameMusic.DelayUntilTransformsFinished().Schedule(() =>
             {
-                var countdown = beat * tick;
+                float countdown = beat * tick;
 
                 if (gameTime - countdown * 2 >= 0)
                 {

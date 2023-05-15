@@ -8,7 +8,7 @@ using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public abstract class Tile : Container
+    public abstract partial class Tile : Container
     {
         public const float WIDTH = 150;
         public const float HEIGHT = 50;

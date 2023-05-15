@@ -8,7 +8,7 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Overlays.OSD
 {
-    public class Toast : Container
+    public partial class Toast : Container
     {
         public int ToastQueueCount;
 

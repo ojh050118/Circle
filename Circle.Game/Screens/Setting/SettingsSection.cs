@@ -10,7 +10,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Screens.Setting
 {
-    public abstract class SettingsSection : Container
+    public abstract partial class SettingsSection : Container
     {
         private const int header_size = 30;
         private const int margin = 20;

@@ -7,7 +7,7 @@ using osu.Framework.Graphics;
 
 namespace Circle.Game.Tests.Visual.SongSelect
 {
-    public class TestSceneBeatmapDetails : CircleTestScene
+    public partial class TestSceneBeatmapDetails : CircleTestScene
     {
         [BackgroundDependencyLoader]
         private void load(BeatmapStorage beatmaps)

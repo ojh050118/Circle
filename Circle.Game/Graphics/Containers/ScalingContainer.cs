@@ -9,7 +9,7 @@ using osuTK;
 
 namespace Circle.Game.Graphics.Containers
 {
-    public class ScalingContainer : DrawSizePreservingFillContainer
+    public partial class ScalingContainer : DrawSizePreservingFillContainer
     {
         private Bindable<float> scale;
 

@@ -7,7 +7,7 @@ using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Screens.Setting.Sections
 {
-    public class AudioSection : SettingsSection
+    public partial class AudioSection : SettingsSection
     {
         public override string Header => "Audio";
 
