@@ -53,7 +53,7 @@ namespace Circle.Game.Screens.Play
 
             using (BluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
-                var duration = CalculationExtensions.GetRelativeDuration(BluePlanet.Rotation, tilesInfo[floor].Angle, bpm);
+                float duration = CalculationExtensions.GetRelativeDuration(BluePlanet.Rotation, tilesInfo[floor].Angle, bpm);
                 startTimeOffset += duration;
                 BluePlanet.ExpandTo(1, 60000 / bpm, Easing.Out);
                 BluePlanet.RotateTo(tilesInfo[floor].Angle, duration, easing);
@@ -79,7 +79,7 @@ namespace Circle.Game.Screens.Play
 
             while (floor < tilesInfo.Length)
             {
-                var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
+                float fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
                 bpm = tilesInfo.GetNewBpm(bpm, floor);
                 prevAngle = tilesInfo[floor].Angle;
 
