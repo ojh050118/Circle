@@ -5,12 +5,10 @@ using Newtonsoft.Json;
 using osu.Framework;
 using osu.Framework.Extensions;
 using osu.Framework.IO.Network;
-using FileWebRequest = osu.Framework.IO.Network.FileWebRequest;
-using WebRequest = osu.Framework.IO.Network.WebRequest;
 
 namespace Circle.Desktop.Deploy
 {
-    public static class Program
+    public static partial class Program
     {
         private static string packages => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
         private static string nugetPath => Path.Combine(packages, @"nuget.commandline\6.0.0\Tools\NuGet.exe");
@@ -25,7 +23,6 @@ namespace Circle.Desktop.Deploy
         /// </summary>
         private const int keep_delta_count = 4;
 
-#pragma warning disable CS8601 // 가능한 null 참조 할당입니다.
         public static string GitHubAccessToken = ConfigurationManager.AppSettings["GitHubAccessToken"];
         public static bool GitHubUpload = bool.Parse(ConfigurationManager.AppSettings["GitHubUpload"] ?? "false");
         public static string GitHubUsername = ConfigurationManager.AppSettings["GitHubUsername"];
@@ -40,7 +37,6 @@ namespace Circle.Desktop.Deploy
 
         public static string GitHubApiEndpoint => $"https://api.github.com/repos/{GitHubUsername}/{GitHubRepoName}/releases";
 
-#pragma warning disable CS8618 // 생성자를 종료할 때 null을 허용하지 않는 필드에 null이 아닌 값을 포함해야 합니다. null 허용으로 선언해 보세요.
         private static string solutionPath;
 
         private static string stagingPath => Path.Combine(Environment.CurrentDirectory, staging_folder);
@@ -66,7 +62,6 @@ namespace Circle.Desktop.Deploy
                 Directory.CreateDirectory(releases_folder);
             }
 
-#pragma warning disable CS8600 // null 리터럴 또는 가능한 null 값을 null을 허용하지 않는 형식으로 변환하는 중입니다.
             GitHubRelease lastRelease = null;
 
             if (canGitHub)
@@ -112,7 +107,6 @@ namespace Circle.Desktop.Deploy
             switch (targetPlatform)
             {
                 case RuntimeInfo.Platform.Windows:
-#pragma warning disable CS8604 // 가능한 null 참조 인수입니다.
                     getAssetsFromRelease(lastRelease);
 
                     runCommand("dotnet", $"publish -f net6.0 -r win-x64 {ProjectName} -o {stagingPath} --configuration Release /p:Version={version}");
@@ -163,6 +157,86 @@ namespace Circle.Desktop.Deploy
                     // 설치할 setup의 이름을 바꿉니다.
                     File.Copy(Path.Combine(releases_folder, "CircleSetup.exe"), Path.Combine(releases_folder, "install.exe"), true);
                     File.Delete(Path.Combine(releases_folder, "CircleSetup.exe"));
+                    break;
+
+                case RuntimeInfo.Platform.macOS:
+                    string targetArch = "";
+
+                    if (args.Length > 0)
+                    {
+                        targetArch = args[0];
+                    }
+                    else if (interactive)
+                    {
+                        Console.Write("Build for which architecture? [x64/arm64]: ");
+                        targetArch = Console.ReadLine() ?? string.Empty;
+                    }
+
+                    if (targetArch != "x64" && targetArch != "arm64")
+                        error($"Invalid Architecture: {targetArch}");
+
+                    buildForMac(targetArch, version);
+                    break;
+
+                case RuntimeInfo.Platform.Android:
+                    string codeSigningArguments = string.Empty;
+
+                    if (!string.IsNullOrEmpty(CodeSigningCertificate))
+                    {
+                        if (args.Length > 0)
+                        {
+                            codeSigningPassword = args[0];
+                        }
+                        else
+                        {
+                            Console.Write("Enter code signing password: ");
+                            codeSigningPassword = readLineMasked();
+                        }
+
+                        codeSigningArguments += " -p:AndroidKeyStore=true"
+                                                + $" -p:AndroidSigningKeyStore={CodeSigningCertificate}"
+                                                + $" -p:AndroidSigningKeyAlias={Path.GetFileNameWithoutExtension(CodeSigningCertificate)}"
+                                                + $" -p:AndroidSigningKeyPass={codeSigningPassword}"
+                                                + $" -p:AndroidSigningStorePass={codeSigningPassword}";
+                    }
+
+                    string[] versionParts = version.Split('.');
+                    string appVersion = string.Join
+                    (
+                        separator: string.Empty,
+                        versionParts[0].PadLeft(4, '0'),
+                        versionParts[1].PadLeft(4, '0'),
+                        versionParts[2].PadLeft(1, '0')
+                    );
+
+                    runCommand("dotnet", "publish"
+                                         + " -f net6.0-android"
+                                         + " -r android-arm64"
+                                         + " -c Release"
+                                         + $" -o {stagingPath}"
+                                         + $" -p:Version={version}"
+                                         + $" -p:ApplicationVersion={appVersion}"
+                                         + codeSigningArguments
+                                         + " --self-contained"
+                                         + " Circle.Android/Circle.Android.csproj");
+
+                    // copy update information
+                    File.Move(Path.Combine(stagingPath, "junho.Circle-Signed.apk"), Path.Combine(releasesPath, "junho.Circle.apk"), true);
+                    break;
+
+                case RuntimeInfo.Platform.iOS:
+                    runCommand("dotnet", "publish"
+                                         + " -f net6.0-ios"
+                                         + " -r ios-arm64"
+                                         + " -c Release"
+                                         + $" -o {stagingPath}"
+                                         + $" -p:Version={version}"
+                                         + $" -p:ApplicationDisplayVersion=1.0"
+                                         + " --self-contained"
+                                         + " Circle.iOS/Circle.iOS.csproj");
+
+                    // copy update information
+                    File.Move(Path.Combine(stagingPath, "Circle.iOS.ipa"), Path.Combine(releasesPath, "Circle.iOS.ipa"), true);
                     break;
 
                 case RuntimeInfo.Platform.Linux:
@@ -234,6 +308,57 @@ namespace Circle.Desktop.Deploy
             Console.WriteLine("  이 프로젝트의 빌드를 공개적으로 사용하여 배포하지 마십시오.");
             Console.ResetColor();
             Console.WriteLine();
+        }
+
+        private static void buildForMac(string arch, string version)
+        {
+            // unzip the template app, with all structure existing except for dotnet published content.
+            runCommand("unzip", $"\"Circle.app-template.zip\" -d {stagingPath}", false);
+
+            // without touching the app bundle itself, changes to file associations / icons / etc. will be cached at a macOS level and not updated.
+            runCommand("touch", $"\"{Path.Combine(stagingPath, "Circle.app")}\" {stagingPath}", false);
+
+            runCommand("dotnet", $"publish -r osx-{arch} {ProjectName} --configuration Release -o {stagingPath}/Circle.app/Contents/MacOS /p:Version={version}");
+
+            string stagingApp = $"{stagingPath}/Circle.app";
+            string archLabel = arch == "x64" ? "Intel" : "Apple Silicon";
+            string zippedApp = $"{releasesPath}/Circle.app ({archLabel}).zip";
+
+            // correct permissions post-build. dotnet outputs 644 by default; we want 755.
+            runCommand("chmod", $"-R 755 {stagingApp}");
+
+            if (!string.IsNullOrEmpty(CodeSigningCertificate))
+            {
+                // sign using apple codesign
+                runCommand("codesign",
+                    $"--deep --force --verify --entitlements {Path.Combine(Environment.CurrentDirectory, "Circle.entitlements")} -o runtime --verbose --sign \"{CodeSigningCertificate}\" {stagingApp}");
+
+                // check codesign was successful
+                runCommand("spctl", $"--assess -vvvv {stagingApp}");
+            }
+
+            // package for distribution
+            runCommand("ditto", $"-ck --rsrc --keepParent --sequesterRsrc {stagingApp} \"{zippedApp}\"");
+
+            string notarisationUsername = ConfigurationManager.AppSettings["AppleUsername"] ?? string.Empty;
+
+            if (!string.IsNullOrEmpty(notarisationUsername))
+            {
+                // upload for notarisation
+                runCommand("xcrun",
+                    $"altool --notarize-app --primary-bundle-id \"junho.Circle\" --username \"{notarisationUsername}\" --password \"{ConfigurationManager.AppSettings["ApplePassword"]}\" --file \"{zippedApp}\"");
+                // TODO: make this actually wait properly
+                write("Waiting for notarisation to complete..");
+                Thread.Sleep(60000 * 5);
+
+                // staple notarisation result
+                runCommand("xcrun", $"stapler staple {stagingApp}");
+            }
+
+            File.Delete(zippedApp);
+
+            // repackage for distribution
+            runCommand("ditto", $"-ck --rsrc --keepParent --sequesterRsrc {stagingApp} \"{zippedApp}\"");
         }
 
         /// <summary>
@@ -363,7 +488,7 @@ namespace Circle.Desktop.Deploy
         {
             var req = new JsonWebRequest<List<GitHubRelease>>($"{GitHubApiEndpoint}");
             req.AuthenticatedBlockingPerform();
-#pragma warning disable CS8603 // 가능한 null 참조 반환입니다.
+
             return req.ResponseObject.FirstOrDefault(r => includeDrafts || !r.Draft);
         }
 

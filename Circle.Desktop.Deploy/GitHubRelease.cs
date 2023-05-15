@@ -4,8 +4,6 @@ namespace Circle.Desktop.Deploy
 {
     public class GitHubRelease
     {
-#pragma warning disable CS8618
-
         [JsonProperty(@"id")]
         public int Id;
 
