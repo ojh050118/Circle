@@ -8,14 +8,6 @@
     <ApplicationVersion Condition=" '$(ApplicationVersion)' == '' ">$(Version)</ApplicationVersion>
     <ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <CreatePackage>false</CreatePackage>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <CreatePackage>false</CreatePackage>
-    <CodesignProvision></CodesignProvision>
-    <CodesignKey>Apple Development: ojh0050118@gmail.com (GPRQ4CK3BB)</CodesignKey>
-  </PropertyGroup>
   <Import Project="..\Circle.iOS.props"/>
   <ItemGroup>
     <ProjectReference Include="..\Circle.Game\Circle.Game.csproj"/>
