@@ -94,7 +94,6 @@ jobs:
           path: ${{github.workspace}}/TestResults/TestResults-${{matrix.os.prettyname}}-${{matrix.threadingMode}}.trx
 
   build-only-android:
-    if: false
     name: Build only (Android)
     runs-on: windows-latest
     timeout-minutes: 60
@@ -114,7 +113,6 @@ jobs:
         run: dotnet build -c Debug Circle.Android.slnf
 
   build-only-ios:
-    if: false
     name: Build only (iOS)
     runs-on: macos-13
     timeout-minutes: 60
