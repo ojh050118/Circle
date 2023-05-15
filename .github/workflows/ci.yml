@@ -1,5 +1,11 @@
 on: [pull_request]
 name: Continuous Integration
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
 
 jobs:
   inspect-code:
@@ -26,13 +32,13 @@ jobs:
           run: dotnet restore Circle.Desktop.slnf
 
         - name: Restore inspectcode cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/inspectcode
-          key: inspectcode-${{ hashFiles('.config/dotnet-tools.json', '.github/workflows/ci.yml', 'Circle.sln*', 'Circle*.slnf', '.editorconfig', '.globalconfig', 'CodeAnalysis/*', '**/*.csproj', '**/*.props') }}
+          uses: actions/cache@v3
+          with:
+            path: ${{ github.workspace }}/inspectcode
+            key: inspectcode-${{ hashFiles('.config/dotnet-tools.json', '.github/workflows/ci.yml', 'Circle.sln*', 'Circle*.slnf', '.editorconfig', '.globalconfig', 'CodeAnalysis/*', '**/*.csproj', '**/*.props') }}
 
         - name: Dotnet code style
-        run: dotnet build -c Debug -warnaserror Circle.Desktop.slnf -p:EnforceCodeStyleInBuild=true
+          run: dotnet build -c Debug -warnaserror Circle.Desktop.slnf -p:EnforceCodeStyleInBuild=true
 
         - name: CodeFileSanity
           run: |
