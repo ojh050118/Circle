@@ -338,3 +338,4 @@ inspectcode
 *.GeneratedMSBuildEditorConfig.editorconfig
 .vs/cytos/v16/.suo
 .idea/.idea.Circle/.idea/discord.xml
+.idea/.idea.Circle.Desktop/.idea/misc.xml
