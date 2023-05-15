@@ -9,7 +9,7 @@
       ]
     },
     "jetbrains.resharper.globaltools": {
-      "version": "2020.3.2",
+      "version": "2022.2.3",
       "commands": [
         "jb"
       ]
@@ -24,12 +24,6 @@
       "version": "0.0.36",
       "commands": [
         "CodeFileSanity"
-      ]
-    },
-    "ppy.localisationanalyser.tools": {
-      "version": "2021.725.0",
-      "commands": [
-        "localisation"
       ]
     }
   }
