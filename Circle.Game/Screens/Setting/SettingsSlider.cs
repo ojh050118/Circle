@@ -15,9 +15,47 @@ namespace Circle.Game.Screens.Setting
     public partial class SettingsSlider<T> : Container
         where T : struct, IEquatable<T>, IComparable<T>, IConvertible
     {
+        public string Text
+        {
+            get => text.Text.ToString();
+            set => text.Text = value;
+        }
+
+        public Bindable<T> Current
+        {
+            get => sliderBar.Current;
+            set => sliderBar.Current = value;
+        }
+
+        public float KeyboardStep
+        {
+            get => sliderBar.KeyboardStep;
+            set => sliderBar.KeyboardStep = value;
+        }
+
+        public bool TransferValueOnCommit
+        {
+            get => sliderBar.TransferValueOnCommit;
+            set => sliderBar.TransferValueOnCommit = value;
+        }
+
+        public IconUsage LeftIcon
+        {
+            get => leftIcon.Icon;
+            set => leftIcon.Icon = value;
+        }
+
+        public IconUsage RightIcon
+        {
+            get => rightIcon.Icon;
+            set => rightIcon.Icon = value;
+        }
+
         private readonly IconButton leftIcon;
         private readonly IconButton rightIcon;
         private readonly SpriteText text;
+
+        private CircleSliderBar<T> sliderBar { get; }
 
         public SettingsSlider()
         {
@@ -68,14 +106,14 @@ namespace Circle.Game.Screens.Setting
                                         Anchor = Anchor.CentreLeft,
                                         Origin = Anchor.CentreLeft,
                                         Size = new Vector2(30),
-                                        Action = () => sliderBar.Commit(false)
+                                        Action = () => sliderBar?.Commit(false)
                                     },
                                     rightIcon = new IconButton
                                     {
                                         Anchor = Anchor.CentreRight,
                                         Origin = Anchor.CentreRight,
                                         Size = new Vector2(30),
-                                        Action = () => sliderBar.Commit(true)
+                                        Action = () => sliderBar?.Commit(true)
                                     },
                                     new Container
                                     {
@@ -97,44 +135,6 @@ namespace Circle.Game.Screens.Setting
                     }
                 }
             };
-        }
-
-        public string Text
-        {
-            get => text.Text.ToString();
-            set => text.Text = value;
-        }
-
-        private CircleSliderBar<T> sliderBar { get; }
-
-        public Bindable<T> Current
-        {
-            get => sliderBar.Current;
-            set => sliderBar.Current = value;
-        }
-
-        public float KeyboardStep
-        {
-            get => sliderBar.KeyboardStep;
-            set => sliderBar.KeyboardStep = value;
-        }
-
-        public bool TransferValueOnCommit
-        {
-            get => sliderBar.TransferValueOnCommit;
-            set => sliderBar.TransferValueOnCommit = value;
-        }
-
-        public IconUsage LeftIcon
-        {
-            get => leftIcon.Icon;
-            set => leftIcon.Icon = value;
-        }
-
-        public IconUsage RightIcon
-        {
-            get => rightIcon.Icon;
-            set => rightIcon.Icon = value;
         }
     }
 }

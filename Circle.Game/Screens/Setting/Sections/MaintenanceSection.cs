@@ -71,7 +71,7 @@ namespace Circle.Game.Screens.Setting.Sections
                     Text = "Import local beatmaps",
                     Action = () => Task.Factory.StartNew(() =>
                     {
-                        foreach (var file in storage.GetAvailableResources())
+                        foreach (string file in storage.GetAvailableResources())
                             beatmap.Import(storage.GetStream(file), file);
 
                         beatmap.ReloadBeatmaps();

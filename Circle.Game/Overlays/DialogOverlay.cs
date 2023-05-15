@@ -16,17 +16,29 @@ namespace Circle.Game.Overlays
 {
     public partial class DialogOverlay : CircleFocusedOverlayContainer
     {
-        private readonly Container buttonContent;
-        private readonly SpriteText description;
-
-        private readonly SpriteText title;
-
         /// <summary>
         /// 버튼들. 버튼이 없으면 버튼 없이 대화 상자가 생성됨.
         /// </summary>
         public IReadOnlyList<DialogButton> Buttons;
 
         public Action OnHide;
+
+        public string Title
+        {
+            get => title.Text.ToString();
+            set => title.Text = value;
+        }
+
+        public string Description
+        {
+            get => description.Text.ToString();
+            set => description.Text = value;
+        }
+
+        private readonly Container buttonContent;
+        private readonly SpriteText description;
+
+        private readonly SpriteText title;
 
         public DialogOverlay()
         {
@@ -101,29 +113,34 @@ namespace Circle.Game.Overlays
             };
         }
 
-        public string Title
+        public void Push()
         {
-            get => title.Text.ToString();
-            set => title.Text = value;
+            refreshButtons();
+
+            Show();
         }
 
-        public string Description
+        protected override void PopIn()
         {
-            get => description.Text.ToString();
-            set => description.Text = value;
+            base.PopIn();
+
+            Content.ScaleTo(1, 1000, Easing.OutPow10);
+            Content.FadeTo(0.8f, 1000, Easing.OutPow10);
+        }
+
+        protected override void PopOut()
+        {
+            base.PopOut();
+
+            Content.ScaleTo(1.2f, 1000, Easing.OutPow10);
+            Content.FadeOut(1000, Easing.OutPow10);
+            OnHide?.Invoke();
         }
 
         [BackgroundDependencyLoader]
         private void load()
         {
             refreshButtons();
-        }
-
-        public void Push()
-        {
-            refreshButtons();
-
-            Show();
         }
 
         private void refreshButtons()
@@ -205,34 +222,17 @@ namespace Circle.Game.Overlays
             {
                 switch (d)
                 {
-                    case Box _:
+                    case Box:
                         dimensions.Add(new Dimension(GridSizeMode.AutoSize));
                         break;
 
-                    case DialogButton _:
+                    case DialogButton:
                         dimensions.Add(new Dimension(GridSizeMode.Distributed));
                         break;
                 }
             }
 
             return dimensions.ToArray();
-        }
-
-        protected override void PopIn()
-        {
-            base.PopIn();
-
-            Content.ScaleTo(1, 1000, Easing.OutPow10);
-            Content.FadeTo(0.8f, 1000, Easing.OutPow10);
-        }
-
-        protected override void PopOut()
-        {
-            base.PopOut();
-
-            Content.ScaleTo(1.2f, 1000, Easing.OutPow10);
-            Content.FadeOut(1000, Easing.OutPow10);
-            OnHide?.Invoke();
         }
     }
 }

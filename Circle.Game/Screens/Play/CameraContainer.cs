@@ -20,39 +20,10 @@ namespace Circle.Game.Screens.Play
         public new Container Content;
         private Container offsetContainer, positionContainer, scalingContainer;
 
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            RelativeSizeAxes = Axes.Both;
-            Anchor = Anchor.Centre;
-            Origin = Anchor.Centre;
-            Child = scalingContainer = new Container
-            {
-                Name = "Rotate/Scaling Container",
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                Child = offsetContainer = new Container
-                {
-                    Name = "Offset Container",
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    AutoSizeAxes = Axes.Both,
-                    Child = positionContainer = new Container
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Name = "Positioning Container",
-                        AutoSizeAxes = Axes.Both,
-                        Child = Content
-                    }
-                }
-            };
-        }
-
         public void InitializeSettings(Settings settings)
         {
             scalingContainer.Rotation = settings.Rotation;
-            var zoom = Precision.AlmostEquals(settings.Zoom, 0) ? 100 : settings.Zoom;
+            float zoom = Precision.AlmostEquals(settings.Zoom, 0) ? 100 : settings.Zoom;
             scalingContainer.Scale = new Vector2(1 / (zoom / 100));
             offsetContainer.Position = settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
         }
@@ -82,8 +53,8 @@ namespace Circle.Game.Screens.Play
 
             for (int floor = 0; floor < tilesInfo.Length; floor++)
             {
-                var prevAngle = tilesInfo[floor].Angle;
-                var fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
+                float prevAngle = tilesInfo[floor].Angle;
+                float fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
                 var position = -tilesInfo[floor].Position;
                 bpm = tilesInfo.GetNewBpm(bpm, floor);
 
@@ -134,8 +105,8 @@ namespace Circle.Game.Screens.Play
                     {
                         case EventType.MoveCamera:
                             setCameraProperty(action);
-                            var angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
-                            Vector2? specificPosition0 = cameraRelativity == Relativity.Player ? null : (Vector2?)cameraPosition;
+                            float angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            Vector2? specificPosition0 = cameraRelativity == Relativity.Player ? null : cameraPosition;
 
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
@@ -153,18 +124,18 @@ namespace Circle.Game.Screens.Play
                         // 이벤트 반복엔 타일에 종속되지 않는 이벤트(카메라 트랜스폼)가 실행됩니다.
                         case EventType.RepeatEvents:
                             var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
-                            var intervalBeat = 60000 / bpm * action.Interval;
+                            double intervalBeat = 60000 / bpm * action.Interval;
 
                             // 이벤트를 일정한 주기로 반복 횟수만큼 추가합니다.
                             for (int i = 1; i <= action.Repetitions; i++)
                             {
-                                var startTime = tileStartTime[floor] + intervalBeat * i;
+                                double startTime = tileStartTime[floor] + intervalBeat * i;
 
                                 foreach (var cameraEvent in cameraEvents)
                                 {
                                     setCameraProperty(cameraEvent);
-                                    var angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
-                                    Vector2? specificPosition = cameraRelativity == Relativity.Player ? null : (Vector2?)cameraPosition;
+                                    float angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
+                                    Vector2? specificPosition = cameraRelativity == Relativity.Player ? null : cameraPosition;
 
                                     if (cameraEvent.EventTag == action.Tag)
                                     {
@@ -242,6 +213,35 @@ namespace Circle.Game.Screens.Play
             }
 
             #endregion
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            RelativeSizeAxes = Axes.Both;
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
+            Child = scalingContainer = new Container
+            {
+                Name = "Rotate/Scaling Container",
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Child = offsetContainer = new Container
+                {
+                    Name = "Offset Container",
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    AutoSizeAxes = Axes.Both,
+                    Child = positionContainer = new Container
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Name = "Positioning Container",
+                        AutoSizeAxes = Axes.Both,
+                        Child = Content
+                    }
+                }
+            };
         }
     }
 }

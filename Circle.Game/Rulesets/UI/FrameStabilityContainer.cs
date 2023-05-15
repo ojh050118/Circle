@@ -1,6 +1,7 @@
 #nullable disable
 
 using System;
+using System.Diagnostics;
 using Circle.Game.Screens.Play;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
@@ -12,6 +13,13 @@ namespace Circle.Game.Rulesets.UI
 {
     public partial class FrameStabilityContainer : Container
     {
+        public IFrameStableClock FrameStableClock => frameStableClock;
+
+        public int MaxCatchUpFrames { get; set; } = 5;
+
+        internal bool FrameStablePlayback = true;
+
+        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
         private const double sixty_frame_time = 1000.0 / 60;
 
         private readonly FramedClock framedClock;
@@ -33,8 +41,6 @@ namespace Circle.Game.Rulesets.UI
 
         private bool firstConsumption = true;
 
-        internal bool FrameStablePlayback = true;
-
         private IFrameBasedClock parentGameplayClock;
 
         private PlaybackState state;
@@ -46,28 +52,6 @@ namespace Circle.Game.Rulesets.UI
             frameStableClock = new FrameStabilityClock(framedClock = new FramedClock(manualClock = new ManualClock()));
 
             this.gameplayStartTime = gameplayStartTime;
-        }
-
-        public int MaxCatchUpFrames { get; set; } = 5;
-
-        public IFrameStableClock FrameStableClock => frameStableClock;
-
-        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
-
-        [BackgroundDependencyLoader(true)]
-        private void load(GameplayClock clock)
-        {
-            if (clock != null)
-            {
-                parentGameplayClock = clock;
-                frameStableClock.IsPaused.BindTo(clock.IsPaused);
-            }
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-            setClock();
         }
 
         public override bool UpdateSubTree()
@@ -90,6 +74,22 @@ namespace Circle.Game.Rulesets.UI
             return true;
         }
 
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+            setClock();
+        }
+
+        [BackgroundDependencyLoader(true)]
+        private void load(GameplayClock clock)
+        {
+            if (clock != null)
+            {
+                parentGameplayClock = clock;
+                frameStableClock.IsPaused.BindTo(clock.IsPaused);
+            }
+        }
+
         private void updateClock()
         {
             if (frameStableClock.WaitingOnFrames.Value)
@@ -110,6 +110,8 @@ namespace Circle.Game.Rulesets.UI
 
             if (parentGameplayClock == null)
                 setClock(); // LoadComplete may not be run yet, but we still want the clock.
+
+            Debug.Assert(parentGameplayClock != null);
 
             double proposedTime = parentGameplayClock.CurrentTime;
 
@@ -208,14 +210,14 @@ namespace Circle.Game.Rulesets.UI
 
             public readonly Bindable<bool> WaitingOnFrames = new Bindable<bool>();
 
+            IBindable<bool> IFrameStableClock.IsCatchingUp => IsCatchingUp;
+
+            IBindable<bool> IFrameStableClock.WaitingOnFrames => WaitingOnFrames;
+
             public FrameStabilityClock(FramedClock underlyingClock)
                 : base(underlyingClock)
             {
             }
-
-            IBindable<bool> IFrameStableClock.IsCatchingUp => IsCatchingUp;
-
-            IBindable<bool> IFrameStableClock.WaitingOnFrames => WaitingOnFrames;
         }
     }
 }

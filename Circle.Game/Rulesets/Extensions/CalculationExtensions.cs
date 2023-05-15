@@ -19,8 +19,8 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>다음 타일의 위치.</returns>
         public static Vector2 GetComputedTilePosition(float angle)
         {
-            var x = (float)Math.Cos(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
-            var y = (float)Math.Sin(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
+            float x = (float)Math.Cos(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
+            float y = (float)Math.Sin(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
 
             return new Vector2(x, y);
         }
@@ -68,7 +68,7 @@ namespace Circle.Game.Rulesets.Extensions
 
             for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
             {
-                var fixedRotation = ComputeRotation(tilesInfo, floor, prevAngle);
+                float fixedRotation = ComputeRotation(tilesInfo, floor, prevAngle);
 
                 prevAngle = tilesInfo[floor].Angle;
                 bpm = GetNewBpm(tilesInfo, bpm, floor);
@@ -88,7 +88,7 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>행성이 회전하기 전에 위치하는 각도.</returns>
         public static float ComputeRotation(TileInfo[] tilesInfo, int floor, float prevAngle)
         {
-            var newRotation = GetSafeAngle(tilesInfo[floor].Angle);
+            float newRotation = GetSafeAngle(tilesInfo[floor].Angle);
 
             // 소용돌이에 대한 아무런 설정이 없으면 시계방향으로 회전합니다.
             bool isClockwise = GetIsClockwise(tilesInfo, floor + 1);
@@ -304,13 +304,13 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>각 타일 정보에 대한 집합.</returns>
         public static TileInfo[] GetTilesInfo(Beatmap beatmap)
         {
-            var data = ConvertAngles(beatmap.AngleData);
+            float[] data = ConvertAngles(beatmap.AngleData);
             var types = GetTileType(data);
             var positions = GetTilePositions(data);
 
             float angle = 0;
-            var bpm = beatmap.Settings.Bpm;
-            var clockwise = true;
+            float bpm = beatmap.Settings.Bpm;
+            bool clockwise = true;
             TileInfo[] infos = new TileInfo[data.Length];
 
             for (int floor = 0; floor < data.Length; floor++)

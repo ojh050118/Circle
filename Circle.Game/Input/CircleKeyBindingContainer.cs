@@ -19,6 +19,7 @@ namespace Circle.Game.Input
         public CircleKeyBindingContainer(CircleGameBase game)
             : base(matchingMode: KeyCombinationMatchingMode.Modifiers)
         {
+            // ReSharper disable SuspiciousTypeConversion.Global
             if (game is IKeyBindingHandler<InputAction>)
                 handler = game;
         }
