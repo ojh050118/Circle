@@ -11,6 +11,5 @@
   <Import Project="..\Circle.iOS.props"/>
   <ItemGroup>
     <ProjectReference Include="..\Circle.Game\Circle.Game.csproj"/>
-    <ProjectReference Include="..\Circle.Resources\Circle.Resources.csproj"/>
   </ItemGroup>
 </Project>
