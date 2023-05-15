@@ -4,7 +4,7 @@
     "projects": [
       "Circle.Game\\Circle.Game.csproj",
       "Circle.Resources\\Circle.Resources.csproj",
-      "Circle.iOS\\Circle.Android.csproj"
+      "Circle.Android\\Circle.Android.csproj"
     ]
   }
 }
