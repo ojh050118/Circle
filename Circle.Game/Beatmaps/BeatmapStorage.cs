@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
+using osu.Framework.Extensions;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 using osu.Framework.Logging;
@@ -38,13 +40,40 @@ namespace Circle.Game.Beatmaps
 
         #endregion
 
-        public byte[] Get(string name) => localStore.Get(name);
+        public byte[] Get(string name)
+        {
+            using (Stream stream = Storage.GetStream(name))
+            {
+                if (stream == null)
+                    return localStore.Get(name);
 
-        public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default) => localStore.GetAsync(name, cancellationToken);
+                return stream.ReadAllBytesToArray();
+            }
+        }
 
-        public Stream GetStream(string name) => localStore.GetStream(name);
+        public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default)
+        {
+            using (Stream stream = Storage.GetStream(name))
+            {
+                if (stream == null)
+                    return localStore.GetAsync(name, cancellationToken);
 
-        public IEnumerable<string> GetAvailableResources() => localStore.GetAvailableResources();
+                return stream.ReadAllBytesToArrayAsync(cancellationToken);
+            }
+        }
+
+        public Stream GetStream(string name)
+        {
+            if (localStore.GetStream(name) == null)
+                return Storage.GetStream(name);
+
+            return localStore.GetStream(name);
+        }
+
+        public IEnumerable<string> GetAvailableResources()
+        {
+            return Storage.GetDirectories(string.Empty).Where(d => Directory.GetFiles(d, "*.circle").Length != 0);
+        }
 
         public BeatmapInfo[] GetBeatmapInfos()
         {

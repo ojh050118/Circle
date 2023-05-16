@@ -1,6 +1,8 @@
 #nullable disable
 
+using System;
 using Circle.Game.Beatmaps;
+using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -46,6 +48,8 @@ namespace Circle.Game.Graphics.UserInterface
         public string TextureName { get; private set; }
 
         public TextureSource TextureSource { get; private set; }
+
+        public event Action<Color4> BackgroundColorChanged;
 
         [Resolved]
         private LargeTextureStore largeTexture { get; set; }
@@ -106,13 +110,15 @@ namespace Circle.Game.Graphics.UserInterface
 
         private Sprite loadTexture(TextureSource source, string textureName)
         {
+            var texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmaps.GetBackground(textureName);
+
             return new Sprite
             {
                 RelativeSizeAxes = Axes.Both,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 FillMode = FillMode.Fill,
-                Texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmaps.GetBackground(textureName)
+                Texture = texture
             };
         }
 
@@ -149,6 +155,14 @@ namespace Circle.Game.Graphics.UserInterface
                 }
                 else
                     queuedTexture.Dispose();
+
+                Color4 textureColor = Color4.White;
+                byte[] data = beatmaps.Get(name);
+
+                if (data != null)
+                    textureColor = ImageUtil.GetAverageColor(data);
+
+                BackgroundColorChanged?.Invoke(textureColor);
             });
         }
 
