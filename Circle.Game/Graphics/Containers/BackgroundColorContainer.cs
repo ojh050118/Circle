@@ -3,13 +3,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
+using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osuTK.Graphics;
 
-namespace Circle.Game.Graphics.UserInterface
+namespace Circle.Game.Graphics.Containers
 {
     public partial class BackgroundColorContainer : Container
     {
