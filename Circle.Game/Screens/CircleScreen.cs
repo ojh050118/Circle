@@ -94,7 +94,7 @@ namespace Circle.Game.Screens
                     return true;
 
                 case InputAction.ReloadBeatmap:
-                    beatmapManager.ReloadBeatmaps();
+                    beatmapManager.LoadBeatmaps();
                     return true;
 
                 case InputAction.Back:

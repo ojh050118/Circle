@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
-using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 
@@ -15,7 +14,7 @@ namespace Circle.Game.Screens.Setting.Sections
         public override string Header => "Maintenance";
 
         [BackgroundDependencyLoader]
-        private void load(ImportOverlay import, BeatmapStorage storage, BeatmapManager beatmap, Toast toast)
+        private void load(ImportOverlay import, BeatmapManager beatmap)
         {
             FlowContent.AddRange(new Drawable[]
             {
@@ -31,7 +30,7 @@ namespace Circle.Game.Screens.Setting.Sections
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     Text = "Reload beatmaps",
-                    Action = () => Task.Factory.StartNew(beatmap.ReloadBeatmaps, TaskCreationOptions.LongRunning)
+                    Action = () => Task.Run(async () => await beatmap.LoadBeatmapsAsync())
                 },
             });
         }

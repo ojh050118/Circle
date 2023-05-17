@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
+using osu.Framework.Extensions;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 using osu.Framework.Logging;
@@ -18,35 +20,61 @@ namespace Circle.Game.Beatmaps
     public class BeatmapStorage : IResourceStore<byte[]>
     {
         public Storage Storage { get; }
-        private readonly LargeTextureStore largeTextureStore;
+        private readonly LargeTextureStore textureStore;
         private readonly IResourceStore<byte[]> localStore;
         private readonly ITrackStore trackStore;
 
         public BeatmapStorage(Storage files, AudioManager audioManager, IResourceStore<byte[]> store, GameHost host = null)
         {
             Storage = files;
-            largeTextureStore = new LargeTextureStore(host?.Renderer, host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
+            textureStore = new LargeTextureStore(host?.Renderer, host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
             trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(files));
             localStore = store;
         }
 
-        #region Disposal
-
         public void Dispose()
         {
+            textureStore?.Dispose();
+            trackStore?.Dispose();
+            localStore?.Dispose();
         }
 
-        #endregion
+        public byte[] Get(string name)
+        {
+            using (Stream stream = Storage.GetStream(name))
+            {
+                if (stream == null)
+                    return localStore.Get(name);
 
-        public byte[] Get(string name) => localStore.Get(name);
+                return stream.ReadAllBytesToArray();
+            }
+        }
 
-        public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default) => localStore.GetAsync(name, cancellationToken);
+        public async Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default)
+        {
+            using (Stream stream = Storage.GetStream(name))
+            {
+                if (stream == null)
+                    return await localStore.GetAsync(name, cancellationToken);
 
-        public Stream GetStream(string name) => localStore.GetStream(name);
+                return await stream.ReadAllBytesToArrayAsync(cancellationToken);
+            }
+        }
 
-        public IEnumerable<string> GetAvailableResources() => localStore.GetAvailableResources();
+        public Stream GetStream(string name)
+        {
+            if (localStore.GetStream(name) == null)
+                return Storage.GetStream(name);
 
-        public BeatmapInfo[] GetBeatmapInfos()
+            return localStore.GetStream(name);
+        }
+
+        public IEnumerable<string> GetAvailableResources()
+        {
+            return Storage.GetDirectories(string.Empty).Where(d => Directory.GetFiles(d, "*.circle").Length != 0);
+        }
+
+        public IList<BeatmapInfo> GetBeatmapInfos()
         {
             List<BeatmapInfo> beatmapInfo = new List<BeatmapInfo>();
 
@@ -70,7 +98,34 @@ namespace Circle.Game.Beatmaps
                 Logger.Log($"Error getting Beatmap Infos: {e.Message}");
             }
 
-            return beatmapInfo.ToArray();
+            return beatmapInfo;
+        }
+
+        public async Task<List<BeatmapInfo>> GetBeatmapInfosAsync()
+        {
+            List<BeatmapInfo> beatmapInfo = new List<BeatmapInfo>();
+
+            try
+            {
+                foreach (string dir in Storage.GetDirectories(string.Empty))
+                {
+                    DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
+
+                    foreach (var fi in di.GetFiles("*.circle"))
+                    {
+                        string fileDir = fi.Directory?.Name ?? string.Empty;
+
+                        var beatmap = await GetBeatmapAsync(Path.Combine(fileDir, fi.Name));
+                        beatmapInfo.Add(new BeatmapInfo(beatmap, fi));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Error getting Beatmap Infos: {e.Message}");
+            }
+
+            return beatmapInfo;
         }
 
         public BeatmapInfo GetBeatmapInfo(Beatmap beatmap)
@@ -91,11 +146,29 @@ namespace Circle.Game.Beatmaps
             return null;
         }
 
+        public async Task<BeatmapInfo> GetBeatmapInfoAsync(Beatmap beatmap)
+        {
+            foreach (string dir in Storage.GetDirectories(string.Empty))
+            {
+                DirectoryInfo di = new DirectoryInfo(Storage.GetFullPath(dir));
+
+                foreach (var fi in di.GetFiles("*.circle"))
+                {
+                    string fileDir = fi.Directory?.Name ?? string.Empty;
+
+                    if (beatmap == await GetBeatmapAsync(Path.Combine(fileDir, fi.Name)))
+                        return new BeatmapInfo(beatmap, fi);
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// BeatmapInfo를 반환합니다.
         /// </summary>
         /// <param name="path">상대 경로.</param>
-        /// <returns></returns>
+        /// <returns>비트맵.</returns>
         public Beatmap GetBeatmap(string path)
         {
             Beatmap beatmap = default;
@@ -107,7 +180,7 @@ namespace Circle.Game.Beatmaps
             {
                 try
                 {
-                    beatmap = JsonConvert.DeserializeObject<Beatmap>(sr.ReadLine() ?? string.Empty);
+                    beatmap = JsonConvert.DeserializeObject<Beatmap>(sr.ReadToEnd());
                 }
                 catch
                 {
@@ -118,21 +191,37 @@ namespace Circle.Game.Beatmaps
             return beatmap;
         }
 
-        public Texture GetBackground(BeatmapInfo info)
+        /// <summary>
+        /// BeatmapInfo를 반환합니다.
+        /// </summary>
+        /// <param name="path">상대 경로.</param>
+        /// <returns>비트맵.</returns>
+        public async Task<Beatmap> GetBeatmapAsync(string path)
         {
-            if (!Storage.Exists(info.RelativeBackgroundPath))
+            Beatmap beatmap = default;
+
+            if (string.IsNullOrEmpty(path))
                 return null;
 
-            try
+            using (StreamReader sr = File.OpenText(Storage.GetFullPath(path)))
             {
-                return largeTextureStore.Get(info.RelativeBackgroundPath);
+                try
+                {
+                    string data = await sr.ReadToEndAsync();
+                    beatmap = JsonConvert.DeserializeObject<Beatmap>(data);
+                }
+                catch
+                {
+                    Logger.Log($"Failed to parse beatmap. File path: {path}");
+                }
             }
-            catch (Exception e)
-            {
-                Logger.Error(e, "Failed to load background.");
-                return null;
-            }
+
+            return beatmap;
         }
+
+        public Texture GetBackground(BeatmapInfo info) => GetBackground(info.RelativeBackgroundPath);
+
+        public async Task<Texture> GetBackgroundAsync(BeatmapInfo info, CancellationToken cancellationToken = default) => await GetBackgroundAsync(info.RelativeBackgroundPath, cancellationToken);
 
         public Texture GetBackground(string name)
         {
@@ -141,7 +230,23 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                return largeTextureStore.Get(name);
+                return textureStore.Get(name);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Failed to load background.");
+                return null;
+            }
+        }
+
+        public async Task<Texture> GetBackgroundAsync(string name, CancellationToken cancellationToken = default)
+        {
+            if (!Storage.Exists(name))
+                return null;
+
+            try
+            {
+                return await textureStore.GetAsync(name, cancellationToken);
             }
             catch (Exception e)
             {
@@ -166,37 +271,9 @@ namespace Circle.Game.Beatmaps
             }
         }
 
-        public Stream GetVideo(BeatmapInfo info)
-        {
-            if (!Storage.Exists(info.VideoPath))
-                return null;
+        public Stream GetVideo(BeatmapInfo info) => GetVideo(info.VideoPath);
 
-            try
-            {
-                return File.Open(info.VideoPath, FileMode.Open);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e, "Failed to load video.");
-                return null;
-            }
-        }
-
-        public Track GetTrack(BeatmapInfo info)
-        {
-            if (!Storage.Exists(info.SongPath))
-                return new TrackVirtual(1000);
-
-            try
-            {
-                return trackStore.Get(info.RelativeSongPath);
-            }
-            catch
-            {
-                Logger.Log($"Failed to load beatmap track({info.RelativeSongPath}).");
-                return null;
-            }
-        }
+        public Track GetTrack(BeatmapInfo info) => GetTrack(info.RelativeSongPath);
 
         public Track GetTrack(string name)
         {
@@ -206,6 +283,22 @@ namespace Circle.Game.Beatmaps
             try
             {
                 return trackStore.Get(name);
+            }
+            catch
+            {
+                Logger.Log($"Failed to load beatmap track({name}).");
+                return null;
+            }
+        }
+
+        public async Task<Track> GetTrackAsync(string name)
+        {
+            if (!Storage.Exists(name))
+                return new TrackVirtual(1000);
+
+            try
+            {
+                return await trackStore.GetAsync(name);
             }
             catch
             {

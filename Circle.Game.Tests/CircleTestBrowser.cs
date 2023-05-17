@@ -38,7 +38,7 @@ namespace Circle.Game.Tests
         private void load()
         {
             if (LocalConfig.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
-                BeatmapManager.ReloadBeatmaps();
+                BeatmapManager.LoadBeatmaps();
 
             AddRange(new Drawable[]
             {

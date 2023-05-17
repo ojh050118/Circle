@@ -32,7 +32,7 @@ namespace Circle.Game.Screens.Select
         private SpriteText title;
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps, CircleColour colours)
+        private void load(BeatmapStorage beatmaps, CircleColour colours, Background background)
         {
             files = beatmaps.Storage;
             RelativeSizeAxes = Axes.Both;
@@ -43,10 +43,18 @@ namespace Circle.Game.Screens.Select
                 CornerRadius = 10,
                 Children = new Drawable[]
                 {
-                    new Box
+                    new BackgroundColorContainer(background)
                     {
-                        Colour = colours.TransparentGray,
                         RelativeSizeAxes = Axes.Both,
+                        ChangeDuration = 500,
+                        ChangeEasing = Easing.OutPow10,
+                        DefaultColour = new Color4(56, 84, 144, 255),
+                        Child = new Box
+                        {
+                            Alpha = 0.7f,
+                            Colour = Color4.DarkGray,
+                            RelativeSizeAxes = Axes.Both,
+                        }
                     },
                     new FillFlowContainer
                     {
