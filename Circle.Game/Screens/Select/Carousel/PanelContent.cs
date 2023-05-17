@@ -1,6 +1,8 @@
 ﻿#nullable disable
 
 using Circle.Game.Beatmaps;
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -23,15 +25,15 @@ namespace Circle.Game.Screens.Select.Carousel
                     Spacing = new Vector2(5),
                     Children = new Drawable[]
                     {
-                        new SpriteText
+                        new CircleSpriteText
                         {
                             Text = info.Beatmap.Settings.Song,
-                            Font = FontUsage.Default.With("OpenSans-Bold", size: 30)
+                            Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 30)
                         },
                         new SpriteText
                         {
                             Text = info.Beatmap.Settings.Author,
-                            Font = FontUsage.Default.With(size: 24)
+                            Font = CircleFont.Default.With(size: 24)
                         }
                     }
                 }

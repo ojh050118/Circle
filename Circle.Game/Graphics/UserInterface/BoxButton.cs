@@ -1,25 +1,25 @@
 #nullable disable
 
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Graphics.UserInterface
 {
     public partial class BoxButton : CircleButton
     {
-        private readonly SpriteText sprite;
+        private readonly CircleSpriteText sprite;
 
         public BoxButton(bool useBackground = true)
             : base(useBackground)
         {
             RelativeSizeAxes = Axes.X;
             Height = 40;
-            Content.Add(sprite = new SpriteText
+            Content.Add(sprite = new CircleSpriteText
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 Padding = new MarginPadding(10),
-                Font = FontUsage.Default.With(size: 22)
+                Font = CircleFont.Default.With(size: 22)
             });
         }
 

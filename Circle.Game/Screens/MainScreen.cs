@@ -3,6 +3,8 @@
 using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
@@ -47,11 +49,11 @@ namespace Circle.Game.Screens
         {
             InternalChildren = new Drawable[]
             {
-                new SpriteText
+                new CircleSpriteText
                 {
                     Text = Header,
                     Margin = new MarginPadding { Top = 60, Left = 60 },
-                    Font = FontUsage.Default.With(size: 40)
+                    Font = CircleFont.Default.With(size: 40)
                 }.WithEffect(new GlowEffect
                 {
                     Colour = Color4.White,
@@ -122,7 +124,7 @@ namespace Circle.Game.Screens
                 new DialogButton
                 {
                     Text = "OK",
-                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
+                    Font = CircleFont.GetFont(size: 28f, weight: FontWeight.Bold),
                     Action = Game.Exit
                 }
             };
@@ -196,12 +198,12 @@ namespace Circle.Game.Screens
                             Width = 3,
                             RelativeSizeAxes = Axes.Y
                         },
-                        new SpriteText
+                        new CircleSpriteText
                         {
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Text = text,
-                            Font = FontUsage.Default.With(size: 28)
+                            Font = CircleFont.Default.With(size: 28)
                         }.WithEffect(new GlowEffect
                         {
                             BlurSigma = new Vector2(5),

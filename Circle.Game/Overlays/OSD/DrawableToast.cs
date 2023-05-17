@@ -1,6 +1,8 @@
 #nullable disable
 
 using System;
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -93,24 +95,26 @@ namespace Circle.Game.Overlays.OSD
                         {
                             new Drawable[]
                             {
-                                new SpriteText
+                                new CircleSpriteText
                                 {
                                     Anchor = Anchor.Centre,
                                     Origin = Anchor.Centre,
                                     Colour = Color4.Gray,
                                     Text = toastInfo.Description,
-                                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: (toast_height - toast_default_padding * 2) / 2)
+                                    Shadow = false,
+                                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: (toast_height - toast_default_padding * 2) / 2)
                                 }
                             },
                             new Drawable[]
                             {
-                                new SpriteText
+                                new CircleSpriteText
                                 {
                                     Anchor = Anchor.Centre,
                                     Origin = Anchor.Centre,
                                     Colour = Color4.DarkGray,
                                     Text = toastInfo.SubDescription,
-                                    Font = FontUsage.Default.With(size: (toast_height - toast_default_padding * 2) / 2)
+                                    Shadow = false,
+                                    Font = CircleFont.Default.With(size: (toast_height - toast_default_padding * 2) / 2)
                                 }
                             }
                         }

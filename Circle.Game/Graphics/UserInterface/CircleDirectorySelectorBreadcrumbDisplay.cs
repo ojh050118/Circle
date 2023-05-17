@@ -1,6 +1,7 @@
 #nullable disable
 
 using System.IO;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
@@ -11,10 +12,10 @@ namespace Circle.Game.Graphics.UserInterface
 {
     internal partial class CircleDirectorySelectorBreadcrumbDisplay : DirectorySelectorBreadcrumbDisplay
     {
-        protected override Drawable CreateCaption() => new SpriteText
+        protected override Drawable CreateCaption() => new CircleSpriteText
         {
             Text = "Current directory: ",
-            Font = FontUsage.Default.With(size: CircleDirectorySelector.ITEM_HEIGHT)
+            Font = CircleFont.Default.With(size: CircleDirectorySelector.ITEM_HEIGHT)
         };
 
         protected override DirectorySelectorDirectory CreateRootDirectoryItem() => new CircleBreadcrumbDisplayComputer();

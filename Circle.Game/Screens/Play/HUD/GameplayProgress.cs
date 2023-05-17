@@ -1,17 +1,17 @@
 #nullable disable
 
 using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 
 namespace Circle.Game.Screens.Play.HUD
 {
     public partial class GameplayProgress : Container
     {
         private readonly int floorCount;
-        private SpriteText percent;
+        private CircleSpriteText percent;
         private GameProgressBar progressBar;
 
         public GameplayProgress(int floorCount)
@@ -40,14 +40,13 @@ namespace Circle.Game.Screens.Play.HUD
                     StartFloor = 0,
                     EndFloor = floorCount,
                 },
-                percent = new SpriteText
+                percent = new CircleSpriteText
                 {
                     Anchor = Anchor.BottomCentre,
                     Origin = Anchor.BottomCentre,
                     Margin = new MarginPadding { Bottom = 30 },
                     Text = "0%",
-                    Shadow = true,
-                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 32),
+                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 32),
                     ShadowColour = colours.TransparentBlack
                 }
             };

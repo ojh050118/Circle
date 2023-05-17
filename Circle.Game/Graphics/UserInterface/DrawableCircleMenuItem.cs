@@ -1,5 +1,6 @@
 #nullable disable
 
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -91,9 +92,9 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected partial class TextContainer : Container, IHasText
         {
-            public readonly SpriteText BoldText;
+            public readonly CircleSpriteText BoldText;
 
-            public readonly SpriteText NormalText;
+            public readonly CircleSpriteText NormalText;
 
             public TextContainer()
             {
@@ -104,21 +105,21 @@ namespace Circle.Game.Graphics.UserInterface
 
                 Children = new Drawable[]
                 {
-                    NormalText = new SpriteText
+                    NormalText = new CircleSpriteText
                     {
                         AlwaysPresent = true, // ensures that the menu item does not change width when switching between normal and bold text.
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft,
-                        Font = FontUsage.Default.With(size: text_size),
+                        Font = CircleFont.Default.With(size: text_size),
                         Margin = new MarginPadding { Horizontal = MARGIN_HORIZONTAL, Vertical = MARGIN_VERTICAL },
                     },
-                    BoldText = new SpriteText
+                    BoldText = new CircleSpriteText
                     {
                         AlwaysPresent = true, // ensures that the menu item does not change width when switching between normal and bold text.
                         Alpha = 0,
                         Anchor = Anchor.CentreLeft,
                         Origin = Anchor.CentreLeft,
-                        Font = FontUsage.Default.With(family: "OpenSans-Bold", text_size),
+                        Font = CircleFont.Default.With(weight: FontWeight.Bold, size: text_size),
                         Margin = new MarginPadding { Horizontal = MARGIN_HORIZONTAL, Vertical = MARGIN_VERTICAL },
                     }
                 };

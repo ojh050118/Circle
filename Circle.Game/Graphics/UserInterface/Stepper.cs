@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -74,13 +75,13 @@ namespace Circle.Game.Graphics.UserInterface
                         {
                             new Drawable[]
                             {
-                                new SpriteText
+                                new CircleSpriteText
                                 {
                                     Text = Text,
                                     Anchor = Anchor.CentreLeft,
                                     Origin = Anchor.CentreLeft,
                                     Padding = new MarginPadding { Right = 20 },
-                                    Font = FontUsage.Default.With(size: 22),
+                                    Font = CircleFont.Default.With(size: 22),
                                     RelativeSizeAxes = Axes.X,
                                     Truncate = true,
                                 },
@@ -91,11 +92,11 @@ namespace Circle.Game.Graphics.UserInterface
                                     RelativeSizeAxes = Axes.Both,
                                     Children = new Drawable[]
                                     {
-                                        text = new SpriteText
+                                        text = new CircleSpriteText
                                         {
                                             Anchor = Anchor.Centre,
                                             Origin = Anchor.Centre,
-                                            Font = FontUsage.Default.With(size: 22),
+                                            Font = CircleFont.Default.With(size: 22),
                                             Truncate = true,
                                         },
                                         new IconButton

@@ -10,7 +10,8 @@ namespace Circle.Game.Graphics.Sprites
 {
     public partial class GlowingSpriteText : Container, IHasText
     {
-        private readonly SpriteText spriteText, blurredText;
+        private readonly CircleSpriteText spriteText, blurredText;
+        private readonly BufferedContainer blurContainer;
 
         public LocalisableString Text
         {
@@ -21,7 +22,7 @@ namespace Circle.Game.Graphics.Sprites
         public FontUsage Font
         {
             get => spriteText.Font;
-            set => blurredText.Font = spriteText.Font = value.With(fixedWidth: true);
+            set => blurredText.Font = spriteText.Font = value;
         }
 
         public Vector2 TextSize
@@ -60,24 +61,36 @@ namespace Circle.Game.Graphics.Sprites
             set => spriteText.Current = value;
         }
 
+        public float BlurSigma
+        {
+            get => blurContainer.BlurSigma.X;
+            set => blurContainer.BlurSigma = new Vector2(value);
+        }
+
+        public BlendingParameters GlowBlending
+        {
+            get => blurContainer.Blending;
+            set => blurContainer.Blending = value;
+        }
+
         public GlowingSpriteText()
         {
             AutoSizeAxes = Axes.Both;
 
             Children = new Drawable[]
             {
-                new BufferedContainer(cachedFrameBuffer: true)
+                blurContainer = new BufferedContainer(cachedFrameBuffer: true)
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    BlurSigma = new Vector2(3),
+                    BlurSigma = new Vector2(7),
                     RedrawOnScale = false,
                     RelativeSizeAxes = Axes.Both,
-                    Blending = BlendingParameters.Additive,
+                    Blending = BlendingParameters.Inherit,
                     Size = new Vector2(3f),
                     Children = new[]
                     {
-                        blurredText = new SpriteText
+                        blurredText = new CircleSpriteText
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
@@ -85,7 +98,7 @@ namespace Circle.Game.Graphics.Sprites
                         },
                     },
                 },
-                spriteText = new SpriteText
+                spriteText = new CircleSpriteText
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,

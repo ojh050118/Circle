@@ -1,13 +1,14 @@
 #nullable disable
 
 using System.Collections.Generic;
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
 using osuTK;
 using osuTK.Graphics;
 
@@ -18,7 +19,7 @@ namespace Circle.Game.Screens.Setting
     {
         private readonly CircleDropdown<T> dropdown;
 
-        private readonly SpriteText text;
+        private readonly CircleSpriteText text;
 
         public Bindable<T> Current;
 
@@ -49,9 +50,9 @@ namespace Circle.Game.Screens.Setting
                     Spacing = new Vector2(10),
                     Children = new Drawable[]
                     {
-                        text = new SpriteText
+                        text = new CircleSpriteText
                         {
-                            Font = FontUsage.Default.With(size: 22),
+                            Font = CircleFont.Default.With(size: 22),
                             Truncate = true,
                         },
                         dropdown = new CircleDropdown<T>

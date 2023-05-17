@@ -2,7 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -36,7 +38,7 @@ namespace Circle.Game.Overlays
         }
 
         private readonly Container buttonContent;
-        private readonly SpriteText description;
+        private readonly CircleSpriteText description;
 
         private readonly SpriteText title;
 
@@ -80,21 +82,23 @@ namespace Circle.Game.Overlays
                                     Direction = FillDirection.Vertical,
                                     Children = new Drawable[]
                                     {
-                                        title = new SpriteText
+                                        title = new CircleSpriteText
                                         {
                                             Anchor = Anchor.TopCentre,
                                             Origin = Anchor.TopCentre,
-                                            Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 28),
+                                            Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 28),
                                             Colour = Color4.Black,
                                             Margin = new MarginPadding { Vertical = 10 },
+                                            Shadow = false
                                         },
-                                        description = new SpriteText
+                                        description = new CircleSpriteText
                                         {
                                             Anchor = Anchor.TopCentre,
                                             Origin = Anchor.TopCentre,
-                                            Font = FontUsage.Default.With(size: 22),
+                                            Font = CircleFont.Default.With(size: 22),
                                             Colour = Color4.Black,
                                             Margin = new MarginPadding { Bottom = 10 },
+                                            Shadow = false
                                         }
                                     },
                                 }
@@ -227,7 +231,7 @@ namespace Circle.Game.Overlays
                         break;
 
                     case DialogButton:
-                        dimensions.Add(new Dimension(GridSizeMode.Distributed));
+                        dimensions.Add(new Dimension());
                         break;
                 }
             }

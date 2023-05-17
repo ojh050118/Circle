@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Input;
 using osu.Framework;
 using osu.Framework.Allocation;
@@ -14,7 +15,6 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
@@ -42,7 +42,7 @@ namespace Circle.Game.Overlays.Volume
         private SelectionState state;
         private CircularProgress volumeCircle;
         private CircularProgress volumeCircleGlow;
-        private SpriteText volumeText;
+        private CircleSpriteText volumeText;
 
         public VolumeMeter(string name, float circleSize, Color4 meterColour)
         {
@@ -137,12 +137,12 @@ namespace Circle.Game.Overlays.Volume
                             Colour = Color4.Black.Opacity(background_opacity),
                             RelativeSizeAxes = Axes.Both,
                         },
-                        volumeText = new SpriteText
+                        volumeText = new CircleSpriteText
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
                             Text = displayVolume.ToString(CultureInfo.InvariantCulture),
-                            Font = FontUsage.Default.With("OpenSans-Bold", size: 0.3f * circleSize)
+                            Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 0.3f * circleSize)
                         },
                         new Container
                         {
@@ -228,12 +228,12 @@ namespace Circle.Game.Overlays.Volume
                         {
                             AutoSizeAxes = Axes.Both,
                             Padding = new MarginPadding { Horizontal = 15 },
-                            Child = new SpriteText
+                            Child = new CircleSpriteText
                             {
                                 Anchor = Anchor.Centre,
                                 Origin = Anchor.Centre,
                                 Text = name,
-                                Font = FontUsage.Default.With("OpenSans-Bold", size: 24)
+                                Font = CircleFont.Default.With(weight: FontWeight.Bold)
                             }
                         }
                     }
