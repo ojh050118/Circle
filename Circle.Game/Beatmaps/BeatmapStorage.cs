@@ -20,28 +20,24 @@ namespace Circle.Game.Beatmaps
     public class BeatmapStorage : IResourceStore<byte[]>
     {
         public Storage Storage { get; }
-        private readonly LargeTextureStore largeTextureStore;
+        private readonly LargeTextureStore textureStore;
         private readonly IResourceStore<byte[]> localStore;
         private readonly ITrackStore trackStore;
 
         public BeatmapStorage(Storage files, AudioManager audioManager, IResourceStore<byte[]> store, GameHost host = null)
         {
             Storage = files;
-            largeTextureStore = new LargeTextureStore(host?.Renderer, host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
+            textureStore = new LargeTextureStore(host?.Renderer, host?.CreateTextureLoaderStore(new StorageBackedResourceStore(files)));
             trackStore = audioManager.GetTrackStore(new StorageBackedResourceStore(files));
             localStore = store;
         }
 
-        #region Disposal
-
         public void Dispose()
         {
-            largeTextureStore?.Dispose();
+            textureStore?.Dispose();
             trackStore?.Dispose();
             localStore?.Dispose();
         }
-
-        #endregion
 
         public byte[] Get(string name)
         {
@@ -234,7 +230,7 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                return largeTextureStore.Get(name);
+                return textureStore.Get(name);
             }
             catch (Exception e)
             {
@@ -250,7 +246,7 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                return await largeTextureStore.GetAsync(name, cancellationToken);
+                return await textureStore.GetAsync(name, cancellationToken);
             }
             catch (Exception e)
             {
