@@ -1,5 +1,6 @@
 #nullable disable
 
+using System.Threading;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Utils;
@@ -13,6 +14,7 @@ namespace Circle.Game.Graphics.UserInterface
     public partial class BackgroundColorContainer : Container
     {
         private readonly Background background;
+        private CancellationTokenSource dataGetCancellation;
 
         [Resolved]
         private BeatmapStorage beatmaps { get; set; }
@@ -23,13 +25,15 @@ namespace Circle.Game.Graphics.UserInterface
         public BackgroundColorContainer(Background target)
         {
             background = target;
-            background.BackgroundColorChanged += backgroundColorChanged;
+            background.BackgroundColorChanged += async t => await backgroundColorChanged(t);
         }
 
-        private async void backgroundColorChanged(string texturePath)
+        private async Task backgroundColorChanged(string texturePath)
         {
+            dataGetCancellation?.Cancel();
+
             Color4 color = Color4.White;
-            byte[] data = beatmaps.Get(texturePath);
+            byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token);
 
             if (data != null)
                 color = await ImageUtil.GetAverageColorAsync(data);
