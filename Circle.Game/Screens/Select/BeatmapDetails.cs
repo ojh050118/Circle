@@ -48,6 +48,7 @@ namespace Circle.Game.Screens.Select
                         RelativeSizeAxes = Axes.Both,
                         ChangeDuration = 500,
                         ChangeEasing = Easing.OutPow10,
+                        DefaultColour = new Color4(56, 84, 144, 255),
                         Child = new Box
                         {
                             Alpha = 0.7f,

@@ -21,6 +21,7 @@ namespace Circle.Game.Graphics.Containers
 
         public double ChangeDuration;
         public Easing ChangeEasing;
+        public Color4 DefaultColour;
 
         public BackgroundColorContainer(Background target)
         {
@@ -31,7 +32,7 @@ namespace Circle.Game.Graphics.Containers
         {
             dataGetCancellation?.Cancel();
 
-            Color4 color = Color4.White;
+            Color4 color = DefaultColour;
             byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token);
 
             if (data != null)
