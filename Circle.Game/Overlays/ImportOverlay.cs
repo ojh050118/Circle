@@ -83,7 +83,7 @@ namespace Circle.Game.Overlays
                                             Icon = FontAwesome.Solid.File,
                                             Alpha = 0
                                         },
-                                        text = new TextFlowContainer(t => t.Font = FontUsage.Default.With(size: 32))
+                                        text = new TextFlowContainer(t => t.Font = CircleFont.Default.With(size: 32))
                                         {
                                             Anchor = Anchor.Centre,
                                             Origin = Anchor.Centre,

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -12,7 +13,7 @@ namespace Circle.Game.Graphics.UserInterface
     public partial class DialogButton : ClickableContainer
     {
         private readonly Box hover;
-        private readonly SpriteText sprite;
+        private readonly CircleSpriteText sprite;
 
         public DialogButton()
         {
@@ -26,12 +27,13 @@ namespace Circle.Game.Graphics.UserInterface
                     Alpha = 0,
                     Colour = Color4.Black
                 },
-                sprite = new SpriteText
+                sprite = new CircleSpriteText
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Font = FontUsage.Default.With(size: 28),
-                    Colour = Color4.DodgerBlue
+                    Font = CircleFont.Default.With(size: 28),
+                    Colour = Color4.DodgerBlue,
+                    Shadow = false
                 }
             };
         }

@@ -2,6 +2,7 @@
 
 using System.Linq;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -291,7 +292,7 @@ namespace Circle.Game.Graphics.UserInterface
         public partial class CircleDropdownHeader : DropdownHeader
         {
             protected readonly SpriteIcon Icon;
-            protected readonly SpriteText Text;
+            protected readonly CircleSpriteText Text;
 
             public CircleDropdownHeader()
             {
@@ -319,12 +320,13 @@ namespace Circle.Game.Graphics.UserInterface
                     {
                         new Drawable[]
                         {
-                            Text = new SpriteText
+                            Text = new CircleSpriteText
                             {
                                 Anchor = Anchor.CentreLeft,
                                 Origin = Anchor.CentreLeft,
                                 RelativeSizeAxes = Axes.X,
                                 Truncate = true,
+                                Font = CircleFont.Default.With(size: 22)
                             },
                             Icon = new SpriteIcon
                             {

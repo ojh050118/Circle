@@ -57,6 +57,13 @@ namespace Circle.Game.Graphics.UserInterface
             Content.CornerRadius = CornerRadius;
         }
 
+        protected override void Update()
+        {
+            base.Update();
+
+            Content.CornerRadius = Height / 6;
+        }
+
         protected override bool OnHover(HoverEvent e)
         {
             hoverSample?.Play();

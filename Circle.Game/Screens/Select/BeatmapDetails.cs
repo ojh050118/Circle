@@ -3,6 +3,7 @@
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
@@ -11,7 +12,6 @@ using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Platform;
 using osuTK;
 using osuTK.Graphics;
@@ -20,19 +20,24 @@ namespace Circle.Game.Screens.Select
 {
     public partial class BeatmapDetails : Container
     {
-        private SpriteText artist;
+        private CircleSpriteText artist;
 
-        private SpriteText author;
-        private SpriteText bpm;
+        private CircleSpriteText author;
+        private CircleSpriteText bpm;
         private TextFlowContainer description;
-        private SpriteText difficulty;
+        private CircleSpriteText difficulty;
 
         private Storage files;
-        private Background preview;
-        private SpriteText title;
+        private readonly Background preview;
+        private GlowingSpriteText title;
+
+        public BeatmapDetails()
+        {
+            preview = new Background();
+        }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps, CircleColour colours, Background background)
+        private void load(BeatmapStorage beatmaps, CircleColour colours)
         {
             files = beatmaps.Storage;
             RelativeSizeAxes = Axes.Both;
@@ -43,7 +48,7 @@ namespace Circle.Game.Screens.Select
                 CornerRadius = 10,
                 Children = new Drawable[]
                 {
-                    new BackgroundColorContainer(background)
+                    new BackgroundColorContainer(preview)
                     {
                         RelativeSizeAxes = Axes.Both,
                         ChangeDuration = 500,
@@ -71,7 +76,7 @@ namespace Circle.Game.Screens.Select
                                 CornerRadius = 5,
                                 Children = new Drawable[]
                                 {
-                                    preview = new Background(),
+                                    preview,
                                     new FillFlowContainer
                                     {
                                         RelativeSizeAxes = Axes.Both,
@@ -117,15 +122,16 @@ namespace Circle.Game.Screens.Select
                                         Y = 28,
                                         Children = new Drawable[]
                                         {
-                                            title = new SpriteText
+                                            title = new GlowingSpriteText
                                             {
                                                 Text = "no beatmaps available!",
-                                                Font = FontUsage.Default.With(size: 28)
+                                                Font = CircleFont.Default.With(size: 28),
+                                                GlowColour = Color4.Gray
                                             },
-                                            artist = new SpriteText
+                                            artist = new CircleSpriteText
                                             {
                                                 Text = "please load a beatmap!",
-                                                Font = FontUsage.Default.With(size: 18)
+                                                Font = CircleFont.Default.With(size: 18)
                                             }
                                         }
                                     }
@@ -144,38 +150,34 @@ namespace Circle.Game.Screens.Select
                                     AutoSizeAxes = Axes.Y,
                                     Children = new Drawable[]
                                     {
-                                        new SpriteText
+                                        new CircleSpriteText
                                         {
                                             Text = "Details",
                                             Margin = new MarginPadding { Bottom = 10 },
-                                            Font = FontUsage.Default.With("OpenSans-Bold", 30),
-                                            Shadow = true,
-                                            ShadowColour = colours.TransparentBlack,
+                                            Font = CircleFont.GetFont(size: 30, weight: FontWeight.Bold),
+                                            ShadowColour = colours.TransparentBlack
                                         },
-                                        author = new SpriteText
+                                        author = new CircleSpriteText
                                         {
                                             Text = "Author: ",
-                                            Font = FontUsage.Default.With(size: 24),
                                             Shadow = true,
                                             ShadowColour = colours.TransparentBlack,
                                         },
-                                        bpm = new SpriteText
+                                        bpm = new CircleSpriteText
                                         {
                                             Text = "BPM: ",
-                                            Font = FontUsage.Default.With(size: 24),
                                             Shadow = true,
                                             ShadowColour = colours.TransparentBlack,
                                         },
-                                        difficulty = new SpriteText
+                                        difficulty = new CircleSpriteText
                                         {
                                             Text = "Difficulty: ",
-                                            Font = FontUsage.Default.With(size: 24),
                                             Shadow = true,
                                             ShadowColour = colours.TransparentBlack,
                                         },
                                         description = new TextFlowContainer(t =>
                                         {
-                                            t.Font = FontUsage.Default.With(size: 24);
+                                            t.Font = CircleFont.Default;
                                             t.Shadow = true;
                                             t.ShadowColour = colours.TransparentBlack;
                                         })

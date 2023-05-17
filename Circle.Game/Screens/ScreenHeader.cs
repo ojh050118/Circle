@@ -1,5 +1,7 @@
 ﻿#nullable disable
 
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -55,10 +57,10 @@ namespace Circle.Game.Screens
                             Origin = Anchor.CentreLeft,
                             Action = screen.OnExit
                         },
-                        new SpriteText
+                        new CircleSpriteText
                         {
                             Text = string.IsNullOrEmpty(Text) ? screen.Header : Text,
-                            Font = FontUsage.Default.With(size: 40),
+                            Font = CircleFont.Default.With(size: 40),
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
                             Truncate = true,

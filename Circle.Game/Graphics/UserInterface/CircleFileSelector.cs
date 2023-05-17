@@ -2,6 +2,7 @@
 
 using System.IO;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -91,7 +92,7 @@ namespace Circle.Game.Graphics.UserInterface
                 });
             }
 
-            protected override SpriteText CreateSpriteText() => new SpriteText();
+            protected override SpriteText CreateSpriteText() => new CircleSpriteText { Font = CircleFont.Default.With(size: CircleDirectorySelector.ITEM_HEIGHT) };
         }
     }
 }

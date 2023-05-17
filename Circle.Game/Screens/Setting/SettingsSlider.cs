@@ -1,6 +1,8 @@
 #nullable disable
 
 using System;
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -53,7 +55,7 @@ namespace Circle.Game.Screens.Setting
 
         private readonly IconButton leftIcon;
         private readonly IconButton rightIcon;
-        private readonly SpriteText text;
+        private readonly CircleSpriteText text;
 
         private CircleSliderBar<T> sliderBar { get; }
 
@@ -85,11 +87,11 @@ namespace Circle.Game.Screens.Setting
                     {
                         new Drawable[]
                         {
-                            text = new SpriteText
+                            text = new CircleSpriteText
                             {
                                 Anchor = Anchor.CentreLeft,
                                 Origin = Anchor.CentreLeft,
-                                Font = FontUsage.Default.With(size: 22),
+                                Font = CircleFont.Default.With(size: 22),
                                 Padding = new MarginPadding { Left = 20 },
                                 Truncate = true,
                             },

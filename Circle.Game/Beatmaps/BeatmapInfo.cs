@@ -87,12 +87,17 @@ namespace Circle.Game.Beatmaps
         {
             Beatmap = beatmap;
             fileInfo = info;
+
+            if (info == null)
+                return;
+
             Directory = fileInfo.Directory?.Name ?? string.Empty;
             DirectoryName = fileInfo.DirectoryName ?? string.Empty;
             Name = fileInfo.Name;
             Extension = fileInfo.Extension;
             Exists = fileInfo.Exists;
             BeatmapPath = fileInfo.FullName;
+
             if (!string.IsNullOrEmpty(Directory))
                 RelativeBeatmapPath = Path.Combine(Directory, Name);
 

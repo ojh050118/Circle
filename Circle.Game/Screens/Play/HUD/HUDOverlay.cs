@@ -3,11 +3,10 @@
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
-using Circle.Game.Rulesets.Extensions;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Localisation;
 
 namespace Circle.Game.Screens.Play.HUD
@@ -16,7 +15,7 @@ namespace Circle.Game.Screens.Play.HUD
     {
         private readonly Beatmap beatmap;
 
-        private SpriteText complete;
+        private GlowingSpriteText complete;
         private IReadOnlyList<double> hitTimes;
         private GameplayProgress progress;
 
@@ -65,29 +64,27 @@ namespace Circle.Game.Screens.Play.HUD
         [BackgroundDependencyLoader]
         private void load(CircleColour colours)
         {
-            hitTimes = CalculationExtensions.GetTileStartTime(beatmap, beatmap.Settings.Offset, 60000 / beatmap.Settings.Bpm * beatmap.Settings.CountdownTicks);
+            hitTimes = beatmap.TileStartTime;
 
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
             {
-                new SpriteText
+                new GlowingSpriteText
                 {
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
                     Margin = new MarginPadding { Top = 30 },
                     Text = $"{beatmap.Settings.Artist} - {beatmap.Settings.Song}",
-                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 34),
-                    Shadow = true,
-                    ShadowColour = colours.TransparentBlack
+                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 34),
+                    GlowColour = colours.TransparentBlack
                 },
-                complete = new SpriteText
+                complete = new GlowingSpriteText
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     Alpha = 0,
-                    Font = FontUsage.Default.With(family: "OpenSans-Bold", size: 64),
-                    Shadow = true,
-                    ShadowColour = colours.TransparentBlack
+                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 64),
+                    GlowColour = colours.TransparentBlack
                 },
                 progress = new GameplayProgress(hitTimes.Count - 1)
                 {

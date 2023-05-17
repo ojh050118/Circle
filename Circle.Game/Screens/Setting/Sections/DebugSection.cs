@@ -2,11 +2,11 @@
 
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Platform;
 
 namespace Circle.Game.Screens.Setting.Sections
@@ -38,7 +38,7 @@ namespace Circle.Game.Screens.Setting.Sections
                     Action = host.Collect
                 }
             });
-            FlowContent.Add(new SpriteText
+            FlowContent.Add(new CircleSpriteText
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,

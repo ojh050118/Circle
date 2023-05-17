@@ -1,10 +1,11 @@
 ﻿#nullable disable
 
+using Circle.Game.Graphics;
+using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
 using osuTK;
 using osuTK.Graphics;
 
@@ -56,9 +57,9 @@ namespace Circle.Game.Screens.Setting
                     Margin = new MarginPadding { Top = 20 },
                     Children = new Drawable[]
                     {
-                        new SpriteText
+                        new CircleSpriteText
                         {
-                            Font = FontUsage.Default.With(size: header_size),
+                            Font = CircleFont.Default.With(size: header_size),
                             Text = Header,
                             Margin = new MarginPadding { Horizontal = CONTENT_MARGINS },
                         },
