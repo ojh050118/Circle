@@ -2,7 +2,6 @@
 
 using System;
 using Circle.Game.Beatmaps;
-using Circle.Game.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -49,7 +48,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         public TextureSource TextureSource { get; private set; }
 
-        public event Action<Color4> BackgroundColorChanged;
+        public event Action<string> BackgroundColorChanged;
 
         [Resolved]
         private LargeTextureStore largeTexture { get; set; }
@@ -156,13 +155,7 @@ namespace Circle.Game.Graphics.UserInterface
                 else
                     queuedTexture.Dispose();
 
-                Color4 textureColor = Color4.White;
-                byte[] data = beatmaps.Get(name);
-
-                if (data != null)
-                    textureColor = ImageUtil.GetAverageColor(data);
-
-                BackgroundColorChanged?.Invoke(textureColor);
+                BackgroundColorChanged?.Invoke(name);
             });
         }
 

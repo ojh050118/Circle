@@ -47,7 +47,7 @@ namespace Circle.Game.Screens.Select
                     {
                         RelativeSizeAxes = Axes.Both,
                         ChangeDuration = 500,
-                        ChangeEasing = Easing.Out,
+                        ChangeEasing = Easing.OutPow10,
                         Child = new Box
                         {
                             Alpha = 0.7f,

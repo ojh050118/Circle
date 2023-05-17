@@ -90,7 +90,7 @@ namespace Circle.Game.Screens
             };
 
             if (localConfig.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
-                beatmapManager.ReloadBeatmaps();
+                beatmapManager.LoadBeatmaps();
         }
 
         public override void OnEntering(ScreenTransitionEvent e)

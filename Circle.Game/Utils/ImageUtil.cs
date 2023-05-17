@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using osu.Framework.Extensions.ImageExtensions;
 using osu.Framework.Utils;
 using osuTK.Graphics;
@@ -16,8 +18,8 @@ namespace Circle.Game.Utils
         {
             using (Image<Rgba32> image = Image.Load<Rgba32>(data))
             {
-                const int width = 10;
-                const int height = 10;
+                const int width = 20;
+                const int height = 20;
 
                 image.Mutate(x => x.Resize(new Size(width, height)));
 
@@ -28,6 +30,14 @@ namespace Circle.Game.Utils
 
                 return clusters.First().GetCentroid();
             }
+        }
+
+        public static Task<Color4> GetAverageColorAsync(byte[] data, CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                return GetAverageColor(data);
+            }, cancellationToken);
         }
 
         private class Cluster

@@ -121,7 +121,7 @@ namespace Circle.Game.Screens.Select
             };
 
             if (beatmapManager.LoadedBeatmaps == null)
-                beatmapManager.ReloadBeatmaps();
+                beatmapManager.LoadBeatmaps();
 
             Debug.Assert(beatmapManager.LoadedBeatmaps != null);
 
