@@ -54,14 +54,14 @@ namespace Circle.Game.Beatmaps
             }
         }
 
-        public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default)
+        public async Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default)
         {
             using (Stream stream = Storage.GetStream(name))
             {
                 if (stream == null)
-                    return localStore.GetAsync(name, cancellationToken);
+                    return await localStore.GetAsync(name, cancellationToken);
 
-                return stream.ReadAllBytesToArrayAsync(cancellationToken);
+                return await stream.ReadAllBytesToArrayAsync(cancellationToken);
             }
         }
 

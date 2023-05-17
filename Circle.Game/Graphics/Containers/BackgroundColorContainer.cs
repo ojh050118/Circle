@@ -14,7 +14,6 @@ namespace Circle.Game.Graphics.Containers
 {
     public partial class BackgroundColorContainer : Container
     {
-        private readonly Background background;
         private CancellationTokenSource dataGetCancellation;
 
         [Resolved]
@@ -25,8 +24,7 @@ namespace Circle.Game.Graphics.Containers
 
         public BackgroundColorContainer(Background target)
         {
-            background = target;
-            background.BackgroundColorChanged += async t => await backgroundColorChanged(t);
+            target.BackgroundColorChanged += async t => await backgroundColorChanged(t);
         }
 
         private async Task backgroundColorChanged(string texturePath)
