@@ -1,3 +1,5 @@
+#nullable disable
+
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;

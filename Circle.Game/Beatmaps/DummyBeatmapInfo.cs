@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Circle.Game.Beatmaps
 {
     public class DummyBeatmapInfo : BeatmapInfo
