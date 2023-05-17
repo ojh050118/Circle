@@ -28,6 +28,9 @@ namespace Circle.Game.Graphics.Containers
             target.BackgroundColorChanged += async t => await backgroundColorChanged(t);
         }
 
+        [BackgroundDependencyLoader]
+        private void load() => Colour = DefaultColour;
+
         private async Task backgroundColorChanged(string texturePath)
         {
             dataGetCancellation?.Cancel();
