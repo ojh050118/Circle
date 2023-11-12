@@ -14,10 +14,17 @@ namespace Circle.Game.Screens.Setting.Sections
         public override string Header => "Maintenance";
 
         [BackgroundDependencyLoader]
-        private void load(ImportOverlay import, BeatmapManager beatmap)
+        private void load(ImportOverlay import, ConvertOverlay convert, BeatmapManager beatmap)
         {
             FlowContent.AddRange(new Drawable[]
             {
+                new BoxButton
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Text = "Convert Beatmaps",
+                    Action = convert.Show
+                },
                 new BoxButton
                 {
                     Anchor = Anchor.Centre,

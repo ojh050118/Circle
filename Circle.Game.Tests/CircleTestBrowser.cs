@@ -21,7 +21,26 @@ namespace Circle.Game.Tests
         private Background background;
         private DialogOverlay dialog;
         private ImportOverlay import;
+        private ConvertOverlay convert;
         private Toast toast;
+
+        #region Disposal
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+
+            BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
+            BeatmapManager.OnImported -= imported;
+        }
+
+        #endregion
+
+        public override void SetHost(GameHost host)
+        {
+            base.SetHost(host);
+            host.Window.CursorState |= CursorState.Hidden;
+        }
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent)
         {
@@ -30,6 +49,7 @@ namespace Circle.Game.Tests
             dependencies.CacheAs(background = new Background(textureName: "bg1"));
             dependencies.CacheAs(import = new ImportOverlay());
             dependencies.CacheAs(dialog = new DialogOverlay());
+            dependencies.CacheAs(convert = new ConvertOverlay());
 
             return dependencies;
         }
@@ -46,26 +66,13 @@ namespace Circle.Game.Tests
                 new TestBrowser("Circle"),
                 import,
                 dialog,
+                convert,
                 toast,
                 new CursorContainer()
             });
 
             BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
             BeatmapManager.OnImported += imported;
-        }
-
-        public override void SetHost(GameHost host)
-        {
-            base.SetHost(host);
-            host.Window.CursorState |= CursorState.Hidden;
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
-            BeatmapManager.OnImported -= imported;
         }
 
         private void loadedBeatmaps(IList<BeatmapInfo> beatmaps)
