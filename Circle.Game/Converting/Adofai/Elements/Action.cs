@@ -16,7 +16,7 @@ namespace Circle.Game.Converting.Adofai.Elements
         public ColorPulseType TrackColorPulse { get; set; }
         public int TrackPulseLength { get; set; }
         public double TrackColorAnimDuration { get; set; }
-        public SpeedType SpeedType { get; set; }
+        public SpeedType? SpeedType { get; set; }
         public double BeatsPerMinute { get; set; }
         public double BPMMultiplier { get; set; }
         public int HitsoundVolume { get; set; }

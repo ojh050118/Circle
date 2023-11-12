@@ -13,18 +13,18 @@ namespace Circle.Game.Beatmaps
 {
     public class Beatmap : IEquatable<Beatmap>
     {
-        private TileInfo[] tilesInfo;
-
-        private IReadOnlyList<double> tileStartTime;
-        public float[] AngleData { get; set; }
-        public Settings Settings { get; set; }
-        public Actions[] Actions { get; set; }
-
         [JsonIgnore]
         public TileInfo[] TilesInfo => tilesInfo ??= CalculationExtensions.GetTilesInfo(this);
 
         [JsonIgnore]
         public IReadOnlyList<double> TileStartTime => tileStartTime ??= CalculationExtensions.GetTileStartTime(this, Settings.Offset, 60000 / Settings.Bpm * Settings.CountdownTicks);
+
+        public float[] AngleData { get; set; }
+        public Settings Settings { get; set; }
+        public Actions[] Actions { get; set; }
+        private TileInfo[] tilesInfo;
+
+        private IReadOnlyList<double> tileStartTime;
 
         public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
     }
@@ -176,7 +176,7 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// 이벤트의 종류.
         /// </summary>
-        public EventType EventType { get; set; }
+        public EventType? EventType { get; set; }
 
         /// <summary>
         /// 속도 유형. 이벤트 타입이 SetSpeed일때만 사용가능합니다.
