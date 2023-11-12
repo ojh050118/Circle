@@ -5,7 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Circle.Game.Converting.Adofai;
+using Circle.Game.Converting.Circle;
+using Circle.Game.IO;
 using Circle.Game.IO.Archives;
+using Circle.Game.Utils;
+using Newtonsoft.Json;
+using osu.Framework.Bindables;
 using osu.Framework.Logging;
 using SharpCompress.Archives;
 
@@ -149,6 +155,66 @@ namespace Circle.Game.Beatmaps
             beatmapStorage.Delete(beatmap, deleteResources);
 
             return LoadedBeatmaps.Remove(beatmap);
+        }
+
+        public void ConvertWithImport(DirectoryInfo[] target, Bindable<int> progress = null)
+        {
+            var adofaiFileReader = new AdofaiFileReader();
+            var converter = new CircleBeatmapConverter();
+
+            progress ??= new Bindable<int>();
+
+            foreach (var level in target)
+            {
+                foreach (var adofai in level.GetFiles("*.adofai"))
+                {
+                    if (adofai.Name == "backup.adofai")
+                        continue;
+
+                    AdofaiBeatmap adofaiBeatmap;
+
+                    try
+                    {
+                        Logger.Log($"Started parsing {adofai.FullName} for convert...");
+                        adofaiBeatmap = adofaiFileReader.Get(adofai.FullName);
+                    }
+                    catch
+                    {
+                        Logger.Log($"Failed parsing {adofai.FullName}.");
+                        continue;
+                    }
+
+                    var circle = converter.Convert(adofaiBeatmap);
+                    string title = $"[{circle.Settings.Author}] {circle.Settings.Artist} - {circle.Settings.Song}";
+
+                    if (title.Length >= 100)
+                        title = title.Substring(0, 100);
+
+                    string fileName = FileUtil.ReplaceSafeChar($"{title}.circle");
+
+                    var beatmap = beatmapStorage.Storage.GetStorageForDirectory(Path.GetFileNameWithoutExtension(fileName));
+
+                    try
+                    {
+                        Logger.Log($"Writing to \"{fileName}\"...");
+                        using (StreamWriter sw = File.CreateText(Path.Combine(beatmap.GetFullPath(string.Empty), fileName)))
+                            sw.WriteLine(JsonConvert.SerializeObject(circle));
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e, $"Error while writing {Path.GetFileNameWithoutExtension(fileName)}.");
+                    }
+
+                    Logger.Log("Copying beatmap resources...");
+                    FileUtil.TryCopy(Path.Combine(adofai.DirectoryName ?? string.Empty, circle.Settings.BgImage), Path.Combine(beatmap.GetFullPath(string.Empty), circle.Settings.BgImage));
+                    FileUtil.TryCopy(Path.Combine(adofai.DirectoryName ?? string.Empty, circle.Settings.SongFileName), Path.Combine(beatmap.GetFullPath(string.Empty), circle.Settings.SongFileName));
+                    FileUtil.TryCopy(Path.Combine(adofai.DirectoryName ?? string.Empty, circle.Settings.BgVideo), Path.Combine(beatmap.GetFullPath(string.Empty), circle.Settings.BgVideo));
+
+                    OnImported?.Invoke(title);
+                }
+
+                progress.Value++;
+            }
         }
 
         public event Action<(BeatmapInfo oldBeatmap, BeatmapInfo newBeatmap)> OnBeatmapChanged;

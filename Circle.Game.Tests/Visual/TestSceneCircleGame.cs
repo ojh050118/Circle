@@ -16,8 +16,6 @@ namespace Circle.Game.Tests.Visual
 {
     public partial class TestSceneCircleGame : CircleTestScene
     {
-        private CircleGame game;
-
         private readonly IReadOnlyList<Type> requiredGameDependencies = new[]
         {
             typeof(CircleGame),
@@ -32,8 +30,11 @@ namespace Circle.Game.Tests.Visual
             typeof(VolumeOverlay),
             typeof(ImportOverlay),
             typeof(DialogOverlay),
-            typeof(CircleColour)
+            typeof(CircleColour),
+            typeof(ConvertOverlay)
         };
+
+        private CircleGame game;
 
         [BackgroundDependencyLoader]
         private void load(GameHost host)

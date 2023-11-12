@@ -18,18 +18,37 @@ namespace Circle.Game
 {
     public partial class CircleGame : CircleGameBase
     {
+        public GameScreenContainer ScreenContainer;
         private readonly Toast toast = new Toast();
         private DependencyContainer dependencies;
         private DialogOverlay dialog;
         private ImportOverlay import;
-
-        public GameScreenContainer ScreenContainer;
+        private ConvertOverlay convert;
 
         private CircleScreenStack screenStack;
         private VolumeOverlay volume;
 
+        #region Disposal
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+
+            BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
+            BeatmapManager.OnImported -= imported;
+        }
+
+        #endregion
+
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            screenStack.Push(new Loader());
+        }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -40,26 +59,12 @@ namespace Circle.Game
 
             dependencies.CacheAs(volume);
             dependencies.CacheAs(import);
+            dependencies.CacheAs(convert);
             dependencies.CacheAs(dialog);
             dependencies.CacheAs(this);
 
             BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
             BeatmapManager.OnImported += imported;
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            screenStack.Push(new Loader());
-        }
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
-            BeatmapManager.OnImported -= imported;
         }
 
         private void addGameScreen()
@@ -87,6 +92,7 @@ namespace Circle.Game
                 },
                 volume = new VolumeOverlay(),
                 import = new ImportOverlay(),
+                convert = new ConvertOverlay(),
                 dialog = new DialogOverlay(),
                 toast,
             };
