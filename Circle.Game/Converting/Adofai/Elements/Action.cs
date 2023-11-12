@@ -1,7 +1,6 @@
 ﻿#nullable disable
 
 using Circle.Game.Beatmaps;
-using JsonExtensions = Newtonsoft.Json.Linq.Extensions;
 
 namespace Circle.Game.Converting.Adofai.Elements
 {
