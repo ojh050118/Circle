@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Clowd.Squirrel" Version="2.9.42"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    <PackageReference Include="NuGet.CommandLine" Version="6.5.0">
+    <PackageReference Include="NuGet.CommandLine" Version="6.10.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
