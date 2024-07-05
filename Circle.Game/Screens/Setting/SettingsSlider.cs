@@ -1,6 +1,5 @@
 #nullable disable
 
-using System;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
@@ -15,7 +14,7 @@ using osuTK.Graphics;
 namespace Circle.Game.Screens.Setting
 {
     public partial class SettingsSlider<T> : Container
-        where T : struct, IEquatable<T>, IComparable<T>, IConvertible
+        where T : struct, System.Numerics.INumber<T>, System.Numerics.IMinMaxValue<T>
     {
         public string Text
         {

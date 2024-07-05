@@ -68,7 +68,7 @@ namespace Circle.Game.Rulesets.UI
                     break;
 
                 base.UpdateSubTree();
-                UpdateSubTreeMasking(this, ScreenSpaceDrawQuad.AABBFloat);
+                UpdateSubTreeMasking();
             } while (state == PlaybackState.RequiresCatchUp && loops-- > 0);
 
             return true;

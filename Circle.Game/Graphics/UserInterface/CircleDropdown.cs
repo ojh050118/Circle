@@ -12,8 +12,10 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Localisation;
+using osu.Framework.Logging;
 using osuTK;
 using osuTK.Graphics;
+using SharpCompress;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -294,6 +296,8 @@ namespace Circle.Game.Graphics.UserInterface
             protected readonly SpriteIcon Icon;
             protected readonly CircleSpriteText Text;
 
+            protected override DropdownSearchBar CreateSearchBar() => new CircleDropdownSearchBar(this);
+
             public CircleDropdownHeader()
             {
                 Foreground.Padding = new MarginPadding(10);
@@ -351,6 +355,34 @@ namespace Circle.Game.Graphics.UserInterface
             {
                 BackgroundColour = colours.TransparentBlack;
                 BackgroundColourHover = colours.TransparentGray;
+            }
+
+            public partial class CircleDropdownSearchBar : DropdownSearchBar
+            {
+                private CircleDropdownHeader header;
+
+                public CircleDropdownSearchBar(CircleDropdownHeader header)
+                {
+                    this.header = header;
+                }
+
+                protected override void PopIn()
+                {
+                    Logger.Log($"Header: {header.Count}");
+                    header.Except(this).ForEach(d => d.Alpha = 0);
+                    this.FadeIn();
+                }
+
+                protected override void PopOut()
+                {
+                    header.Except(this).ForEach(d => d.Alpha = 1);
+                    this.FadeOut();
+                }
+
+                protected override TextBox CreateTextBox() => new CircleTextBox
+                {
+                    PlaceholderText = "type to search"
+                };
             }
         }
     }

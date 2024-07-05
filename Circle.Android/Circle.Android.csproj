@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Circle.Android.props"/>
   <PropertyGroup>
-    <TargetFramework>net6.0-android</TargetFramework>
+    <TargetFramework>net8.0-android</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>Circle.Android</RootNamespace>
     <AssemblyName>Circle.Android</AssemblyName>
-    <UseMauiEssentials>true</UseMauiEssentials>
-    <!-- This currently causes random lockups during gameplay. https://github.com/mono/mono/issues/18973 -->
-    <EnableLLVM>false</EnableLLVM>
     <Version>0.0.0</Version>
     <ApplicationVersion Condition=" '$(ApplicationVersion)' == '' ">1</ApplicationVersion>
     <ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Circle.Game\Circle.Game.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.3" />
   </ItemGroup>
 </Project>

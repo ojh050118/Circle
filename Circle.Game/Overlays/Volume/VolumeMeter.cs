@@ -64,8 +64,8 @@ namespace Circle.Game.Overlays.Volume
                 displayVolume = value;
                 int intValue = (int)Math.Round(value * 100);
 
-                volumeCircleGlow.Current.Value = displayVolume;
-                volumeCircle.Current.Value = displayVolume;
+                volumeCircleGlow.Progress = displayVolume;
+                volumeCircle.Progress = displayVolume;
                 volumeText.Text = intValue.ToString();
             }
         }
@@ -159,7 +159,7 @@ namespace Circle.Game.Overlays.Volume
                                 RelativeSizeAxes = Axes.Both,
                                 Colour = colours.TransparentBlack,
                                 InnerRadius = inner_radius,
-                                Current = new Bindable<double>(1)
+                                Progress = 1
                             }
                         },
                         new Container

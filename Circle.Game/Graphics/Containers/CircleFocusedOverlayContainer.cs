@@ -87,14 +87,14 @@ namespace Circle.Game.Graphics.Containers
         {
             dim.FadeTo(0.4f, 1000, Easing.OutPow10);
             gameScreen?.BlurTo(new Vector2(10), 1000, Easing.OutPow10);
-            base.PopIn();
+            //base.PopIn();
         }
 
         protected override void PopOut()
         {
             dim.FadeOut(1000, Easing.OutPow10);
             gameScreen?.BlurTo(new Vector2(0), 1000, Easing.OutPow10);
-            base.PopOut();
+            //base.PopOut();
         }
     }
 }
