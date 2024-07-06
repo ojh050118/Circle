@@ -24,7 +24,7 @@ namespace Circle.Game.Screens.Select
         public void Add(BeatmapInfo info, Action onDoubleClicked)
         {
             CarouselItem item;
-            carouselItems.Add(item = new CarouselItem(info, onDoubleClicked));
+            carouselItems.Add(item = new CarouselItem(info, onDoubleClicked, this));
             item.StateChanged += state =>
             {
                 if (state == SelectionState.Selected)
