@@ -22,6 +22,7 @@ namespace Circle.Game.Tests
         private DialogOverlay dialog;
         private ImportOverlay import;
         private ConvertOverlay convert;
+        private CarouselItemOverlay item;
         private Toast toast;
 
         #region Disposal
@@ -50,6 +51,7 @@ namespace Circle.Game.Tests
             dependencies.CacheAs(import = new ImportOverlay());
             dependencies.CacheAs(dialog = new DialogOverlay());
             dependencies.CacheAs(convert = new ConvertOverlay());
+            dependencies.CacheAs(item = new CarouselItemOverlay());
 
             return dependencies;
         }
@@ -67,6 +69,7 @@ namespace Circle.Game.Tests
                 import,
                 dialog,
                 convert,
+                item,
                 toast,
                 new CursorContainer()
             });

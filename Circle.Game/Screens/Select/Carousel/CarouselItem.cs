@@ -3,6 +3,7 @@
 using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
+using Circle.Game.Overlays;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -14,6 +15,7 @@ using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Pooling;
 using osu.Framework.Input.Events;
 using osuTK.Graphics;
+using osuTK.Input;
 
 namespace Circle.Game.Screens.Select.Carousel
 {
@@ -26,6 +28,9 @@ namespace Circle.Game.Screens.Select.Carousel
         private Sample sampleDoubleClick;
 
         private SelectionState state;
+
+        [Resolved]
+        private CarouselItemOverlay carouselItemOverlay { get; set; }
 
         public CarouselItem(BeatmapInfo info, Action doubleClicked)
         {
@@ -142,6 +147,16 @@ namespace Circle.Game.Screens.Select.Carousel
                     };
                     break;
             }
+        }
+
+        protected override bool OnKeyDown(KeyDownEvent e)
+        {
+            if (e.Key == Key.ShiftLeft)
+            {
+                carouselItemOverlay.Push(CreateProxy());
+            }
+
+            return base.OnKeyDown(e);
         }
 
         protected override bool OnClick(ClickEvent e)
