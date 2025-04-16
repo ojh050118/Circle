@@ -13,7 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ppy.osu.Framework" Version="2024.523.0" />
+    <PackageReference Include="ppy.osu.Framework" Version="2025.321.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0"/>
     <PackageReference Include="System.Management.Automation" Version="7.2.2"/>
   </ItemGroup>
