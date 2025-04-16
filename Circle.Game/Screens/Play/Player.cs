@@ -198,11 +198,14 @@ namespace Circle.Game.Screens.Play
             textureName = background.TextureName;
             hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * tick).ToList();
             sampleHit = audio.Samples.Get("normal-hitnormal.wav");
+
+            gameMusic = new GameplayMusicController(beatmapInfo);
+
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, gameMusic.CurrentTrack),
                 hud = new HUDOverlay(currentBeatmap),
-                gameMusic = new GameplayMusicController(beatmapInfo)
+                gameMusic
             };
 
             if (!host.CanExit)

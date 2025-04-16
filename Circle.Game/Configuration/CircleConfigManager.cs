@@ -9,18 +9,18 @@ namespace Circle.Game.Configuration
 {
     public class CircleConfigManager : IniConfigManager<CircleSetting>
     {
+        protected override string Filename => @"Circle.ini";
+
         public CircleConfigManager(Storage storage, IDictionary<CircleSetting, object> defaultOverrides = null)
             : base(storage, defaultOverrides)
         {
         }
 
-        protected override string Filename => @"Circle.ini";
-
         protected override void InitialiseDefaults()
         {
             SetDefault(CircleSetting.Scale, 1f, 0.8f, 1.6f);
             SetDefault(CircleSetting.FpsDisplay, false);
-            SetDefault(CircleSetting.Offset, 0);
+            SetDefault(CircleSetting.Offset, 0d);
             SetDefault(CircleSetting.LoadBeatmapsOnStartup, true);
             SetDefault(CircleSetting.BlurVisibility, true);
             SetDefault(CircleSetting.Parallax, true);
