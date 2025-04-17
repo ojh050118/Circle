@@ -9,6 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ppy.osu.Framework" Version="2025.321.0" />
-    <PackageReference Include="SharpCompress" Version="0.33.0"/>
+    <PackageReference Include="SharpCompress" Version="0.39.0"/>
   </ItemGroup>
 </Project>
