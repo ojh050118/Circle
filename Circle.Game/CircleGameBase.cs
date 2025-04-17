@@ -100,7 +100,7 @@ namespace Circle.Game
                 RelativeSizeAxes = Axes.Both
             };
 
-            AddInternal(MusicController);
+            base.Content.Add(MusicController);
             base.Content.Add(ContentContainer);
             base.Content.Add(new CircleKeyBindingContainer(this));
         }

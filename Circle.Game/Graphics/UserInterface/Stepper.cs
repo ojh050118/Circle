@@ -127,7 +127,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         public void Select(T value)
         {
-            var item = Items?.FirstOrDefault(v => v.Value.Equals(value));
+            var item = Items?.FirstOrDefault(v => EqualityComparer<T>.Default.Equals(Current.Value, value));
             if (item == null)
                 return;
 

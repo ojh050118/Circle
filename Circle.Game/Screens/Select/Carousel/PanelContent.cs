@@ -5,7 +5,6 @@ using Circle.Game.Graphics;
 using Circle.Game.Graphics.Sprites;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 using osuTK;
 
 namespace Circle.Game.Screens.Select.Carousel
@@ -30,7 +29,7 @@ namespace Circle.Game.Screens.Select.Carousel
                             Text = info.Beatmap.Settings.Song,
                             Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 30)
                         },
-                        new SpriteText
+                        new CircleSpriteText
                         {
                             Text = info.Beatmap.Settings.Author,
                             Font = CircleFont.Default.With(size: 24)

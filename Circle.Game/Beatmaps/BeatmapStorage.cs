@@ -55,9 +55,9 @@ namespace Circle.Game.Beatmaps
             using (Stream stream = Storage.GetStream(name))
             {
                 if (stream == null)
-                    return await localStore.GetAsync(name, cancellationToken);
+                    return await localStore.GetAsync(name, cancellationToken).ConfigureAwait(false);
 
-                return await stream.ReadAllBytesToArrayAsync(cancellationToken);
+                return await stream.ReadAllBytesToArrayAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Circle.Game.Beatmaps
                     {
                         string fileDir = fi.Directory?.Name ?? string.Empty;
 
-                        var beatmap = await GetBeatmapAsync(Path.Combine(fileDir, fi.Name));
+                        var beatmap = await GetBeatmapAsync(Path.Combine(fileDir, fi.Name)).ConfigureAwait(false);
                         beatmapInfo.Add(new BeatmapInfo(beatmap, fi));
                     }
                 }
@@ -156,7 +156,7 @@ namespace Circle.Game.Beatmaps
                 {
                     string fileDir = fi.Directory?.Name ?? string.Empty;
 
-                    if (beatmap == await GetBeatmapAsync(Path.Combine(fileDir, fi.Name)))
+                    if (beatmap == await GetBeatmapAsync(Path.Combine(fileDir, fi.Name)).ConfigureAwait(false))
                         return new BeatmapInfo(beatmap, fi);
                 }
             }
@@ -171,7 +171,7 @@ namespace Circle.Game.Beatmaps
         /// <returns>비트맵.</returns>
         public Beatmap GetBeatmap(string path)
         {
-            Beatmap beatmap = default;
+            Beatmap beatmap = null;
 
             if (string.IsNullOrEmpty(path))
                 return null;
@@ -198,7 +198,7 @@ namespace Circle.Game.Beatmaps
         /// <returns>비트맵.</returns>
         public async Task<Beatmap> GetBeatmapAsync(string path)
         {
-            Beatmap beatmap = default;
+            Beatmap beatmap = null;
 
             if (string.IsNullOrEmpty(path))
                 return null;
@@ -207,7 +207,7 @@ namespace Circle.Game.Beatmaps
             {
                 try
                 {
-                    string data = await sr.ReadToEndAsync();
+                    string data = await sr.ReadToEndAsync().ConfigureAwait(false);
                     beatmap = JsonConvert.DeserializeObject<Beatmap>(data);
                 }
                 catch
@@ -221,7 +221,8 @@ namespace Circle.Game.Beatmaps
 
         public Texture GetBackground(BeatmapInfo info) => GetBackground(info.RelativeBackgroundPath);
 
-        public async Task<Texture> GetBackgroundAsync(BeatmapInfo info, CancellationToken cancellationToken = default) => await GetBackgroundAsync(info.RelativeBackgroundPath, cancellationToken);
+        public async Task<Texture> GetBackgroundAsync(BeatmapInfo info, CancellationToken cancellationToken = default) =>
+            await GetBackgroundAsync(info.RelativeBackgroundPath, cancellationToken).ConfigureAwait(false);
 
         public Texture GetBackground(string name)
         {
@@ -246,7 +247,7 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                return await textureStore.GetAsync(name, cancellationToken);
+                return await textureStore.GetAsync(name, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -298,7 +299,7 @@ namespace Circle.Game.Beatmaps
 
             try
             {
-                return await trackStore.GetAsync(name);
+                return await trackStore.GetAsync(name).ConfigureAwait(false);
             }
             catch
             {

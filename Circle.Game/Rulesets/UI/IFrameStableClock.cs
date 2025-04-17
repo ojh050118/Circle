@@ -1,11 +1,11 @@
 #nullable disable
 
+using Circle.Game.Screens.Play;
 using osu.Framework.Bindables;
-using osu.Framework.Timing;
 
 namespace Circle.Game.Rulesets.UI
 {
-    public interface IFrameStableClock : IFrameBasedClock
+    public interface IFrameStableClock : IGameplayClock
     {
         IBindable<bool> IsCatchingUp { get; }
 

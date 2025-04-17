@@ -44,7 +44,7 @@
         public float[] Parallax { get; set; } = { 100, 100 };
         public string BgDisplayMode { get; set; } = "FitToScreen";
         public string LockRot { get; set; } = "Disabled";
-        public string LoopBG { get; set; } = "Disabled";
+        public string LoopBg { get; set; } = "Disabled";
         public float UnscaledSize { get; set; } = 100;
         public string RelativeTo { get; set; } = "Player";
         public float[] Position { get; set; } = { 0, 0 };

@@ -24,6 +24,7 @@ namespace Circle.Game
         private DialogOverlay dialog;
         private ImportOverlay import;
         private ConvertOverlay convert;
+        private CarouselItemOverlay item;
 
         private CircleScreenStack screenStack;
         private VolumeOverlay volume;
@@ -61,6 +62,7 @@ namespace Circle.Game
             dependencies.CacheAs(import);
             dependencies.CacheAs(convert);
             dependencies.CacheAs(dialog);
+            dependencies.CacheAs(item);
             dependencies.CacheAs(this);
 
             BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
@@ -94,6 +96,7 @@ namespace Circle.Game
                 import = new ImportOverlay(),
                 convert = new ConvertOverlay(),
                 dialog = new DialogOverlay(),
+                item = new CarouselItemOverlay(),
                 toast,
             };
 

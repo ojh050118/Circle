@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Circle.Game.Graphics.UserInterface
+﻿namespace Circle.Game.Graphics.UserInterface
 {
     public enum MenuItemType
     {

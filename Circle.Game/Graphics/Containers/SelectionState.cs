@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Circle.Game.Graphics.Containers
+﻿namespace Circle.Game.Graphics.Containers
 {
     public enum SelectionState
     {

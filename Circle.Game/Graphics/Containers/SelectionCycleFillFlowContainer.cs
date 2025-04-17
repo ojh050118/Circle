@@ -43,8 +43,9 @@ namespace Circle.Game.Graphics.Containers
 
         public override void Add(T drawable)
         {
-            base.Add(drawable);
+            ArgumentNullException.ThrowIfNull(drawable);
 
+            base.Add(drawable);
             Debug.Assert(drawable != null);
 
             drawable.StateChanged += state => selectionChanged(drawable, state);

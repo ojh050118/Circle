@@ -197,7 +197,7 @@ namespace Circle.Game.Overlays
         private void progressChanged(ValueChangedEvent<int> value)
         {
             Logger.Log($"{value.NewValue}, {(double)value.NewValue / levels.Count}");
-            Schedule(() => circularProgress.FillTo((double)value.NewValue / levels.Count, 750, Easing.OutPow10));
+            Schedule(() => circularProgress.ProgressTo((double)value.NewValue / levels.Count, 750, Easing.OutPow10));
         }
     }
 }

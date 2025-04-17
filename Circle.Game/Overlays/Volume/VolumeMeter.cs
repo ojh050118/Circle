@@ -6,6 +6,7 @@ using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.Sprites;
 using Circle.Game.Input;
+using JetBrains.Annotations;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -64,8 +65,8 @@ namespace Circle.Game.Overlays.Volume
                 displayVolume = value;
                 int intValue = (int)Math.Round(value * 100);
 
-                volumeCircleGlow.Current.Value = displayVolume;
-                volumeCircle.Current.Value = displayVolume;
+                volumeCircleGlow.Progress = displayVolume;
+                volumeCircle.Progress = displayVolume;
                 volumeText.Text = intValue.ToString();
             }
         }
@@ -101,6 +102,7 @@ namespace Circle.Game.Overlays.Volume
         {
         }
 
+        [CanBeNull]
         public event Action<SelectionState> StateChanged;
 
         public SelectionState State
@@ -159,7 +161,7 @@ namespace Circle.Game.Overlays.Volume
                                 RelativeSizeAxes = Axes.Both,
                                 Colour = colours.TransparentBlack,
                                 InnerRadius = inner_radius,
-                                Current = new Bindable<double>(1)
+                                Progress = 1
                             }
                         },
                         new Container

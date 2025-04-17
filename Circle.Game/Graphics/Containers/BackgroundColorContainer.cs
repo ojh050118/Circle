@@ -25,7 +25,7 @@ namespace Circle.Game.Graphics.Containers
 
         public BackgroundColorContainer(Background target)
         {
-            target.BackgroundColorChanged += async t => await backgroundColorChanged(t);
+            target.BackgroundColorChanged += async t => await backgroundColorChanged(t).ConfigureAwait(false);
         }
 
         [BackgroundDependencyLoader]
@@ -33,13 +33,13 @@ namespace Circle.Game.Graphics.Containers
 
         private async Task backgroundColorChanged(string texturePath)
         {
-            dataGetCancellation?.Cancel();
+            dataGetCancellation?.CancelAsync().ConfigureAwait(false);
 
             Color4 color = DefaultColour;
-            byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token);
+            byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token).ConfigureAwait(true);
 
             if (data != null)
-                color = await ImageUtil.GetAverageColorAsync(data);
+                color = await ImageUtil.GetAverageColorAsync(data).ConfigureAwait(true);
 
             this.FadeColour(color, ChangeDuration, ChangeEasing);
         }

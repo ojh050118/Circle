@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Circle.Game.Input
+﻿namespace Circle.Game.Input
 {
     public enum InputAction
     {

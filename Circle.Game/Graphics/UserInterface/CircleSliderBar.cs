@@ -13,7 +13,7 @@ using osuTK.Graphics;
 namespace Circle.Game.Graphics.UserInterface
 {
     public partial class CircleSliderBar<T> : SliderBar<T>
-        where T : struct, IEquatable<T>, IComparable<T>, IConvertible
+        where T : struct, System.Numerics.INumber<T>, System.Numerics.IMinMaxValue<T>
     {
         protected readonly Nub CircleNub;
         private readonly Box leftBox;

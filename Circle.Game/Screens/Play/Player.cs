@@ -191,18 +191,21 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(GameHost host, AudioManager audio, CircleColour colours)
+        private void load(GameHost host, AudioManager audio, CircleColour colours, BeatmapStorage beatmaps)
         {
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             textureSource = background.TextureSource;
             textureName = background.TextureName;
             hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * tick).ToList();
             sampleHit = audio.Samples.Get("normal-hitnormal.wav");
+
+            gameMusic = new GameplayMusicController(beatmapInfo);
+
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, Clock),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, beatmaps.GetTrack(beatmapInfo)),
                 hud = new HUDOverlay(currentBeatmap),
-                gameMusic = new GameplayMusicController(beatmapInfo)
+                gameMusic
             };
 
             if (!host.CanExit)

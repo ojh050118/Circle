@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Circle.Game.Rulesets.Objects
+﻿namespace Circle.Game.Rulesets.Objects
 {
     public enum TileType
     {
