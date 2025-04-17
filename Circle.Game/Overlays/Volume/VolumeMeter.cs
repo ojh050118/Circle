@@ -6,6 +6,7 @@ using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.Sprites;
 using Circle.Game.Input;
+using JetBrains.Annotations;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -101,6 +102,7 @@ namespace Circle.Game.Overlays.Volume
         {
         }
 
+        [CanBeNull]
         public event Action<SelectionState> StateChanged;
 
         public SelectionState State

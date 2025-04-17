@@ -36,10 +36,10 @@ namespace Circle.Game.Graphics.Containers
             dataGetCancellation?.CancelAsync().ConfigureAwait(false);
 
             Color4 color = DefaultColour;
-            byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token).ConfigureAwait(false);
+            byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token).ConfigureAwait(true);
 
             if (data != null)
-                color = await ImageUtil.GetAverageColorAsync(data).ConfigureAwait(false);
+                color = await ImageUtil.GetAverageColorAsync(data).ConfigureAwait(true);
 
             this.FadeColour(color, ChangeDuration, ChangeEasing);
         }

@@ -4,6 +4,7 @@ using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Overlays;
+using JetBrains.Annotations;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -218,6 +219,7 @@ namespace Circle.Game.Screens.Select.Carousel
             }
         }
 
+        [CanBeNull]
         public event Action<SelectionState> StateChanged;
     }
 }
