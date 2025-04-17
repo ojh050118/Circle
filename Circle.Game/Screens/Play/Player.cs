@@ -191,7 +191,7 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(GameHost host, AudioManager audio, CircleColour colours)
+        private void load(GameHost host, AudioManager audio, CircleColour colours, BeatmapStorage beatmaps)
         {
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             textureSource = background.TextureSource;
@@ -203,7 +203,7 @@ namespace Circle.Game.Screens.Play
 
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, gameMusic.CurrentTrack),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, beatmaps.GetTrack(beatmapInfo)),
                 hud = new HUDOverlay(currentBeatmap),
                 gameMusic
             };

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Circle.Game.Configuration;
 using Circle.Game.Screens.Play;
-using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -20,9 +19,8 @@ namespace Circle.Game.Beatmaps
 
                 Debug.Assert(userGlobalOffsetClock != null);
                 Debug.Assert(userBeatmapOffsetClock != null);
-                Debug.Assert(platformOffsetClock != null);
 
-                return userGlobalOffsetClock.RateAdjustedOffset + userBeatmapOffsetClock.Offset + platformOffsetClock.RateAdjustedOffset;
+                return userGlobalOffsetClock.RateAdjustedOffset + userBeatmapOffsetClock.Offset;
             }
         }
 
@@ -30,7 +28,6 @@ namespace Circle.Game.Beatmaps
         private readonly bool applyOffsets;
 
         private readonly OffsetCorrectionClock? userGlobalOffsetClock;
-        private readonly OffsetCorrectionClock? platformOffsetClock;
         private readonly FramedOffsetClock? userBeatmapOffsetClock;
 
         private readonly IFrameBasedClock finalClockSource;
@@ -55,12 +52,8 @@ namespace Circle.Game.Beatmaps
 
             if (applyOffsets)
             {
-                // Audio timings in general with newer BASS versions don't match stable.
-                // This only seems to be required on windows. We need to eventually figure out why, with a bit of luck.
-                platformOffsetClock = new OffsetCorrectionClock(interpolatedTrack) { Offset = RuntimeInfo.OS == RuntimeInfo.Platform.Windows ? 10 : 0 };
-
                 // User global offset (set in settings) should also be applied.
-                userGlobalOffsetClock = new OffsetCorrectionClock(platformOffsetClock);
+                userGlobalOffsetClock = new OffsetCorrectionClock(interpolatedTrack);
 
                 // User per-beatmap offset will be applied to this final clock.
                 finalClockSource = userBeatmapOffsetClock = new FramedOffsetClock(userGlobalOffsetClock);
@@ -76,7 +69,6 @@ namespace Circle.Game.Beatmaps
             return
                 $"originalSource: {output(Source)}\n" +
                 $"userGlobalOffsetClock: {output(userGlobalOffsetClock)}\n" +
-                $"platformOffsetClock: {output(platformOffsetClock)}\n" +
                 $"userBeatmapOffsetClock: {output(userBeatmapOffsetClock)}\n" +
                 $"interpolatedTrack: {output(interpolatedTrack)}\n" +
                 $"decoupledTrack: {output(decoupledTrack)}\n" +

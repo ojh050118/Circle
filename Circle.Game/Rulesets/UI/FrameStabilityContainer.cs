@@ -13,18 +13,22 @@ namespace Circle.Game.Rulesets.UI
 {
     public partial class FrameStabilityContainer : Container, IFrameStableClock
     {
-        public double GameplayStartTime { get; }
+        private const double max_catchup_milliseconds = 10;
+
         public bool AllowBackwardsSeeks { get; set; }
+        private double? lastBackwardsSeekLogTime;
 
         internal bool FrameStablePlayback { get; set; } = true;
 
-        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
-
-        private const double max_catchup_milliseconds = 10;
-
         private readonly Bindable<bool> isCatchingUp = new Bindable<bool>();
-
         private readonly Bindable<bool> waitingOnFrames = new Bindable<bool>();
+
+        public double GameplayStartTime { get; }
+
+        private IGameplayClock? parentGameplayClock;
+        private IClock referenceClock = null!;
+
+        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
 
         /// <summary>
         /// A local manual clock which tracks the reference clock.
@@ -39,14 +43,6 @@ namespace Circle.Game.Rulesets.UI
         private readonly FramedClock framedClock;
 
         private readonly Stopwatch stopwatch = new Stopwatch();
-        private double? lastBackwardsSeekLogTime;
-
-        private IGameplayClock? parentGameplayClock;
-
-        /// <summary>
-        /// A clock which is used as reference for time, rate and running state.
-        /// </summary>
-        private IClock referenceClock = null!;
 
         /// <summary>
         /// The current direction of playback to be exposed to frame stable children.
@@ -69,6 +65,19 @@ namespace Circle.Game.Rulesets.UI
             GameplayStartTime = gameplayStartTime;
         }
 
+        [BackgroundDependencyLoader(true)]
+        private void load(IGameplayClock? gameplayClock)
+        {
+            if (gameplayClock != null)
+            {
+                parentGameplayClock = gameplayClock;
+                IsPaused.BindTo(parentGameplayClock.IsPaused);
+            }
+
+            referenceClock = gameplayClock ?? Clock;
+            Clock = this;
+        }
+
         public override bool UpdateSubTree()
         {
             stopwatch.Restart();
@@ -87,18 +96,6 @@ namespace Circle.Game.Rulesets.UI
             } while (state == PlaybackState.RequiresCatchUp && stopwatch.ElapsedMilliseconds <= max_catchup_milliseconds);
 
             return true;
-        }
-
-        [BackgroundDependencyLoader(true)]
-        private void load(IGameplayClock? clock)
-        {
-            if (clock != null)
-            {
-                parentGameplayClock = clock;
-                IsPaused.BindTo(parentGameplayClock.IsPaused);
-            }
-
-            referenceClock = clock ?? Clock;
         }
 
         private void updateClock()
@@ -240,21 +237,5 @@ namespace Circle.Game.Rulesets.UI
             /// </summary>
             Valid
         }
-
-        // private class FrameStabilityClock : GameplayClock, IFrameStableClock
-        // {
-        //     public readonly Bindable<bool> IsCatchingUp = new Bindable<bool>();
-        //
-        //     public readonly Bindable<bool> WaitingOnFrames = new Bindable<bool>();
-        //
-        //     IBindable<bool> IFrameStableClock.IsCatchingUp => IsCatchingUp;
-        //
-        //     IBindable<bool> IFrameStableClock.WaitingOnFrames => WaitingOnFrames;
-        //
-        //     public FrameStabilityClock(FramedClock underlyingClock)
-        //         : base(underlyingClock)
-        //     {
-        //     }
-        // }
     }
 }
