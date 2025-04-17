@@ -1,3 +1,4 @@
+using System;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Screens.Select.Carousel;
 using osu.Framework.Graphics;
@@ -7,11 +8,11 @@ namespace Circle.Game.Overlays
 {
     public partial class CarouselItemOverlay : CircleFocusedOverlayContainer
     {
-        private CarouselItem currentItem;
+        private CarouselItem? currentItem;
 
         public CarouselItemOverlay()
         {
-            Content = new Container()
+            Content = new Container
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -21,6 +22,9 @@ namespace Circle.Game.Overlays
 
         public void Push(CarouselItem target)
         {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+
             target.ProxyToContainer((Container)Content);
             currentItem = target;
             target.BorderContainer.MoveToX(-500, 750, Easing.OutPow10);
@@ -30,10 +34,10 @@ namespace Circle.Game.Overlays
 
         public override void Hide()
         {
-            currentItem.BorderContainer.MoveToX(0, 750, Easing.OutPow10);
+            currentItem?.BorderContainer.MoveToX(0, 750, Easing.OutPow10);
             base.Hide();
 
-            currentItem.ReturnProxy();
+            currentItem?.ReturnProxy();
         }
     }
 }
