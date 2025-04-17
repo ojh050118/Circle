@@ -6,17 +6,17 @@ using osu.Framework.Audio;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Logging;
 using osu.Framework.Timing;
 
 namespace Circle.Game.Rulesets.UI
 {
+    [Cached(typeof(IGameplayClock))]
+    [Cached(typeof(IFrameStableClock))]
     public partial class FrameStabilityContainer : Container, IFrameStableClock
     {
         private const double max_catchup_milliseconds = 10;
 
         public bool AllowBackwardsSeeks { get; set; }
-        private double? lastBackwardsSeekLogTime;
 
         internal bool FrameStablePlayback { get; set; } = true;
 
@@ -27,8 +27,6 @@ namespace Circle.Game.Rulesets.UI
 
         private IGameplayClock? parentGameplayClock;
         private IClock referenceClock = null!;
-
-        protected override bool RequiresChildrenUpdate => base.RequiresChildrenUpdate && state != PlaybackState.NotValid;
 
         /// <summary>
         /// A local manual clock which tracks the reference clock.
@@ -88,7 +86,9 @@ namespace Circle.Game.Rulesets.UI
                 // it should be provided as the original value each loop.
                 updateClock();
 
-                if (state == PlaybackState.NotValid)
+                // 게임을 시작하기 전에는 일시정지 상태로 업데이트가 차단되어 드로어블이 보이지 않습니다.
+                // 완전히 로드 되기 전에 한번 업데이트를 하여 드로어블이 씬 그래프에 포함되도록 합니다.
+                if (state == PlaybackState.NotValid && LoadState > LoadState.Ready)
                     break;
 
                 base.UpdateSubTree();
@@ -122,18 +122,6 @@ namespace Circle.Game.Rulesets.UI
                 // if we require frame stability, the proposed time will be adjusted to move at most one known
                 // frame interval in the current direction.
                 applyFrameStability(ref proposedTime);
-
-            if (FrameStablePlayback && proposedTime > referenceClock.CurrentTime && !AllowBackwardsSeeks)
-            {
-                if (lastBackwardsSeekLogTime == null || Math.Abs(Clock.CurrentTime - lastBackwardsSeekLogTime.Value) > 1000)
-                {
-                    lastBackwardsSeekLogTime = Clock.CurrentTime;
-                    Logger.Log($"Denying backwards seek during gameplay (reference: {referenceClock.CurrentTime:N2} stable: {proposedTime:N2})");
-                }
-
-                state = PlaybackState.NotValid;
-                return;
-            }
 
             // if the proposed time is the same as the current time, assume that the clock will continue progressing in the same direction as previously.
             // this avoids spurious flips in direction from -1 to 1 during rewinds.
