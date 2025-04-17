@@ -33,7 +33,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
-                            Text = "int stepper(no initial value)",
+                            LabelText = "int stepper(no initial value)",
                             Items = new[]
                             {
                                 new StepperItem<int>(1),
@@ -45,7 +45,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
-                            Text = "string stepper",
+                            LabelText = "string stepper",
                             Current = new Bindable<string>("String2"),
                             Items = new[]
                             {
@@ -58,7 +58,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
-                            Text = "enum stepper",
+                            LabelText = "enum stepper",
                         }
                     },
                     new Drawable[]
@@ -67,7 +67,7 @@ namespace Circle.Game.Tests.Visual.UserInterface
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
-                            Text = "empty float stepper",
+                            LabelText = "empty float stepper",
                         }
                     }
                 }

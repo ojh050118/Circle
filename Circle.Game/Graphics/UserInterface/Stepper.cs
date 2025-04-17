@@ -10,6 +10,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Graphics.UserInterface;
 using osuTK;
 using osuTK.Graphics;
 
@@ -18,7 +19,8 @@ namespace Circle.Game.Graphics.UserInterface
     /// <summary>
     /// 방향으로 값을 바꿀 수있는 컨트롤.
     /// </summary>
-    public partial class Stepper<T> : Container
+    ///  TODO: StepperControl로 이름 변경
+    public partial class Stepper<T> : Container, IHasCurrentValue<T>
     {
         /// <summary>
         /// <see cref="Stepper{T}"/>의 모든 <see cref="StepperItem{T}"/>의 리스트입니다.
@@ -31,6 +33,7 @@ namespace Circle.Game.Graphics.UserInterface
 
         public Stepper()
         {
+            // TODO: 로직과 디자인 구현 분리
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             CornerRadius = 5;
@@ -39,9 +42,15 @@ namespace Circle.Game.Graphics.UserInterface
         /// <summary>
         /// 이 설정이 무엇인지 표시합니다.
         /// </summary>
-        public string Text { get; set; }
+        public string LabelText { get; set; }
 
-        public Bindable<T> Current { get; set; } = new Bindable<T>();
+        public Bindable<T> Current
+        {
+            get => current.Current;
+            set => current.Current = value;
+        }
+
+        private readonly BindableWithCurrent<T> current = new BindableWithCurrent<T>();
 
         public T Selected => (selectedIndex >= 0 && selectedIndex < Items.Count) ? Items[selectedIndex.Value].Value : default;
 
@@ -77,7 +86,7 @@ namespace Circle.Game.Graphics.UserInterface
                             {
                                 new CircleSpriteText
                                 {
-                                    Text = Text,
+                                    Text = LabelText,
                                     Anchor = Anchor.CentreLeft,
                                     Origin = Anchor.CentreLeft,
                                     Padding = new MarginPadding { Right = 20 },
@@ -122,6 +131,12 @@ namespace Circle.Game.Graphics.UserInterface
                     }
                 }
             };
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
             Select(Current.Value);
         }
 

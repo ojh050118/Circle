@@ -22,7 +22,7 @@ namespace Circle.Game.Screens.Setting.Sections
             {
                 new Stepper<bool>
                 {
-                    Text = "Load beatmaps on startup",
+                    LabelText = "Load beatmaps on startup",
                     Current = config.GetBindable<bool>(CircleSetting.LoadBeatmapsOnStartup),
                     Items = new[]
                     {

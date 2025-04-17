@@ -21,12 +21,12 @@ namespace Circle.Game.Screens.Setting.Sections
             {
                 new EnumStepper<WindowMode>
                 {
-                    Text = "Screen mode",
+                    LabelText = "Screen mode",
                     Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode)
                 },
                 new Stepper<FrameSync>
                 {
-                    Text = "Frame limiter",
+                    LabelText = "Frame limiter",
                     Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
                     Items = new[]
                     {
@@ -39,12 +39,12 @@ namespace Circle.Game.Screens.Setting.Sections
                 },
                 new EnumStepper<ExecutionMode>
                 {
-                    Text = "Threading mode",
+                    LabelText = "Threading mode",
                     Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode)
                 },
                 new Stepper<bool>
                 {
-                    Text = "Frame overlay",
+                    LabelText = "Frame overlay",
                     Current = localConfig.GetBindable<bool>(CircleSetting.FpsDisplay),
                     Items = new[]
                     {
@@ -62,7 +62,7 @@ namespace Circle.Game.Screens.Setting.Sections
                 },
                 new Stepper<bool>
                 {
-                    Text = "Overlay background blur",
+                    LabelText = "Overlay background blur",
                     Current = localConfig.GetBindable<bool>(CircleSetting.BlurVisibility),
                     Items = new[]
                     {
@@ -72,7 +72,7 @@ namespace Circle.Game.Screens.Setting.Sections
                 },
                 new Stepper<bool>
                 {
-                    Text = "Background parallax",
+                    LabelText = "Background parallax",
                     Current = localConfig.GetBindable<bool>(CircleSetting.Parallax),
                     Items = new[]
                     {
