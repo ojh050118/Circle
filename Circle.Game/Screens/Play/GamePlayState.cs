@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Circle.Game.Screens.Play
+﻿namespace Circle.Game.Screens.Play
 {
     public enum GamePlayState
     {

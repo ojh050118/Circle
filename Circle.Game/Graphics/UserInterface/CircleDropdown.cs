@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System.Linq;
+﻿using System.Linq;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
@@ -359,7 +357,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             public partial class CircleDropdownSearchBar : DropdownSearchBar
             {
-                private CircleDropdownHeader header;
+                private readonly CircleDropdownHeader header;
 
                 public CircleDropdownSearchBar(CircleDropdownHeader header)
                 {

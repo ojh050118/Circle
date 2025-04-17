@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace Circle.Game.Screens.Select
+﻿namespace Circle.Game.Screens.Select
 {
     public enum VerticalDirection
     {
