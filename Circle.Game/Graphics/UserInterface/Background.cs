@@ -13,7 +13,7 @@ using osuTK.Graphics;
 
 namespace Circle.Game.Graphics.UserInterface
 {
-    public partial class Background : Container
+    public partial class Background : Container, IEquatable<Background>
     {
         private readonly TextureSource source;
 
@@ -163,9 +163,18 @@ namespace Circle.Game.Graphics.UserInterface
         {
             foreach (var b in backgroundContainer)
             {
-                if (!currentTexture.Equals(b))
+                if (!ReferenceEquals(currentTexture, b))
                     b.Delay(untilExpireDuration).Expire();
             }
+        }
+
+        public virtual bool Equals(Background other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return other.GetType() == GetType()
+                   && other.TextureName == TextureName;
         }
     }
 

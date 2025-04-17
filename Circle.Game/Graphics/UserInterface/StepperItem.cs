@@ -2,6 +2,7 @@
 
 using System;
 using Circle.Game.Graphics.Containers;
+using JetBrains.Annotations;
 using osu.Framework;
 
 namespace Circle.Game.Graphics.UserInterface
@@ -54,6 +55,7 @@ namespace Circle.Game.Graphics.UserInterface
             }
         }
 
+        [CanBeNull]
         public event Action<SelectionState> StateChanged;
 
         private void stateChanged(SelectionState state)

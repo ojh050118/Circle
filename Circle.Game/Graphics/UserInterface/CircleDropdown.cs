@@ -246,7 +246,7 @@ namespace Circle.Game.Graphics.UserInterface
                                 Origin = Anchor.CentreLeft,
                                 Anchor = Anchor.CentreLeft,
                             },
-                            Label = new SpriteText
+                            Label = new CircleSpriteText
                             {
                                 X = 15,
                                 Origin = Anchor.CentreLeft,

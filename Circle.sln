@@ -18,12 +18,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		Circle.sln.DotSettings = Circle.sln.DotSettings
 		Directory.Build.props = Directory.Build.props
+		Circle.Android.props = Circle.Android.props
+		Circle.iOS.props = Circle.iOS.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Circle.Android", "Circle.Android\Circle.Android.csproj", "{AF741D23-EC33-4477-9E45-B93513317E2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Circle.Desktop.Deploy", "Circle.Desktop.Deploy\Circle.Desktop.Deploy.csproj", "{41808C64-E4BA-4DD6-921A-77ADA465BA72}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeAnalysis", "CodeAnalysis", "{FB156649-D457-4D1A-969C-D3A23FD31513}"
+ 	ProjectSection(SolutionItems) = preProject
+ 		CodeAnalysis\BannedSymbols.txt = CodeAnalysis\BannedSymbols.txt
+ 		CodeAnalysis\Circle.globalconfig = CodeAnalysis\Circle.globalconfig
+ 	EndProjectSection
+ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
