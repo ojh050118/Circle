@@ -11,8 +11,8 @@ namespace Circle.Desktop.Deploy
     public static partial class Program
     {
         private static string packages => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
-        private static string nugetPath => Path.Combine(packages, @"nuget.commandline\6.0.0\Tools\NuGet.exe");
-        private static string squirrelPath => Path.Combine(packages, @"clowd.squirrel\2.8.15-pre\Tools\Squirrel.exe");
+        private static string nugetPath => Path.Combine(packages, @"nuget.commandline\6.13.2\Tools\NuGet.exe");
+        private static string squirrelPath => Path.Combine(packages, @"clowd.squirrel\2.11.1\Tools\Squirrel.exe");
 
         private const string staging_folder = "staging";
         private const string templates_folder = "templates";
@@ -109,7 +109,7 @@ namespace Circle.Desktop.Deploy
                 case RuntimeInfo.Platform.Windows:
                     getAssetsFromRelease(lastRelease);
 
-                    runCommand("dotnet", $"publish -f net6.0 -r win-x64 {ProjectName} -o {stagingPath} --configuration Release /p:Version={version}");
+                    runCommand("dotnet", $"publish -f net8.0 -r win-x64 {ProjectName} -o {stagingPath} --configuration Release /p:Version={version}");
 
                     // dotnet 스텁의 하위 시스템을 Windows로 변경(기본값은 콘솔, 아직 변경할 방법 없음 https://github.com/dotnet/core-setup/issues/196)
                     runCommand("tools/editbin.exe", $"/SUBSYSTEM:WINDOWS {stagingPath}\\Circle.exe");
@@ -210,7 +210,7 @@ namespace Circle.Desktop.Deploy
                     );
 
                     runCommand("dotnet", "publish"
-                                         + " -f net6.0-android"
+                                         + " -f net8.0-android"
                                          + " -r android-arm64"
                                          + " -c Release"
                                          + $" -o {stagingPath}"
@@ -226,7 +226,7 @@ namespace Circle.Desktop.Deploy
 
                 case RuntimeInfo.Platform.iOS:
                     runCommand("dotnet", "publish"
-                                         + " -f net6.0-ios"
+                                         + " -f net8.0-ios"
                                          + " -r ios-arm64"
                                          + " -c Release"
                                          + $" -o {stagingPath}"
@@ -255,7 +255,7 @@ namespace Circle.Desktop.Deploy
                     // zip에는 실행 가능한 정보가 포함되어 있지 않으므로 AppRun을 실행 가능한 것으로 표시합니다.
                     runCommand("chmod", $"+x {stagingTarget}/AppRun");
 
-                    runCommand("dotnet", $"publish -f net6.0 -r linux-x64 {ProjectName} -o {stagingTarget}/usr/bin/ --configuration Release /p:Version={version} --self-contained");
+                    runCommand("dotnet", $"publish -f net8.0 -r linux-x64 {ProjectName} -o {stagingTarget}/usr/bin/ --configuration Release /p:Version={version} --self-contained");
 
                     // 출력을 실행 가능한 것으로 표시
                     runCommand("chmod", $"+x {stagingTarget}/usr/bin/Circle");

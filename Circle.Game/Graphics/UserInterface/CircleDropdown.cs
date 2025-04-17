@@ -5,6 +5,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Extensions.Color4Extensions;
+using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
@@ -13,7 +14,6 @@ using osu.Framework.Localisation;
 using osu.Framework.Logging;
 using osuTK;
 using osuTK.Graphics;
-using SharpCompress;
 
 namespace Circle.Game.Graphics.UserInterface
 {
