@@ -142,7 +142,7 @@ namespace Circle.Desktop.Deploy
                         }
                     }
 
-                    string codeSigningCertPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), CodeSigningCertificate);
+                    string codeSigningCertPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), CodeSigningCertificate ?? string.Empty);
                     string codeSigningCmd = string.IsNullOrEmpty(codeSigningPassword)
                         ? ""
                         : $"--signParams=\"/td sha256 /fd sha256 /f {codeSigningCertPath} /p {codeSigningPassword} /tr http://timestamp.comodoca.com\"";
@@ -231,7 +231,7 @@ namespace Circle.Desktop.Deploy
                                          + " -c Release"
                                          + $" -o {stagingPath}"
                                          + $" -p:Version={version}"
-                                         + $" -p:ApplicationDisplayVersion=1.0"
+                                         + " -p:ApplicationDisplayVersion=1.0"
                                          + " --self-contained"
                                          + " Circle.iOS/Circle.iOS.csproj");
 
@@ -249,7 +249,7 @@ namespace Circle.Desktop.Deploy
 
                     Directory.CreateDirectory(stagingTarget);
 
-                    foreach (var file in Directory.GetFiles(Path.Combine(templatesPath, app_dir)))
+                    foreach (string file in Directory.GetFiles(Path.Combine(templatesPath, app_dir)))
                         new FileInfo(file).CopyTo(Path.Combine(stagingTarget, Path.GetFileName(file)));
 
                     // zip에는 실행 가능한 정보가 포함되어 있지 않으므로 AppRun을 실행 가능한 것으로 표시합니다.
@@ -451,9 +451,9 @@ namespace Circle.Desktop.Deploy
                 write($"- 기존 릴리즈에 {version} 추가 중...", ConsoleColor.Yellow);
             }
 
-            var assetUploadUrl = targetRelease.UploadUrl.Replace("{?name,label}", "?name={0}");
+            string assetUploadUrl = targetRelease.UploadUrl.Replace("{?name,label}", "?name={0}");
 
-            foreach (var a in Directory.GetFiles(releases_folder).Reverse()) // RELEASES를 먼저 업로드하려면 역순입니다.
+            foreach (string a in Directory.GetFiles(releases_folder).Reverse()) // RELEASES를 먼저 업로드하려면 역순입니다.
             {
                 if (Path.GetFileName(a).StartsWith('.'))
                     continue;
@@ -546,8 +546,11 @@ namespace Circle.Desktop.Deploy
 
         private static void refreshDirectory(string directory)
         {
+            ArgumentNullException.ThrowIfNull(directory);
+
             if (Directory.Exists(directory))
                 Directory.Delete(directory, true);
+
             Directory.CreateDirectory(directory);
         }
 
@@ -613,7 +616,7 @@ namespace Circle.Desktop.Deploy
         {
             var fg = Console.ForegroundColor;
             Console.ForegroundColor = Console.BackgroundColor;
-            var ret = Console.ReadLine();
+            string ret = Console.ReadLine();
             Console.ForegroundColor = fg;
 
             return ret;
@@ -693,7 +696,7 @@ namespace Circle.Desktop.Deploy
 
         public ReleaseLine(string line)
         {
-            var split = line.Split(' ');
+            string[] split = line.Split(' ');
             Hash = split[0];
             Filename = split[1];
             FileSize = int.Parse(split[2]);
