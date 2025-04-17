@@ -70,7 +70,7 @@ namespace Circle.Game.Beatmaps
         public async Task LoadBeatmapsAsync()
         {
             Logger.Log("Loading beatmaps...");
-            loadedBeatmaps = await beatmapStorage.GetBeatmapInfosAsync();
+            loadedBeatmaps = await beatmapStorage.GetBeatmapInfosAsync().ConfigureAwait(false);
             OnLoadedBeatmaps?.Invoke(loadedBeatmaps);
 
             if (!loadedBeatmaps.Exists(b => b.Equals(CurrentBeatmap)))

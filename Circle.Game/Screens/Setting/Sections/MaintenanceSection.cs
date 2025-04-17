@@ -37,7 +37,7 @@ namespace Circle.Game.Screens.Setting.Sections
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
                     Text = "Reload beatmaps",
-                    Action = () => Task.Run(async () => await beatmap.LoadBeatmapsAsync())
+                    Action = () => Task.Run(async () => await beatmap.LoadBeatmapsAsync().ConfigureAwait(false))
                 },
             });
         }

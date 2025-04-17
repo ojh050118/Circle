@@ -22,8 +22,7 @@ namespace Circle.Game.Overlays
 
         public void Push(CarouselItem target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
 
             target.ProxyToContainer((Container)Content);
             currentItem = target;
