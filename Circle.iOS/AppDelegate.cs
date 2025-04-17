@@ -1,5 +1,6 @@
 using Circle.Game;
 using Foundation;
+using osu.Framework.iOS;
 
 namespace Circle.iOS
 {
