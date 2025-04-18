@@ -1,5 +1,6 @@
 #nullable disable
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Graphics.Containers;
@@ -19,7 +20,7 @@ namespace Circle.Game.Graphics.UserInterface
     /// <summary>
     /// 방향으로 값을 바꿀 수있는 컨트롤.
     /// </summary>
-    ///  TODO: StepperControl로 이름 변경
+    [Obsolete]
     public partial class Stepper<T> : Container, IHasCurrentValue<T>
     {
         /// <summary>

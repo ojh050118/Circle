@@ -30,6 +30,8 @@ namespace Circle.Game.Graphics.UserInterface
         {
             Masking = true;
             CornerRadius = 5;
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
             RelativeSizeAxes = Axes.X;
             Height = 40;
 

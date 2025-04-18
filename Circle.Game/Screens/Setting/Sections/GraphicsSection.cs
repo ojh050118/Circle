@@ -19,37 +19,29 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new EnumStepper<WindowMode>
+                new CircleEnumStepperControl<WindowMode>
                 {
                     LabelText = "Screen mode",
                     Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode)
                 },
-                new Stepper<FrameSync>
+                new CircleEnumStepperControl<FrameSync>
                 {
                     LabelText = "Frame limiter",
-                    Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
-                    Items = new[]
-                    {
-                        new StepperItem<FrameSync>("2x", FrameSync.Limit2x),
-                        new StepperItem<FrameSync>("4x", FrameSync.Limit4x),
-                        new StepperItem<FrameSync>("8x", FrameSync.Limit8x),
-                        new StepperItem<FrameSync>(FrameSync.Unlimited),
-                        new StepperItem<FrameSync>(FrameSync.VSync)
-                    }
+                    Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync)
                 },
-                new EnumStepper<ExecutionMode>
+                new CircleEnumStepperControl<ExecutionMode>
                 {
                     LabelText = "Threading mode",
                     Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode)
                 },
-                new Stepper<bool>
+                new CircleStepperControl<bool>
                 {
                     LabelText = "Frame overlay",
                     Current = localConfig.GetBindable<bool>(CircleSetting.FpsDisplay),
                     Items = new[]
                     {
-                        new StepperItem<bool>("On", true),
-                        new StepperItem<bool>("Off", false),
+                        true,
+                        false
                     }
                 },
                 new SettingsSlider<float>
@@ -60,24 +52,24 @@ namespace Circle.Game.Screens.Setting.Sections
                     RightIcon = FontAwesome.Solid.Expand,
                     TransferValueOnCommit = true,
                 },
-                new Stepper<bool>
+                new CircleStepperControl<bool>
                 {
                     LabelText = "Overlay background blur",
                     Current = localConfig.GetBindable<bool>(CircleSetting.BlurVisibility),
                     Items = new[]
                     {
-                        new StepperItem<bool>("Off", false),
-                        new StepperItem<bool>("On", true),
+                        false,
+                        true,
                     }
                 },
-                new Stepper<bool>
+                new CircleStepperControl<bool>
                 {
                     LabelText = "Background parallax",
                     Current = localConfig.GetBindable<bool>(CircleSetting.Parallax),
                     Items = new[]
                     {
-                        new StepperItem<bool>("Off", false),
-                        new StepperItem<bool>("On", true),
+                        false,
+                        true
                     }
                 }
             });
