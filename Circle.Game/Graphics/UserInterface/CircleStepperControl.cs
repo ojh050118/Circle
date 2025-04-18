@@ -106,6 +106,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             public override void OnValueChanged<U>(ValueChangedEvent<U> e)
             {
+                // TODO: 값 대신 이름을 사용할  발법을 찾아보도록 하자
                 text.Text = e.NewValue?.ToString() ?? string.Empty;
             }
         }
