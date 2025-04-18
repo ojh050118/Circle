@@ -1,7 +1,6 @@
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.UserInterface;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -10,15 +9,11 @@ namespace Circle.Game.Graphics.UserInterface
         public readonly Bindable<bool> NextEnabled = new BindableBool(true);
         public readonly Bindable<bool> PreviousEnabled = new BindableBool(true);
 
-        protected abstract Button PreviousButton { get; }
-        protected abstract Button NextButton { get; }
+        protected abstract ClickableContainer PreviousButton { get; }
+        protected abstract ClickableContainer NextButton { get; }
 
         [Resolved]
         private IStepperControl stepper { get; set; } = null!;
-
-        protected StepperControlPanel()
-        {
-        }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -28,6 +23,10 @@ namespace Circle.Game.Graphics.UserInterface
 
             PreviousEnabled.BindTo(PreviousButton.Enabled);
             NextEnabled.BindTo(NextButton.Enabled);
+        }
+
+        public virtual void OnValueChanged<T>(ValueChangedEvent<T> e)
+        {
         }
     }
 }

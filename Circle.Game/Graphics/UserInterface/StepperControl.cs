@@ -9,7 +9,6 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.UserInterface;
-using osu.Framework.Localisation;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -26,7 +25,20 @@ namespace Circle.Game.Graphics.UserInterface
 
         public BindableBool Enabled = new BindableBool(true);
 
-        public bool AllowControlCycling;
+        public bool AllowValueCycling
+        {
+            get => allowValueCycling;
+            set
+            {
+                if (allowValueCycling == value)
+                    return;
+
+                allowValueCycling = value;
+                UpdateControlState();
+            }
+        }
+
+        private bool allowValueCycling;
 
         protected abstract StepperControlPanel CreateControlPanel();
 
@@ -73,11 +85,12 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         private readonly List<T> steps = new List<T>();
-        private int selectedIndex = -1;
+        private int selectedIndex => steps.IndexOf(Current.Value);
 
         private void setItems(IEnumerable<T> value)
         {
             itemMap.Clear();
+            steps.Clear();
 
             if (value == null)
                 return;
@@ -99,12 +112,27 @@ namespace Circle.Game.Graphics.UserInterface
 
             itemMap[value] = item;
             steps.Add(value);
+
+            UpdateControlState();
         }
+
+        public bool RemoveItem(T value)
+        {
+            if (value == null)
+                return false;
+
+            itemMap.Remove(value);
+            steps.Remove(value);
+
+            UpdateControlState();
+
+            return true;
+        }
+
+        public void ClearItems() => setItems(null);
 
         protected Container Background;
         protected Container Foreground;
-
-        protected abstract LocalisableString ValueText { get; set; }
 
         public event Action SelectionChanged;
 
@@ -116,6 +144,15 @@ namespace Circle.Game.Graphics.UserInterface
                 Foreground = new Container { RelativeSizeAxes = Axes.Both },
                 controlPanel = CreateControlPanel()
             };
+
+            Current.ValueChanged += v => Select(v.NewValue);
+            Current.ValueChanged += controlPanel.OnValueChanged;
+        }
+
+        protected override void LoadComplete()
+        {
+            Current.TriggerChange();
+            UpdateControlState();
         }
 
         public bool MoveTo(int step)
@@ -125,7 +162,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             if (selectedIndex + step > steps.Count - 1 || selectedIndex + step < 0)
             {
-                if (!AllowControlCycling)
+                if (!AllowValueCycling)
                     return false;
 
                 Select(steps[step >= 0 ? step - 1 : steps.Count + selectedIndex + step]);
@@ -158,10 +195,8 @@ namespace Circle.Game.Graphics.UserInterface
                 return;
 
             Current.Value = value;
-            SelectionChanged?.Invoke();
 
-            selectedIndex = steps.IndexOf(value);
-
+            OnSelectionChanged();
             UpdateControlState();
         }
 
@@ -174,19 +209,24 @@ namespace Circle.Game.Graphics.UserInterface
                 return;
             }
 
-            var rangeState = CheckValueRangeReached();
-
-            // TODO: AllowControlCycling 값을 변경하럐도 이 메서드 호출
-            if (AllowControlCycling)
+            if (AllowValueCycling)
+            {
+                controlPanel.NextEnabled.Value = true;
+                controlPanel.PreviousEnabled.Value = true;
                 return;
+            }
+
+            var rangeState = CheckValueRangeReached();
 
             if (rangeState == ValueRangeReachedState.Minimum)
             {
                 controlPanel.PreviousEnabled.Value = false;
+                controlPanel.NextEnabled.Value = true;
             }
             else if (rangeState == ValueRangeReachedState.Maximum)
             {
                 controlPanel.NextEnabled.Value = false;
+                controlPanel.PreviousEnabled.Value = true;
             }
             else
             {
@@ -195,7 +235,21 @@ namespace Circle.Game.Graphics.UserInterface
             }
         }
 
-        protected abstract ValueRangeReachedState CheckValueRangeReached();
+        protected virtual void OnSelectionChanged()
+        {
+            SelectionChanged?.Invoke();
+        }
+
+        protected virtual ValueRangeReachedState CheckValueRangeReached()
+        {
+            if (selectedIndex == 0)
+                return ValueRangeReachedState.Minimum;
+
+            if (selectedIndex == steps.Count - 1)
+                return ValueRangeReachedState.Maximum;
+
+            return ValueRangeReachedState.None;
+        }
 
         #region IEnumerator
 

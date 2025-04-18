@@ -18,5 +18,11 @@ namespace Circle.Game.Graphics.UserInterface
         {
             Value = value;
         }
+
+        public StepperControlItem(T value)
+            : base(value?.ToString() ?? string.Empty)
+        {
+            Value = value;
+        }
     }
 }
