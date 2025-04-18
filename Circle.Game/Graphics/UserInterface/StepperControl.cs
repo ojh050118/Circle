@@ -1,6 +1,7 @@
 #nullable disable
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
@@ -13,7 +14,7 @@ using osu.Framework.Localisation;
 namespace Circle.Game.Graphics.UserInterface
 {
     [Cached(typeof(IStepperControl))]
-    public abstract partial class StepperControl<T> : CompositeDrawable, IStepperControl, IHasCurrentValue<T>
+    public abstract partial class StepperControl<T> : CompositeDrawable, IStepperControl, IHasCurrentValue<T>, IEnumerator<T>
     {
         public Bindable<T> Current
         {
@@ -71,6 +72,9 @@ namespace Circle.Game.Graphics.UserInterface
             }
         }
 
+        private readonly List<T> steps = new List<T>();
+        private int selectedIndex = -1;
+
         private void setItems(IEnumerable<T> value)
         {
             itemMap.Clear();
@@ -94,15 +98,13 @@ namespace Circle.Game.Graphics.UserInterface
             });
 
             itemMap[value] = item;
+            steps.Add(value);
         }
 
         protected Container Background;
         protected Container Foreground;
 
         protected abstract LocalisableString ValueText { get; set; }
-
-        public event Action maxValueReached;
-        public event Action minValueReached;
 
         public event Action SelectionChanged;
 
@@ -116,8 +118,36 @@ namespace Circle.Game.Graphics.UserInterface
             };
         }
 
-        public abstract void MoveNext();
-        public abstract void MovePrevious();
+        public bool MoveTo(int step)
+        {
+            if (step == 0)
+                return true;
+
+            if (selectedIndex + step > steps.Count - 1 || selectedIndex + step < 0)
+            {
+                if (!AllowControlCycling)
+                    return false;
+
+                Select(steps[step >= 0 ? step - 1 : steps.Count + selectedIndex + step]);
+                return true;
+            }
+
+            Select(steps[selectedIndex + step]);
+
+            return true;
+        }
+
+        public bool MoveNext() => MoveTo(1);
+
+        public void Reset()
+        {
+            if (steps.Count == 0)
+                return;
+
+            Select(steps[0]);
+        }
+
+        public void MovePrevious() => MoveTo(-1);
 
         public void Select(T value)
         {
@@ -129,6 +159,8 @@ namespace Circle.Game.Graphics.UserInterface
 
             Current.Value = value;
             SelectionChanged?.Invoke();
+
+            selectedIndex = steps.IndexOf(value);
 
             UpdateControlState();
         }
@@ -150,12 +182,10 @@ namespace Circle.Game.Graphics.UserInterface
 
             if (rangeState == ValueRangeReachedState.Minimum)
             {
-                minValueReached?.Invoke();
                 controlPanel.PreviousEnabled.Value = false;
             }
             else if (rangeState == ValueRangeReachedState.Maximum)
             {
-                maxValueReached?.Invoke();
                 controlPanel.NextEnabled.Value = false;
             }
             else
@@ -166,6 +196,16 @@ namespace Circle.Game.Graphics.UserInterface
         }
 
         protected abstract ValueRangeReachedState CheckValueRangeReached();
+
+        #region IEnumerator
+
+        T IEnumerator<T>.Current => Current.Value;
+
+        object IEnumerator.Current => Current.Value;
+
+        bool IEnumerator.MoveNext() => MoveNext();
+
+        #endregion
 
         public enum ValueRangeReachedState
         {
