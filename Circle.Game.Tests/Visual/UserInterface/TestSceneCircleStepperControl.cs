@@ -34,15 +34,26 @@ namespace Circle.Game.Tests.Visual.UserInterface
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
                             LabelText = "int stepper(no initial value)",
-                            Items = new[] { 1, 2, 3 }
+                            Items = new[]
+                            {
+                                new StepperControlItem<int>(1),
+                                new StepperControlItem<int>(2),
+                                new StepperControlItem<int>(3)
+                            }
                         },
                         stringStepper = new CircleStepperControl<string>
                         {
                             Anchor = Anchor.TopLeft,
                             Origin = Anchor.TopLeft,
                             LabelText = "string stepper",
-                            Current = new Bindable<string>("String2"),
-                            Items = new[] { "string1", "string2", "string3", "string4" }
+                            Current = new Bindable<string>("string2"),
+                            Items = new[]
+                            {
+                                new StepperControlItem<string>("string1"),
+                                new StepperControlItem<string>("string2"),
+                                new StepperControlItem<string>("string3"),
+                                new StepperControlItem<string>("string4")
+                            }
                         },
                         enumStepper = new CircleEnumStepperControl<TestEnum>
                         {
@@ -138,21 +149,21 @@ namespace Circle.Game.Tests.Visual.UserInterface
             AddLabel("empty float stepper");
             AddAssert("Disallow value cycling", () =>
             {
-                enumStepper.AllowValueCycling = false;
-                return enumStepper.AllowValueCycling == false;
+                emptyStepper.AllowValueCycling = false;
+                return emptyStepper.AllowValueCycling == false;
             });
             AddAssert("Ensure no items", () =>
             {
                 emptyStepper.ClearItems();
                 return !emptyStepper.Items.Any();
             });
-            AddStep("Add value 0.1", () => emptyStepper.AddItem(0.1f));
+            AddStep("Add value 0.1", () => emptyStepper.AddItem(new StepperControlItem<float>(0.1f)));
             AddAssert("Select 0.1", () =>
             {
                 emptyStepper.Select(0.1f);
                 return Precision.AlmostEquals(emptyStepper.Current.Value, 0.1f);
             });
-            AddStep("Add value 0.9", () => emptyStepper.AddItem(0.9f));
+            AddStep("Add value 0.9", () => emptyStepper.AddItem(new StepperControlItem<float>(0.9f)));
             AddRepeatStep("Select next", () => emptyStepper.MoveNext(), 5);
             AddAssert("Ensure current value is 0.9", () => Precision.AlmostEquals(emptyStepper.Current.Value, 0.9f));
             AddRepeatStep("Select previous", emptyStepper.MovePrevious, 5);

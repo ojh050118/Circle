@@ -26,8 +26,8 @@ namespace Circle.Game.Screens.Setting.Sections
                     Current = config.GetBindable<bool>(CircleSetting.LoadBeatmapsOnStartup),
                     Items = new[]
                     {
-                        true,
-                        false
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 },
                 new BoxButton

@@ -27,7 +27,15 @@ namespace Circle.Game.Screens.Setting.Sections
                 new CircleEnumStepperControl<FrameSync>
                 {
                     LabelText = "Frame limiter",
-                    Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync)
+                    Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
+                    Items = new[]
+                    {
+                        new StepperControlItem<FrameSync>("2x", FrameSync.Limit2x),
+                        new StepperControlItem<FrameSync>("4x", FrameSync.Limit4x),
+                        new StepperControlItem<FrameSync>("8x", FrameSync.Limit8x),
+                        new StepperControlItem<FrameSync>(FrameSync.Unlimited),
+                        new StepperControlItem<FrameSync>(FrameSync.VSync)
+                    }
                 },
                 new CircleEnumStepperControl<ExecutionMode>
                 {
@@ -40,8 +48,8 @@ namespace Circle.Game.Screens.Setting.Sections
                     Current = localConfig.GetBindable<bool>(CircleSetting.FpsDisplay),
                     Items = new[]
                     {
-                        true,
-                        false
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 },
                 new SettingsSlider<float>
@@ -58,8 +66,8 @@ namespace Circle.Game.Screens.Setting.Sections
                     Current = localConfig.GetBindable<bool>(CircleSetting.BlurVisibility),
                     Items = new[]
                     {
-                        false,
-                        true,
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 },
                 new CircleStepperControl<bool>
@@ -68,8 +76,8 @@ namespace Circle.Game.Screens.Setting.Sections
                     Current = localConfig.GetBindable<bool>(CircleSetting.Parallax),
                     Items = new[]
                     {
-                        false,
-                        true
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 }
             });

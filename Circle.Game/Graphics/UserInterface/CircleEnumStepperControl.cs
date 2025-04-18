@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Circle.Game.Graphics.UserInterface
 {
@@ -6,7 +7,7 @@ namespace Circle.Game.Graphics.UserInterface
     {
         public CircleEnumStepperControl()
         {
-            Items = (T[])Enum.GetValues(typeof(T));
+            Items = Enum.GetValues<T>().Select(e => new StepperControlItem<T>(e));
         }
     }
 }

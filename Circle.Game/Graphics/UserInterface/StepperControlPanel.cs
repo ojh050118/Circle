@@ -25,7 +25,7 @@ namespace Circle.Game.Graphics.UserInterface
             NextEnabled.BindTo(NextButton.Enabled);
         }
 
-        public virtual void OnValueChanged<T>(ValueChangedEvent<T> e)
+        public virtual void OnValueChanged<T>(ValueChangedEvent<StepperControlItem<T>> e)
         {
         }
     }

@@ -1,3 +1,5 @@
+#nullable disable
+
 using Circle.Game.Graphics.Sprites;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -104,10 +106,9 @@ namespace Circle.Game.Graphics.UserInterface
                 };
             }
 
-            public override void OnValueChanged<U>(ValueChangedEvent<U> e)
+            public override void OnValueChanged<U>(ValueChangedEvent<StepperControlItem<U>> e)
             {
-                // TODO: 값 대신 이름을 사용할  발법을 찾아보도록 하자
-                text.Text = e.NewValue?.ToString() ?? string.Empty;
+                text.Text = e.NewValue?.Text.ToString() ?? string.Empty;
             }
         }
     }
