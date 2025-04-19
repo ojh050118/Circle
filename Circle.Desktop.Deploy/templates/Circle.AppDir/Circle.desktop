@@ -1,0 +1,14 @@
+# Desktop Entry Specification: https://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=Circle
+Comment=Fanmade game client of "A Dance of Fire and Ice" (ADOFAI).
+Icon=Circle
+Exec=Circle %u
+Terminal=false
+MimeType=application/x-Circle-beatmap-archive;application/x-Circle-beatmap;x-scheme-handler/Circle;
+Categories=Game;
+StartupWMClass=Circle
+SingleMainWindow=true
+StartupNotify=true
