@@ -41,6 +41,6 @@
     <None Update="Circle-velopack.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Folder Include="Templates\" />
+    <Folder Include="templates\"/>
   </ItemGroup>
 </Project>
