@@ -1,7 +1,10 @@
 ﻿#nullable disable
 
+using System;
+using System.Linq;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Configuration;
 using osu.Framework.Graphics;
@@ -14,6 +17,8 @@ namespace Circle.Game.Screens.Setting.Sections
     {
         public override string Header => "Graphics";
 
+        private SettingsEnumDropdown<RendererType> renderer;
+
         [BackgroundDependencyLoader]
         private void load(CircleConfigManager localConfig, FrameworkConfigManager config)
         {
@@ -23,6 +28,11 @@ namespace Circle.Game.Screens.Setting.Sections
                 {
                     LabelText = "Screen mode",
                     Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode)
+                },
+                renderer = new SettingsEnumDropdown<RendererType>
+                {
+                    Text = "Renderer",
+                    Current = config.GetBindable<RendererType>(FrameworkSetting.Renderer)
                 },
                 new CircleEnumStepperControl<FrameSync>
                 {
@@ -81,6 +91,36 @@ namespace Circle.Game.Screens.Setting.Sections
                     }
                 }
             });
+        }
+
+        protected override void LoadComplete()
+        {
+            var availableRenderers = Enum.GetValues<RendererType>().Except(new[] { RendererType.Vulkan, RendererType.Deferred_Vulkan });
+
+            switch (RuntimeInfo.OS)
+            {
+                case RuntimeInfo.Platform.Windows:
+                    availableRenderers = availableRenderers.Except(new[] { RendererType.Metal, RendererType.Deferred_Metal });
+                    break;
+
+                case RuntimeInfo.Platform.Linux:
+                    availableRenderers = availableRenderers.Except(new[] { RendererType.Direct3D11, RendererType.Deferred_Direct3D11, RendererType.Metal, RendererType.Deferred_Metal });
+                    break;
+
+                case RuntimeInfo.Platform.macOS:
+                    availableRenderers = availableRenderers.Except(new[] { RendererType.Direct3D11, RendererType.Deferred_Direct3D11 });
+                    break;
+
+                case RuntimeInfo.Platform.Android:
+                    availableRenderers = availableRenderers.Except(new[] { RendererType.Direct3D11, RendererType.Deferred_Direct3D11, RendererType.Metal, RendererType.Deferred_Metal });
+                    break;
+
+                case RuntimeInfo.Platform.iOS:
+                    availableRenderers = availableRenderers.Except(new[] { RendererType.Direct3D11, RendererType.Deferred_Direct3D11 });
+                    break;
+            }
+
+            renderer.Items = availableRenderers;
         }
     }
 }
