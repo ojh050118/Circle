@@ -342,3 +342,4 @@ inspectcode
 /.idea
 .idea/.idea.Circle/.idea/projectSettingsUpdater.xml
 *.config
+Circle.Desktop.Deploy/App.config
