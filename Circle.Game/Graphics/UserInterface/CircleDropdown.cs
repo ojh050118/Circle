@@ -21,9 +21,7 @@ namespace Circle.Game.Graphics.UserInterface
     {
         private const float corner_radius = 5;
 
-#pragma warning disable CS8618
-        private CircleDropdownMenu menu;
-#pragma warning restore CS8618
+        private CircleDropdownMenu menu = null!;
 
         public float? MaxWidth
         {

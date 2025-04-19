@@ -1,5 +1,6 @@
 #nullable disable
 
+using System.Numerics;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
@@ -8,13 +9,13 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osuTK;
 using osuTK.Graphics;
+using Vector2 = osuTK.Vector2;
 
 namespace Circle.Game.Screens.Setting
 {
     public partial class SettingsSlider<T> : Container
-        where T : struct, System.Numerics.INumber<T>, System.Numerics.IMinMaxValue<T>
+        where T : struct, INumber<T>, IMinMaxValue<T>
     {
         public string Text
         {
@@ -58,6 +59,7 @@ namespace Circle.Game.Screens.Setting
 
         private CircleSliderBar<T> sliderBar { get; }
 
+        // TODO: StepperControl로 대체가능성이 있음
         public SettingsSlider()
         {
             Anchor = Anchor.Centre;

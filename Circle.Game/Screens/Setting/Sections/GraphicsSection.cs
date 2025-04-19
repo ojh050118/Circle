@@ -19,37 +19,37 @@ namespace Circle.Game.Screens.Setting.Sections
         {
             FlowContent.AddRange(new Drawable[]
             {
-                new EnumStepper<WindowMode>
+                new CircleEnumStepperControl<WindowMode>
                 {
-                    Text = "Screen mode",
+                    LabelText = "Screen mode",
                     Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode)
                 },
-                new Stepper<FrameSync>
+                new CircleEnumStepperControl<FrameSync>
                 {
-                    Text = "Frame limiter",
+                    LabelText = "Frame limiter",
                     Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
                     Items = new[]
                     {
-                        new StepperItem<FrameSync>("2x", FrameSync.Limit2x),
-                        new StepperItem<FrameSync>("4x", FrameSync.Limit4x),
-                        new StepperItem<FrameSync>("8x", FrameSync.Limit8x),
-                        new StepperItem<FrameSync>(FrameSync.Unlimited),
-                        new StepperItem<FrameSync>(FrameSync.VSync)
+                        new StepperControlItem<FrameSync>("2x", FrameSync.Limit2x),
+                        new StepperControlItem<FrameSync>("4x", FrameSync.Limit4x),
+                        new StepperControlItem<FrameSync>("8x", FrameSync.Limit8x),
+                        new StepperControlItem<FrameSync>(FrameSync.Unlimited),
+                        new StepperControlItem<FrameSync>(FrameSync.VSync)
                     }
                 },
-                new EnumStepper<ExecutionMode>
+                new CircleEnumStepperControl<ExecutionMode>
                 {
-                    Text = "Threading mode",
+                    LabelText = "Threading mode",
                     Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode)
                 },
-                new Stepper<bool>
+                new CircleStepperControl<bool>
                 {
-                    Text = "Frame overlay",
+                    LabelText = "Frame overlay",
                     Current = localConfig.GetBindable<bool>(CircleSetting.FpsDisplay),
                     Items = new[]
                     {
-                        new StepperItem<bool>("On", true),
-                        new StepperItem<bool>("Off", false),
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 },
                 new SettingsSlider<float>
@@ -60,24 +60,24 @@ namespace Circle.Game.Screens.Setting.Sections
                     RightIcon = FontAwesome.Solid.Expand,
                     TransferValueOnCommit = true,
                 },
-                new Stepper<bool>
+                new CircleStepperControl<bool>
                 {
-                    Text = "Overlay background blur",
+                    LabelText = "Overlay background blur",
                     Current = localConfig.GetBindable<bool>(CircleSetting.BlurVisibility),
                     Items = new[]
                     {
-                        new StepperItem<bool>("Off", false),
-                        new StepperItem<bool>("On", true),
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 },
-                new Stepper<bool>
+                new CircleStepperControl<bool>
                 {
-                    Text = "Background parallax",
+                    LabelText = "Background parallax",
                     Current = localConfig.GetBindable<bool>(CircleSetting.Parallax),
                     Items = new[]
                     {
-                        new StepperItem<bool>("Off", false),
-                        new StepperItem<bool>("On", true),
+                        new StepperControlItem<bool>("Off", false),
+                        new StepperControlItem<bool>("On", true)
                     }
                 }
             });

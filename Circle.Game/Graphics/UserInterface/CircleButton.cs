@@ -3,6 +3,7 @@
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -38,6 +39,8 @@ namespace Circle.Game.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                 }
             };
+
+            Enabled.BindValueChanged(enabledChanged, true);
         }
 
         public new float CornerRadius
@@ -66,6 +69,9 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override bool OnHover(HoverEvent e)
         {
+            if (!Enabled.Value)
+                return base.OnHover(e);
+
             hoverSample?.Play();
             box.FadeColour(colours.TransparentGray, 250, Easing.OutQuint);
 
@@ -81,6 +87,9 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override bool OnMouseDown(MouseDownEvent e)
         {
+            if (!Enabled.Value)
+                return base.OnMouseDown(e);
+
             Child.ScaleTo(0.9f, 1500, Easing.OutPow10);
 
             return base.OnMouseDown(e);
@@ -88,6 +97,9 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override void OnMouseUp(MouseUpEvent e)
         {
+            if (!Enabled.Value)
+                return;
+
             Child.ScaleTo(1, 1500, Easing.OutPow10);
 
             base.OnMouseUp(e);
@@ -95,9 +107,18 @@ namespace Circle.Game.Graphics.UserInterface
 
         protected override bool OnClick(ClickEvent e)
         {
+            if (!Enabled.Value)
+                return base.OnClick(e);
+
             clickSample?.Play();
 
             return base.OnClick(e);
+        }
+
+        private void enabledChanged(ValueChangedEvent<bool> e)
+        {
+            this.FadeTo(e.NewValue ? 1f : 0.33f, 500, Easing.OutPow10);
+            Child.ScaleTo(e.NewValue ? 1f : 0.9f, 500, Easing.OutPow10);
         }
     }
 }
