@@ -160,13 +160,13 @@ namespace Circle.Game.Beatmaps
                 {
                     string fileStorePath = Path.Combine(BeatmapInfo.File.Directory!.Name, Metadata.BgVideo);
 
-                    if (!File.Exists(fileStorePath))
+                    if (resources.Files.GetAvailableResources().FirstOrDefault(f => f == fileStorePath) == null)
                     {
                         Logger.Log($"Beatmap video failed to load (file {Metadata.BgVideo} not found on disk at expected location {fileStorePath}).");
                         return null;
                     }
 
-                    var video = File.Open(fileStorePath, FileMode.Open);
+                    var video = GetStream(fileStorePath);
 
                     return video;
                 }

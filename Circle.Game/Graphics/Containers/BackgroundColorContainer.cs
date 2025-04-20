@@ -35,6 +35,8 @@ namespace Circle.Game.Graphics.Containers
         private async Task backgroundColorChanged(BeatmapInfo beatmapInfo)
         {
             await colorGetCancellation.CancelAsync().ConfigureAwait(true);
+            colorGetCancellation.Dispose();
+
             colorGetCancellation = new CancellationTokenSource();
 
             Color4 color = DefaultColour;

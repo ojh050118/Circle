@@ -112,7 +112,9 @@ namespace Circle.Game.Screens.Select
                 },
             };
 
-            foreach (var bi in beatmapManager.GetAvailableBeatmaps())
+            var beatmaps = beatmapManager.GetAvailableBeatmaps();
+
+            foreach (var bi in beatmaps)
                 carousel.Add(bi, () => this.Push(new PlayerLoader(carousel.SelectedItem.Value.BeatmapInfo)));
 
             workingBeatmap.ValueChanged += workingBeatmapChanged;
