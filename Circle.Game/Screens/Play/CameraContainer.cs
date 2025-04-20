@@ -20,31 +20,31 @@ namespace Circle.Game.Screens.Play
         public new Container Content;
         private Container offsetContainer, positionContainer, scalingContainer;
 
-        public void InitializeSettings(Settings settings)
+        public void InitializeSettings(BeatmapMetadata metadata)
         {
-            scalingContainer.Rotation = settings.Rotation;
-            float zoom = Precision.AlmostEquals(settings.Zoom, 0) ? 100 : settings.Zoom;
+            scalingContainer.Rotation = metadata.Rotation;
+            float zoom = Precision.AlmostEquals(metadata.Zoom, 0) ? 100 : metadata.Zoom;
             scalingContainer.Scale = new Vector2(1 / (zoom / 100));
-            offsetContainer.Position = settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+            offsetContainer.Position = metadata.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
         }
 
         public void AddCameraTransforms(Beatmap beatmap, IReadOnlyList<double> tileStartTime)
         {
             #region Initialize Camera Setting
 
-            float bpm = beatmap.Settings.Bpm;
+            float bpm = beatmap.Metadata.Bpm;
 
             // 카메라 이동을 위한 전역 설정입니다.
-            Relativity cameraRelativity = beatmap.Settings.RelativeTo;
-            Vector2 cameraOffset = beatmap.Settings.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+            Relativity cameraRelativity = beatmap.Metadata.RelativeTo;
+            Vector2 cameraOffset = beatmap.Metadata.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
             Vector2 cameraPosition = cameraOffset;
-            float cameraRotation = beatmap.Settings.Rotation;
+            float cameraRotation = beatmap.Metadata.Rotation;
 
             var tilesInfo = beatmap.TilesInfo;
             var cameraTransforms = new List<CameraTransform>();
 
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
-            if (beatmap.Settings.RelativeTo == Relativity.LastPosition)
+            if (beatmap.Metadata.RelativeTo == Relativity.LastPosition)
                 cameraRelativity = Relativity.Player;
 
             #endregion
@@ -60,19 +60,19 @@ namespace Circle.Game.Screens.Play
 
                 foreach (var action in tilesInfo[floor].Action)
                 {
-                    void setCameraProperty(Actions cameraAction)
+                    void setCameraProperty(ActionEvents cameraActionEvent)
                     {
-                        var offset = cameraAction.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+                        var offset = cameraActionEvent.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
 
-                        if (cameraAction.RelativeTo != Relativity.LastPosition)
+                        if (cameraActionEvent.RelativeTo != Relativity.LastPosition)
                         {
                             cameraOffset = offset;
 
-                            if (cameraAction.Rotation.HasValue)
-                                cameraRotation = cameraAction.Rotation.Value;
+                            if (cameraActionEvent.Rotation.HasValue)
+                                cameraRotation = cameraActionEvent.Rotation.Value;
                         }
 
-                        switch (cameraAction.RelativeTo)
+                        switch (cameraActionEvent.RelativeTo)
                         {
                             case Relativity.Global:
                                 cameraPosition = Vector2.Zero;
@@ -87,8 +87,8 @@ namespace Circle.Game.Screens.Play
                                 if (cameraRelativity == Relativity.Player)
                                     cameraPosition = position;
 
-                                if (cameraAction.Rotation.HasValue)
-                                    cameraRotation += cameraAction.Rotation.Value;
+                                if (cameraActionEvent.Rotation.HasValue)
+                                    cameraRotation += cameraActionEvent.Rotation.Value;
 
                                 cameraOffset += offset;
                                 break;
@@ -97,8 +97,8 @@ namespace Circle.Game.Screens.Play
                                 break;
                         }
 
-                        if (cameraAction.RelativeTo != null && cameraAction.RelativeTo != Relativity.LastPosition)
-                            cameraRelativity = cameraAction.RelativeTo.Value;
+                        if (cameraActionEvent.RelativeTo != null && cameraActionEvent.RelativeTo != Relativity.LastPosition)
+                            cameraRelativity = cameraActionEvent.RelativeTo.Value;
                     }
 
                     switch (action.EventType)

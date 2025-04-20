@@ -13,160 +13,54 @@ namespace Circle.Game.Beatmaps
 {
     public class Beatmap : IEquatable<Beatmap>
     {
+        public float[] AngleData { get; set; }
+
+        [JsonProperty("Settings")]
+        public BeatmapMetadata Metadata
+        {
+            get => BeatmapInfo.Metadata;
+            private set => BeatmapInfo.Metadata = value;
+        }
+
+        public ActionEvents[] Actions { get; set; }
+        private TileInfo[] tilesInfo;
+
+        [JsonIgnore]
+        public BeatmapInfo BeatmapInfo { get; set; }
+
+        public Beatmap()
+        {
+            BeatmapInfo = new BeatmapInfo
+            {
+                Metadata = new BeatmapMetadata
+                {
+                    Author = "Unknown Creator",
+                    Song = "Unknown"
+                }
+            };
+        }
+
         [JsonIgnore]
         public TileInfo[] TilesInfo => tilesInfo ??= CalculationExtensions.GetTilesInfo(this);
 
         [JsonIgnore]
-        public IReadOnlyList<double> TileStartTime => tileStartTime ??= CalculationExtensions.GetTileStartTime(this, Settings.Offset, 60000 / Settings.Bpm * Settings.CountdownTicks);
-
-        public float[] AngleData { get; set; }
-        public Settings Settings { get; set; }
-        public Actions[] Actions { get; set; }
-        private TileInfo[] tilesInfo;
+        public IReadOnlyList<double> TileStartTime => tileStartTime ??= CalculationExtensions.GetTileStartTime(this, Metadata.Offset, 60000 / Metadata.Bpm * Metadata.CountdownTicks);
 
         private IReadOnlyList<double> tileStartTime;
 
-        public bool Equals(Beatmap beatmap) => beatmap != null && Settings.Equals(beatmap.Settings) && Actions.SequenceEqual(beatmap.Actions);
-    }
+        public bool Equals(Beatmap other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
 
-    public struct Settings : IEquatable<Settings>
-    {
-        /// <summary>
-        /// 아티스트 이름.
-        /// </summary>
-        public string Artist { get; set; }
-
-        /// <summary>
-        /// 음악 이름.
-        /// </summary>
-        public string Song { get; set; }
-
-        /// <summary>
-        /// 확장자가 포함된 음악 파일 이름.
-        /// </summary>
-        public string SongFileName { get; set; }
-
-        /// <summary>
-        /// 비트맵 작성자.
-        /// </summary>
-        public string Author { get; set; }
-
-        /// <summary>
-        /// 시작 전 카운트다운 여부.
-        /// </summary>
-        public bool SeparateCountdownTime { get; set; }
-
-        /// <summary>
-        /// 미리듣기 재생 시작 구간.
-        /// </summary>
-        public int PreviewSongStart { get; set; }
-
-        /// <summary>
-        /// 미리듣기 지속시간.
-        /// </summary>
-        public int PreviewSongDuration { get; set; }
-
-        /// <summary>
-        /// 비트맵 설명.
-        /// </summary>
-        public string BeatmapDesc { get; set; }
-
-        /// <summary>
-        /// 난이도.
-        /// </summary>
-        public int Difficulty { get; set; }
-
-        /// <summary>
-        /// 분당 비트 수.
-        /// </summary>
-        public float Bpm { get; set; }
-
-        /// <summary>
-        /// 음악의 볼륨.
-        /// </summary>
-        public int Volume { get; set; }
-
-        /// <summary>
-        /// 음악 오프셋.
-        /// </summary>
-        public int Offset { get; set; }
-
-        /// <summary>
-        /// 비디오 오프셋.
-        /// </summary>
-        public float VidOffset { get; set; }
-
-        /// <summary>
-        /// 음악의 피치.
-        /// </summary>
-        public int Pitch { get; set; }
-
-        /// <summary>
-        /// 카운트다운 틱 횟수.
-        /// </summary>
-        public int CountdownTicks { get; set; }
-
-        /// <summary>
-        /// 배경 이미지 파일.
-        /// </summary>
-        public string BgImage { get; set; }
-
-        /// <summary>
-        /// 배경 비디오 파일.
-        /// </summary>
-        public string BgVideo { get; set; }
-
-        /// <summary>
-        /// 카메라 기준좌표.
-        /// </summary>
-        public Relativity RelativeTo { get; set; }
-
-        /// <summary>
-        /// 카메라 기준좌표으로부터 오프셋 좌표.
-        /// </summary>
-        public float[] Position { get; set; }
-
-        /// <summary>
-        /// 카메라 회전.
-        /// </summary>
-        public float Rotation { get; set; }
-
-        /// <summary>
-        /// 카메라 확대율.
-        /// </summary>
-        public float Zoom { get; set; }
-
-        /// <summary>
-        /// 행성 가감속.
-        /// </summary>
-        public Easing PlanetEasing { get; set; }
-
-        public bool Equals(Settings settings) => Artist == settings.Artist &&
-                                                 Song == settings.Song &&
-                                                 SongFileName == settings.SongFileName &&
-                                                 Author == settings.Author &&
-                                                 SeparateCountdownTime == settings.SeparateCountdownTime &&
-                                                 PreviewSongStart == settings.PreviewSongStart &&
-                                                 PreviewSongDuration == settings.PreviewSongDuration &&
-                                                 BeatmapDesc == settings.BeatmapDesc &&
-                                                 Difficulty == settings.Difficulty &&
-                                                 Precision.AlmostEquals(Bpm, settings.Bpm) &&
-                                                 Volume == settings.Volume &&
-                                                 Offset == settings.Offset &&
-                                                 Precision.AlmostEquals(VidOffset, settings.VidOffset) &&
-                                                 Pitch == settings.Pitch &&
-                                                 CountdownTicks == settings.CountdownTicks &&
-                                                 BgImage == settings.BgImage &&
-                                                 BgVideo == settings.BgVideo &&
-                                                 RelativeTo == settings.RelativeTo &&
-                                                 Precision.AlmostEquals(Rotation, settings.Rotation) &&
-                                                 PlanetEasing == settings.PlanetEasing;
+            return Metadata.Equals(other.Metadata) && Actions.SequenceEqual(other.Actions);
+        }
     }
 
     /// <summary>
     /// 행성이 특정 타일에 도달했을 때 동작할 정보를 담고있습니다. 이벤트라고도 불립니다.
     /// </summary>
-    public struct Actions : IEquatable<Actions>
+    public struct ActionEvents : IEquatable<ActionEvents>
     {
         /// <summary>
         /// 이 액션의 위치.
@@ -253,20 +147,20 @@ namespace Circle.Game.Beatmaps
             return $"Floor: {Floor} | Event type: {EventType}";
         }
 
-        public bool Equals(Actions actions) => Floor == actions.Floor &&
-                                               EventType == actions.EventType &&
-                                               SpeedType == actions.SpeedType &&
-                                               Precision.AlmostEquals(BeatsPerMinute, actions.BeatsPerMinute) &&
-                                               Precision.AlmostEquals(BpmMultiplier, actions.BpmMultiplier) &&
-                                               RelativeTo == actions.RelativeTo &&
-                                               Ease == actions.Ease &&
-                                               Duration == actions.Duration &&
-                                               Rotation == actions.Rotation &&
-                                               AngleOffset == actions.AngleOffset &&
-                                               Zoom == actions.Zoom &&
-                                               Repetitions == actions.Repetitions &&
-                                               Precision.AlmostEquals(Interval, actions.Interval) &&
-                                               Tag == actions.Tag;
+        public bool Equals(ActionEvents actionEvents) => Floor == actionEvents.Floor &&
+                                                         EventType == actionEvents.EventType &&
+                                                         SpeedType == actionEvents.SpeedType &&
+                                                         Precision.AlmostEquals(BeatsPerMinute, actionEvents.BeatsPerMinute) &&
+                                                         Precision.AlmostEquals(BpmMultiplier, actionEvents.BpmMultiplier) &&
+                                                         RelativeTo == actionEvents.RelativeTo &&
+                                                         Ease == actionEvents.Ease &&
+                                                         Duration == actionEvents.Duration &&
+                                                         Rotation == actionEvents.Rotation &&
+                                                         AngleOffset == actionEvents.AngleOffset &&
+                                                         Zoom == actionEvents.Zoom &&
+                                                         Repetitions == actionEvents.Repetitions &&
+                                                         Precision.AlmostEquals(Interval, actionEvents.Interval) &&
+                                                         Tag == actionEvents.Tag;
     }
 
     public enum EventType

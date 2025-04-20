@@ -90,23 +90,20 @@ namespace Circle.Game.Screens
                     }
                 }
             };
-
-            if (localConfig.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
-                beatmapManager.LoadBeatmaps();
         }
 
         public override void OnEntering(ScreenTransitionEvent e)
         {
             base.OnEntering(e);
 
-            background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
+            background.ChangeTexture(TextureSource.Internal, "bg1", null, 1000, Easing.OutPow10);
         }
 
         public override void OnResuming(ScreenTransitionEvent e)
         {
             base.OnResuming(e);
 
-            background.ChangeTexture(TextureSource.Internal, "bg1", 1000, Easing.OutPow10);
+            background.ChangeTexture(TextureSource.Internal, "bg1", null, 1000, Easing.OutPow10);
         }
 
         public override void OnExit()

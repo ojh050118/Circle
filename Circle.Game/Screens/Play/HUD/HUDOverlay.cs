@@ -26,15 +26,15 @@ namespace Circle.Game.Screens.Play.HUD
 
         public void Start()
         {
-            float countdownInterval = 60000 / beatmap.Settings.Bpm;
-            int tick = beatmap.Settings.CountdownTicks;
+            float countdownInterval = 60000 / beatmap.Metadata.Bpm;
+            int tick = beatmap.Metadata.CountdownTicks;
 
             Countdown(countdownInterval * tick);
         }
 
         public void Countdown(double startUntilTime)
         {
-            int tick = beatmap.Settings.CountdownTicks;
+            int tick = beatmap.Metadata.CountdownTicks;
             startUntilTime /= tick;
 
             for (int i = 0; i < tick; i++)
@@ -74,7 +74,7 @@ namespace Circle.Game.Screens.Play.HUD
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
                     Margin = new MarginPadding { Top = 30 },
-                    Text = $"{beatmap.Settings.Artist} - {beatmap.Settings.Song}",
+                    Text = $"{beatmap.Metadata.Artist} - {beatmap.Metadata.Song}",
                     Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 34),
                     GlowColour = colours.TransparentBlack
                 },

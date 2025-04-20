@@ -2,7 +2,6 @@
 
 using osu.Framework.Allocation;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.Textures;
 
 namespace Circle.Game.Beatmaps.Drawables
 {
@@ -16,11 +15,9 @@ namespace Circle.Game.Beatmaps.Drawables
         }
 
         [BackgroundDependencyLoader]
-        private void load(LargeTextureStore largeTextures, BeatmapStorage beatmaps)
+        private void load(BeatmapManager beatmapManager)
         {
-            Texture = !beatmaps.Storage.Exists(beatmapInfo.RelativeBackgroundPath)
-                ? largeTextures.Get("bg1")
-                : beatmaps.GetBackground(beatmapInfo);
+            Texture = beatmapManager.GetWorkingBeatmap(beatmapInfo).GetBackground();
         }
     }
 }

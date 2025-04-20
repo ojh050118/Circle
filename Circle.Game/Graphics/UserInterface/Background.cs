@@ -46,15 +46,17 @@ namespace Circle.Game.Graphics.UserInterface
 
         public string TextureName { get; private set; }
 
+        public BeatmapInfo BeatmapInfo { get; set; }
+
         public TextureSource TextureSource { get; private set; }
 
-        public event Action<string> BackgroundColorChanged;
+        public event Action<string, BeatmapInfo> BackgroundColorChanged;
 
         [Resolved]
         private LargeTextureStore largeTexture { get; set; }
 
         [Resolved]
-        private BeatmapStorage beatmaps { get; set; }
+        private BeatmapManager beatmapManager { get; set; }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -77,7 +79,7 @@ namespace Circle.Game.Graphics.UserInterface
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
                             FillMode = FillMode.Fill,
-                            Texture = source == TextureSource.Internal ? largeTexture.Get(TextureName) : beatmaps.GetBackground(TextureName)
+                            Texture = source == TextureSource.Internal ? largeTexture.Get(TextureName) : beatmapManager.GetWorkingBeatmap(BeatmapInfo).GetBackground()
                         },
                     }
                 },
@@ -107,9 +109,9 @@ namespace Circle.Game.Graphics.UserInterface
             dim = newAlpha;
         }
 
-        private Sprite loadTexture(TextureSource source, string textureName)
+        private Sprite loadTexture(TextureSource source, string textureName, BeatmapInfo beatmapInfo)
         {
-            var texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmaps.GetBackground(textureName);
+            var texture = source == TextureSource.Internal ? largeTexture.Get(textureName) : beatmapManager.GetWorkingBeatmap(beatmapInfo).GetBackground();
 
             return new Sprite
             {
@@ -121,12 +123,12 @@ namespace Circle.Game.Graphics.UserInterface
             };
         }
 
-        public void ChangeTexture(TextureSource source, string name, double duration = 0, Easing easing = Easing.None)
+        public void ChangeTexture(TextureSource source, string name, BeatmapInfo beatmapInfo, double duration = 0, Easing easing = Easing.None)
         {
-            if (string.IsNullOrEmpty(name))
+            if (source == TextureSource.Internal && string.IsNullOrEmpty(name))
                 return;
 
-            if (TextureSource == source && TextureName == name)
+            if (TextureSource == source && TextureName == name && BeatmapInfo == beatmapInfo)
                 return;
 
             TextureName = name;
@@ -140,7 +142,7 @@ namespace Circle.Game.Graphics.UserInterface
                 RelativeSizeAxes = Axes.Both,
                 RedrawOnScale = false,
                 Masking = true,
-                Child = loadTexture(source, name),
+                Child = loadTexture(source, name, beatmapInfo),
             };
             currentTexture = queuedTexture;
 
@@ -155,7 +157,7 @@ namespace Circle.Game.Graphics.UserInterface
                 else
                     queuedTexture.Dispose();
 
-                BackgroundColorChanged?.Invoke(name);
+                BackgroundColorChanged?.Invoke(name, beatmapInfo);
             });
         }
 

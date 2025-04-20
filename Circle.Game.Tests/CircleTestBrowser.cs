@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
-using Circle.Game.Configuration;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
@@ -31,7 +30,6 @@ namespace Circle.Game.Tests
         {
             base.Dispose(isDisposing);
 
-            BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
             BeatmapManager.OnImported -= imported;
         }
 
@@ -59,9 +57,6 @@ namespace Circle.Game.Tests
         [BackgroundDependencyLoader]
         private void load()
         {
-            if (LocalConfig.Get<bool>(CircleSetting.LoadBeatmapsOnStartup))
-                BeatmapManager.LoadBeatmaps();
-
             AddRange(new Drawable[]
             {
                 background,
@@ -74,7 +69,6 @@ namespace Circle.Game.Tests
                 new CursorContainer()
             });
 
-            BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
             BeatmapManager.OnImported += imported;
         }
 

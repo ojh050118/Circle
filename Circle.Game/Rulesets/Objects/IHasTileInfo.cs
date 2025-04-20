@@ -6,7 +6,7 @@ namespace Circle.Game.Rulesets.Objects
 {
     public interface IHasTileInfo
     {
-        Actions[] Action { get; }
+        ActionEvents[] Action { get; }
 
         TileType TileType { get; }
     }

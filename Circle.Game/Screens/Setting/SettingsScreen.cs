@@ -72,7 +72,7 @@ namespace Circle.Game.Screens.Setting
 
         public override void OnEntering(ScreenTransitionEvent e)
         {
-            background.ChangeTexture(TextureSource.Internal, "bg2", 1000, Easing.OutPow10);
+            background.ChangeTexture(TextureSource.Internal, "bg2", null, 1000, Easing.OutPow10);
 
             base.OnEntering(e);
         }

@@ -1,5 +1,6 @@
 #nullable disable
 
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
@@ -14,10 +15,10 @@ namespace Circle.Game.Graphics.Containers
 {
     public partial class BackgroundColorContainer : Container
     {
-        private CancellationTokenSource dataGetCancellation;
+        private CancellationTokenSource colorGetCancellation = new CancellationTokenSource();
 
         [Resolved]
-        private BeatmapStorage beatmaps { get; set; }
+        private BeatmapManager beatmapManager { get; set; }
 
         public double ChangeDuration;
         public Easing ChangeEasing;
@@ -25,21 +26,22 @@ namespace Circle.Game.Graphics.Containers
 
         public BackgroundColorContainer(Background target)
         {
-            target.BackgroundColorChanged += async t => await backgroundColorChanged(t).ConfigureAwait(false);
+            target.BackgroundColorChanged += async (t, b) => await backgroundColorChanged(b).ConfigureAwait(false);
         }
 
         [BackgroundDependencyLoader]
         private void load() => Colour = DefaultColour;
 
-        private async Task backgroundColorChanged(string texturePath)
+        private async Task backgroundColorChanged(BeatmapInfo beatmapInfo)
         {
-            dataGetCancellation?.CancelAsync().ConfigureAwait(false);
+            await colorGetCancellation.CancelAsync().ConfigureAwait(true);
+            colorGetCancellation = new CancellationTokenSource();
 
             Color4 color = DefaultColour;
-            byte[] data = await beatmaps.GetAsync(texturePath, (dataGetCancellation = new CancellationTokenSource()).Token).ConfigureAwait(true);
+            byte[] data = beatmapManager.GetWorkingBeatmap(beatmapInfo).Get(Path.Combine(beatmapInfo.File.Directory?.Name ?? string.Empty, beatmapInfo.Metadata.BgImage));
 
             if (data != null)
-                color = await ImageUtil.GetAverageColorAsync(data).ConfigureAwait(true);
+                color = await ImageUtil.GetAverageColorAsync(data, colorGetCancellation.Token).ConfigureAwait(true);
 
             this.FadeColour(color, ChangeDuration, ChangeEasing);
         }

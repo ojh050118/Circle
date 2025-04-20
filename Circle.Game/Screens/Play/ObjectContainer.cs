@@ -29,7 +29,7 @@ namespace Circle.Game.Screens.Play
 
         public void AddTileTransforms(double gameStartTime, double countdownDuration)
         {
-            float bpm = currentBeatmap.Settings.Bpm;
+            float bpm = currentBeatmap.Metadata.Bpm;
             var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
             var tilesInfo = currentBeatmap.TilesInfo;
             int frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
@@ -48,7 +48,7 @@ namespace Circle.Game.Screens.Play
                     Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
             }
 
-            bpm = currentBeatmap.Settings.Bpm;
+            bpm = currentBeatmap.Metadata.Bpm;
 
             // Fade out
             for (int i = 0; i < tilesInfo.Length; i++)

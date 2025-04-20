@@ -26,12 +26,12 @@ namespace Circle.Game.Screens.Select.Carousel
                     {
                         new CircleSpriteText
                         {
-                            Text = info.Beatmap.Settings.Song,
+                            Text = info.Metadata.Song,
                             Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 30)
                         },
                         new CircleSpriteText
                         {
-                            Text = info.Beatmap.Settings.Author,
+                            Text = info.Metadata.Author,
                             Font = CircleFont.Default.With(size: 24)
                         }
                     }

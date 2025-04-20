@@ -48,9 +48,9 @@ namespace Circle.Game.Tests.Visual.UserInterface
             AddStep("Blur to 0", () => background.BlurTo(Vector2.Zero, duration));
 
             AddLabel("Fade texture");
-            AddStep("Fade texture to bg1", () => background.ChangeTexture(TextureSource.Internal, "bg1", duration));
-            AddStep("Fade texture to bg2", () => background.ChangeTexture(TextureSource.Internal, "bg2", duration));
-            AddStep("Fade texture to external texture", () => background.ChangeTexture(TextureSource.External, textBox.Text, duration));
+            AddStep("Fade texture to bg1", () => background.ChangeTexture(TextureSource.Internal, "bg1", null, duration));
+            AddStep("Fade texture to bg2", () => background.ChangeTexture(TextureSource.Internal, "bg2", null, duration));
+            AddStep("Fade texture to external texture", () => background.ChangeTexture(TextureSource.External, textBox.Text, null, duration));
         }
     }
 }

@@ -5,6 +5,7 @@ using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
@@ -20,7 +21,7 @@ namespace Circle.Game.Overlays
         public DrawableTrack CurrentTrack { get; protected set; } = new DrawableTrack(new TrackVirtual(1000));
 
         [Resolved]
-        private BeatmapStorage beatmaps { get; set; }
+        private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
 
         public bool IsPlaying => CurrentTrack.IsRunning;
 
@@ -53,7 +54,7 @@ namespace Circle.Game.Overlays
 
         public void ChangeTrack(BeatmapInfo info)
         {
-            var queuedTrack = new DrawableTrack(beatmaps.GetTrack(info));
+            var queuedTrack = new DrawableTrack(workingBeatmap.Value.LoadTrack());
             var lastTrack = CurrentTrack;
             CurrentTrack = queuedTrack;
 

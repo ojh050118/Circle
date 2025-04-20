@@ -1,6 +1,5 @@
 #nullable disable
 
-using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
 using Circle.Game.Overlays;
@@ -34,9 +33,6 @@ namespace Circle.Game.Screens
 
         [Resolved]
         private ImportOverlay importOverlay { get; set; }
-
-        [Resolved]
-        private BeatmapManager beatmapManager { get; set; }
 
         public virtual bool BlockExit => false;
 
@@ -94,7 +90,7 @@ namespace Circle.Game.Screens
                     return true;
 
                 case InputAction.ReloadBeatmap:
-                    beatmapManager.LoadBeatmaps();
+                    // TODO: 사라져야할 기능
                     return true;
 
                 case InputAction.Back:

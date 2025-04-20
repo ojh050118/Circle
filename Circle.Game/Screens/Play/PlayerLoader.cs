@@ -3,6 +3,7 @@
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Screens;
@@ -12,13 +13,15 @@ namespace Circle.Game.Screens.Play
 {
     public partial class PlayerLoader : CircleScreen
     {
-        private readonly BeatmapInfo beatmapInfo;
         private ScreenHeader header;
 
         private CircleScreen player;
 
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
+
+        private readonly BeatmapInfo beatmapInfo;
+        private Beatmap beatmap;
 
         public PlayerLoader(BeatmapInfo beatmapInfo)
         {
@@ -34,11 +37,12 @@ namespace Circle.Game.Screens.Play
         public override bool PlaySample => false;
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapManager beatmap)
+        private void load(Bindable<WorkingBeatmap> workingBeatmap)
         {
+            beatmap = workingBeatmap.Value.Beatmap;
             InternalChild = header = new ScreenHeader(this)
             {
-                Text = beatmap.CurrentBeatmap.ToString(),
+                Text = workingBeatmap.Value.Beatmap.ToString(),
                 Alpha = 0
             };
         }
@@ -47,7 +51,7 @@ namespace Circle.Game.Screens.Play
         {
             base.OnEntering(e);
 
-            if (beatmapInfo.Beatmap.AngleData == null || beatmapInfo.Beatmap.AngleData.Length == 0)
+            if (beatmap.AngleData == null || beatmap.AngleData.Length == 0)
             {
                 OnExit();
                 return;

@@ -61,8 +61,8 @@ namespace Circle.Game.Screens.Play
             };
 
             planetContainer.RedPlanet.Expansion = planetContainer.BluePlanet.Expansion = 0;
-            planetContainer.BluePlanet.Rotation = currentBeatmap.TilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Settings.Bpm);
-            cameraContainer.InitializeSettings(currentBeatmap.Settings);
+            planetContainer.BluePlanet.Rotation = currentBeatmap.TilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Metadata.Bpm);
+            cameraContainer.InitializeSettings(currentBeatmap.Metadata);
         }
 
         protected override void LoadComplete()
