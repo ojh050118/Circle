@@ -36,6 +36,7 @@ namespace Circle.Game.Beatmaps
         private readonly AudioManager audioManager;
         private readonly IResourceStore<byte[]> resources;
         private readonly LargeTextureStore largeTextureStore;
+        private readonly LargeTextureStore gameTextureStore;
         private readonly ITrackStore trackStore;
         private readonly IResourceStore<byte[]> files;
 
@@ -52,6 +53,7 @@ namespace Circle.Game.Beatmaps
             this.host = host;
             this.files = files;
             largeTextureStore = new LargeTextureStore(host?.Renderer ?? new DummyRenderer(), host?.CreateTextureLoaderStore(files));
+            gameTextureStore = new LargeTextureStore(host?.Renderer, host?.CreateTextureLoaderStore(new NamespacedResourceStore<byte[]>(resources, @"Textures")));
             this.trackStore = trackStore;
         }
 
@@ -102,6 +104,7 @@ namespace Circle.Game.Beatmaps
         #region IResourceStorageProvider
 
         TextureStore IBeatmapResourceProvider.LargeTextureStore => largeTextureStore;
+        TextureStore IBeatmapResourceProvider.GameTextureStore => gameTextureStore;
         ITrackStore IBeatmapResourceProvider.Tracks => trackStore;
         IRenderer IStorageResourceProvider.Renderer => host?.Renderer ?? new DummyRenderer();
         AudioManager IStorageResourceProvider.AudioManager => audioManager;
@@ -182,7 +185,7 @@ namespace Circle.Game.Beatmaps
             private Texture getBackgroundFromStore(TextureStore store)
             {
                 if (string.IsNullOrEmpty(Metadata?.BgImage) || BeatmapInfo.File == null)
-                    return null;
+                    return resources.GameTextureStore.Get("bg1");
 
                 try
                 {
@@ -192,7 +195,7 @@ namespace Circle.Game.Beatmaps
                     if (texture == null)
                     {
                         Logger.Log($"Beatmap background failed to load (file {Metadata.BgImage} not found on disk at expected location {fileStorePath}).");
-                        return null;
+                        return resources.GameTextureStore.Get("bg1");
                     }
 
                     return texture;
@@ -200,7 +203,7 @@ namespace Circle.Game.Beatmaps
                 catch (Exception e)
                 {
                     Logger.Error(e, "Background failed to load");
-                    return null;
+                    return resources.GameTextureStore.Get("bg1");
                 }
             }
 

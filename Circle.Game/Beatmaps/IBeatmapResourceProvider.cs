@@ -11,6 +11,8 @@ namespace Circle.Game.Beatmaps
         /// </summary>
         TextureStore LargeTextureStore { get; }
 
+        TextureStore GameTextureStore { get; }
+
         /// <summary>
         /// Access a global track store for retrieving beatmap tracks from.
         /// </summary>
