@@ -15,8 +15,6 @@ namespace Circle.Game.Graphics.Containers
 {
     public partial class BackgroundColorContainer : Container
     {
-        private CancellationTokenSource colorGetCancellation = new CancellationTokenSource();
-
         [Resolved]
         private BeatmapManager beatmapManager { get; set; }
 
@@ -24,9 +22,17 @@ namespace Circle.Game.Graphics.Containers
         public Easing ChangeEasing;
         public Color4 DefaultColour;
 
+        private CancellationTokenSource backgroundColorCancellationTokenSource;
+
         public BackgroundColorContainer(Background target)
         {
-            target.BackgroundColorChanged += async (t, b) => await backgroundColorChanged(b).ConfigureAwait(false);
+            target.BackgroundColorChanged += (_, b) =>
+            {
+                backgroundColorCancellationTokenSource?.Cancel();
+                backgroundColorCancellationTokenSource = new CancellationTokenSource();
+
+                Task.Run(async () => await backgroundColorChanged(b).ConfigureAwait(false), cancellationToken: backgroundColorCancellationTokenSource.Token);
+            };
         }
 
         [BackgroundDependencyLoader]
@@ -34,18 +40,13 @@ namespace Circle.Game.Graphics.Containers
 
         private async Task backgroundColorChanged(BeatmapInfo beatmapInfo)
         {
-            await colorGetCancellation.CancelAsync().ConfigureAwait(true);
-            colorGetCancellation.Dispose();
-
-            colorGetCancellation = new CancellationTokenSource();
-
             Color4 color = DefaultColour;
             byte[] data = beatmapManager.GetWorkingBeatmap(beatmapInfo).Get(Path.Combine(beatmapInfo.File.Directory?.Name ?? string.Empty, beatmapInfo.Metadata.BgImage));
 
             if (data != null)
-                color = await ImageUtil.GetAverageColorAsync(data, colorGetCancellation.Token).ConfigureAwait(true);
+                color = await ImageUtil.GetAverageColorAsync(data).ConfigureAwait(true);
 
-            this.FadeColour(color, ChangeDuration, ChangeEasing);
+            Schedule(() => this.FadeColour(color, ChangeDuration, ChangeEasing));
         }
     }
 }
