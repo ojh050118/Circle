@@ -120,7 +120,13 @@ namespace Circle.Game.Screens.Select
             workingBeatmap.ValueChanged += workingBeatmapChanged;
 
             carousel.SelectedItem.ValueChanged += info => workingBeatmap.Value = beatmapManager.GetWorkingBeatmap(info.NewValue.BeatmapInfo);
-            checkIsLoadedCarousel();
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            setBeatmap();
         }
 
         private void workingBeatmapChanged(ValueChangedEvent<WorkingBeatmap> beatmap)
@@ -142,17 +148,6 @@ namespace Circle.Game.Screens.Select
             }
         }
 
-        private void checkIsLoadedCarousel()
-        {
-            if (carousel.LoadState != LoadState.Loaded)
-            {
-                Schedule(checkIsLoadedCarousel);
-                return;
-            }
-
-            setBeatmap();
-        }
-
         private void setBeatmap()
         {
             if (carousel.ItemCount == 0)
@@ -161,11 +156,11 @@ namespace Circle.Game.Screens.Select
             if (workingBeatmap.Value is DummyWorkingBeatmap)
             {
                 int idx = RNG.Next(0, availableBeatmaps.Count());
-                carousel.Select(availableBeatmaps.ElementAt(idx));
+                workingBeatmap.Value = beatmapManager.GetWorkingBeatmap(availableBeatmaps.ElementAt(idx));
             }
             else
             {
-                carousel.Select(workingBeatmap.Value.BeatmapInfo);
+                workingBeatmap.TriggerChange();
             }
         }
     }

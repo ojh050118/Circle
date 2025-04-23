@@ -69,7 +69,7 @@ namespace Circle.Game.Beatmaps
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
 
-            return ID == other.ID;
+            return Metadata.Equals(other.Metadata);
         }
     }
 }
