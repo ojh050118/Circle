@@ -54,7 +54,7 @@ namespace Circle.Game.Overlays
 
         public void ChangeTrack(BeatmapInfo info)
         {
-            var queuedTrack = new DrawableTrack(workingBeatmap.Value.LoadTrack());
+            var queuedTrack = new DrawableTrack(workingBeatmap.Value.TrackLoaded ? workingBeatmap.Value.Track : workingBeatmap.Value.LoadTrack());
             var lastTrack = CurrentTrack;
             CurrentTrack = queuedTrack;
 
