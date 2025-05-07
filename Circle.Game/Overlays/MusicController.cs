@@ -23,6 +23,9 @@ namespace Circle.Game.Overlays
         [Resolved]
         private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
 
+        [Resolved]
+        private BeatmapManager beatmapManager { get; set; }
+
         public bool IsPlaying => CurrentTrack.IsRunning;
 
         public bool TrackLoaded => CurrentTrack.TrackLoaded;
@@ -54,7 +57,8 @@ namespace Circle.Game.Overlays
 
         public void ChangeTrack(BeatmapInfo info)
         {
-            var queuedTrack = new DrawableTrack(workingBeatmap.Value.TrackLoaded ? workingBeatmap.Value.Track : workingBeatmap.Value.LoadTrack());
+            var beatmap = beatmapManager.GetWorkingBeatmap(info);
+            var queuedTrack = new DrawableTrack(beatmap.LoadTrack());
             var lastTrack = CurrentTrack;
             CurrentTrack = queuedTrack;
 
