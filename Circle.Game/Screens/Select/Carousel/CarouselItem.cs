@@ -61,6 +61,50 @@ namespace Circle.Game.Screens.Select.Carousel
             SetupDefaultContainer(defaultContainer);
         }
 
+        [BackgroundDependencyLoader]
+        private void load(AudioManager audio)
+        {
+            sampleClick = audio.Samples.Get("SongSelect/select-click");
+            sampleDoubleClick = audio.Samples.Get("SongSelect/select-double-click");
+            Height = ITEM_HEIGHT;
+            RelativeSizeAxes = Axes.X;
+            Anchor = Anchor.TopCentre;
+            Origin = Anchor.TopCentre;
+            InternalChild = BorderContainer = new Container
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                BorderThickness = 0,
+                RelativeSizeAxes = Axes.Both,
+                Masking = true,
+                CornerRadius = 10,
+                BorderColour = Color4.SkyBlue,
+                EdgeEffect = new EdgeEffectParameters
+                {
+                    Type = EdgeEffectType.Shadow,
+                    Radius = 10,
+                    Colour = Color4.Black.Opacity(100),
+                }
+            };
+
+            DoubleClicked += () => sampleDoubleClick?.Play();
+            StateChanged += updateState;
+            StateChanged += state =>
+            {
+                if (state == SelectionState.Selected)
+                    sampleClick?.Play();
+            };
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            UpdateItem();
+        }
+
+        private void fadeInContent(Drawable d) => d.FadeInFromZero(750, Easing.OutQuint);
+
         public void UpdateItem()
         {
             DelayedLoadUnloadWrapper background;
@@ -128,70 +172,6 @@ namespace Circle.Game.Screens.Select.Carousel
             Position -= AnchorPosition - previousAnchor;
         }
 
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            UpdateItem();
-        }
-
-        protected override bool OnKeyDown(KeyDownEvent e)
-        {
-            if (e.Key == Key.ShiftLeft && State == SelectionState.Selected)
-            {
-                carouselItemOverlay.Push(this);
-            }
-
-            return base.OnKeyDown(e);
-        }
-
-        protected override bool OnClick(ClickEvent e)
-        {
-            if (State == SelectionState.Selected)
-                DoubleClicked?.Invoke();
-
-            State = SelectionState.Selected;
-
-            return base.OnClick(e);
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
-        {
-            sampleClick = audio.Samples.Get("SongSelect/select-click");
-            sampleDoubleClick = audio.Samples.Get("SongSelect/select-double-click");
-            Height = ITEM_HEIGHT;
-            RelativeSizeAxes = Axes.X;
-            Anchor = Anchor.TopCentre;
-            Origin = Anchor.TopCentre;
-            InternalChild = BorderContainer = new Container
-            {
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                BorderThickness = 0,
-                RelativeSizeAxes = Axes.Both,
-                Masking = true,
-                CornerRadius = 10,
-                BorderColour = Color4.SkyBlue,
-                EdgeEffect = new EdgeEffectParameters
-                {
-                    Type = EdgeEffectType.Shadow,
-                    Radius = 10,
-                    Colour = Color4.Black.Opacity(100),
-                }
-            };
-
-            DoubleClicked += () => sampleDoubleClick?.Play();
-            StateChanged += updateState;
-            StateChanged += state =>
-            {
-                if (state == SelectionState.Selected)
-                    sampleClick?.Play();
-            };
-        }
-
-        private void fadeInContent(Drawable d) => d.FadeInFromZero(750, Easing.OutQuint);
-
         private void updateState(SelectionState state)
         {
             switch (state)
@@ -221,5 +201,25 @@ namespace Circle.Game.Screens.Select.Carousel
 
         [CanBeNull]
         public event Action<SelectionState> StateChanged;
+
+        protected override bool OnKeyDown(KeyDownEvent e)
+        {
+            if (e.Key == Key.ShiftLeft && State == SelectionState.Selected)
+            {
+                carouselItemOverlay.Push(this);
+            }
+
+            return base.OnKeyDown(e);
+        }
+
+        protected override bool OnClick(ClickEvent e)
+        {
+            if (State == SelectionState.Selected)
+                DoubleClicked?.Invoke();
+
+            State = SelectionState.Selected;
+
+            return base.OnClick(e);
+        }
     }
 }
