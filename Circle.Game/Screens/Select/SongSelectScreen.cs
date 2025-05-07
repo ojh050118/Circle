@@ -120,11 +120,17 @@ namespace Circle.Game.Screens.Select
             workingBeatmap.ValueChanged += workingBeatmapChanged;
 
             carousel.SelectedItem.ValueChanged += info => workingBeatmap.Value = beatmapManager.GetWorkingBeatmap(info.NewValue.BeatmapInfo);
+
+            checkIsLoadedCarousel();
         }
 
-        protected override void LoadComplete()
+        private void checkIsLoadedCarousel()
         {
-            base.LoadComplete();
+            if (carousel.LoadState != LoadState.Loaded)
+            {
+                Schedule(checkIsLoadedCarousel);
+                return;
+            }
 
             setBeatmap();
         }
