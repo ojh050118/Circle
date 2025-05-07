@@ -34,7 +34,7 @@ namespace Circle.Game.Utils
 
         public static Task<Color4> GetAverageColorAsync(byte[] data, CancellationToken cancellationToken = default)
         {
-            return Task.Run(() => GetAverageColor(data), cancellationToken);
+            return Task.Factory.StartNew(() => GetAverageColor(data), cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private class Cluster
