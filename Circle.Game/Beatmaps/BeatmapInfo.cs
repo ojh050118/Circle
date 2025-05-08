@@ -69,6 +69,7 @@ namespace Circle.Game.Beatmaps
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
 
+            // TODO: Metadata를 호출하면 동기적으로 비트맵 파싱이 발생할 수 있습니다. 빠른 비교를 위해 GUID 대신 해시, 또는 캐시를 사용해야 할 듯 합니다.
             return Metadata.Equals(other.Metadata);
         }
     }

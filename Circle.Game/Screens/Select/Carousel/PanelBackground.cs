@@ -2,6 +2,7 @@
 
 using Circle.Game.Beatmaps;
 using Circle.Game.Beatmaps.Drawables;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -13,7 +14,15 @@ namespace Circle.Game.Screens.Select.Carousel
 {
     public partial class PanelBackground : Container
     {
+        private readonly BeatmapInfo info;
+
         public PanelBackground(BeatmapInfo info)
+        {
+            this.info = info;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
         {
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]

@@ -138,11 +138,11 @@ namespace Circle.Game.Screens.Select
         {
             if (carousel.LoadState != LoadState.Loaded || !beatmapLoadTask.Completed)
             {
-                Schedule(checkIsLoadedCarousel);
+                Task.Run(checkIsLoadedCarousel);
                 return;
             }
 
-            setBeatmap();
+            Schedule(setBeatmap);
         }
 
         private void workingBeatmapChanged(ValueChangedEvent<WorkingBeatmap> beatmap)

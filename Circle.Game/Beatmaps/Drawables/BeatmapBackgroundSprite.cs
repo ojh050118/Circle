@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics.Sprites;
 
@@ -17,7 +18,12 @@ namespace Circle.Game.Beatmaps.Drawables
         [BackgroundDependencyLoader]
         private void load(BeatmapManager beatmapManager)
         {
-            Texture = beatmapManager.GetWorkingBeatmap(beatmapInfo).GetBackground();
+            Task.Run(() =>
+            {
+                var background = beatmapManager.GetWorkingBeatmap(beatmapInfo).GetBackground();
+
+                Schedule(() => Texture = background);
+            });
         }
     }
 }
