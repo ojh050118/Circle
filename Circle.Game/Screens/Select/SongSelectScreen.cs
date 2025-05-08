@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Input;
@@ -13,6 +14,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Events;
 using osu.Framework.Screens;
+using osu.Framework.Threading;
 using osu.Framework.Utils;
 
 namespace Circle.Game.Screens.Select
@@ -35,7 +37,11 @@ namespace Circle.Game.Screens.Select
         [Resolved]
         private MusicController music { get; set; }
 
-        private IEnumerable<BeatmapInfo> availableBeatmaps => beatmapManager.GetAvailableBeatmaps();
+        protected IEnumerable<BeatmapInfo> AvailableBeatmaps => availableBeatmaps ??= beatmapManager.GetAvailableBeatmaps();
+
+        private IEnumerable<BeatmapInfo> availableBeatmaps;
+
+        private ScheduledDelegate beatmapLoadTask;
 
         public override void OnEntering(ScreenTransitionEvent e)
         {
@@ -112,21 +118,25 @@ namespace Circle.Game.Screens.Select
                 },
             };
 
-            var beatmaps = beatmapManager.GetAvailableBeatmaps();
-
-            foreach (var bi in beatmaps)
-                carousel.Add(bi, () => this.Push(new PlayerLoader(carousel.SelectedItem.Value.BeatmapInfo)));
-
             workingBeatmap.ValueChanged += workingBeatmapChanged;
 
             carousel.SelectedItem.ValueChanged += info => workingBeatmap.Value = beatmapManager.GetWorkingBeatmap(info.NewValue.BeatmapInfo);
 
-            checkIsLoadedCarousel();
+            Task.Run(() =>
+            {
+                beatmapLoadTask = Schedule(() =>
+                {
+                    foreach (var bi in AvailableBeatmaps)
+                        carousel.Add(bi, () => this.Push(new PlayerLoader(carousel.SelectedItem.Value.BeatmapInfo)));
+
+                    checkIsLoadedCarousel();
+                });
+            });
         }
 
         private void checkIsLoadedCarousel()
         {
-            if (carousel.LoadState != LoadState.Loaded)
+            if (carousel.LoadState != LoadState.Loaded || !beatmapLoadTask.Completed)
             {
                 Schedule(checkIsLoadedCarousel);
                 return;
@@ -139,10 +149,13 @@ namespace Circle.Game.Screens.Select
         {
             details.ChangeBeatmap(beatmap.NewValue.BeatmapInfo);
 
-            if (workingBeatmap.Value.GetBackground() == null)
-                background.ChangeTexture(TextureSource.Internal, "bg1", null, 500, Easing.Out);
-            else
-                background.ChangeTexture(TextureSource.External, string.Empty, beatmap.NewValue.BeatmapInfo, 500, Easing.Out);
+            Schedule(() =>
+            {
+                if (workingBeatmap.Value.GetBackground() == null)
+                    background.ChangeTexture(TextureSource.Internal, "bg1", null, 500, Easing.Out);
+                else
+                    background.ChangeTexture(TextureSource.External, string.Empty, beatmap.NewValue.BeatmapInfo, 500, Easing.Out);
+            });
 
             carousel.Select(beatmap.NewValue.BeatmapInfo);
 
@@ -161,8 +174,8 @@ namespace Circle.Game.Screens.Select
 
             if (workingBeatmap.Value is DummyWorkingBeatmap)
             {
-                int idx = RNG.Next(0, availableBeatmaps.Count());
-                workingBeatmap.Value = beatmapManager.GetWorkingBeatmap(availableBeatmaps.ElementAt(idx));
+                int idx = RNG.Next(0, AvailableBeatmaps.Count());
+                workingBeatmap.Value = beatmapManager.GetWorkingBeatmap(AvailableBeatmaps.ElementAt(idx));
             }
             else
             {
