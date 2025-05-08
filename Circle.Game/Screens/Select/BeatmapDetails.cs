@@ -1,5 +1,6 @@
 #nullable disable
 
+using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
@@ -27,20 +28,17 @@ namespace Circle.Game.Screens.Select
         private TextFlowContainer description;
         private CircleSpriteText difficulty;
 
-        private readonly Background preview;
+        private Background preview;
         private GlowingSpriteText title;
 
         [Resolved]
         private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
 
-        public BeatmapDetails()
-        {
-            preview = new Background();
-        }
-
         [BackgroundDependencyLoader]
         private void load(CircleColour colours)
         {
+            preview = new Background();
+
             RelativeSizeAxes = Axes.Both;
             Child = new Container
             {
@@ -207,10 +205,13 @@ namespace Circle.Game.Screens.Select
             if (newBeatmapInfo == null)
                 return;
 
-            if (workingBeatmap.Value.GetBackground() == null)
-                preview.ChangeTexture(TextureSource.Internal, "bg1", newBeatmapInfo, 500, Easing.Out);
-            else
-                preview.ChangeTexture(TextureSource.External, string.Empty, newBeatmapInfo, 500, Easing.Out);
+            Task.Run(() =>
+            {
+                if (workingBeatmap.Value.GetBackground() == null)
+                    preview.ChangeTexture(TextureSource.Internal, "bg1", newBeatmapInfo, 500, Easing.Out);
+                else
+                    preview.ChangeTexture(TextureSource.External, string.Empty, newBeatmapInfo, 500, Easing.Out);
+            });
 
             title.Text = newBeatmapInfo.Metadata.Song;
             artist.Text = newBeatmapInfo.Metadata.Artist;
