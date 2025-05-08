@@ -133,6 +133,7 @@ namespace Circle.Game.Graphics.UserInterface
 
             TextureName = name;
             TextureSource = source;
+            var oldTexture = currentTexture;
             var queuedTexture = new BufferedContainer(cachedFrameBuffer: true)
             {
                 Anchor = Anchor.Centre,
@@ -144,6 +145,7 @@ namespace Circle.Game.Graphics.UserInterface
                 Masking = true,
                 Child = loadTexture(source, name, beatmapInfo),
             };
+
             currentTexture = queuedTexture;
 
             Schedule(() =>
@@ -151,7 +153,10 @@ namespace Circle.Game.Graphics.UserInterface
                 if (queuedTexture == currentTexture)
                 {
                     backgroundContainer.Add(queuedTexture);
-                    queuedTexture.FadeIn(duration, easing);
+                    queuedTexture.FadeIn(duration, easing).Then().Schedule(() =>
+                    {
+                        oldTexture?.RemoveAndDisposeImmediately();
+                    });
                     trimUnusedBackground(duration);
                 }
                 else
