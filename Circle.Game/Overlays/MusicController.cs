@@ -5,7 +5,6 @@ using Circle.Game.Beatmaps;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
@@ -19,9 +18,6 @@ namespace Circle.Game.Overlays
 
         [NotNull]
         public DrawableTrack CurrentTrack { get; protected set; } = new DrawableTrack(new TrackVirtual(1000));
-
-        [Resolved]
-        private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
 
         [Resolved]
         private BeatmapManager beatmapManager { get; set; }
