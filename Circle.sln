@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		Circle.Android.props = Circle.Android.props
 		Circle.iOS.props = Circle.iOS.props
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Circle.Android", "Circle.Android\Circle.Android.csproj", "{AF741D23-EC33-4477-9E45-B93513317E2A}"
