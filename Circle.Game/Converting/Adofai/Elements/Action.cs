@@ -33,7 +33,7 @@ namespace Circle.Game.Converting.Adofai.Elements
         public int UnscaledSize { get; set; }
         public float? Rotation { get; set; }
         public float AngleOffset { get; set; }
-        public Relativity? RelativeTo { get; set; }
+        public object RelativeTo { get; set; }
         public float?[] Position { get; set; }
         public object Tile { get; set; }
         public string EventTag { get; set; }
@@ -69,5 +69,20 @@ namespace Circle.Game.Converting.Adofai.Elements
         public int Intensity { get; set; }
         public Toggle FadeOut { get; set; }
         public object Components { get; set; }
+
+        public Relativity? GetRelativity()
+        {
+            switch (RelativeTo)
+            {
+                case Relativity r:
+                    return r;
+
+                case object:
+                    return null;
+
+                default:
+                    return null;
+            }
+        }
     }
 }
