@@ -35,7 +35,6 @@ namespace Circle.Game
         {
             base.Dispose(isDisposing);
 
-            BeatmapManager.OnLoadedBeatmaps -= loadedBeatmaps;
             BeatmapManager.OnImported -= imported;
         }
 
@@ -65,7 +64,6 @@ namespace Circle.Game
             dependencies.CacheAs(item);
             dependencies.CacheAs(this);
 
-            BeatmapManager.OnLoadedBeatmaps += loadedBeatmaps;
             BeatmapManager.OnImported += imported;
         }
 

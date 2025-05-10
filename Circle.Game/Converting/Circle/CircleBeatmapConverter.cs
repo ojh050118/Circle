@@ -6,7 +6,6 @@ using Circle.Game.Converting.Adofai;
 using Circle.Game.Converting.Adofai.Elements;
 using osu.Framework.Graphics;
 using EventType = Circle.Game.Beatmaps.EventType;
-using Settings = Circle.Game.Beatmaps.Settings;
 
 namespace Circle.Game.Converting.Circle
 {
@@ -19,38 +18,41 @@ namespace Circle.Game.Converting.Circle
             Beatmap circle = new Beatmap
             {
                 AngleData = adofai.AngleData,
-                Settings = new Settings
+                BeatmapInfo = new BeatmapInfo
                 {
-                    Artist = adofai.Settings.Artist,
-                    Author = adofai.Settings.Author,
-                    BgImage = adofai.Settings.BgImage,
-                    BgVideo = adofai.Settings.BgVideo,
-                    BeatmapDesc = adofai.Settings.LevelDesc,
-                    CountdownTicks = adofai.Settings.CountdownTicks,
-                    Difficulty = adofai.Settings.Difficulty,
-                    Bpm = adofai.Settings.Bpm,
-                    Offset = adofai.Settings.Offset,
-                    VidOffset = adofai.Settings.VidOffset,
-                    Pitch = adofai.Settings.Pitch,
-                    Volume = adofai.Settings.Volume,
-                    PlanetEasing = convertEasing(ParseEase(adofai.Settings.PlanetEase)),
-                    PreviewSongStart = adofai.Settings.PreviewSongStart,
-                    PreviewSongDuration = adofai.Settings.PreviewSongDuration,
-                    SeparateCountdownTime = convertToggle(ParseToggle(adofai.Settings.SeparateCountdownTime)),
-                    Song = adofai.Settings.Song,
-                    SongFileName = adofai.Settings.SongFilename,
-                    RelativeTo = ParseRelativity(adofai.Settings.RelativeTo),
-                    Position = adofai.Settings.Position,
-                    Rotation = adofai.Settings.Rotation,
-                    Zoom = adofai.Settings.Zoom,
+                    Metadata = new BeatmapMetadata
+                    {
+                        Artist = adofai.Settings.Artist,
+                        Author = adofai.Settings.Author,
+                        BgImage = adofai.Settings.BgImage,
+                        BgVideo = adofai.Settings.BgVideo,
+                        BeatmapDesc = adofai.Settings.LevelDesc,
+                        CountdownTicks = adofai.Settings.CountdownTicks,
+                        Difficulty = adofai.Settings.Difficulty,
+                        Bpm = adofai.Settings.Bpm,
+                        Offset = adofai.Settings.Offset,
+                        VidOffset = adofai.Settings.VidOffset,
+                        Pitch = adofai.Settings.Pitch,
+                        Volume = adofai.Settings.Volume,
+                        PlanetEasing = convertEasing(ParseEase(adofai.Settings.PlanetEase)),
+                        PreviewSongStart = adofai.Settings.PreviewSongStart,
+                        PreviewSongDuration = adofai.Settings.PreviewSongDuration,
+                        SeparateCountdownTime = convertToggle(ParseToggle(adofai.Settings.SeparateCountdownTime)),
+                        Song = adofai.Settings.Song,
+                        SongFileName = adofai.Settings.SongFilename,
+                        RelativeTo = ParseRelativity(adofai.Settings.RelativeTo),
+                        Position = adofai.Settings.Position,
+                        Rotation = adofai.Settings.Rotation,
+                        Zoom = adofai.Settings.Zoom,
+                    }
                 }
             };
-            List<Actions> actions = new List<Actions>();
+            List<ActionEvents> actions = new List<ActionEvents>();
 
             // 액션 적용.
             foreach (var action in adofai.Actions)
             {
-                Actions newAction = new Actions
+                ActionEvents newActionEvent = new ActionEvents
                 {
                     Floor = action.Floor,
                     EventType = convertEventType(action.EventType),
@@ -70,16 +72,16 @@ namespace Circle.Game.Converting.Circle
                 };
 
                 if (action.EventType != Adofai.Elements.EventType.MoveCamera)
-                    newAction.RelativeTo = null;
+                    newActionEvent.RelativeTo = null;
 
-                newAction.SpeedType = action.SpeedType;
+                newActionEvent.SpeedType = action.SpeedType;
 
-                if (action.BeatsPerMinute != 0 && newAction.SpeedType == null)
-                    newAction.SpeedType = SpeedType.Bpm;
-                else if (action.BPMMultiplier != 0 && newAction.SpeedType == null)
-                    newAction.SpeedType = SpeedType.Multiplier;
+                if (action.BeatsPerMinute != 0 && newActionEvent.SpeedType == null)
+                    newActionEvent.SpeedType = SpeedType.Bpm;
+                else if (action.BPMMultiplier != 0 && newActionEvent.SpeedType == null)
+                    newActionEvent.SpeedType = SpeedType.Multiplier;
 
-                actions.Add(newAction);
+                actions.Add(newActionEvent);
             }
 
             circle.Actions = actions.ToArray();

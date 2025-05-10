@@ -32,10 +32,8 @@ namespace Circle.Game.Screens.Play
 
         private readonly Bindable<bool> playbackRateValid = new Bindable<bool>(true);
 
-        private readonly Beatmap beatmap;
         private readonly double countdownDuration;
         private readonly double gameplayStartTime;
-        private readonly BeatmapInfo info;
 
         private FrameStabilityContainer container;
 
@@ -43,11 +41,12 @@ namespace Circle.Game.Screens.Play
 
         private Track track;
 
+        [Resolved]
+        private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
+
         public MasterGameplayClockContainer(BeatmapInfo info, double gameplayStartTime, double countdownDuration, Track track)
             : base(new TrackVirtual(track.Length), applyOffsets: true, requireDecoupling: true)
         {
-            beatmap = info.Beatmap;
-            this.info = info;
             this.gameplayStartTime = gameplayStartTime;
             this.countdownDuration = countdownDuration;
 
@@ -58,23 +57,23 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage storage)
+        private void load()
         {
             Children = new Drawable[]
             {
-                container = new FrameStabilityContainer(beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration),
+                container = new FrameStabilityContainer(workingBeatmap.Value.Metadata.VidOffset + gameplayStartTime - countdownDuration),
                 new FrameStabilityContainer(gameplayStartTime)
                 {
                     Child = new InputManager
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Beatmap = beatmap,
-                        Child = Playfield = new Playfield(beatmap, gameplayStartTime, countdownDuration)
+                        Beatmap = workingBeatmap.Value.Beatmap,
+                        Child = Playfield = new Playfield(workingBeatmap.Value.Beatmap, gameplayStartTime, countdownDuration)
                     }
                 }
             };
 
-            var stream = storage.GetVideo(info);
+            var stream = workingBeatmap.Value.GetVideo();
 
             if (stream != null)
             {
@@ -85,7 +84,7 @@ namespace Circle.Game.Screens.Play
                     FillMode = FillMode.Fill,
                     RelativeSizeAxes = Axes.Both,
                     Loop = false,
-                    PlaybackPosition = beatmap.Settings.VidOffset + gameplayStartTime - countdownDuration,
+                    PlaybackPosition = workingBeatmap.Value.Metadata.VidOffset + gameplayStartTime - countdownDuration,
                 });
             }
 

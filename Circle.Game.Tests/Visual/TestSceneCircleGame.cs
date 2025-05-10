@@ -9,6 +9,7 @@ using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Platform;
 
@@ -20,7 +21,7 @@ namespace Circle.Game.Tests.Visual
         {
             typeof(CircleGame),
             typeof(LargeTextureStore),
-            typeof(BeatmapStorage),
+            typeof(Bindable<WorkingBeatmap>),
             typeof(BeatmapManager),
             typeof(MusicController),
             typeof(CircleGameBase),

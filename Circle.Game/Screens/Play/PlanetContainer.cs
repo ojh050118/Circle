@@ -44,7 +44,7 @@ namespace Circle.Game.Screens.Play
 
             double startTimeOffset = gameplayStartTime;
             float prevAngle;
-            float bpm = beatmap.Settings.Bpm;
+            float bpm = beatmap.Metadata.Bpm;
             int floor = 0;
             Easing easing = Easing.None;
             var tilesInfo = beatmap.TilesInfo;

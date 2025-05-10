@@ -28,6 +28,8 @@ namespace Circle.Game.Screens.Play
     public partial class Player : CircleScreen
     {
         public override bool FadeBackground => false;
+
+        private WorkingBeatmap currentBeatmap;
         private readonly BeatmapInfo beatmapInfo;
 
         private readonly Key[] blockedKeys =
@@ -52,10 +54,8 @@ namespace Circle.Game.Screens.Play
             Key.RWin
         };
 
-        private readonly Beatmap currentBeatmap;
-
-        private float beat => 60000 / currentBeatmap.Settings.Bpm;
-        private int tick => currentBeatmap.Settings.CountdownTicks;
+        private float beat => 60000 / beatmapInfo.Metadata.Bpm;
+        private int tick => beatmapInfo.Metadata.CountdownTicks;
         private double gameTime => masterGameplayClockContainer.CurrentTime;
 
         /// <summary>
@@ -96,8 +96,8 @@ namespace Circle.Game.Screens.Play
 
         public Player(BeatmapInfo beatmapInfo)
         {
+            // TODO: Bindable<WorkingBeatmap>으로 가져오기
             this.beatmapInfo = beatmapInfo;
-            currentBeatmap = beatmapInfo.Beatmap;
         }
 
         public override void OnExit()
@@ -128,7 +128,7 @@ namespace Circle.Game.Screens.Play
 
         public override void OnResuming(ScreenTransitionEvent e)
         {
-            background.ChangeTexture(textureSource, textureName, 1000, Easing.OutPow10);
+            background.ChangeTexture(textureSource, textureName, beatmapInfo, 1000, Easing.OutPow10);
             onPaused();
 
             base.OnResuming(e);
@@ -191,20 +191,22 @@ namespace Circle.Game.Screens.Play
         }
 
         [BackgroundDependencyLoader]
-        private void load(GameHost host, AudioManager audio, CircleColour colours, BeatmapStorage beatmaps)
+        private void load(GameHost host, AudioManager audio, CircleColour colours, BeatmapManager beatmapManager)
         {
+            currentBeatmap = beatmapManager.GetWorkingBeatmap(beatmapInfo);
+
             parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
             textureSource = background.TextureSource;
             textureName = background.TextureName;
-            hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap, currentBeatmap.Settings.Offset, beat * tick).ToList();
+            hitTimes = CalculationExtensions.GetTileStartTime(currentBeatmap.Beatmap, beatmapInfo.Metadata.Offset, beat * tick).ToList();
             sampleHit = audio.Samples.Get("normal-hitnormal.wav");
 
             gameMusic = new GameplayMusicController(beatmapInfo);
 
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, currentBeatmap.Settings.Offset, beat * tick, beatmaps.GetTrack(beatmapInfo)),
-                hud = new HUDOverlay(currentBeatmap),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(beatmapInfo, beatmapInfo.Metadata.Offset, beat * tick, beatmapManager.GetWorkingBeatmap(beatmapInfo).Track),
+                hud = new HUDOverlay(currentBeatmap.Beatmap),
                 gameMusic
             };
 

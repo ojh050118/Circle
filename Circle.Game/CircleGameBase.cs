@@ -41,7 +41,7 @@ namespace Circle.Game
 
         protected MusicController MusicController { get; private set; }
 
-        protected BeatmapStorage BeatmapStorage { get; set; }
+        protected Bindable<WorkingBeatmap> Beatmap { get; private set; }
 
         protected BeatmapManager BeatmapManager { get; set; }
 
@@ -69,6 +69,9 @@ namespace Circle.Game
 
             Resources.AddStore(new DllResourceStore(typeof(CircleResources).Assembly));
 
+            var defaultBeatmap = new DummyWorkingBeatmap(Audio, Textures);
+            Beatmap = new NonNullableBindable<WorkingBeatmap>(defaultBeatmap);
+
             AddFont(Resources, @"Fonts/OpenSans-Regular");
             AddFont(Resources, @"Fonts/OpenSans-Light");
             AddFont(Resources, @"Fonts/OpenSans-Bold");
@@ -80,17 +83,14 @@ namespace Circle.Game
 
             dependencies.CacheAs(largeStore);
 
-            dependencies.CacheAs(BeatmapStorage = new BeatmapStorage(files, Audio, new NamespacedResourceStore<byte[]>(Resources, @"Beatmaps"), Host));
-            dependencies.CacheAs(BeatmapManager = new BeatmapManager(BeatmapStorage));
+            dependencies.CacheAs(BeatmapManager = new BeatmapManager(files, Audio, Resources, Host, defaultBeatmap));
+            dependencies.CacheAs(Beatmap);
 
             dependencies.CacheAs(Storage);
-
             dependencies.CacheAs(LocalConfig);
 
             dependencies.CacheAs(new CircleColour());
-
             dependencies.CacheAs(MusicController = new MusicController());
-
             dependencies.CacheAs(this);
 
             ContentContainer = new ScalingContainer

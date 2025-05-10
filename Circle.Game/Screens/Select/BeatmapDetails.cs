@@ -1,18 +1,19 @@
 #nullable disable
 
+using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.Sprites;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Platform;
 using osuTK;
 using osuTK.Graphics;
 
@@ -27,19 +28,17 @@ namespace Circle.Game.Screens.Select
         private TextFlowContainer description;
         private CircleSpriteText difficulty;
 
-        private Storage files;
-        private readonly Background preview;
+        private Background preview;
         private GlowingSpriteText title;
 
-        public BeatmapDetails()
-        {
-            preview = new Background();
-        }
+        [Resolved]
+        private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
 
         [BackgroundDependencyLoader]
-        private void load(BeatmapStorage beatmaps, CircleColour colours)
+        private void load(CircleColour colours)
         {
-            files = beatmaps.Storage;
+            preview = new Background();
+
             RelativeSizeAxes = Axes.Both;
             Child = new Container
             {
@@ -206,19 +205,20 @@ namespace Circle.Game.Screens.Select
             if (newBeatmapInfo == null)
                 return;
 
-            var newBeatmap = newBeatmapInfo.Beatmap;
+            Task.Run(() =>
+            {
+                if (workingBeatmap.Value.GetBackground() == null)
+                    preview.ChangeTexture(TextureSource.Internal, "bg1", newBeatmapInfo, 500, Easing.Out);
+                else
+                    preview.ChangeTexture(TextureSource.External, string.Empty, newBeatmapInfo, 500, Easing.Out);
+            });
 
-            if (!files.Exists(newBeatmapInfo.RelativeBackgroundPath))
-                preview.ChangeTexture(TextureSource.Internal, "bg1", 500, Easing.Out);
-            else
-                preview.ChangeTexture(TextureSource.External, newBeatmapInfo.RelativeBackgroundPath, 500, Easing.Out);
-
-            title.Text = newBeatmap.Settings.Song;
-            artist.Text = newBeatmap.Settings.Artist;
-            author.Text = $"Author: {newBeatmap.Settings.Author}";
-            bpm.Text = $"BPM: {newBeatmap.Settings.Bpm}";
-            difficulty.Text = $"Difficulty: {newBeatmap.Settings.Difficulty}";
-            description.Text = $"Description: {newBeatmap.Settings.BeatmapDesc}";
+            title.Text = newBeatmapInfo.Metadata.Song;
+            artist.Text = newBeatmapInfo.Metadata.Artist;
+            author.Text = $"Author: {newBeatmapInfo.Metadata.Author}";
+            bpm.Text = $"BPM: {newBeatmapInfo.Metadata.Bpm}";
+            difficulty.Text = $"Difficulty: {newBeatmapInfo.Metadata.Difficulty}";
+            description.Text = $"Description: {newBeatmapInfo.Metadata.BeatmapDesc}";
         }
     }
 }

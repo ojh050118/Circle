@@ -20,7 +20,7 @@ namespace Circle.Game.Rulesets.Objects
         public float PreviousAngle { get; set; }
 
         public float PreviousBpm { get; set; }
-        public Actions[] Action { get; set; }
+        public ActionEvents[] Action { get; set; }
 
         public TileType TileType { get; set; }
 

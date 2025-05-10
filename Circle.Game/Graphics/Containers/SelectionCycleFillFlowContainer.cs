@@ -38,7 +38,7 @@ namespace Circle.Game.Graphics.Containers
             if (newIndex < 0)
                 setSelected(null);
             else
-                setSelected(IndexOf(item));
+                setSelected(newIndex);
         }
 
         public override void Add(T drawable)

@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
@@ -31,14 +30,7 @@ namespace Circle.Game.Screens.Setting.Sections
                     Origin = Anchor.Centre,
                     Text = "Import beatmap",
                     Action = import.Show
-                },
-                new BoxButton
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Text = "Reload beatmaps",
-                    Action = () => Task.Run(async () => await beatmap.LoadBeatmapsAsync().ConfigureAwait(false))
-                },
+                }
             });
         }
     }

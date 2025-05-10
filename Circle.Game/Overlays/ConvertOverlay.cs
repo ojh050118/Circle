@@ -171,12 +171,19 @@ namespace Circle.Game.Overlays
 
             foreach (var dir in directories)
             {
-                foreach (var file in dir.GetFiles("*.adofai"))
+                try
                 {
-                    if (file.Name == "backup.adofai")
-                        continue;
+                    foreach (var file in dir.GetFiles("*.adofai"))
+                    {
+                        if (file.Name == "backup.adofai")
+                            continue;
 
-                    levels.Add(dir);
+                        levels.Add(dir);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, "Error trying to finding adofai file");
                 }
             }
 

@@ -60,7 +60,7 @@ namespace Circle.Game.Rulesets.Extensions
         {
             var tilesInfo = beatmap.TilesInfo;
             double startTimeOffset = gameplayStartTime;
-            float bpm = beatmap.Settings.Bpm;
+            float bpm = beatmap.Metadata.Bpm;
             float prevAngle = tilesInfo[0].Angle;
             List<double> hitStartTimes = new List<double> { gameplayStartTime - countdownDuration };
             startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), tilesInfo[0].Angle, bpm);
@@ -173,17 +173,17 @@ namespace Circle.Game.Rulesets.Extensions
         /// 타일의 bpm을 적용합니다.
         /// </summary>
         /// <param name="bpm">현재 bpm.</param>
-        /// <param name="action">이벤트 타입이 SetSpeed인 액션.</param>
+        /// <param name="actionEvent">이벤트 타입이 SetSpeed인 액션.</param>
         /// <returns>현재bpm에서 승수가 적용된 값 또는 새로운 bpm.</returns>
-        public static float GetNewBpm(float bpm, Actions action)
+        public static float GetNewBpm(float bpm, ActionEvents actionEvent)
         {
-            switch (action.SpeedType)
+            switch (actionEvent.SpeedType)
             {
                 case SpeedType.Multiplier:
-                    return bpm * action.BpmMultiplier;
+                    return bpm * actionEvent.BpmMultiplier;
 
                 case SpeedType.Bpm:
-                    return action.BeatsPerMinute;
+                    return actionEvent.BeatsPerMinute;
 
                 default:
                     return bpm;
@@ -309,7 +309,7 @@ namespace Circle.Game.Rulesets.Extensions
             var positions = GetTilePositions(data);
 
             float angle = 0;
-            float bpm = beatmap.Settings.Bpm;
+            float bpm = beatmap.Metadata.Bpm;
             bool clockwise = true;
             TileInfo[] infos = new TileInfo[data.Length];
 

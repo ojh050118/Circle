@@ -20,7 +20,7 @@ namespace Circle.Game.Overlays
         public DrawableTrack CurrentTrack { get; protected set; } = new DrawableTrack(new TrackVirtual(1000));
 
         [Resolved]
-        private BeatmapStorage beatmaps { get; set; }
+        private BeatmapManager beatmapManager { get; set; }
 
         public bool IsPlaying => CurrentTrack.IsRunning;
 
@@ -53,7 +53,8 @@ namespace Circle.Game.Overlays
 
         public void ChangeTrack(BeatmapInfo info)
         {
-            var queuedTrack = new DrawableTrack(beatmaps.GetTrack(info));
+            var beatmap = beatmapManager.GetWorkingBeatmap(info);
+            var queuedTrack = new DrawableTrack(beatmap.LoadTrack());
             var lastTrack = CurrentTrack;
             CurrentTrack = queuedTrack;
 
