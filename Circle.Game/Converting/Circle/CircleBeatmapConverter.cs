@@ -235,6 +235,9 @@ namespace Circle.Game.Converting.Circle
                 case Adofai.Elements.EventType.RepeatEvents:
                     return EventType.RepeatEvents;
 
+                case Adofai.Elements.EventType.Pause:
+                    return EventType.Pause;
+
                 default:
                     return EventType.Other;
             }
