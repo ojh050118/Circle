@@ -169,7 +169,9 @@ namespace Circle.Game.Beatmaps
                     }
 
                     var circle = converter.Convert(adofaiBeatmap);
-                    string title = $"[{circle.Metadata.Author}] {circle.Metadata.Artist} - {circle.Metadata.Song}";
+                    string title = $"[{(string.IsNullOrEmpty(circle.Metadata.Author) ? "Unknown author" : circle.Metadata.Author)}] "
+                                   + $"{(string.IsNullOrEmpty(circle.Metadata.Artist) ? "Unknown artist" : circle.Metadata.Artist)} - "
+                                   + $"{(string.IsNullOrEmpty(circle.Metadata.Song) ? circle.Metadata.SongFileName : circle.Metadata.Song)}";
 
                     if (title.Length >= 100)
                         title = title.Substring(0, 100);

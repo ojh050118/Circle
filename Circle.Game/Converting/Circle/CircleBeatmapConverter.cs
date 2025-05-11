@@ -56,7 +56,7 @@ namespace Circle.Game.Converting.Circle
                 {
                     Floor = action.Floor,
                     EventType = convertEventType(action.EventType),
-                    RelativeTo = action.RelativeTo,
+                    RelativeTo = action.GetRelativity(),
                     BpmMultiplier = (float)action.BPMMultiplier,
                     BeatsPerMinute = (float)action.BeatsPerMinute,
                     Ease = convertEasing(action.Ease),
@@ -234,6 +234,9 @@ namespace Circle.Game.Converting.Circle
 
                 case Adofai.Elements.EventType.RepeatEvents:
                     return EventType.RepeatEvents;
+
+                case Adofai.Elements.EventType.Pause:
+                    return EventType.Pause;
 
                 default:
                     return EventType.Other;

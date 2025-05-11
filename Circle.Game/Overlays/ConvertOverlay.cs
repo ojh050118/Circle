@@ -167,7 +167,18 @@ namespace Circle.Game.Overlays
         private void pathChanged(ValueChangedEvent<DirectoryInfo> path)
         {
             levels.Clear();
-            var directories = path.NewValue?.GetDirectories("*", new EnumerationOptions()) ?? Array.Empty<DirectoryInfo>();
+
+            DirectoryInfo[] directories;
+
+            try
+            {
+                directories = path.NewValue?.GetDirectories("*", new EnumerationOptions()) ?? Array.Empty<DirectoryInfo>();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error trying to finding adofai file");
+                return;
+            }
 
             foreach (var dir in directories)
             {

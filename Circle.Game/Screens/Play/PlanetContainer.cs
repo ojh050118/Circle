@@ -87,6 +87,8 @@ namespace Circle.Game.Screens.Play
                 var easingAction = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.SetPlanetRotation);
                 easing = easingAction.Ease;
 
+                double pause = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.Pause).Duration * (60000 / bpm);
+
                 #region Planet rotation
 
                 switch (planetState)
@@ -115,7 +117,7 @@ namespace Circle.Game.Screens.Play
                 #endregion
 
                 // 회전을 마치면 다른 행성으로 회전할 준비를 해야합니다.
-                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
+                startTimeOffset += CalculationExtensions.GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm) + pause;
                 floor++;
 
                 #region Planet reducation

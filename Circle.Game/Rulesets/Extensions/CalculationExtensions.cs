@@ -63,6 +63,7 @@ namespace Circle.Game.Rulesets.Extensions
             float bpm = beatmap.Metadata.Bpm;
             float prevAngle = tilesInfo[0].Angle;
             List<double> hitStartTimes = new List<double> { gameplayStartTime - countdownDuration };
+
             startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), tilesInfo[0].Angle, bpm);
             hitStartTimes.Add(startTimeOffset);
 
@@ -72,7 +73,10 @@ namespace Circle.Game.Rulesets.Extensions
 
                 prevAngle = tilesInfo[floor].Angle;
                 bpm = GetNewBpm(tilesInfo, bpm, floor);
-                startTimeOffset += GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm);
+
+                var pause = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.Pause);
+
+                startTimeOffset += GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm) + pause.Duration * (60000 / bpm);
                 hitStartTimes.Add(startTimeOffset);
             }
 
@@ -351,20 +355,20 @@ namespace Circle.Game.Rulesets.Extensions
 
             for (int i = 0; i < targetAngleData.Length; i++)
             {
+                float calculatedAngle = 360 - targetAngleData[i];
+
                 if (targetAngleData[i] == 999 || targetAngleData[i] <= 0)
                 {
                     if (targetAngleData[i] >= 0)
-                        convertedData[i] = targetAngleData[i];
+                        calculatedAngle = targetAngleData[i];
                     else
-                        convertedData[i] = convertedData[i - 1] - 180;
-
-                    continue;
+                        calculatedAngle = GetSafeAngle(-1 * targetAngleData[i]); // Adofai의 각도는 반시계, Circle은 시계방향으로 각도가 증가합니다. 부호를 바꾸어 같은 방향을 가르키도록 합니다.
                 }
 
-                convertedData[i] = 360 - targetAngleData[i];
+                convertedData[i] = calculatedAngle;
             }
 
-            convertedData[^1] = 360 - targetAngleData.Last();
+            convertedData[^1] = convertedData[^2];
             return convertedData;
         }
 
