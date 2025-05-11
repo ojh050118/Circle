@@ -351,20 +351,20 @@ namespace Circle.Game.Rulesets.Extensions
 
             for (int i = 0; i < targetAngleData.Length; i++)
             {
+                float calculatedAngle = 360 - targetAngleData[i];
+
                 if (targetAngleData[i] == 999 || targetAngleData[i] <= 0)
                 {
                     if (targetAngleData[i] >= 0)
-                        convertedData[i] = targetAngleData[i];
+                        calculatedAngle = targetAngleData[i];
                     else
-                        convertedData[i] = convertedData[i - 1] - 180;
-
-                    continue;
+                        calculatedAngle = GetSafeAngle(targetAngleData[i]);
                 }
 
-                convertedData[i] = 360 - targetAngleData[i];
+                convertedData[i] = calculatedAngle;
             }
 
-            convertedData[^1] = 360 - targetAngleData.Last();
+            convertedData[^1] = convertedData[^2];
             return convertedData;
         }
 
