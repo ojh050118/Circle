@@ -170,7 +170,8 @@ namespace Circle.Game.Beatmaps
         MoveCamera,
         SetPlanetRotation,
         RepeatEvents,
-        Other
+        Other,
+        Pause
     }
 
     public enum SpeedType
