@@ -53,6 +53,7 @@ namespace Circle.Game.Screens.Play
 
             // TODO: 시작시간 오프셋 변수 제거 고려
             double startTimeOffset = beatmap.Metadata.Offset;
+            TileType prevTileType;
             float prevAngle;
             float bpm = beatmap.Metadata.Bpm;
             int floor = 0;
@@ -72,6 +73,7 @@ namespace Circle.Game.Screens.Play
             using (BluePlanet.BeginAbsoluteSequence(startTimeOffset))
             {
                 prevAngle = tiles[floor].Angle;
+                prevTileType = tiles[floor].TileType;
                 floor++;
 
                 if (floor < tiles.Length)
@@ -89,9 +91,10 @@ namespace Circle.Game.Screens.Play
 
             while (floor < tiles.Length)
             {
-                float fixedRotation = tiles.ComputeRotation(floor, prevAngle);
+                float fixedRotation = tiles[floor].ComputeStartRotation(prevTileType, prevAngle);
                 bpm = tiles[floor].Bpm;
                 prevAngle = tiles[floor].Angle;
+                prevTileType = tiles[floor].TileType;
 
                 // Apply easing
                 var easingAction = tiles[floor].Actions.FirstOrDefault(action => action.EventType == EventType.SetPlanetRotation);

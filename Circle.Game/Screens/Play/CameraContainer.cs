@@ -76,6 +76,9 @@ namespace Circle.Game.Screens.Play
             var tiles = beatmap.Tiles.ToArray();
             var cameraTransforms = new List<CameraTransform>();
 
+            float prevAngle = tiles.First().Angle;
+            TileType prevTileType = TileType.Normal;
+
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
             if (beatmap.Metadata.RelativeTo == Relativity.LastPosition)
                 cameraRelativity = Relativity.Player;
@@ -86,10 +89,12 @@ namespace Circle.Game.Screens.Play
 
             for (int floor = 0; floor < tiles.Length; floor++)
             {
-                float prevAngle = tiles[floor].Angle;
-                float fixedRotation = tiles.ComputeRotation(floor, prevAngle);
+                float fixedRotation = tiles[floor].ComputeStartRotation(prevTileType, prevAngle);
                 var position = -tiles[floor].Position;
                 float bpm = tiles[floor].Bpm;
+
+                prevAngle = tiles[floor].Angle;
+                prevTileType = tiles[floor].TileType;
 
                 foreach (var action in tiles[floor].Actions)
                 {

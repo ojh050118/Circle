@@ -78,5 +78,18 @@ namespace Circle.Game.Rulesets.Extensions
 
             return tiles;
         }
+
+        public static float ComputeStartRotation(this Tile tile, TileType prevTileType, float prevAngle)
+        {
+            return CalculationExtensions.ComputeStartRotation(prevTileType, prevAngle, tile.TileType, tile.Angle, tile.Clockwise);
+        }
+
+        public static float GetRelativeDuration(this IReadOnlyList<Tile> tiles, float oldRotation, int floor, float bpm)
+        {
+            while (tiles[floor].TileType == TileType.Midspin)
+                floor++;
+
+            return CalculationExtensions.GetRelativeDuration(oldRotation, tiles[floor].Angle, bpm);
+        }
     }
 }
