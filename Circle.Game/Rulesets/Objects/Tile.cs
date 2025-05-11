@@ -1,53 +1,41 @@
 #nullable disable
 
 using Circle.Game.Beatmaps;
-using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Sprites;
 using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public abstract partial class Tile : Container
+    public class Tile
     {
-        public const float WIDTH = 150;
-        public const float HEIGHT = 50;
+        // TODO: 레벨 설정에 맞게 타일 표시 시간 지정
+        public double StartTime { get; set; }
 
-        private readonly SpriteIcon icon;
+        public double Duration { get; set; }
 
-        protected Tile()
+        public double EndTime => StartTime + Duration;
+
+        /// <summary>
+        /// 행성이 도착하는 시간. 박자의 타이밍이자 이벤트 실행 시점이 됩니다.
+        /// </summary>
+        public double HitTime { get; set; }
+
+        public int Floor { get; set; }
+
+        public float Angle { get; set; }
+
+        public Vector2 Position { get; set; }
+
+        public bool Clockwise { get; set; }
+
+        public float Bpm { get; set; }
+
+        public ActionEvents[] Actions { get; set; }
+
+        public TileType TileType { get; set; }
+
+        public override string ToString()
         {
-            Anchor = Anchor.Centre;
-            OriginPosition = new Vector2(25);
-            Alpha = 0.45f;
-            Size = new Vector2(WIDTH, HEIGHT);
-            icon = new SpriteIcon
-            {
-                Size = new Vector2(35),
-                Origin = Anchor.Centre,
-                Position = new Vector2(25),
-            };
-        }
-
-        public TileInfo TileInfo { get; set; }
-
-        protected override void LoadComplete()
-        {
-            if (TileInfo == null)
-                return;
-
-            foreach (var action in TileInfo.Action)
-            {
-                if (action.SpeedType != null)
-                    icon.Icon = FontAwesome.Solid.TachometerAlt;
-
-                if (action.EventType == EventType.Twirl)
-                    icon.Icon = FontAwesome.Solid.UndoAlt;
-            }
-
-            Add(icon);
-
-            base.LoadComplete();
+            return $"{Floor}. {TileType} | Hit time: {HitTime} | Actions: {Actions.Length}";
         }
     }
 }

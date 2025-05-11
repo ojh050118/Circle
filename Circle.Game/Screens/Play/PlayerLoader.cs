@@ -3,7 +3,6 @@
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using osu.Framework.Allocation;
-using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Screens;
@@ -21,7 +20,7 @@ namespace Circle.Game.Screens.Play
         private ScheduledDelegate spinnerShow;
 
         private readonly BeatmapInfo beatmapInfo;
-        private Beatmap beatmap;
+        private WorkingBeatmap workingBeatmap;
 
         public PlayerLoader(BeatmapInfo beatmapInfo)
         {
@@ -37,12 +36,13 @@ namespace Circle.Game.Screens.Play
         public override bool PlaySample => false;
 
         [BackgroundDependencyLoader]
-        private void load(Bindable<WorkingBeatmap> workingBeatmap)
+        private void load(BeatmapManager beatmapManager)
         {
-            beatmap = workingBeatmap.Value.Beatmap;
+            workingBeatmap = beatmapManager.GetWorkingBeatmap(beatmapInfo);
+
             InternalChild = header = new ScreenHeader(this)
             {
-                Text = workingBeatmap.Value.Beatmap.ToString(),
+                Text = workingBeatmap.Beatmap.ToString(),
                 Alpha = 0
             };
         }
@@ -51,13 +51,13 @@ namespace Circle.Game.Screens.Play
         {
             base.OnEntering(e);
 
-            if (beatmap.AngleData == null || beatmap.AngleData.Length == 0)
+            if (workingBeatmap.Beatmap.AngleData == null || workingBeatmap.Beatmap.AngleData.Length == 0)
             {
                 OnExit();
                 return;
             }
 
-            LoadComponentAsync(player = new Player(beatmapInfo));
+            LoadComponentAsync(player = new Player(workingBeatmap));
             LoadComponentAsync(spinner = new LoadingSpinner(true, true)
             {
                 Anchor = Anchor.Centre,

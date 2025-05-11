@@ -7,7 +7,7 @@ using osuTK;
 
 namespace Circle.Game.Rulesets.Objects
 {
-    public partial class MidspinTile : Tile
+    public partial class MidspinTile : DrawableTile
     {
         public MidspinTile()
         {

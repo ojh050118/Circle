@@ -1,9 +1,11 @@
 #nullable disable
 
 using System.Collections.Generic;
+using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Sprites;
+using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -16,12 +18,45 @@ namespace Circle.Game.Screens.Play.HUD
         private readonly Beatmap beatmap;
 
         private GlowingSpriteText complete;
-        private IReadOnlyList<double> hitTimes;
+        private IEnumerable<Tile> tiles;
         private GameplayProgress progress;
 
         public HUDOverlay(Beatmap beatmap)
         {
             this.beatmap = beatmap;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(CircleColour colours)
+        {
+            tiles = beatmap.Tiles;
+
+            RelativeSizeAxes = Axes.Both;
+            Children = new Drawable[]
+            {
+                new GlowingSpriteText
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Margin = new MarginPadding { Top = 30 },
+                    Text = string.IsNullOrEmpty(beatmap.Metadata.Artist) && string.IsNullOrEmpty(beatmap.Metadata.Song) ? string.Empty : $"{beatmap.Metadata.Artist} - {beatmap.Metadata.Song}",
+                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 34),
+                    GlowColour = colours.TransparentBlack
+                },
+                complete = new GlowingSpriteText
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Alpha = 0,
+                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 64),
+                    GlowColour = colours.TransparentBlack
+                },
+                progress = new GameplayProgress(tiles.Count() - 1)
+                {
+                    Anchor = Anchor.BottomCentre,
+                    Origin = Anchor.BottomCentre,
+                },
+            };
         }
 
         public void Start()
@@ -59,39 +94,6 @@ namespace Circle.Game.Screens.Play.HUD
             complete.Text = "Congratulations!";
             complete.Alpha = 1;
             progress.Increase();
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(CircleColour colours)
-        {
-            hitTimes = beatmap.TileStartTime;
-
-            RelativeSizeAxes = Axes.Both;
-            Children = new Drawable[]
-            {
-                new GlowingSpriteText
-                {
-                    Anchor = Anchor.TopCentre,
-                    Origin = Anchor.TopCentre,
-                    Margin = new MarginPadding { Top = 30 },
-                    Text = $"{beatmap.Metadata.Artist} - {beatmap.Metadata.Song}",
-                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 34),
-                    GlowColour = colours.TransparentBlack
-                },
-                complete = new GlowingSpriteText
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Alpha = 0,
-                    Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 64),
-                    GlowColour = colours.TransparentBlack
-                },
-                progress = new GameplayProgress(hitTimes.Count - 1)
-                {
-                    Anchor = Anchor.BottomCentre,
-                    Origin = Anchor.BottomCentre,
-                },
-            };
         }
     }
 }

@@ -1,8 +1,6 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Rulesets.Objects;
 using JetBrains.Annotations;
@@ -17,10 +15,10 @@ namespace Circle.Game.Rulesets.Extensions
         /// </summary>
         /// <param name="angle">각도.</param>
         /// <returns>다음 타일의 위치.</returns>
-        public static Vector2 GetComputedTilePosition(float angle)
+        public static Vector2 GetNextTilePosition(float angle)
         {
-            float x = (float)Math.Cos(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
-            float y = (float)Math.Sin(MathHelper.DegreesToRadians(angle)) * (Tile.WIDTH - Tile.HEIGHT);
+            float x = (float)Math.Cos(MathHelper.DegreesToRadians(angle)) * (DrawableTile.WIDTH - DrawableTile.HEIGHT);
+            float y = (float)Math.Sin(MathHelper.DegreesToRadians(angle)) * (DrawableTile.WIDTH - DrawableTile.HEIGHT);
 
             return new Vector2(x, y);
         }
@@ -50,127 +48,42 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        /// 행성이 타일에 도착하는 시간을 계산합니다.
+        /// 현재 타일의 방향으로 회전할 행성의 시작 각도를 계산합니다.
         /// </summary>
-        /// <param name="beatmap">비트맵.</param>
-        /// <param name="gameplayStartTime">게임 시작 시간.</param>
-        /// <param name="countdownDuration">카운트다운 지속시간.</param>
-        /// <returns>행성이 타일이 도착하는 시간의 집합.</returns>
-        public static IReadOnlyList<double> GetTileStartTime(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
+        /// <param name="prevType">이전 타일의 타입</param>
+        /// <param name="prevAngle">이전 타일의 각도</param>
+        /// <param name="targetType">현재 타일의 타입</param>
+        /// <param name="targetAngle">현재 타일의 각도</param>
+        /// <param name="clockwise">현재 타일의 회전방향</param>
+        /// <returns>회전방향을 고려한 시작 각도 값.</returns>
+        public static float ComputeStartRotation(TileType prevType, float prevAngle, TileType targetType, float targetAngle, bool clockwise)
         {
-            var tilesInfo = beatmap.TilesInfo;
-            double startTimeOffset = gameplayStartTime;
-            float bpm = beatmap.Metadata.Bpm;
-            float prevAngle = tilesInfo[0].Angle;
-            List<double> hitStartTimes = new List<double> { gameplayStartTime - countdownDuration };
+            float destRotation = GetSafeAngle(targetAngle);
+            float startRotation = GetSafeAngle(prevAngle);
 
-            startTimeOffset += GetRelativeDuration(prevAngle - GetTimebaseRotation(gameplayStartTime, gameplayStartTime - countdownDuration, bpm), tilesInfo[0].Angle, bpm);
-            hitStartTimes.Add(startTimeOffset);
+            // 각도를 이전 타일의 반대 방향으로 설정합니다.
+            // 미드스핀 타일에 행성이 머물지 않기때문에, 각도를 변경하지 않습니다.
+            if (targetType != TileType.Midspin && prevType != TileType.Midspin)
+                startRotation = GetSafeAngle(startRotation - 180);
+            else if (targetType == TileType.Midspin && prevType == TileType.Midspin) // TODO: 이전과 현재가 미드스핀일 때 예상치 못한 문제가 생기는 듯. 타일 정보에 미드스핀 타일은 이전 각도의 값을 가지고 있도록 하기.
+                startRotation += GetSafeAngle(startRotation - 180);
 
-            for (int floor = 1; floor < tilesInfo.Length - 1; floor++)
+            if (targetType == TileType.Midspin)
+                return startRotation;
+
+            // 올바른 방향으로 회전할 수 있도록 합니다.
+            if (clockwise)
             {
-                float fixedRotation = ComputeRotation(tilesInfo, floor, prevAngle);
-
-                prevAngle = tilesInfo[floor].Angle;
-                bpm = GetNewBpm(tilesInfo, bpm, floor);
-
-                var pause = tilesInfo[floor].Action.FirstOrDefault(action => action.EventType == EventType.Pause);
-
-                startTimeOffset += GetRelativeDuration(fixedRotation, tilesInfo[floor].Angle, bpm) + pause.Duration * (60000 / bpm);
-                hitStartTimes.Add(startTimeOffset);
-            }
-
-            return hitStartTimes;
-        }
-
-        /// <summary>
-        /// 행성이 공전하는 것처럼 보이기 위해 각도를 계산합니다.
-        /// </summary>
-        /// <param name="tilesInfo">타일 정보들.</param>
-        /// <param name="floor">현재 타일.</param>
-        /// <param name="prevAngle">이전 타일 각도.</param>
-        /// <returns>행성이 회전하기 전에 위치하는 각도.</returns>
-        public static float ComputeRotation(TileInfo[] tilesInfo, int floor, float prevAngle)
-        {
-            float newRotation = GetSafeAngle(tilesInfo[floor].Angle);
-
-            // 소용돌이에 대한 아무런 설정이 없으면 시계방향으로 회전합니다.
-            bool isClockwise = GetIsClockwise(tilesInfo, floor + 1);
-
-            float fixedRotation = GetSafeAngle(prevAngle);
-
-            // 현재와 이전 타일이 미드스핀 타일일 때 회전각을 반전하면 안됩니다.
-            if (floor > 0)
-            {
-                if (tilesInfo[floor].TileType != TileType.Midspin && tilesInfo[floor - 1].TileType != TileType.Midspin)
-                    fixedRotation = fixedRotation - 180 < 0 ? fixedRotation + 180 : fixedRotation - 180;
-                else if (tilesInfo[floor].TileType == TileType.Midspin && tilesInfo[floor - 1].TileType == TileType.Midspin)
-                    fixedRotation += fixedRotation - 180 < 0 ? fixedRotation + 180 : fixedRotation - 180;
-            }
-
-            if (tilesInfo[floor].TileType == TileType.Midspin)
-                return fixedRotation;
-
-            // 회전방향에 따라 새로운 각도 계산
-            if (isClockwise)
-            {
-                while (fixedRotation >= newRotation)
-                    fixedRotation -= 360;
+                while (startRotation >= destRotation)
+                    startRotation -= 360;
             }
             else
             {
-                while (fixedRotation <= newRotation)
-                    fixedRotation += 360;
+                while (startRotation <= destRotation)
+                    startRotation += 360;
             }
 
-            return fixedRotation;
-        }
-
-        /// <summary>
-        /// 행성이 특정 타일에서 회전방향을 구합니다.
-        /// </summary>
-        /// <param name="tilesInfo">타일 정보.</param>
-        /// <param name="floor">현재 타일</param>
-        /// <returns>타일이 시계방향으로 회전하는지 여부.</returns>
-        public static bool GetIsClockwise(TileInfo[] tilesInfo, int floor)
-        {
-            bool isClockwise = true;
-
-            // 소용돌이를 적용합니다.
-            for (int i = 0; i < floor; i++)
-            {
-                foreach (var action in tilesInfo[i].Action)
-                {
-                    if (action.EventType == EventType.Twirl)
-                        isClockwise = !isClockwise;
-                }
-            }
-
-            return isClockwise;
-        }
-
-        /// <summary>
-        /// 타일의 bpm을 적용합니다.
-        /// </summary>
-        /// <param name="tilesInfo">타일 정보.</param>
-        /// <param name="bpm">현재 bpm.</param>
-        /// <param name="floor">현재 타일.</param>
-        /// <returns>현재bpm에서 승수가 적용된 값 또는 새로운 bpm.</returns>
-        public static float GetNewBpm(TileInfo[] tilesInfo, float bpm, int floor)
-        {
-            var speedAction = tilesInfo[floor].Action.FirstOrDefault(action => action.SpeedType.HasValue);
-
-            switch (speedAction.SpeedType)
-            {
-                case SpeedType.Multiplier:
-                    return bpm * speedAction.BpmMultiplier;
-
-                case SpeedType.Bpm:
-                    return speedAction.BeatsPerMinute;
-
-                default:
-                    return bpm;
-            }
+            return startRotation;
         }
 
         /// <summary>
@@ -207,140 +120,43 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        /// 시간 차로 회전해야할 각도롤 구합니다.
+        /// 시간 차로 회전할 수 있는 각도의 양을 구합니다.
         /// </summary>
-        /// <param name="offset">회전하기 전 각도.</param>
-        /// <param name="goalTime">다음각도까지 회전해야하는 시간.</param>
-        /// <param name="bpm">현재 bpm.</param>
-        /// <returns></returns>
-        public static float GetTimebaseRotation(double offset, double goalTime, float bpm)
+        /// <param name="startTime">회전을 시작할 시간.</param>
+        /// <param name="endTime">회전이 끝나는 시간.</param>
+        /// <param name="bpm">bpm.</param>
+        /// <returns>회전가능한 각도.</returns>
+        public static float GetTimeBasedRotation(double startTime, double endTime, float bpm)
         {
-            return (float)Math.Abs(offset - goalTime) / (60000 / bpm) * 180;
+            return (float)Math.Abs(endTime - startTime) / (60000 / bpm) * 180;
         }
 
         /// <summary>
-        /// <paramref name="angleData"/>로 타일 타입을 구분합니다.
-        /// 마지막 타일 타입은 <see cref="TileType.Circular"/>입니다.
+        /// 타일의 종류를 구합니다.
+        /// 미드스핀 타일은 <see cref="TileType.Midspin"/>, 라운드 타일과 마지막 타일은 <see cref="TileType.Circular"/>,
+        /// 미드스핀과 라운드 타일의 이전 타일은 <see cref="TileType.Short"/>, 그 외는 <see cref="TileType.Normal"/>입니다.
         /// </summary>
-        /// <param name="angleData">각도 데이터.</param>
-        /// <returns>타일 타입의 집합.</returns>
-        public static IReadOnlyList<TileType> GetTileType(float[] angleData)
+        /// <param name="prevAngle">이전 타일 각도.</param>
+        /// <param name="targetAngle">종류를 구할 타일의 각도.</param>
+        /// <param name="nextAngle">다음 타일 각도.</param>
+        /// <returns>타일의 종류</returns>
+        public static TileType GetTileType(float prevAngle, float targetAngle, float? nextAngle = null)
         {
-            List<TileType> tileTypes = new List<TileType>();
+            // 각도값이 999인 타일은 미드스핀 타일이며, 미드스핀의 타일 각도는 앞 타일이 결정합니다.
+            if (targetAngle == 999)
+                return TileType.Midspin;
 
-            for (int floor = 0; floor < angleData.Length; floor++)
-            {
-                switch (angleData[floor])
-                {
-                    case 999:
-                        tileTypes[floor - 1] = TileType.Short;
-                        tileTypes.Add(TileType.Midspin);
-                        continue;
+            // 다음 타일이 없으면 원형 타일입니다.
+            // 이전타일과 반대방향이면 원형 타일입니다.
+            if (!nextAngle.HasValue || Math.Abs(targetAngle - prevAngle) == 180)
+                return TileType.Circular;
 
-                    default:
-                        if (floor > 0)
-                        {
-                            if (Math.Abs(angleData[floor] - angleData[floor - 1]) == 180)
-                            {
-                                tileTypes[floor - 1] = TileType.Short;
-                                tileTypes.Add(TileType.Circular);
-                                continue;
-                            }
-                        }
+            // 미드스핀 타일의 앞 타일은 항상 길이가 짧은 타일입니다.
+            // 라운드 타일의 앞 타일은 항상 길이가 짧은 타일입니다.
+            if (nextAngle.Value == 999 || Math.Abs(nextAngle.Value - targetAngle) == 180)
+                return TileType.Short;
 
-                        break;
-                }
-
-                tileTypes.Add(TileType.Normal);
-            }
-
-            tileTypes[^1] = TileType.Circular;
-
-            return tileTypes;
-        }
-
-        /// <summary>
-        /// 타일의 위치를 계산합니다.
-        /// </summary>
-        /// <param name="angleData">각도 데이터.</param>
-        /// <returns>각 타일의 위치의 집합.</returns>
-        public static IReadOnlyList<Vector2> GetTilePositions(float[] angleData)
-        {
-            var types = GetTileType(angleData);
-            var positions = new List<Vector2> { Vector2.Zero };
-            Vector2 offset = Vector2.Zero;
-
-            for (int i = 0; i < angleData.Length; i++)
-            {
-                var newTilePosition = GetComputedTilePosition(angleData[i]);
-
-                switch (types[i])
-                {
-                    case TileType.Normal:
-                        offset += newTilePosition;
-                        break;
-
-                    case TileType.Midspin:
-                        offset -= GetComputedTilePosition(angleData[i - 1]);
-                        break;
-
-                    case TileType.Short:
-                        offset += newTilePosition;
-                        break;
-
-                    case TileType.Circular:
-                        if (i + 1 < angleData.Length)
-                            offset += newTilePosition;
-
-                        break;
-                }
-
-                positions.Add(offset);
-            }
-
-            return positions;
-        }
-
-        /// <summary>
-        /// 타일의 정보를 가져옵니다.
-        /// </summary>
-        /// <param name="beatmap">비트맵.</param>
-        /// <returns>각 타일 정보에 대한 집합.</returns>
-        public static TileInfo[] GetTilesInfo(Beatmap beatmap)
-        {
-            float[] data = ConvertAngles(beatmap.AngleData);
-            var types = GetTileType(data);
-            var positions = GetTilePositions(data);
-
-            float angle = 0;
-            float bpm = beatmap.Metadata.Bpm;
-            bool clockwise = true;
-            TileInfo[] infos = new TileInfo[data.Length];
-
-            for (int floor = 0; floor < data.Length; floor++)
-            {
-                var floorAction = Array.FindAll(beatmap.Actions, action => floor == action.Floor);
-
-                infos[floor] = new TileInfo
-                {
-                    Action = floorAction,
-                    TileType = types[floor],
-                    Angle = types[floor] == TileType.Midspin ? data[floor - 1] : data[floor],
-                    Position = positions[floor],
-                    PreviousAngle = angle,
-                    PreviousBpm = bpm,
-                    PreviousClockwise = clockwise
-                };
-
-                angle = types[floor] == TileType.Midspin ? angle : data[floor];
-                bpm = GetNewBpm(bpm, floorAction.FirstOrDefault(action => action.SpeedType.HasValue));
-                clockwise = Array.Exists(floorAction, action => action.EventType == EventType.Twirl) ? !clockwise : clockwise;
-
-                infos[floor].Bpm = bpm;
-                infos[floor].Clockwise = clockwise;
-            }
-
-            return infos;
+            return TileType.Normal;
         }
 
         /// <summary>

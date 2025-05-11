@@ -20,27 +20,60 @@ namespace Circle.Game.Screens.Play
         public new Container Content;
         private Container offsetContainer, positionContainer, scalingContainer;
 
-        public void InitializeSettings(BeatmapMetadata metadata)
+        private readonly Beatmap beatmap;
+
+        public CameraContainer(Beatmap beatmap)
         {
+            this.beatmap = beatmap;
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            RelativeSizeAxes = Axes.Both;
+            Anchor = Anchor.Centre;
+            Origin = Anchor.Centre;
+            Child = scalingContainer = new Container
+            {
+                Name = "Rotate/Scaling Container",
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                Child = offsetContainer = new Container
+                {
+                    Name = "Offset Container",
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    AutoSizeAxes = Axes.Both,
+                    Child = positionContainer = new Container
+                    {
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Name = "Positioning Container",
+                        AutoSizeAxes = Axes.Both,
+                        Child = Content
+                    }
+                }
+            };
+
+            var metadata = beatmap.Metadata;
+
             scalingContainer.Rotation = metadata.Rotation;
             float zoom = Precision.AlmostEquals(metadata.Zoom, 0) ? 100 : metadata.Zoom;
             scalingContainer.Scale = new Vector2(1 / (zoom / 100));
-            offsetContainer.Position = metadata.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+            offsetContainer.Position = metadata.Position.ToVector2() * (DrawableTile.WIDTH - Planet.PLANET_SIZE);
         }
 
-        public void AddCameraTransforms(Beatmap beatmap, IReadOnlyList<double> tileStartTime)
+        public void AddCameraTransforms()
         {
             #region Initialize Camera Setting
 
-            float bpm = beatmap.Metadata.Bpm;
-
             // 카메라 이동을 위한 전역 설정입니다.
             Relativity cameraRelativity = beatmap.Metadata.RelativeTo;
-            Vector2 cameraOffset = beatmap.Metadata.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+            Vector2 cameraOffset = beatmap.Metadata.Position.ToVector2() * (DrawableTile.WIDTH - Planet.PLANET_SIZE);
             Vector2 cameraPosition = cameraOffset;
             float cameraRotation = beatmap.Metadata.Rotation;
 
-            var tilesInfo = beatmap.TilesInfo;
+            var tiles = beatmap.Tiles.ToArray();
             var cameraTransforms = new List<CameraTransform>();
 
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
@@ -51,18 +84,18 @@ namespace Circle.Game.Screens.Play
 
             #region Process Camera Transform
 
-            for (int floor = 0; floor < tilesInfo.Length; floor++)
+            for (int floor = 0; floor < tiles.Length; floor++)
             {
-                float prevAngle = tilesInfo[floor].Angle;
-                float fixedRotation = tilesInfo.ComputeRotation(floor, prevAngle);
-                var position = -tilesInfo[floor].Position;
-                bpm = tilesInfo.GetNewBpm(bpm, floor);
+                float prevAngle = tiles[floor].Angle;
+                float fixedRotation = tiles.ComputeRotation(floor, prevAngle);
+                var position = -tiles[floor].Position;
+                float bpm = tiles[floor].Bpm;
 
-                foreach (var action in tilesInfo[floor].Action)
+                foreach (var action in tiles[floor].Actions)
                 {
                     void setCameraProperty(ActionEvents cameraActionEvent)
                     {
-                        var offset = cameraActionEvent.Position.ToVector2() * (Tile.WIDTH - Planet.PLANET_SIZE);
+                        var offset = cameraActionEvent.Position.ToVector2() * (DrawableTile.WIDTH - Planet.PLANET_SIZE);
 
                         if (cameraActionEvent.RelativeTo != Relativity.LastPosition)
                         {
@@ -111,8 +144,8 @@ namespace Circle.Game.Screens.Play
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
                             {
-                                StartTime = tileStartTime[floor] + angleOffset,
-                                Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
+                                StartTime = tiles[floor].HitTime + angleOffset,
+                                Duration = tiles.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
                                 Position = specificPosition0,
                                 Offset = cameraOffset,
                                 Rotation = cameraRotation,
@@ -123,13 +156,13 @@ namespace Circle.Game.Screens.Play
 
                         // 이벤트 반복엔 타일에 종속되지 않는 이벤트(카메라 트랜스폼)가 실행됩니다.
                         case EventType.RepeatEvents:
-                            var cameraEvents = Array.FindAll(tilesInfo[action.Floor].Action, a => a.EventType == EventType.MoveCamera);
+                            var cameraEvents = Array.FindAll(tiles[action.Floor].Actions, a => a.EventType == EventType.MoveCamera);
                             double intervalBeat = 60000 / bpm * action.Interval;
 
                             // 이벤트를 일정한 주기로 반복 횟수만큼 추가합니다.
                             for (int i = 1; i <= action.Repetitions; i++)
                             {
-                                double startTime = tileStartTime[floor] + intervalBeat * i;
+                                double startTime = tiles[floor].HitTime + intervalBeat * i;
 
                                 foreach (var cameraEvent in cameraEvents)
                                 {
@@ -143,7 +176,7 @@ namespace Circle.Game.Screens.Play
                                         cameraTransforms.Add(new CameraTransform
                                         {
                                             StartTime = startTime + angleTimeOffset,
-                                            Duration = tilesInfo.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
+                                            Duration = tiles.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
                                             Position = specificPosition,
                                             Offset = cameraOffset,
                                             Rotation = cameraRotation,
@@ -162,7 +195,7 @@ namespace Circle.Game.Screens.Play
                 {
                     cameraTransforms.Add(new CameraTransform
                     {
-                        StartTime = tileStartTime[floor],
+                        StartTime = tiles[floor].HitTime,
                         Duration = 400 + 60 / bpm * 500,
                         Position = position,
                         Offset = null,
@@ -213,35 +246,6 @@ namespace Circle.Game.Screens.Play
             }
 
             #endregion
-        }
-
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            RelativeSizeAxes = Axes.Both;
-            Anchor = Anchor.Centre;
-            Origin = Anchor.Centre;
-            Child = scalingContainer = new Container
-            {
-                Name = "Rotate/Scaling Container",
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                Child = offsetContainer = new Container
-                {
-                    Name = "Offset Container",
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    AutoSizeAxes = Axes.Both,
-                    Child = positionContainer = new Container
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Name = "Positioning Container",
-                        AutoSizeAxes = Axes.Both,
-                        Child = Content
-                    }
-                }
-            };
         }
     }
 }

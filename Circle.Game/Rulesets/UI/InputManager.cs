@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Beatmaps;
+using Circle.Game.Rulesets.Objects;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Events;
@@ -31,14 +33,21 @@ namespace Circle.Game.Rulesets.UI
         public override bool PropagateNonPositionalInputSubTree => false;
 
         public Beatmap Beatmap { get; set; }
-        private IReadOnlyList<double> tileHitTimes => Beatmap.TileStartTime;
+
+        private IReadOnlyList<Tile> tiles;
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            tiles = Beatmap.Tiles.ToList();
+        }
 
         protected override void LoadComplete()
         {
-            for (int i = 1; i < tileHitTimes.Count - 1; i++)
+            for (int i = 1; i < tiles.Count - 1; i++)
             {
-                using (BeginAbsoluteSequence(tileHitTimes[i], false))
-                    this.TransformTo("Floor", i + 1);
+                using (BeginAbsoluteSequence(tiles[i].HitTime, false))
+                    this.TransformTo(nameof(Floor), i + 1);
             }
         }
 
@@ -46,12 +55,12 @@ namespace Circle.Game.Rulesets.UI
         {
             base.Update();
 
-            if (Floor < tileHitTimes.Count)
+            if (Floor < tiles.Count)
             {
-                TimeUntilNextBeat = tileHitTimes[Floor] - Time.Current;
+                TimeUntilNextBeat = tiles[Floor].HitTime - Time.Current;
 
                 if (Floor - 1 > 0)
-                    TimeSinceLastBeat = Time.Current - tileHitTimes[Floor - 1];
+                    TimeSinceLastBeat = Time.Current - tiles[Floor - 1].HitTime;
             }
         }
 
