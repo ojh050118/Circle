@@ -76,9 +76,6 @@ namespace Circle.Game.Screens.Play
             var tiles = beatmap.Tiles.ToArray();
             var cameraTransforms = new List<CameraTransform>();
 
-            float prevAngle = tiles.First().Angle;
-            TileType prevTileType = TileType.Normal;
-
             // 카메라 기준좌표에 마지막위치로 설정하면 마지막에 설정한 기준좌표를 알 수 없습니다.
             if (beatmap.Metadata.RelativeTo == Relativity.LastPosition)
                 cameraRelativity = Relativity.Player;
@@ -89,12 +86,10 @@ namespace Circle.Game.Screens.Play
 
             for (int floor = 0; floor < tiles.Length; floor++)
             {
-                float fixedRotation = tiles[floor].ComputeStartRotation(prevTileType, prevAngle);
+                // 각도를 반전합니다.
+                float resolvedRotation = CalculationExtensions.InvertAngle(tiles[floor].Angle);
                 var position = -tiles[floor].Position;
                 float bpm = tiles[floor].Bpm;
-
-                prevAngle = tiles[floor].Angle;
-                prevTileType = tiles[floor].TileType;
 
                 foreach (var action in tiles[floor].Actions)
                 {
@@ -143,14 +138,14 @@ namespace Circle.Game.Screens.Play
                     {
                         case EventType.MoveCamera:
                             setCameraProperty(action);
-                            float angleOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + action.AngleOffset, bpm);
+                            float angleOffset = CalculationExtensions.GetRelativeDuration(resolvedRotation, resolvedRotation + action.AngleOffset, bpm);
                             Vector2? specificPosition0 = cameraRelativity == Relativity.Player ? null : cameraPosition;
 
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
                             {
                                 StartTime = tiles[floor].HitTime + angleOffset,
-                                Duration = tiles.GetRelativeDuration(fixedRotation, floor, bpm) * action.Duration,
+                                Duration = tiles.GetRelativeDuration(resolvedRotation, floor, bpm) * action.Duration,
                                 Position = specificPosition0,
                                 Offset = cameraOffset,
                                 Rotation = cameraRotation,
@@ -172,7 +167,7 @@ namespace Circle.Game.Screens.Play
                                 foreach (var cameraEvent in cameraEvents)
                                 {
                                     setCameraProperty(cameraEvent);
-                                    float angleTimeOffset = CalculationExtensions.GetRelativeDuration(fixedRotation, fixedRotation + cameraEvent.AngleOffset, bpm);
+                                    float angleTimeOffset = CalculationExtensions.GetRelativeDuration(resolvedRotation, resolvedRotation + cameraEvent.AngleOffset, bpm);
                                     Vector2? specificPosition = cameraRelativity == Relativity.Player ? null : cameraPosition;
 
                                     if (cameraEvent.EventTag == action.Tag)
@@ -181,7 +176,7 @@ namespace Circle.Game.Screens.Play
                                         cameraTransforms.Add(new CameraTransform
                                         {
                                             StartTime = startTime + angleTimeOffset,
-                                            Duration = tiles.GetRelativeDuration(fixedRotation, floor, bpm) * cameraEvent.Duration,
+                                            Duration = tiles.GetRelativeDuration(resolvedRotation, floor, bpm) * cameraEvent.Duration,
                                             Position = specificPosition,
                                             Offset = cameraOffset,
                                             Rotation = cameraRotation,

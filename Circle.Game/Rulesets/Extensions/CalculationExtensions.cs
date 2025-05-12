@@ -24,11 +24,12 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
-        /// 60분법 범위사이의 각도로 클램프 합니다.
+        /// 0~360도 범위사이의 각도로 변환 합니다.
+        /// 각도값이 매우 커지거나 작아지는 것을 방지하는데 사용합니다.
         /// </summary>
         /// <param name="angle">각도.</param>
-        /// <returns>60분법 범위의 각도</returns>
-        public static float GetSafeAngle(float angle)
+        /// <returns>0~360도 범위사이의 각도</returns>
+        public static float NormalizeAngle(float angle)
         {
             if (angle < 0)
             {
@@ -48,7 +49,15 @@ namespace Circle.Game.Rulesets.Extensions
         }
 
         /// <summary>
+        /// 각도를 반대방향으로 반전합니다.
+        /// </summary>
+        /// <param name="angle">각도.</param>
+        /// <returns>반전된 0~360도 사이의 각도.</returns>
+        public static float InvertAngle(float angle) => NormalizeAngle(angle + 180);
+
+        /// <summary>
         /// 현재 타일의 방향으로 회전할 행성의 시작 각도를 계산합니다.
+        /// 일반적으로 각도를 반전합니다.
         /// </summary>
         /// <param name="prevType">이전 타일의 타입</param>
         /// <param name="prevAngle">이전 타일의 각도</param>
@@ -58,15 +67,15 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>회전방향을 고려한 시작 각도 값.</returns>
         public static float ComputeStartRotation(TileType prevType, float prevAngle, TileType targetType, float targetAngle, bool clockwise)
         {
-            float destRotation = GetSafeAngle(targetAngle);
-            float startRotation = GetSafeAngle(prevAngle);
+            float destRotation = NormalizeAngle(targetAngle);
+            float startRotation = NormalizeAngle(prevAngle);
 
             // 각도를 이전 타일의 반대 방향으로 설정합니다.
             // 미드스핀 타일에 행성이 머물지 않기때문에, 각도를 변경하지 않습니다.
             if (targetType != TileType.Midspin && prevType != TileType.Midspin)
-                startRotation = GetSafeAngle(startRotation - 180);
+                startRotation = InvertAngle(startRotation);
             else if (targetType == TileType.Midspin && prevType == TileType.Midspin) // TODO: 이전과 현재가 미드스핀일 때 예상치 못한 문제가 생기는 듯. 타일 정보에 미드스핀 타일은 이전 각도의 값을 가지고 있도록 하기.
-                startRotation += GetSafeAngle(startRotation - 180);
+                startRotation += InvertAngle(startRotation);
 
             if (targetType == TileType.Midspin)
                 return startRotation;
@@ -171,17 +180,13 @@ namespace Circle.Game.Rulesets.Extensions
 
             for (int i = 0; i < targetAngleData.Length; i++)
             {
-                float calculatedAngle = 360 - targetAngleData[i];
-
-                if (targetAngleData[i] == 999 || targetAngleData[i] <= 0)
+                if (targetAngleData[i] == 999)
                 {
-                    if (targetAngleData[i] >= 0)
-                        calculatedAngle = targetAngleData[i];
-                    else
-                        calculatedAngle = GetSafeAngle(-1 * targetAngleData[i]); // Adofai의 각도는 반시계, Circle은 시계방향으로 각도가 증가합니다. 부호를 바꾸어 같은 방향을 가르키도록 합니다.
+                    convertedData[i] = targetAngleData[i];
+                    continue;
                 }
 
-                convertedData[i] = calculatedAngle;
+                convertedData[i] = NormalizeAngle(targetAngleData[i] * -1);
             }
 
             convertedData[^1] = convertedData[^2];
