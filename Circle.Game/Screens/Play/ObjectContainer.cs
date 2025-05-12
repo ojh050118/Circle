@@ -38,8 +38,7 @@ namespace Circle.Game.Screens.Play
             // Fade in
             for (int i = frontVisibilityCount; i < tiles.Length; i++)
             {
-                // TODO: 저 8은 뭐지??
-                bpm = tiles[i - 8].Bpm;
+                bpm = tiles[i - frontVisibilityCount].Bpm;
                 Children[i].LifetimeStart = tiles[i - frontVisibilityCount].HitTime;
 
                 using (Children[i].BeginAbsoluteSequence(tiles[i - frontVisibilityCount].HitTime, false))
