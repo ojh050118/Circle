@@ -14,7 +14,7 @@ namespace Circle.Game.Rulesets.Extensions
             float[] angles = CalculationExtensions.ConvertAngles(beatmap.AngleData);
             var tiles = new Tile[angles.Length];
 
-            float prevAngle = 0;
+            float prevAngle = angles.FirstOrDefault();
             var prevTileType = TileType.Normal;
 
             bool clockwise = true;
@@ -35,7 +35,6 @@ namespace Circle.Game.Rulesets.Extensions
                     clockwise = !clockwise;
 
                 float resolvedAngle = CalculationExtensions.ComputeStartRotation(prevTileType, prevAngle, tileType, angle, clockwise);
-                double pauseDuration = actions.FirstOrDefault(a => a.EventType == EventType.Pause).Duration * (60000 / bpm);
 
                 tiles[floor] = new Tile
                 {
@@ -49,8 +48,12 @@ namespace Circle.Game.Rulesets.Extensions
                     HitTime = hitTimeOffset
                 };
 
+                double pauseDuration = actions.FirstOrDefault(a => a.EventType == EventType.Pause).Duration * (60000 / bpm);
+
+                // 첫 타일은 오프셋 - 카운트다운 시간, 게임시작시간은 오프셋, 두번째 타일은 오프셋 + 카운트다운 시간입니다.
+                // 때문에, 두번째 타일의 적중시간을 카운트다운 시간의 두배를 적용합니다.
                 if (floor == 0)
-                    resolvedAngle = prevAngle - CalculationExtensions.GetTimeBasedRotation(hitTimeOffset, hitTimeOffset + countdownDuration, bpm);
+                    resolvedAngle = prevAngle - CalculationExtensions.GetTimeBasedRotation(hitTimeOffset, hitTimeOffset + countdownDuration * 2, bpm);
 
                 hitTimeOffset += CalculationExtensions.GetRelativeDuration(resolvedAngle, angle, bpm) + pauseDuration;
 
