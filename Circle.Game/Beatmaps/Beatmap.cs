@@ -23,7 +23,6 @@ namespace Circle.Game.Beatmaps
         }
 
         public ActionEvents[] Actions { get; set; }
-        private TileInfo[] tilesInfo;
 
         [JsonIgnore]
         public BeatmapInfo BeatmapInfo { get; set; }
@@ -41,12 +40,9 @@ namespace Circle.Game.Beatmaps
         }
 
         [JsonIgnore]
-        public TileInfo[] TilesInfo => tilesInfo ??= CalculationExtensions.GetTilesInfo(this);
+        public IEnumerable<Tile> Tiles => tiles ??= TileExtensions.GetTiles(this);
 
-        [JsonIgnore]
-        public IReadOnlyList<double> TileStartTime => tileStartTime ??= CalculationExtensions.GetTileStartTime(this, Metadata.Offset, 60000 / Metadata.Bpm * Metadata.CountdownTicks);
-
-        private IReadOnlyList<double> tileStartTime;
+        private IEnumerable<Tile> tiles;
 
         public bool Equals(Beatmap other)
         {
@@ -55,6 +51,8 @@ namespace Circle.Game.Beatmaps
 
             return Metadata.Equals(other.Metadata) && Actions.SequenceEqual(other.Actions);
         }
+
+        public override string ToString() => $"[{Metadata.Author}] {Metadata.Artist} - {Metadata.Song}";
     }
 
     /// <summary>

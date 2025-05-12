@@ -1,9 +1,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
 using Circle.Game.Beatmaps;
-using Circle.Game.Rulesets.Extensions;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -12,32 +10,18 @@ namespace Circle.Game.Screens.Play
 {
     public partial class Playfield : Container
     {
-        /// <summary>
-        /// 게임 시작 전 카운트다운 지속시간.
-        /// </summary>
-        private readonly double countdownDuration;
-
         private readonly Beatmap currentBeatmap;
-
-        /// <summary>
-        /// 게임이 시작되는 시간.
-        /// </summary>
-        private readonly double gameplayStartTime;
 
         private CameraContainer cameraContainer;
         private PlanetContainer planetContainer;
         private ObjectContainer tileContainer;
 
-        public Playfield(Beatmap beatmap, double gameplayStartTime, double countdownDuration)
+        public Playfield(Beatmap beatmap)
         {
             currentBeatmap = beatmap;
-            this.gameplayStartTime = gameplayStartTime;
-            this.countdownDuration = countdownDuration;
         }
 
         public Action OnComplete { get; set; }
-
-        private IReadOnlyList<double> startTimes => CalculationExtensions.GetTileStartTime(currentBeatmap, gameplayStartTime, countdownDuration);
 
         [BackgroundDependencyLoader]
         private void load()
@@ -45,7 +29,7 @@ namespace Circle.Game.Screens.Play
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
-            Child = cameraContainer = new CameraContainer
+            Child = cameraContainer = new CameraContainer(currentBeatmap)
             {
                 Content = new Container
                 {
@@ -55,21 +39,17 @@ namespace Circle.Game.Screens.Play
                     Children = new Drawable[]
                     {
                         tileContainer = new ObjectContainer(currentBeatmap),
-                        planetContainer = new PlanetContainer()
+                        planetContainer = new PlanetContainer(currentBeatmap)
                     }
                 }
             };
-
-            planetContainer.RedPlanet.Expansion = planetContainer.BluePlanet.Expansion = 0;
-            planetContainer.BluePlanet.Rotation = currentBeatmap.TilesInfo[0].Angle - CalculationExtensions.GetTimebaseRotation(gameplayStartTime, startTimes[0], currentBeatmap.Metadata.Bpm);
-            cameraContainer.InitializeSettings(currentBeatmap.Metadata);
         }
 
         protected override void LoadComplete()
         {
-            tileContainer.AddTileTransforms(gameplayStartTime, countdownDuration);
-            planetContainer.AddPlanetTransform(currentBeatmap, gameplayStartTime);
-            cameraContainer.AddCameraTransforms(currentBeatmap, startTimes);
+            tileContainer.AddTileTransforms();
+            planetContainer.AddPlanetTransform();
+            cameraContainer.AddCameraTransforms();
 
             base.LoadComplete();
         }

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System;
 using Circle.Game.Beatmaps;
 
 namespace Circle.Game.Converting.Adofai.Elements
@@ -77,8 +78,14 @@ namespace Circle.Game.Converting.Adofai.Elements
                 case Relativity r:
                     return r;
 
-                case object:
+                case string r:
+                    if (Enum.TryParse(r, out Relativity relativity))
+                        return relativity;
+
                     return null;
+
+                case int r:
+                    return (Relativity)r;
 
                 default:
                     return null;

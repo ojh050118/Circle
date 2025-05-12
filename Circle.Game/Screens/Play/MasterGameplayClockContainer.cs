@@ -68,7 +68,7 @@ namespace Circle.Game.Screens.Play
                     {
                         RelativeSizeAxes = Axes.Both,
                         Beatmap = workingBeatmap.Value.Beatmap,
-                        Child = Playfield = new Playfield(workingBeatmap.Value.Beatmap, gameplayStartTime, countdownDuration)
+                        Child = Playfield = new Playfield(workingBeatmap.Value.Beatmap)
                     }
                 }
             };

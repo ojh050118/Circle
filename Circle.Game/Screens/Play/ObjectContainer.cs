@@ -1,8 +1,8 @@
 #nullable disable
 
+using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
-using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -10,11 +10,9 @@ using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Screens.Play
 {
-    public partial class ObjectContainer : Container<Tile>
+    public partial class ObjectContainer : Container<DrawableTile>
     {
         private readonly Beatmap currentBeatmap;
-
-        private float[] angleData => CalculationExtensions.ConvertAngles(currentBeatmap.AngleData);
 
         [Resolved]
         private CircleConfigManager config { get; set; }
@@ -27,38 +25,35 @@ namespace Circle.Game.Screens.Play
             currentBeatmap = beatmap;
         }
 
-        public void AddTileTransforms(double gameStartTime, double countdownDuration)
+        public void AddTileTransforms()
         {
-            float bpm = currentBeatmap.Metadata.Bpm;
-            var tilesOffset = CalculationExtensions.GetTileStartTime(currentBeatmap, gameStartTime, countdownDuration);
-            var tilesInfo = currentBeatmap.TilesInfo;
+            float bpm;
+            var tiles = currentBeatmap.Tiles.ToArray();
             int frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
             int backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
 
-            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
+            for (int i = frontVisibilityCount; i < tiles.Length; i++)
                 Children[i].Alpha = 0;
 
             // Fade in
-            for (int i = frontVisibilityCount; i < tilesInfo.Length; i++)
+            for (int i = frontVisibilityCount; i < tiles.Length; i++)
             {
-                bpm = tilesInfo.GetNewBpm(bpm, i - 8);
-                Children[i].LifetimeStart = tilesOffset[i - frontVisibilityCount];
+                bpm = tiles[i - frontVisibilityCount].Bpm;
+                Children[i].LifetimeStart = tiles[i - frontVisibilityCount].HitTime;
 
-                using (Children[i].BeginAbsoluteSequence(tilesOffset[i - frontVisibilityCount], false))
+                using (Children[i].BeginAbsoluteSequence(tiles[i - frontVisibilityCount].HitTime, false))
                     Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
             }
 
-            bpm = currentBeatmap.Metadata.Bpm;
-
             // Fade out
-            for (int i = 0; i < tilesInfo.Length; i++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                bpm = tilesInfo.GetNewBpm(bpm, i);
+                bpm = tiles[i].Bpm;
 
                 if (i > backVisibilityCount - 1)
                 {
-                    Children[i - backVisibilityCount].LifetimeEnd = tilesOffset[i] + 60000 / bpm;
-                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tilesOffset[i], false))
+                    Children[i - backVisibilityCount].LifetimeEnd = tiles[i].HitTime + 60000 / bpm;
+                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tiles[i].HitTime, false))
                         Children[i - backVisibilityCount].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
             }
@@ -72,18 +67,18 @@ namespace Circle.Game.Screens.Play
 
         private void createTiles()
         {
-            var info = currentBeatmap.TilesInfo;
+            var tiles = currentBeatmap.Tiles.ToArray();
 
-            for (int i = 0; i < angleData.Length; i++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                switch (info[i].TileType)
+                switch (tiles[i].TileType)
                 {
                     case TileType.Normal:
                         Add(new BasicTile
                         {
-                            Position = info[i].Position,
-                            Rotation = info[i].Angle,
-                            TileInfo = info[i]
+                            Position = tiles[i].Position,
+                            Rotation = tiles[i].Angle,
+                            Tile = tiles[i]
                         });
 
                         break;
@@ -91,9 +86,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Midspin:
                         Add(new MidspinTile
                         {
-                            Position = info[i].Position,
-                            Rotation = info[i].Angle,
-                            TileInfo = info[i]
+                            Position = tiles[i].Position,
+                            Rotation = tiles[i].Angle,
+                            Tile = tiles[i]
                         });
 
                         break;
@@ -101,9 +96,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Short:
                         Add(new ShortTile
                         {
-                            Position = info[i].Position,
-                            Rotation = info[i].Angle,
-                            TileInfo = info[i]
+                            Position = tiles[i].Position,
+                            Rotation = tiles[i].Angle,
+                            Tile = tiles[i]
                         });
 
                         break;
@@ -111,9 +106,9 @@ namespace Circle.Game.Screens.Play
                     case TileType.Circular:
                         Add(new CircularTile
                         {
-                            Position = info[i].Position,
-                            Rotation = info[i].Angle,
-                            TileInfo = info[i]
+                            Position = tiles[i].Position,
+                            Rotation = tiles[i].Angle,
+                            Tile = tiles[i]
                         });
 
                         break;
