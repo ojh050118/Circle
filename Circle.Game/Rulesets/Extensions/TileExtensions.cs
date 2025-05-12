@@ -15,6 +15,7 @@ namespace Circle.Game.Rulesets.Extensions
             var tiles = new Tile[angles.Length];
 
             float prevAngle = angles.FirstOrDefault();
+            float prevRawAngle = prevAngle; // 미드스핀 타일과 다음 타일이 반대방향일 때 잘못된 타일타입 반환을 막기위해 필요합니다.
             var prevTileType = TileType.Normal;
 
             bool clockwise = true;
@@ -28,18 +29,16 @@ namespace Circle.Game.Rulesets.Extensions
                 float angle = angles[floor];
                 float? nextAngle = floor + 1 < angles.Length ? angles[floor + 1] : null;
 
-                var tileType = CalculationExtensions.GetTileType(prevAngle, angle, nextAngle);
+                var tileType = CalculationExtensions.GetTileType(prevRawAngle, angle, nextAngle);
                 var actions = Array.FindAll(beatmap.Actions, a => a.Floor == floor);
 
                 if (actions.Any(a => a.EventType == EventType.Twirl))
                     clockwise = !clockwise;
 
-                float resolvedAngle = CalculationExtensions.ComputeStartRotation(prevTileType, prevAngle, tileType, angle, clockwise);
-
                 tiles[floor] = new Tile
                 {
                     Floor = floor,
-                    Angle = tileType == TileType.Midspin ? prevAngle : angle,
+                    Angle = angle = tileType == TileType.Midspin ? prevAngle : angle,
                     Position = offset,
                     TileType = tileType,
                     Actions = actions,
@@ -48,6 +47,7 @@ namespace Circle.Game.Rulesets.Extensions
                     HitTime = hitTimeOffset
                 };
 
+                float resolvedAngle = CalculationExtensions.ComputeStartRotation(prevTileType, prevAngle, tileType, angle, clockwise);
                 double pauseDuration = actions.FirstOrDefault(a => a.EventType == EventType.Pause).Duration * (60000 / bpm);
 
                 // 첫 타일은 오프셋 - 카운트다운 시간, 게임시작시간은 오프셋, 두번째 타일은 오프셋 + 카운트다운 시간입니다.
@@ -72,10 +72,8 @@ namespace Circle.Game.Rulesets.Extensions
                         break;
                 }
 
-                // 연속된 미드스핀 타일이 있을 때 두번째와 그 이후의 타일의 각도값이 999가 되는 것을 차단합니다.
-                if (tileType != TileType.Midspin)
-                    prevAngle = angle;
-
+                prevAngle = angle;
+                prevRawAngle = angles[floor];
                 prevTileType = tileType;
             }
 
