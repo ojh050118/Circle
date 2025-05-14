@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Screens.Select.Carousel;
@@ -37,12 +38,15 @@ namespace Circle.Game.Screens.Select
 
         public void Select(BeatmapInfo info)
         {
-            var item = carouselItems.FirstOrDefault(i => i.BeatmapInfo.Equals(info));
+            Task.Run(() =>
+            {
+                var item = carouselItems.FirstOrDefault(i => i.BeatmapInfo.Equals(info));
 
-            if (item == null)
-                return;
+                if (item == null)
+                    return;
 
-            carouselItems.Select(item);
+                Schedule(() => carouselItems.Select(item));
+            });
         }
 
         public void SelectNext()
