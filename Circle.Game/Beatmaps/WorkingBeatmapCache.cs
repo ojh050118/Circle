@@ -1,7 +1,6 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Circle.Game.IO;
@@ -13,6 +12,7 @@ using osu.Framework.Graphics.Rendering;
 using osu.Framework.Graphics.Rendering.Dummy;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
+using osu.Framework.Lists;
 using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Framework.Statistics;
@@ -21,7 +21,7 @@ namespace Circle.Game.Beatmaps
 {
     public class WorkingBeatmapCache : IBeatmapResourceProvider
     {
-        private readonly List<BeatmapManagerWorkingBeatmap> workingCache = new List<BeatmapManagerWorkingBeatmap>();
+        private readonly WeakList<BeatmapManagerWorkingBeatmap> workingCache = new WeakList<BeatmapManagerWorkingBeatmap>();
 
         /// <summary>
         /// Beatmap files may specify this filename to denote that they don't have an audio track.
@@ -95,7 +95,7 @@ namespace Circle.Game.Beatmaps
                 workingCache.Add(working = new BeatmapManagerWorkingBeatmap(beatmapInfo, this));
 
                 // best effort; may be higher than expected.
-                GlobalStatistics.Get<int>("Beatmaps", $"Cached {nameof(WorkingBeatmap)}s").Value = workingCache.Count;
+                GlobalStatistics.Get<int>("Beatmaps", $"Cached {nameof(WorkingBeatmap)}s").Value = workingCache.Count();
 
                 return working;
             }
