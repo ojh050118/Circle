@@ -61,7 +61,6 @@ namespace Circle.Game.Beatmaps
 
             File = file;
             Metadata = metadata;
-            // TODO: File이 비어있지 않으면 메타데이터를 넣도록 하자...
         }
 
         public bool Equals(BeatmapInfo other)
@@ -73,6 +72,9 @@ namespace Circle.Game.Beatmaps
             return Metadata.Equals(other.Metadata);
         }
 
+        /// <summary>
+        /// <see cref="BeatmapMetadata"/>만 구문분석하여 오버헤드를 줄입니다.
+        /// </summary>
         private class SimpleBeatmap
         {
             [JsonProperty("Settings")]
