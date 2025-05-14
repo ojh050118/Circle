@@ -27,10 +27,10 @@ namespace Circle.Game.Beatmaps
                     {
                         try
                         {
-                            Beatmap beatmap;
+                            SimpleBeatmap beatmap;
 
                             using (var reader = new StreamReader(stream))
-                                beatmap = JsonConvert.DeserializeObject<Beatmap>(reader.ReadToEnd());
+                                beatmap = JsonConvert.DeserializeObject<SimpleBeatmap>(reader.ReadToEnd());
 
                             return metadata = beatmap.Metadata;
                         }
@@ -71,6 +71,12 @@ namespace Circle.Game.Beatmaps
 
             // TODO: Metadata를 호출하면 동기적으로 비트맵 파싱이 발생할 수 있습니다. 빠른 비교를 위해 GUID 대신 해시, 또는 캐시를 사용해야 할 듯 합니다.
             return Metadata.Equals(other.Metadata);
+        }
+
+        private class SimpleBeatmap
+        {
+            [JsonProperty("Settings")]
+            public BeatmapMetadata Metadata { get; set; }
         }
     }
 }
