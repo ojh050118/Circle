@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using JetBrains.Annotations;
 using osu.Framework.Logging;
 
 namespace Circle.Game.Beatmaps
@@ -23,6 +22,7 @@ namespace Circle.Game.Beatmaps
         {
             AllowTrailingCommas = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            IncludeFields = true,
             Converters = { new JsonStringEnumConverter() }
         };
 
@@ -78,14 +78,17 @@ namespace Circle.Game.Beatmaps
             return Metadata.Equals(other.Metadata);
         }
 
+#pragma warning disable CA1812
+
         /// <summary>
         /// <see cref="BeatmapMetadata"/>만 구문분석하여 오버헤드를 줄입니다.
         /// </summary>
-        [MeansImplicitUse]
         private class SimpleBeatmap
         {
             [JsonPropertyName("Settings")]
-            public BeatmapMetadata Metadata { get; set; }
+            public BeatmapMetadata Metadata { get; init; }
         }
+
+#pragma warning restore CA1812
     }
 }
