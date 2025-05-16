@@ -79,8 +79,6 @@ namespace Circle.Game.Beatmaps
             return Metadata.Equals(other.Metadata);
         }
 
-#pragma warning disable CA1812
-
         /// <summary>
         /// <see cref="BeatmapMetadata"/>만 구문분석하여 오버헤드를 줄입니다.
         /// </summary>
@@ -90,7 +88,5 @@ namespace Circle.Game.Beatmaps
             [JsonPropertyName("Settings")]
             public BeatmapMetadata Metadata { get; init; }
         }
-
-#pragma warning restore CA1812
     }
 }
