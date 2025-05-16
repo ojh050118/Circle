@@ -36,6 +36,8 @@ namespace Circle.Game.Beatmaps
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            IndentCharacter = '\t',
+            IndentSize = 1,
             Converters = { new JsonStringEnumConverter(), new FloatToIntConverter() }
         };
 

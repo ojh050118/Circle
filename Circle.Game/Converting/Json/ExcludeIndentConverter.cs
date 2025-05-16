@@ -49,7 +49,7 @@ namespace Circle.Game.Converting.Json
 
             if (value is not string && isCollection(value.GetType()))
             {
-                writer.WriteRawValue(writeArray((IEnumerable)value, options), true);
+                writer.WriteRawValue(writeArray((IEnumerable)value, options));
                 return;
             }
 
@@ -59,7 +59,8 @@ namespace Circle.Game.Converting.Json
                 return;
             }
 
-            writer.WriteRawValue(writeObject(value, options), false);
+            string indent = options.WriteIndented ? '\n' + string.Concat(Enumerable.Repeat(options.IndentCharacter, options.IndentSize * writer.CurrentDepth)) : string.Empty;
+            writer.WriteRawValue($"{indent}{writeObject(value, options)}");
         }
 
         private string writeArray(IEnumerable array, JsonSerializerOptions options)
