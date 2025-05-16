@@ -1,8 +1,8 @@
 #nullable disable
 
 using System;
+using System.Text.Json.Serialization;
 using Circle.Game.Converting.Json;
-using Newtonsoft.Json;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
 
@@ -103,7 +103,7 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// 카메라 기준좌표으로부터 오프셋 좌표.
         /// </summary>
-        [JsonConverter(typeof(ExcludeIndentConverter))]
+        [JsonConverter(typeof(ExcludeIndentConverter<float[]>))]
         public float[] Position { get; set; }
 
         /// <summary>

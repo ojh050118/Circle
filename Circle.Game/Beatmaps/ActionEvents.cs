@@ -1,8 +1,8 @@
 #nullable disable
 
 using System;
+using System.Text.Json.Serialization;
 using Circle.Game.Converting.Json;
-using Newtonsoft.Json;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
 
@@ -12,7 +12,7 @@ namespace Circle.Game.Beatmaps
     /// <summary>
     /// 행성이 특정 타일에 도달했을 때 동작할 정보를 담고있습니다. 이벤트라고도 불립니다.
     /// </summary>
-    [JsonConverter(typeof(ExcludeIndentConverter))]
+    [JsonConverter(typeof(ExcludeIndentConverter<ActionEvents>))]
     public struct ActionEvents : IEquatable<ActionEvents>
     {
         /// <summary>
@@ -68,7 +68,7 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// 타일 단위의 좌표. 현재 카메라 이동에만 사용됩니다.
         /// </summary>
-        [JsonConverter(typeof(ExcludeIndentConverter))]
+        [JsonConverter(typeof(ExcludeIndentConverter<float[]>))]
         public float?[] Position { get; set; }
 
         /// <summary>
@@ -134,6 +134,7 @@ namespace Circle.Game.Beatmaps
         Bpm
     }
 
+    // TODO: CameraRelativity로 이름 바꾸기
     public enum Relativity
     {
         Tile,

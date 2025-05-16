@@ -31,11 +31,8 @@ namespace Circle.Game.Converting
 
         public static Relativity ParseRelativity(string relativeTo)
         {
-            foreach (Relativity relativity in Enum.GetValues(typeof(Relativity)))
-            {
-                if (relativeTo == relativity.ToString())
-                    return relativity;
-            }
+            if (Enum.TryParse(relativeTo, out Relativity relativity))
+                return relativity;
 
             return Relativity.Player;
         }

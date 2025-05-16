@@ -2,7 +2,8 @@
 
 using System;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using osu.Framework.Logging;
 
 namespace Circle.Game.Beatmaps
@@ -17,6 +18,13 @@ namespace Circle.Game.Beatmaps
 
         public BeatmapSetInfo BeatmapSet { get; set; }
 
+        private static readonly JsonSerializerOptions serializer_options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters = { new JsonStringEnumConverter() }
+        };
+
         public BeatmapMetadata Metadata
         {
             get
@@ -27,10 +35,7 @@ namespace Circle.Game.Beatmaps
                     {
                         try
                         {
-                            SimpleBeatmap beatmap;
-
-                            using (var reader = new StreamReader(stream))
-                                beatmap = JsonConvert.DeserializeObject<SimpleBeatmap>(reader.ReadToEnd());
+                            var beatmap = JsonSerializer.Deserialize<SimpleBeatmap>(stream, serializer_options);
 
                             return metadata = beatmap.Metadata;
                         }
@@ -77,7 +82,7 @@ namespace Circle.Game.Beatmaps
         /// </summary>
         private class SimpleBeatmap
         {
-            [JsonProperty("Settings")]
+            [JsonPropertyName("Settings")]
             public BeatmapMetadata Metadata { get; set; }
         }
     }

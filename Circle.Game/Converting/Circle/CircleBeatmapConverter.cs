@@ -34,13 +34,13 @@ namespace Circle.Game.Converting.Circle
                         VidOffset = adofai.Settings.VidOffset,
                         Pitch = adofai.Settings.Pitch,
                         Volume = adofai.Settings.Volume,
-                        PlanetEasing = convertEasing(ParseEase(adofai.Settings.PlanetEase)),
+                        PlanetEasing = convertEasing(adofai.Settings.PlanetEase),
                         PreviewSongStart = adofai.Settings.PreviewSongStart,
                         PreviewSongDuration = adofai.Settings.PreviewSongDuration,
-                        SeparateCountdownTime = convertToggle(ParseToggle(adofai.Settings.SeparateCountdownTime)),
+                        SeparateCountdownTime = adofai.Settings.SeparateCountdownTime,
                         Song = adofai.Settings.Song,
                         SongFileName = adofai.Settings.SongFilename,
-                        RelativeTo = ParseRelativity(adofai.Settings.RelativeTo),
+                        RelativeTo = adofai.Settings.RelativeTo,
                         Position = adofai.Settings.Position,
                         Rotation = adofai.Settings.Rotation,
                         Zoom = adofai.Settings.Zoom,
@@ -56,7 +56,7 @@ namespace Circle.Game.Converting.Circle
                 {
                     Floor = action.Floor,
                     EventType = convertEventType(action.EventType),
-                    RelativeTo = action.GetRelativity(),
+                    RelativeTo = action.GetCameraMoveRelativeTo(),
                     BpmMultiplier = (float)action.BPMMultiplier,
                     BeatsPerMinute = (float)action.BeatsPerMinute,
                     Ease = convertEasing(action.Ease),
@@ -87,21 +87,6 @@ namespace Circle.Game.Converting.Circle
             circle.Actions = actions.ToArray();
 
             return circle;
-        }
-
-        private bool convertToggle(Toggle toggle)
-        {
-            switch (toggle)
-            {
-                case Toggle.Disabled:
-                    return false;
-
-                case Toggle.Enabled:
-                    return true;
-
-                default:
-                    return false;
-            }
         }
 
         private Easing convertEasing(Ease ease)

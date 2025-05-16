@@ -1,47 +1,45 @@
 using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Circle.Game.Converting.Json
 {
-    public class FloatToIntConverter : JsonConverter
+    public class FloatToIntConverter : JsonConverterFactory
     {
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            double floatingPointValue = Convert.ToDouble(value);
-            int integerValue = Convert.ToInt32(value);
+        public override bool CanConvert(Type typeToConvert) => isFloatingPoint(typeToConvert);
 
-            writer.WriteValue(floatingPointValue - integerValue == 0 ? integerValue : value);
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (!isFloatingPoint(typeToConvert))
+                throw new InvalidOperationException($"Cannot convert {typeToConvert} to int");
+
+            var converter = (JsonConverter)Activator.CreateInstance(typeof(FloatingPointToIntConverter<>).MakeGenericType(typeToConvert))!;
+
+            return converter;
         }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        private bool isFloatingPoint(Type typeToConvert)
         {
-            return serializer.Deserialize(reader, objectType);
+            return typeToConvert == typeof(float) ||
+                   typeToConvert == typeof(double) ||
+                   typeToConvert == typeof(decimal);
         }
 
-        public override bool CanConvert(Type objectType)
+        private class FloatingPointToIntConverter<T> : JsonConverter<T>
+            where T : struct
         {
-            return isNumericType(objectType);
-        }
-
-        private bool isNumericType(Type type)
-        {
-            switch (Type.GetTypeCode(type))
+            public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    return true;
+                return (T)Convert.ChangeType(reader.GetDouble(), typeof(T));
             }
 
-            return false;
+            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+            {
+                int intValue = Convert.ToInt32(value);
+                double doubleValue = Convert.ToDouble(value);
+
+                writer.WriteNumberValue(doubleValue - intValue == 0 ? intValue : doubleValue);
+            }
         }
     }
 }
