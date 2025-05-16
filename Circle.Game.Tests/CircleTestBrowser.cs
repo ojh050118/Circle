@@ -1,17 +1,13 @@
 #nullable disable
 
-using System.Collections.Generic;
-using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Overlays;
 using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Cursor;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Platform;
 using osu.Framework.Testing;
-using osuTK.Graphics;
 
 namespace Circle.Game.Tests
 {
@@ -23,17 +19,6 @@ namespace Circle.Game.Tests
         private ConvertOverlay convert;
         private CarouselItemOverlay item;
         private Toast toast;
-
-        #region Disposal
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            BeatmapManager.OnImported -= imported;
-        }
-
-        #endregion
 
         public override void SetHost(GameHost host)
         {
@@ -67,29 +52,6 @@ namespace Circle.Game.Tests
                 item,
                 toast,
                 new CursorContainer()
-            });
-
-            BeatmapManager.OnImported += imported;
-        }
-
-        private void loadedBeatmaps(IList<BeatmapInfo> beatmaps)
-        {
-            toast.Push(new ToastInfo
-            {
-                Description = $"Loaded {beatmaps.Count} beatmaps!",
-                Icon = FontAwesome.Solid.Check,
-                IconColour = Color4.LightGreen
-            });
-        }
-
-        private void imported(string name)
-        {
-            toast.Push(new ToastInfo
-            {
-                Description = "Imported successfully!",
-                SubDescription = name,
-                Icon = FontAwesome.Solid.Check,
-                IconColour = Color4.LightGreen
             });
         }
     }

@@ -1,7 +1,5 @@
 #nullable disable
 
-using System.Collections.Generic;
-using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
@@ -11,8 +9,6 @@ using Circle.Game.Overlays.Volume;
 using Circle.Game.Screens;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
-using osuTK.Graphics;
 
 namespace Circle.Game
 {
@@ -28,17 +24,6 @@ namespace Circle.Game
 
         private CircleScreenStack screenStack;
         private VolumeOverlay volume;
-
-        #region Disposal
-
-        protected override void Dispose(bool isDisposing)
-        {
-            base.Dispose(isDisposing);
-
-            BeatmapManager.OnImported -= imported;
-        }
-
-        #endregion
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
@@ -63,8 +48,6 @@ namespace Circle.Game
             dependencies.CacheAs(dialog);
             dependencies.CacheAs(item);
             dependencies.CacheAs(this);
-
-            BeatmapManager.OnImported += imported;
         }
 
         private void addGameScreen()
@@ -111,27 +94,6 @@ namespace Circle.Game
                     screenStack = new CircleScreenStack { RelativeSizeAxes = Axes.Both, Depth = 5 },
                 });
             }
-        }
-
-        private void loadedBeatmaps(IList<BeatmapInfo> beatmaps)
-        {
-            toast.Push(new ToastInfo
-            {
-                Description = $"Loaded {beatmaps.Count} beatmaps!",
-                Icon = FontAwesome.Solid.Check,
-                IconColour = Color4.LightGreen
-            });
-        }
-
-        private void imported(string name)
-        {
-            toast.Push(new ToastInfo
-            {
-                Description = "Imported successfully!",
-                SubDescription = name,
-                Icon = FontAwesome.Solid.Check,
-                IconColour = Color4.LightGreen
-            });
         }
     }
 }
