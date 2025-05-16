@@ -1,8 +1,9 @@
 #nullable disable
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
-using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 
@@ -10,10 +11,17 @@ namespace Circle.Game.Overlays.OSD
 {
     public partial class Toast : Container
     {
-        public int ToastQueueCount;
-
         [Resolved]
         private AudioManager audio { get; set; }
+
+        private readonly Queue<ToastInfo> toastQueue = new Queue<ToastInfo>();
+
+        private int pendingToasts => toastQueue.Count;
+
+        private DrawableToast currentToast;
+
+        private const double transition_duration = 250;
+        private const double show_duration = 1500;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -24,23 +32,34 @@ namespace Circle.Game.Overlays.OSD
 
         public void Push(ToastInfo info)
         {
-            int delay = 2000 * ToastQueueCount;
-            ToastQueueCount++;
+            toastQueue.Enqueue(info);
 
-            DrawableToast toast;
-            Sample sample = audio.Samples.Get(info.Sample);
-            var closeSchedule = Scheduler.AddDelayed(() => ToastQueueCount--, 1750);
+            if (toastQueue.Count <= 1)
+                push();
+        }
+
+        private void push()
+        {
+            if (toastQueue.Count == 0)
+                return;
+
+            if (currentToast != null && currentToast.IsAlive)
+            {
+                Task.Run(push);
+                return;
+            }
+
+            var info = toastQueue.Dequeue();
+            var sample = audio.Samples.Get(info.Sample);
+
             Schedule(() =>
             {
-                Add(toast = new DrawableToast(info) { Y = -100 });
+                Add(currentToast = new DrawableToast(info) { Y = -100 });
 
-                toast.CloseRequested += _ =>
-                {
-                    if (!closeSchedule.Completed)
-                        closeSchedule.RunTask();
-                };
-                toast.Delay(delay).MoveToY(0, 250, Easing.OutCubic).Then().Delay(1500).MoveToY(-100, 250, Easing.OutCubic).Then().Expire();
-                Scheduler.AddDelayed(() => sample?.Play(), delay);
+                sample?.Play();
+                currentToast.ShowAndHide();
+
+                Task.Run(push);
             });
         }
     }

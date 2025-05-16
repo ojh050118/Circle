@@ -137,12 +137,12 @@ namespace Circle.Game.Beatmaps
             }
         }
 
-        public void Import(Stream? stream, string name)
+        public bool Import(Stream? stream, string name)
         {
             if (stream == null)
             {
                 Logger.Log($"Error when importing local beatmap: {name}");
-                return;
+                return false;
             }
 
             string beatmap = storage.GetStorageForDirectory(name).GetFullPath(string.Empty);
@@ -152,6 +152,7 @@ namespace Circle.Game.Beatmaps
                 reader.Archive.WriteToDirectory(beatmap);
 
                 OnImported?.Invoke(name);
+                return true;
             }
         }
 

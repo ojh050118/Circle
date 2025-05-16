@@ -11,6 +11,7 @@ using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
+using osu.Framework.Threading;
 using osuTK;
 using osuTK.Graphics;
 
@@ -21,14 +22,18 @@ namespace Circle.Game.Overlays.OSD
         private const int toast_minimum_width = 300;
         private const int toast_default_padding = 15;
         private const int toast_height = 70;
+
+        private const double transition_duration = 250;
+        private const double show_duration = 1500;
+
         private readonly ToastInfo toastInfo;
+
+        private ScheduledDelegate hideSchedule;
 
         public DrawableToast(ToastInfo toastInfo)
         {
             this.toastInfo = toastInfo;
         }
-
-        public event Action<bool> CloseRequested;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -129,15 +134,25 @@ namespace Circle.Game.Overlays.OSD
             };
         }
 
+        public void ShowAndHide()
+        {
+            this.MoveToY(0, transition_duration, Easing.OutCubic)
+                .Then()
+                .Delay(show_duration)
+                .Schedule(() => this.MoveToY(-100, transition_duration, Easing.OutCubic).Expire(), out hideSchedule);
+        }
+
         protected override bool OnDragStart(DragStartEvent e)
         {
+            ClearTransforms();
+            hideSchedule?.Cancel();
             return true;
         }
 
         protected override void OnDrag(DragEvent e)
         {
+            ClearTransforms();
             Vector2 change = e.MousePosition - e.MouseDownPosition;
-
             change *= change.Length <= 0 ? 0 : MathF.Pow(change.Length, 0.7f) / change.Length;
 
             this.MoveTo(change);
@@ -148,12 +163,17 @@ namespace Circle.Game.Overlays.OSD
             base.OnDragEnd(e);
 
             if (Y > 0)
+            {
                 this.MoveTo(Vector2.Zero, 800, Easing.OutElastic);
+            }
             else if (Y < 0)
             {
-                CloseRequested?.Invoke(true);
                 this.MoveToY(-100, 250, Easing.OutCubic).Expire();
+
+                return;
             }
+
+            this.Delay(1500).Schedule(() => this.MoveToY(-100, 250, Easing.OutCubic).Expire(), out hideSchedule);
         }
     }
 }

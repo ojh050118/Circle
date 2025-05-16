@@ -1,11 +1,13 @@
 #nullable disable
 
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -13,6 +15,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
+using osuTK.Graphics;
 
 namespace Circle.Game.Overlays
 {
@@ -144,6 +147,9 @@ namespace Circle.Game.Overlays
         [Resolved]
         private BeatmapManager manager { get; set; }
 
+        [Resolved]
+        private Toast toast { get; set; }
+
         [BackgroundDependencyLoader]
         private void load(CircleColour colours)
         {
@@ -168,6 +174,28 @@ namespace Circle.Game.Overlays
                 return;
 
             Task.Factory.StartNew(() => manager.Import(path), TaskCreationOptions.LongRunning);
+        }
+
+        private void onImportCompleted(bool status)
+        {
+            var info = new ToastInfo();
+
+            if (status)
+            {
+                info.Description = "Import complete!";
+                info.SubDescription = $"Available beatmap count: {manager.GetAvailableBeatmaps().Count()}";
+                info.Icon = FontAwesome.Solid.Check;
+                info.IconColour = Color4.LightGreen;
+            }
+            else
+            {
+                info.Description = "Import Failed";
+                info.SubDescription = "See log for more information.";
+                info.Icon = FontAwesome.Solid.Times;
+                info.IconColour = Color4.OrangeRed;
+            }
+
+            toast.Push(info);
         }
 
         protected override void PopIn()

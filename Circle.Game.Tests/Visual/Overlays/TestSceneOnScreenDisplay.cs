@@ -32,6 +32,13 @@ namespace Circle.Game.Tests.Visual.Overlays
                 Icon = FontAwesome.Solid.FileDownload,
                 IconColour = Color4.DeepSkyBlue
             }));
+            AddStep("Push colored icon osd toast", () => toast.Push(new ToastInfo
+            {
+                Description = "Error",
+                SubDescription = "See log for details.",
+                Icon = FontAwesome.Solid.Times,
+                IconColour = Color4.OrangeRed
+            }));
         }
     }
 }

@@ -3,16 +3,19 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics;
 using Circle.Game.Graphics.Containers;
 using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Overlays.OSD;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Logging;
 using osuTK;
@@ -31,6 +34,9 @@ namespace Circle.Game.Overlays
 
         [Resolved]
         private BeatmapManager manager { get; set; }
+
+        [Resolved]
+        private Toast toast { get; set; }
 
         public ConvertOverlay()
         {
@@ -223,15 +229,26 @@ namespace Circle.Game.Overlays
             Schedule(() => circularProgress.ProgressTo((double)value.NewValue / levels.Count, 750, Easing.OutPow10));
 
             if (value.NewValue == levels.Count)
+                onConvertCompleted();
+        }
+
+        private void onConvertCompleted()
+        {
+            toast.Push(new ToastInfo
             {
-                Schedule(() => circularProgress.Delay(375).FlashColour(Color4.White, 2000, Easing.OutPow10));
-                Scheduler.AddDelayed(() =>
-                {
-                    circularProgress.FadeOut(750, Easing.OutPow10);
-                    circularProgress.ScaleTo(1.25f, 750, Easing.OutPow10);
-                    circularProgress.Delay(750).ProgressTo(0);
-                }, 1500);
-            }
+                Description = "Convert complete!",
+                SubDescription = $"Available beatmap count: {manager.GetAvailableBeatmaps().Count()}",
+                Icon = FontAwesome.Solid.Check,
+                IconColour = Color4.LightGreen
+            });
+
+            Schedule(() => circularProgress.Delay(375).FlashColour(Color4.White, 2000, Easing.OutPow10));
+            Scheduler.AddDelayed(() =>
+            {
+                circularProgress.FadeOut(750, Easing.OutPow10);
+                circularProgress.ScaleTo(1.25f, 750, Easing.OutPow10);
+                circularProgress.Delay(750).ProgressTo(0);
+            }, 1500);
         }
     }
 }
