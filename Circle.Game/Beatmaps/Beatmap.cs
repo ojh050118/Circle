@@ -3,19 +3,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Circle.Game.Converting.Json;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
-using Newtonsoft.Json;
 
 namespace Circle.Game.Beatmaps
 {
     public class Beatmap : IEquatable<Beatmap>
     {
-        [JsonConverter(typeof(ExcludeIndentConverter))]
+        [JsonConverter(typeof(ExcludeIndentConverter<float[]>))]
         public float[] AngleData { get; set; }
 
-        [JsonProperty("Settings")]
+        [JsonPropertyName("Settings")]
         public BeatmapMetadata Metadata
         {
             get => BeatmapInfo.Metadata;

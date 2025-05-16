@@ -9,7 +9,7 @@ namespace Circle.Game.Converting.Adofai
         public string PathData { get; set; }
         public float[] AngleData { get; set; }
         public Settings Settings { get; set; }
-        public Action[] Actions { get; set; }
+        public ActionEvent[] Actions { get; set; }
         public object[] Decorations { get; set; }
     }
 }

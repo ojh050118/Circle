@@ -3,9 +3,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Circle.Game.IO;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Graphics.Rendering;
@@ -42,6 +43,13 @@ namespace Circle.Game.Beatmaps
 
         [CanBeNull]
         private readonly GameHost host;
+
+        private static readonly JsonSerializerOptions serializer_options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters = { new JsonStringEnumConverter() }
+        };
 
         public WorkingBeatmapCache(ITrackStore trackStore, AudioManager audioManager, IResourceStore<byte[]> resources, IResourceStore<byte[]> files, WorkingBeatmap defaultBeatmap = null,
                                    GameHost host = null)
@@ -134,16 +142,15 @@ namespace Circle.Game.Beatmaps
                 {
                     string fileStorePath = Path.Combine(BeatmapInfo.File.Directory!.Name, BeatmapInfo.File.Name);
 
-                    var stream = GetStream(fileStorePath);
+                    using var stream = GetStream(fileStorePath);
 
                     if (stream == null)
                     {
-                        Logger.Log($"Beatmap failed to load (file {BeatmapInfo.File.Name} not found on disk at expected location {fileStorePath}).", level: LogLevel.Error);
+                        Logger.Log($"Failed to load beatmap file {BeatmapInfo.File.Name} not found on disk at expected location {fileStorePath}).", level: LogLevel.Error);
                         return null;
                     }
 
-                    using (var reader = new StreamReader(stream))
-                        return JsonConvert.DeserializeObject<Beatmap>(reader.ReadToEnd());
+                    return JsonSerializer.Deserialize<Beatmap>(stream, serializer_options);
                 }
                 catch (Exception e)
                 {

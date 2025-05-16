@@ -117,12 +117,12 @@ namespace Circle.Game.Beatmaps
                     if (ae.InnerExceptions.FirstOrDefault() is TaskCanceledException)
                         return null;
 
-                    Logger.Error(ae, $"Beatmap failed to load ({BeatmapInfo})");
+                    Logger.Error(ae, $"Failed to load beatmap ({BeatmapInfo}).");
                     return null;
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e, $"Beatmap failed to load ({BeatmapInfo})");
+                    Logger.Error(e, $"Failed to load beatmap ({BeatmapInfo}).");
                     return null;
                 }
             }

@@ -2,7 +2,9 @@
 
 using System;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using osu.Framework.Logging;
 
 namespace Circle.Game.Beatmaps
@@ -17,6 +19,14 @@ namespace Circle.Game.Beatmaps
 
         public BeatmapSetInfo BeatmapSet { get; set; }
 
+        private static readonly JsonSerializerOptions serializer_options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            IncludeFields = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
+
         public BeatmapMetadata Metadata
         {
             get
@@ -27,16 +37,13 @@ namespace Circle.Game.Beatmaps
                     {
                         try
                         {
-                            SimpleBeatmap beatmap;
-
-                            using (var reader = new StreamReader(stream))
-                                beatmap = JsonConvert.DeserializeObject<SimpleBeatmap>(reader.ReadToEnd());
+                            var beatmap = JsonSerializer.Deserialize<SimpleBeatmap>(stream, serializer_options);
 
                             return metadata = beatmap.Metadata;
                         }
                         catch (Exception e)
                         {
-                            Logger.Error(e, "Failed to parsing beatmap metadata from file.");
+                            Logger.Error(e, $"Failed to parse beatmap metadata from file {File.FullName}.");
                             return metadata ??= new BeatmapMetadata();
                         }
                     }
@@ -75,10 +82,11 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// <see cref="BeatmapMetadata"/>만 구문분석하여 오버헤드를 줄입니다.
         /// </summary>
+        [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
         private class SimpleBeatmap
         {
-            [JsonProperty("Settings")]
-            public BeatmapMetadata Metadata { get; set; }
+            [JsonPropertyName("Settings")]
+            public BeatmapMetadata Metadata { get; init; }
         }
     }
 }

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Circle.Game.Converting.Adofai;
 using Circle.Game.Converting.Circle;
 using Circle.Game.Converting.Json;
 using Circle.Game.IO;
 using Circle.Game.IO.Archives;
 using Circle.Game.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Bindables;
@@ -29,11 +30,15 @@ namespace Circle.Game.Beatmaps
 
         public IWorkingBeatmap DefaultBeatmap => workingBeatmapCache.DefaultBeatmap;
 
-        private readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+        private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions
         {
-            Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore,
-            Converters = new JsonConverter[] { new StringEnumConverter(), new FloatToIntConverter() }
+            AllowTrailingCommas = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            IndentCharacter = '\t',
+            IndentSize = 1,
+            Converters = { new JsonStringEnumConverter(), new FloatToIntConverter() }
         };
 
         public BeatmapManager(Storage files, AudioManager audioManager, IResourceStore<byte[]> gameResources, GameHost? host = null, WorkingBeatmap? defaultBeatmap = null)
@@ -85,7 +90,7 @@ namespace Circle.Game.Beatmaps
         {
             beatmap.BeatmapInfo = beatmapInfo;
 
-            string json = JsonConvert.SerializeObject(beatmap, serializerSettings);
+            string json = JsonSerializer.Serialize(beatmap, serializerOptions);
 
             string fileName = $"[{beatmap.Metadata.Author}] {beatmap.Metadata.Artist} - {beatmap.Metadata.Song}.circle";
             string path = storage.GetStorageForDirectory(Path.GetFileNameWithoutExtension(fileName)).GetFullPath(string.Empty);
@@ -118,7 +123,7 @@ namespace Circle.Game.Beatmaps
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"Error during import {Path.GetFileName(path)}: {e.Message}");
+                    Logger.Error(e, $"Error during import {Path.GetFileName(path)}.");
                 }
 
                 return;
@@ -168,7 +173,7 @@ namespace Circle.Game.Beatmaps
 
                     try
                     {
-                        Logger.Log($"Started parsing {adofai.FullName} for convert...");
+                        Logger.Log($"Started parsing {adofai.FullName} for conversion...");
                         adofaiBeatmap = adofaiFileReader.Get(adofai.FullName);
                     }
                     catch (Exception e)
@@ -194,7 +199,7 @@ namespace Circle.Game.Beatmaps
                         Logger.Log($"Writing to \"{fileName}\"...");
 
                         using (StreamWriter sw = File.CreateText(Path.Combine(beatmap.GetFullPath(string.Empty), fileName)))
-                            sw.WriteLine(JsonConvert.SerializeObject(circle, serializerSettings));
+                            sw.WriteLine(JsonSerializer.Serialize(circle, serializerOptions));
                     }
                     catch (Exception e)
                     {

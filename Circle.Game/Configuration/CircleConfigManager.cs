@@ -21,7 +21,6 @@ namespace Circle.Game.Configuration
             SetDefault(CircleSetting.Scale, 1f, 0.8f, 1.6f);
             SetDefault(CircleSetting.FpsDisplay, false);
             SetDefault(CircleSetting.Offset, 0d);
-            SetDefault(CircleSetting.LoadBeatmapsOnStartup, true);
             SetDefault(CircleSetting.BlurVisibility, true);
             SetDefault(CircleSetting.Parallax, true);
             SetDefault(CircleSetting.PlanetRed, Color4Enum.Red);
@@ -36,7 +35,6 @@ namespace Circle.Game.Configuration
         Scale,
         FpsDisplay,
         Offset,
-        LoadBeatmapsOnStartup,
         BlurVisibility,
         Parallax,
         PlanetRed,

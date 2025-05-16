@@ -81,6 +81,8 @@ namespace Circle.Game.Overlays
                                     Direction = FillDirection.Vertical,
                                     Padding = new MarginPadding(10),
                                     AutoSizeAxes = Axes.Y,
+                                    AutoSizeEasing = Easing.OutPow10,
+                                    AutoSizeDuration = 500,
                                     RelativeSizeAxes = Axes.X,
                                     Children = new Drawable[]
                                     {
@@ -88,6 +90,7 @@ namespace Circle.Game.Overlays
                                         {
                                             Anchor = Anchor.Centre,
                                             Origin = Anchor.Centre,
+                                            Alpha = 0,
                                             Size = new Vector2(75),
                                             Colour = Color4.DeepSkyBlue,
                                             InnerRadius = 0.2f,
@@ -174,9 +177,9 @@ namespace Circle.Game.Overlays
             {
                 directories = path.NewValue?.GetDirectories("*", new EnumerationOptions()) ?? Array.Empty<DirectoryInfo>();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Logger.Error(e, "Error trying to finding adofai file");
+                Logger.Log($"Failed to retrieve subdirectories of path {path.NewValue?.FullName}.");
                 return;
             }
 
@@ -192,9 +195,9 @@ namespace Circle.Game.Overlays
                         levels.Add(dir);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Logger.Error(e, "Error trying to finding adofai file");
+                    Logger.Log("Failed to find directory that contains adofai file.");
                 }
             }
 
@@ -209,13 +212,26 @@ namespace Circle.Game.Overlays
             var progress = new Bindable<int>();
             progress.ValueChanged += progressChanged;
 
+            circularProgress.FadeIn(500, Easing.OutPow10);
+            circularProgress.ScaleTo(1.25f).ScaleTo(1f, 500, Easing.OutPow10);
+
             Task.Factory.StartNew(() => manager.ConvertWithImport(levels.ToArray(), progress), TaskCreationOptions.LongRunning);
         }
 
         private void progressChanged(ValueChangedEvent<int> value)
         {
-            Logger.Log($"{value.NewValue}, {(double)value.NewValue / levels.Count}");
             Schedule(() => circularProgress.ProgressTo((double)value.NewValue / levels.Count, 750, Easing.OutPow10));
+
+            if (value.NewValue == levels.Count)
+            {
+                Schedule(() => circularProgress.Delay(375).FlashColour(Color4.White, 2000, Easing.OutPow10));
+                Scheduler.AddDelayed(() =>
+                {
+                    circularProgress.FadeOut(750, Easing.OutPow10);
+                    circularProgress.ScaleTo(1.25f, 750, Easing.OutPow10);
+                    circularProgress.Delay(750).ProgressTo(0);
+                }, 1500);
+            }
         }
     }
 }

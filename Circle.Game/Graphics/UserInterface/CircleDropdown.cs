@@ -11,7 +11,6 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Localisation;
-using osu.Framework.Logging;
 using osuTK;
 using osuTK.Graphics;
 
@@ -364,7 +363,6 @@ namespace Circle.Game.Graphics.UserInterface
 
                 protected override void PopIn()
                 {
-                    Logger.Log($"Header: {header.Count}");
                     header.Except(this).ForEach(d => d.Alpha = 0);
                     this.FadeIn();
                 }
