@@ -123,7 +123,7 @@ namespace Circle.Game.Beatmaps
                 }
                 catch (Exception e)
                 {
-                    Logger.Log($"Error during import {Path.GetFileName(path)}: {e.Message}");
+                    Logger.Error(e, $"Error during import {Path.GetFileName(path)}.");
                 }
 
                 return;
@@ -173,7 +173,7 @@ namespace Circle.Game.Beatmaps
 
                     try
                     {
-                        Logger.Log($"Started parsing {adofai.FullName} for convert...");
+                        Logger.Log($"Started parsing {adofai.FullName} for conversion...");
                         adofaiBeatmap = adofaiFileReader.Get(adofai.FullName);
                     }
                     catch (Exception e)

@@ -174,9 +174,9 @@ namespace Circle.Game.Overlays
             {
                 directories = path.NewValue?.GetDirectories("*", new EnumerationOptions()) ?? Array.Empty<DirectoryInfo>();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Logger.Error(e, "Error trying to finding adofai file");
+                Logger.Log($"Failed to retrieve subdirectories of path {path.NewValue?.FullName}.");
                 return;
             }
 
@@ -192,9 +192,9 @@ namespace Circle.Game.Overlays
                         levels.Add(dir);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Logger.Error(e, "Error trying to finding adofai file");
+                    Logger.Log("Failed to find directory that contains adofai file.");
                 }
             }
 
@@ -214,7 +214,7 @@ namespace Circle.Game.Overlays
 
         private void progressChanged(ValueChangedEvent<int> value)
         {
-            Logger.Log($"{value.NewValue}, {(double)value.NewValue / levels.Count}");
+            // TODO: 완료되면 프로그래스 초기화
             Schedule(() => circularProgress.ProgressTo((double)value.NewValue / levels.Count, 750, Easing.OutPow10));
         }
     }

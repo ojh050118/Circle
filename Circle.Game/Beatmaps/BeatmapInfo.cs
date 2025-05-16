@@ -41,7 +41,7 @@ namespace Circle.Game.Beatmaps
                         }
                         catch (Exception e)
                         {
-                            Logger.Error(e, "Failed to parsing beatmap metadata from file.");
+                            Logger.Error(e, $"Failed to parse beatmap metadata from file {File.FullName}.");
                             return metadata ??= new BeatmapMetadata();
                         }
                     }

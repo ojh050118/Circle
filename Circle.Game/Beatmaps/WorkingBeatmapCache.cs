@@ -146,7 +146,7 @@ namespace Circle.Game.Beatmaps
 
                     if (stream == null)
                     {
-                        Logger.Log($"Beatmap failed to load (file {BeatmapInfo.File.Name} not found on disk at expected location {fileStorePath}).", level: LogLevel.Error);
+                        Logger.Log($"Failed to load beatmap file {BeatmapInfo.File.Name} not found on disk at expected location {fileStorePath}).", level: LogLevel.Error);
                         return null;
                     }
 
