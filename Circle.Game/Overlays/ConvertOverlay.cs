@@ -81,6 +81,8 @@ namespace Circle.Game.Overlays
                                     Direction = FillDirection.Vertical,
                                     Padding = new MarginPadding(10),
                                     AutoSizeAxes = Axes.Y,
+                                    AutoSizeEasing = Easing.OutPow10,
+                                    AutoSizeDuration = 500,
                                     RelativeSizeAxes = Axes.X,
                                     Children = new Drawable[]
                                     {
@@ -88,6 +90,7 @@ namespace Circle.Game.Overlays
                                         {
                                             Anchor = Anchor.Centre,
                                             Origin = Anchor.Centre,
+                                            Alpha = 0,
                                             Size = new Vector2(75),
                                             Colour = Color4.DeepSkyBlue,
                                             InnerRadius = 0.2f,
@@ -209,13 +212,26 @@ namespace Circle.Game.Overlays
             var progress = new Bindable<int>();
             progress.ValueChanged += progressChanged;
 
+            circularProgress.FadeIn(500, Easing.OutPow10);
+            circularProgress.ScaleTo(1.25f).ScaleTo(1f, 500, Easing.OutPow10);
+
             Task.Factory.StartNew(() => manager.ConvertWithImport(levels.ToArray(), progress), TaskCreationOptions.LongRunning);
         }
 
         private void progressChanged(ValueChangedEvent<int> value)
         {
-            // TODO: 완료되면 프로그래스 초기화
             Schedule(() => circularProgress.ProgressTo((double)value.NewValue / levels.Count, 750, Easing.OutPow10));
+
+            if (value.NewValue == levels.Count)
+            {
+                Schedule(() => circularProgress.Delay(375).FlashColour(Color4.White, 2000, Easing.OutPow10));
+                Scheduler.AddDelayed(() =>
+                {
+                    circularProgress.FadeOut(750, Easing.OutPow10);
+                    circularProgress.ScaleTo(1.25f, 750, Easing.OutPow10);
+                    circularProgress.Delay(750).ProgressTo(0);
+                }, 1500);
+            }
         }
     }
 }
