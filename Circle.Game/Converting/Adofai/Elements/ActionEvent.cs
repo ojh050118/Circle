@@ -1,14 +1,16 @@
 ﻿#nullable disable
 
 using System;
+using System.Text.Json;
 using Circle.Game.Beatmaps;
 
 namespace Circle.Game.Converting.Adofai.Elements
 {
-    public class Action
+    public class ActionEvent
     {
         public int Floor { get; set; }
         public EventType EventType { get; set; }
+        public bool Enabled { get; set; }
         public string TrackColor { get; set; }
         public string SecondaryTrackColor { get; set; }
         public TrackColorType TrackColorType { get; set; }
@@ -34,14 +36,21 @@ namespace Circle.Game.Converting.Adofai.Elements
         public int UnscaledSize { get; set; }
         public float? Rotation { get; set; }
         public float AngleOffset { get; set; }
+
+        /// <summary>
+        /// <see cref="EventType"/>에 따라 타입이 바뀝니다.
+        /// <see cref="EventType.MoveCamera"/>일때, PositionRelativity이며,
+        /// <see cref="EventType.PositionTrack"/>일때, int와 TileRelativity로 구성된 튜플입니다.
+        /// </summary>
         public object RelativeTo { get; set; }
+
         public float?[] Position { get; set; }
         public object Tile { get; set; }
         public string EventTag { get; set; }
         public string Tag { get; set; }
         public int Repetitions { get; set; }
         public double Interval { get; set; }
-        public Toggle LoopBg { get; set; }
+        public bool LoopBg { get; set; }
         public int StartTime { get; set; }
         public int Index { get; set; }
         public int Depth { get; set; }
@@ -50,8 +59,8 @@ namespace Circle.Game.Converting.Adofai.Elements
         public string Color { get; set; }
         public object Scale { get; set; }
         public object RotationOffset { get; set; }
-        public Toggle EditorOnly { get; set; }
-        public Toggle LockRot { get; set; }
+        public bool EditorOnly { get; set; }
+        public bool LockRot { get; set; }
         public object Parallax { get; set; }
         public object PositionOffset { get; set; }
         public float[] PivotOffset { get; set; }
@@ -68,13 +77,31 @@ namespace Circle.Game.Converting.Adofai.Elements
         public int EaseParts { get; set; }
         public int Strength { get; set; }
         public int Intensity { get; set; }
-        public Toggle FadeOut { get; set; }
+        public bool FadeOut { get; set; }
         public object Components { get; set; }
 
-        public Relativity? GetRelativity()
+        public Relativity? GetCameraMoveRelativeTo()
         {
             switch (RelativeTo)
             {
+                case JsonElement r:
+                    Relativity? result = null;
+
+                    switch (r.ValueKind)
+                    {
+                        case JsonValueKind.String:
+                            if (Enum.TryParse(r.GetString(), out Relativity parsed))
+                                result = parsed;
+
+                            break;
+
+                        case JsonValueKind.Number:
+                            result = (Relativity)r.GetInt32();
+                            break;
+                    }
+
+                    return result;
+
                 case Relativity r:
                     return r;
 
@@ -91,5 +118,8 @@ namespace Circle.Game.Converting.Adofai.Elements
                     return null;
             }
         }
+
+        // TODO: MoveTrack, PositionTrack등 트랙에 관한 이벤트의 기준좌표 변환 구현
+        public object GetTrackRelativeTo() => new object();
     }
 }
