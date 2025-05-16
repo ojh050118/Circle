@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 using osu.Framework.Logging;
 
 namespace Circle.Game.Beatmaps
@@ -80,6 +81,7 @@ namespace Circle.Game.Beatmaps
         /// <summary>
         /// <see cref="BeatmapMetadata"/>만 구문분석하여 오버헤드를 줄입니다.
         /// </summary>
+        [MeansImplicitUse]
         private class SimpleBeatmap
         {
             [JsonPropertyName("Settings")]
