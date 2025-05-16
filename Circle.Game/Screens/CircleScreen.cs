@@ -89,10 +89,6 @@ namespace Circle.Game.Screens
                     importOverlay.ToggleVisibility();
                     return true;
 
-                case InputAction.ReloadBeatmap:
-                    // TODO: 사라져야할 기능
-                    return true;
-
                 case InputAction.Back:
                     if (!BlockExit)
                     {
