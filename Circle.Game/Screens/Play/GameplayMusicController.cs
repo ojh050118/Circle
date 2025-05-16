@@ -44,9 +44,6 @@ namespace Circle.Game.Screens.Play
                 TimeUntilPlay = countdown;
                 SeekTo(offset);
             }
-
-            // Todo: Player의 오프셋 설정을 일관되게 정리해야합니다.
-            //SeekTo(Math.Clamp(offset - countdown, 0, double.MaxValue));
         }
 
         /// <summary>
