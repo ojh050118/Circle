@@ -37,6 +37,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
             public UniformFloat R;
             public UniformFloat G;
             public UniformFloat B;
+            public UniformPadding4 Padding;
             public UniformVector2 Resolution;
         }
     }

@@ -30,8 +30,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         private record struct ArcadeParameters
         {
             public UniformFloat Time;
-            public UniformVector2 Resolution;
             public UniformPadding4 Padding;
+            public UniformVector2 Resolution;
         }
     }
 }
