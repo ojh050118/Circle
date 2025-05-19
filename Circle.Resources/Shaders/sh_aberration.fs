@@ -17,7 +17,7 @@ layout(location = 0) out vec4 colour;
 
 void main(void)
 {
-	vec4 u_xlat0;
+	vec4 u_xlat0 = vec4(0.0);
 	vec4 u_xlat1;
 	vec4 u_xlat2;
 
