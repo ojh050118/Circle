@@ -1,3 +1,7 @@
+#ifndef CIRCLEUTILS_H
+#define CIRCLEUTILS_H
+
+#undef PI
 #define PI 3.1415926538
 
 vec2 rotate(float length, vec2 origin, float angle)
@@ -48,3 +52,5 @@ vec2 getTileTexturePosition(vec2 value, vec2 texRes, vec2 topLeft)
 {
     return topLeft - abs(texRes) * 0.1 - (fract(value) * 0.8 * texRes);
 }
+
+#endif
