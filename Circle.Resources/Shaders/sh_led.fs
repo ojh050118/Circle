@@ -1,11 +1,21 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef LED_FS
+#define LED_FS
 
-varying vec2 v_TexCoord;
+#include "sh_Utils.h"
 
-uniform sampler2D m_Sampler;
-uniform mediump float intensity;
-uniform mediump float time;
-uniform mediump vec2 resolution;
+layout(location = 2) in mediump vec2 v_TexCoord;
+
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float intensity;
+    mediump float time;
+    mediump vec2 resolution;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 colour;
 
 void main(void)
 {
@@ -27,7 +37,7 @@ void main(void)
 	u_xlat1.x = floor(u_xlat1.x);
 	u_xlat1.w = floor(u_xlat1.w);
 	u_xlat1.xw *= vec2(intensity) / resolution;
-	u_xlat3 = toSRGB(texture(m_Sampler, u_xlat1.xw));
+	u_xlat3 = texture(sampler2D(m_Texture, m_Sampler), u_xlat1.xw);
 	u_xlat1.x = u_xlatb2.x ? u_xlat12.x : -u_xlat12.x;
 	u_xlat1.w = u_xlatb2.y ? u_xlat12.y : -u_xlat12.y;
 	u_xlat1.xw *= vec2(intensity);
@@ -41,5 +51,7 @@ void main(void)
 	u_xlat0.xyz = (u_xlat1.w < intensity ? (u_xlatb7.x ? u_xlat4.xyz : u_xlat1.xyz) : vec3(0.0)) + u_xlat3.xyz;
 	u_xlat1.xyz = max(u_xlat0.xyz - vec3(0.2), vec3(0.0)); // u_xlat0.xyz - vec3(0.2);
 	u_xlat0.xyz -= u_xlat1.xyz;
-	gl_FragColor = vec4(vec3(u_xlat15) * u_xlat0.xyz + u_xlat1.xyz, 1.0);
+	colour = vec4(vec3(u_xlat15) * u_xlat0.xyz + u_xlat1.xyz, 1.0);
 }
+
+#endif

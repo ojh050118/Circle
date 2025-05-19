@@ -1,5 +1,5 @@
 ﻿#include "sh_Utils.h"
-#include "sh_YosoUtils.h"
+#include "sh_CircleUtils.h"
 
 varying mediump vec2 v_TexCoord;
 varying mediump vec4 v_TexRect;

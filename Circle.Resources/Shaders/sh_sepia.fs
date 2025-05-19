@@ -1,5 +1,5 @@
-#ifndef GRAYSCALE_FS
-#define GRAYSCALE_FS
+﻿#ifndef SEPIA_FS
+#define SEPIA_FS
 
 #include "sh_Utils.h"
 
@@ -17,8 +17,9 @@ layout(location = 0) out vec4 colour;
 
 void main(void)
 {
-	vec3 pixelCol = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord).rgb;
-	colour = vec4(mix(pixelCol, vec3(dot(pixelCol, vec3(0.222, 0.707, 0.071))), intensity), 1.0);
+	vec4 pixelCol = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
+	vec3 finalCol = vec3(dot(pixelCol.rgb, vec3(0.222, 0.707, 0.071))) + vec3(0.437, 0.171, 0.078);
+	colour = vec4(mix(pixelCol.rgb, finalCol, intensity), 1.0);
 }
 
 #endif

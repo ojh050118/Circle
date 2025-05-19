@@ -1,5 +1,5 @@
-#ifndef INVERT_FS
-#define INVERT_FS
+﻿#ifndef EMPTY_FS
+#define EMPTY_FS
 
 #include "sh_Utils.h"
 
@@ -10,14 +10,9 @@ layout(set = 0, binding = 1) uniform lowp sampler m_Sampler;
 
 layout(location = 0) out vec4 colour;
 
-vec4 invert(vec4 original)
-{
-	return vec4(vec3(1.0) - original.rgb, 1.0);
-}
-
 void main(void)
 {
-	colour = invert(texture(sampler2D(m_Texture, m_Sampler), v_TexCoord));
+    colour = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
 }
 
 #endif
