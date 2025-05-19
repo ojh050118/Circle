@@ -17,7 +17,7 @@ vec4 invert(vec4 original)
 
 void main(void)
 {
-	gl_FragColor = invert(texture(sampler2D(m_Texture, m_Sampler), v_TexCoord));
+	colour = invert(texture(sampler2D(m_Texture, m_Sampler), v_TexCoord));
 }
 
 #endif

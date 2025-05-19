@@ -27,7 +27,7 @@ void main(void)
 	u_xlat0.y = u_xlat0.y - v_TexCoord.x * 10.0;
 	u_xlat0.xzw += v_TexCoord.xyy * vec3(7.5, 5.0, 12.5);
 	u_xlat0 = sin(u_xlat0);
-	u_xlat0.x = fract((u_xlat0.x + u_xlat0.y + u_xlat0.z + u_xlat0.w) * 0.25 + 1.0) + dot(texture(sampler2D(m_Texture, m_Sampler), v_TexCoord.xy)).xzy, vec3(0.2, 0.2, 0.4);
+	u_xlat0.x = fract((u_xlat0.x + u_xlat0.y + u_xlat0.z + u_xlat0.w) * 0.25 + 1.0) + dot(texture(sampler2D(m_Texture, m_Sampler), v_TexCoord.xy).xzy, vec3(0.2, 0.2, 0.4));
 	u_xlatb3 = u_xlat0.x >= -u_xlat0.x;
 	u_xlat0.x = fract(abs(u_xlat0.x));
 	u_xlat0.x = u_xlatb3 ? u_xlat0.x : -u_xlat0.x;
