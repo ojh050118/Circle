@@ -1,10 +1,20 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef FISHEYE_FS
+#define FISHEYE_FS
 
-varying mediump vec2 v_TexCoord;
-varying vec4 v_TexRect;
+#include "sh_Utils.h"
 
-uniform lowp sampler2D m_Sampler;
-uniform mediump float intensity;
+layout(location = 2) in mediump vec2 v_TexCoord;
+layout(location = 3) in mediump vec2 v_TexRect;
+
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float intensity;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
@@ -58,5 +68,7 @@ void main(void)
 		}
 	}
 	
-	gl_FragColor = toSRGB(texture2D(m_Sampler, u_xlat9.xy));
+	o_Colour = texture(sampler2D(m_Texture, m_Sampler), u_xlat9.xy);
 }
+
+#endif

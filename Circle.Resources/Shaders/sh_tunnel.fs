@@ -1,11 +1,18 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef TUNNEL_FS
+#define TUNNEL_FS
 
+#include "sh_Utils.h"
+
+#undef PI
 #define PI 3.1415926538
 
-varying vec2 v_TexCoord;
-varying vec4 v_TexRect;
+layout(location = 2) in mediump vec2 v_TexCoord;
+layout(location = 3) in mediump vec2 v_TexRect;
 
-uniform sampler2D m_Sampler;
+layout(set = 0, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 0, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 o_Colour;
 
 float angleBetween(vec2 l1p1, vec2 l1p2, vec2 l2p1, vec2 l2p2)
 {
@@ -21,5 +28,7 @@ void main(void)
 
     vec2 sample = vec2(fract((distance(pixelPos, vec2(0.5)) * 1.1 + 0.45) * 0.9), 1.0 - angle / 2.0 / PI);
     
-    gl_FragColor = toSRGB(texture2D(m_Sampler, sample * resolution));
+    o_Colour = texture(sampler2D(m_Texture, m_Sampler), sample * resolution);
 }
+
+#endif
