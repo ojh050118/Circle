@@ -161,7 +161,7 @@ namespace Circle.Game.Rulesets.Graphics
                     using (BindFrameBuffer(nextEffectBuffer))
                     {
                         if (filter is IHasTime time)
-                            time.Time = (float)Source.Time.Current;
+                            time.Time = (float)(Source.Time.Current / 1000);
 
                         if (filter is IHasResolution resolution)
                             resolution.Resolution = nextEffectBuffer.Size;
