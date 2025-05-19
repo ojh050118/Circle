@@ -1,10 +1,20 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef WAVES_FS
+#define WAVES_FS
 
-varying mediump vec2 v_TexCoord;
+#include "sh_Utils.h"
 
-uniform lowp sampler2D m_Sampler;
-uniform mediump float intensity;
-uniform mediump float time;
+layout(location = 2) in mediump vec2 v_TexCoord;
+
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float intensity;
+    mediump float time;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 colour;
 
 void main(void)
 {
@@ -19,5 +29,7 @@ void main(void)
 	u_xlat0.x *= 0.005;
 	u_xlat0.x += u_xlat0.y * 0.009 + v_TexCoord.x;
 	u_xlat0.y = v_TexCoord.y;
-	gl_FragColor = toSRGB(vec4(texture2D(m_Sampler, u_xlat0.xy).rgb, 1.0));
+	colour = vec4(texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xy).rgb, 1.0);
 }
+
+#endif
