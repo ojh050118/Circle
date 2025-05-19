@@ -1,0 +1,189 @@
+using System.Collections.Generic;
+using System.Linq;
+using Circle.Game.Rulesets.Graphics.Filters;
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Primitives;
+using osu.Framework.Graphics.Rendering;
+using osu.Framework.Graphics.Shaders;
+using osuTK;
+using osuTK.Graphics;
+
+namespace Circle.Game.Rulesets.Graphics
+{
+    public partial class PostProcessingContainer : Container, IBufferedDrawable
+    {
+        private readonly BufferedDrawNodeSharedData sharedData = new BufferedDrawNodeSharedData(2);
+
+        public readonly List<CameraFilter> Filters = new List<CameraFilter>();
+        public readonly List<CameraFilter> FiltersInUse = new List<CameraFilter>();
+
+        public readonly AberrationFilter Aberration;
+        public readonly ArcadeFilter Arcade;
+        public readonly BloomFilter Bloom;
+        public readonly CompressionFilter Compression;
+        public new readonly EmptyFilter Empty;
+        public readonly FunkFilter Funk;
+        public readonly GlitchFilter Glitch;
+        public readonly GrainFilter Grain;
+        public readonly GrayscaleFilter Grayscale;
+        public readonly InvertFilter Invert;
+        public readonly LedFilter Led;
+        public readonly NeonFilter Neon;
+        public readonly NightVisionFilter NightVision;
+        public readonly SepiaFilter Sepia;
+        public readonly WavesFilter Waves;
+        public readonly Weird3DFilter Weird3D;
+
+        public IShader TextureShader { get; private set; } = null!;
+
+        public Color4 BackgroundColour => Color4.Black;
+
+        public DrawColourInfo? FrameBufferDrawColour => DrawColourInfo;
+
+        public Vector2 FrameBufferScale => Vector2.One;
+
+        protected override bool RequiresChildrenUpdate => true;
+
+        protected override DrawNode CreateDrawNode() => new PostProcessingContainerDrawNode(this, sharedData);
+
+        public PostProcessingContainer()
+        {
+            Filters.AddRange(new CameraFilter[]
+            {
+                Aberration ??= new AberrationFilter(),
+                Arcade ??= new ArcadeFilter(),
+                Bloom ??= new BloomFilter(),
+                Compression ??= new CompressionFilter(),
+                Empty ??= new EmptyFilter(),
+                Funk ??= new FunkFilter(),
+                Glitch ??= new GlitchFilter(),
+                Grain ??= new GrainFilter(),
+                Grayscale ??= new GrayscaleFilter(),
+                Invert ??= new InvertFilter(),
+                Led ??= new LedFilter(),
+                Neon ??= new NeonFilter(),
+                NightVision ??= new NightVisionFilter(),
+                Sepia ??= new SepiaFilter(),
+                Waves ??= new WavesFilter(),
+                Weird3D ??= new Weird3DFilter()
+            });
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(ShaderManager shaderManager)
+        {
+            TextureShader = shaderManager.Load(VertexShaderDescriptor.TEXTURE_2, FragmentShaderDescriptor.TEXTURE);
+
+            foreach (var filter in Filters)
+                filter.Shader = shaderManager.Load(VertexShaderDescriptor.TEXTURE_2, filter.ShaderName);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            updateUsingShaders();
+            Invalidate(Invalidation.DrawNode);
+        }
+
+        private void updateUsingShaders()
+        {
+            FiltersInUse.Clear();
+
+            bool flag = false;
+
+            foreach (var filter in Filters)
+            {
+                if (filter.Enabled)
+                {
+                    flag = true;
+                    FiltersInUse.Add(filter);
+                }
+            }
+
+            if (flag)
+                return;
+
+            FiltersInUse.Add(Empty);
+        }
+
+        private class PostProcessingContainerDrawNode : BufferedDrawNode, ICompositeDrawNode
+        {
+            protected new PostProcessingContainer Source => (PostProcessingContainer)base.Source;
+
+            private readonly List<CameraFilter> filters = new List<CameraFilter>();
+
+            public PostProcessingContainerDrawNode(PostProcessingContainer source, BufferedDrawNodeSharedData sharedData)
+                : base(source, new CompositeDrawableDrawNode(source), sharedData)
+            {
+            }
+
+            public override void ApplyState()
+            {
+                base.ApplyState();
+
+                filters.Clear();
+                filters.AddRange(Source.FiltersInUse);
+            }
+
+            protected override void PopulateContents(IRenderer renderer)
+            {
+                base.PopulateContents(renderer);
+                drawEffectBuffers(renderer);
+            }
+
+            protected override void DrawContents(IRenderer renderer)
+            {
+                if (filters.Any())
+                {
+                    renderer.DrawFrameBuffer(SharedData.CurrentEffectBuffer, DrawRectangle, DrawColourInfo.Colour);
+                }
+                else
+                {
+                    base.DrawContents(renderer);
+                }
+            }
+
+            private void drawEffectBuffers(IRenderer renderer)
+            {
+                foreach (var filter in filters)
+                {
+                    if (!filter.Enabled)
+                        continue;
+
+                    var currentEffectBuffer = SharedData.CurrentEffectBuffer;
+                    var nextEffectBuffer = SharedData.GetNextEffectBuffer();
+
+                    renderer.SetBlend(BlendingParameters.None);
+
+                    using (BindFrameBuffer(nextEffectBuffer))
+                    {
+                        if (filter is IHasTime time)
+                            time.Time = (float)Source.Time.Current;
+
+                        if (filter is IHasResolution resolution)
+                            resolution.Resolution = nextEffectBuffer.Size;
+
+                        filter.UpdateUniforms(renderer);
+
+                        filter.Shader.Bind();
+                        renderer.DrawFrameBuffer(currentEffectBuffer, new RectangleF(0, 0, currentEffectBuffer.Texture.Width, currentEffectBuffer.Texture.Height), DrawColourInfo.Colour);
+                        filter.Shader.Unbind();
+                    }
+                }
+            }
+
+            protected new CompositeDrawableDrawNode Child => (CompositeDrawableDrawNode)base.Child;
+
+            public List<DrawNode>? Children
+            {
+                get => Child.Children;
+                set => Child.Children = value;
+            }
+
+            public bool AddChildDrawNodes => RequiresRedraw;
+        }
+    }
+}
