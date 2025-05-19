@@ -56,7 +56,7 @@ namespace Circle.Game.Rulesets.Graphics
                 Arcade ??= new ArcadeFilter(),
                 Bloom ??= new BloomFilter(),
                 Compression ??= new CompressionFilter(),
-                Empty ??= new EmptyFilter(),
+                Empty ??= new EmptyFilter { Enabled = true },
                 Funk ??= new FunkFilter(),
                 Glitch ??= new GlitchFilter(),
                 Grain ??= new GrainFilter(),
