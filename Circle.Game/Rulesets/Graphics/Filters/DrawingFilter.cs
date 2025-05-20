@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -9,7 +8,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         public float Intensity { get; set; }
         public float Time { get; set; }
 
-        private IUniformBuffer<DrawingParameters>? parameters;
+        private IUniformBuffer<IntensityTimeTextureRectParameters>? parameters;
 
         public DrawingFilter()
             : base("drawing", 1, "Drawing")
@@ -18,19 +17,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<DrawingParameters>();
+            parameters ??= renderer.CreateUniformBuffer<IntensityTimeTextureRectParameters>();
 
-            parameters.Data = new DrawingParameters { Intensity = Intensity, Time = Time };
+            parameters.Data = new IntensityTimeTextureRectParameters { Intensity = Intensity, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct DrawingParameters
-        {
-            public UniformFloat Intensity;
-            public UniformFloat Time;
-            public UniformVector4 TextureRect;
         }
     }
 }

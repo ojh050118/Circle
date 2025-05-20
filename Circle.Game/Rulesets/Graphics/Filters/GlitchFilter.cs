@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,7 +7,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Time { get; set; }
 
-        private IUniformBuffer<GlitchParameters>? parameters;
+        private IUniformBuffer<TimeParameters>? parameters;
 
         public GlitchFilter()
             : base("glitch")
@@ -17,18 +16,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<GlitchParameters>();
+            parameters ??= renderer.CreateUniformBuffer<TimeParameters>();
 
-            parameters.Data = new GlitchParameters { Time = Time };
+            parameters.Data = new TimeParameters { Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct GlitchParameters
-        {
-            public UniformFloat Time;
-            public UniformPadding12 Padding;
         }
     }
 }

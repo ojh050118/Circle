@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 using osuTK;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
@@ -10,7 +9,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         public float Time { get; set; }
         public Vector2 Resolution { get; set; }
 
-        private IUniformBuffer<EightiesTvParameters>? parameters;
+        private IUniformBuffer<TimeResolutionParameters>? parameters;
 
         public EightiesTvFilter()
             : base("eightiestv")
@@ -19,19 +18,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<EightiesTvParameters>();
+            parameters ??= renderer.CreateUniformBuffer<TimeResolutionParameters>();
 
-            parameters.Data = new EightiesTvParameters { Time = Time, Resolution = Resolution };
+            parameters.Data = new TimeResolutionParameters { Time = Time, Resolution = Resolution };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct EightiesTvParameters
-        {
-            public UniformFloat Time;
-            public UniformVector2 Resolution;
-            public UniformPadding4 Padding;
         }
     }
 }

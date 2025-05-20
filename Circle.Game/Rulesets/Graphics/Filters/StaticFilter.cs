@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -9,7 +8,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         public float Intensity { get; set; }
         public float Time { get; set; }
 
-        private IUniformBuffer<StaticParameters>? parameters;
+        private IUniformBuffer<IntensityTimeTextureRectParameters>? parameters;
 
         public StaticFilter()
             : base("static", 1, "Static")
@@ -18,19 +17,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<StaticParameters>();
+            parameters ??= renderer.CreateUniformBuffer<IntensityTimeTextureRectParameters>();
 
-            parameters.Data = new StaticParameters { Intensity = Intensity, Time = Time };
+            parameters.Data = new IntensityTimeTextureRectParameters { Intensity = Intensity, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct StaticParameters
-        {
-            public UniformFloat Intensity;
-            public UniformFloat Time;
-            public UniformVector4 TextureRect;
         }
     }
 }

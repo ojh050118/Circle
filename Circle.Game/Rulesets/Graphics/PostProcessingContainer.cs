@@ -10,7 +10,6 @@ using osu.Framework.Graphics.Shaders;
 using osu.Framework.Graphics.Textures;
 using osuTK;
 using osuTK.Graphics;
-using osuTK.Graphics.OpenGL;
 
 namespace Circle.Game.Rulesets.Graphics
 {
@@ -171,7 +170,10 @@ namespace Circle.Game.Rulesets.Graphics
             protected override void PopulateContents(IRenderer renderer)
             {
                 base.PopulateContents(renderer);
+
+                renderer.PushScissorState(false);
                 drawEffectBuffers(renderer);
+                renderer.PopScissorState();
             }
 
             protected override void DrawContents(IRenderer renderer)
@@ -205,21 +207,6 @@ namespace Circle.Game.Rulesets.Graphics
 
                         if (filter is IHasResolution resolution)
                             resolution.Resolution = nextEffectBuffer.Size;
-
-                        if (filter.TextureCount > 0)
-                        {
-                            for (int i = 0; i < filter.TextureCount; i++)
-                            {
-                                int unit = i + 1;
-                                filter.Textures?[i].Bind((int)(TextureUnit.Texture0 + unit));
-                                filter.Shader.GetUniform<int>($"s_Texture{unit}").UpdateValue(ref unit);
-
-                                var textureRect = filter.Textures![i].GetTextureRect();
-                                var vector4 = new Vector4(textureRect.Left, textureRect.Right, textureRect.Top, textureRect.Bottom);
-
-                                filter.Shader.GetUniform<Vector4>($"s_TexRect{unit}").UpdateValue(ref vector4);
-                            }
-                        }
 
                         filter.UpdateUniforms(renderer);
 

@@ -64,6 +64,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
             public UniformFloat StartY;
             public UniformFloat SpeedX;
             public UniformFloat SpeedY;
+            public UniformPadding8 Padding;
         }
     }
 }

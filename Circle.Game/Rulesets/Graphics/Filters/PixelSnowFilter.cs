@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -9,7 +8,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         public float Intensity { get; set; }
         public float Time { get; set; }
 
-        private IUniformBuffer<PixelSnowParameters>? parameters;
+        private IUniformBuffer<IntensityTimeParameters>? parameters;
 
         public PixelSnowFilter()
             : base("pixelsnow")
@@ -18,19 +17,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<PixelSnowParameters>();
+            parameters ??= renderer.CreateUniformBuffer<IntensityTimeParameters>();
 
-            parameters.Data = new PixelSnowParameters { Intensity = Intensity, Time = Time };
+            parameters.Data = new IntensityTimeParameters { Intensity = Intensity, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct PixelSnowParameters
-        {
-            public UniformFloat Intensity;
-            public UniformFloat Time;
-            public UniformPadding8 Padding;
         }
     }
 }
