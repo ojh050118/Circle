@@ -24,28 +24,39 @@ namespace Circle.Game.Rulesets.Graphics
         public readonly ArcadeFilter Arcade;
         public readonly BlizzardFilter Blizzard;
         public readonly BloomFilter Bloom;
+        public readonly BlurFilter Blur;
+        public readonly BlurFocusFilter BlurFocus;
         public readonly CompressionFilter Compression;
+        public readonly ContrastFilter Contrast;
         public readonly DrawingFilter Drawing;
+        public readonly EdgeBlackLineFilter EdgeBlackLine;
         public readonly EightiesTvFilter EightiesTv;
         public new readonly EmptyFilter Empty;
         public readonly FiftiesTvFilter FiftiesTv;
         public readonly FisheyeFilter Fisheye;
         public readonly FunkFilter Funk;
+        public readonly GaussianBlurFilter GaussianBlur;
         public readonly GlitchFilter Glitch;
         public readonly GrainFilter Grain;
         public readonly GrayscaleFilter Grayscale;
         public readonly HandheldFilter Handheld;
+        public readonly HexagonBlackFilter HexagonBlack;
         public readonly InvertFilter Invert;
         public readonly LedFilter Led;
+        public readonly LightWaterFilter LightWater;
         public readonly NeonFilter Neon;
         public readonly NightVisionFilter NightVision;
+        public readonly OilPaintFilter OilPaint;
         public readonly PixelateFilter Pixelate;
         public readonly PixelSnowFilter PixelSnow;
+        public readonly PosterizeFilter Posterize;
         public readonly RainFilter Rain;
         public readonly ScreenScrollFilter ScreenScroll;
         public readonly ScreenTilingFilter ScreenTiling;
         public readonly SepiaFilter Sepia;
+        public readonly SharpenFilter Sharpen;
         public readonly StaticFilter Static;
+        public readonly SuperDotFilter SuperDot;
         public readonly TunnelFilter Tunnel;
         public readonly VhsFilter Vhs;
         public readonly WaterDropFilter WaterDrop;
@@ -72,28 +83,39 @@ namespace Circle.Game.Rulesets.Graphics
                 Arcade ??= new ArcadeFilter(),
                 Blizzard ??= new BlizzardFilter(),
                 Bloom ??= new BloomFilter(),
+                Blur ??= new BlurFilter(),
+                BlurFocus ??= new BlurFocusFilter(),
                 Compression ??= new CompressionFilter(),
+                Contrast ??= new ContrastFilter(),
                 Drawing ??= new DrawingFilter(),
+                EdgeBlackLine ??= new EdgeBlackLineFilter(),
                 EightiesTv ??= new EightiesTvFilter(),
                 Empty ??= new EmptyFilter { Enabled = true },
                 FiftiesTv ??= new FiftiesTvFilter(),
                 Fisheye ??= new FisheyeFilter(),
                 Funk ??= new FunkFilter(),
+                GaussianBlur ??= new GaussianBlurFilter(),
                 Glitch ??= new GlitchFilter(),
                 Grain ??= new GrainFilter(),
                 Grayscale ??= new GrayscaleFilter(),
                 Handheld ??= new HandheldFilter(),
+                HexagonBlack ??= new HexagonBlackFilter(),
                 Invert ??= new InvertFilter(),
                 Led ??= new LedFilter(),
+                LightWater ??= new LightWaterFilter(),
                 Neon ??= new NeonFilter(),
                 NightVision ??= new NightVisionFilter(),
+                OilPaint ??= new OilPaintFilter(),
                 Pixelate ??= new PixelateFilter(),
                 PixelSnow ??= new PixelSnowFilter(),
+                Posterize ??= new PosterizeFilter(),
                 Rain ??= new RainFilter(),
                 ScreenScroll ??= new ScreenScrollFilter(),
                 ScreenTiling ??= new ScreenTilingFilter(),
                 Sepia ??= new SepiaFilter(),
+                Sharpen ??= new SharpenFilter(),
                 Static ??= new StaticFilter(),
+                SuperDot ??= new SuperDotFilter(),
                 Tunnel ??= new TunnelFilter(),
                 Vhs ??= new VhsFilter(),
                 WaterDrop ??= new WaterDropFilter(),

@@ -54,15 +54,34 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddSliderStep("Bloom filter B", 0, 1, 1f, v => postProcessing.Bloom.Color = postProcessing.Bloom.Color with { B = v });
             AddStep("Disable Bloom filter", () => postProcessing.Bloom.Enabled = false);
 
+            AddLabel("Blur filter");
+            AddStep("Enable Blur filter", () => postProcessing.Blur.Enabled = true);
+            AddSliderStep("Blur filter Intensity", 0, 1, 1f, v => postProcessing.Blur.Intensity = v);
+            AddStep("Disable Blur filter", () => postProcessing.Blur.Enabled = false);
+
+            AddLabel("Blur Focus filter");
+            AddStep("Enable Blur Focus filter", () => postProcessing.BlurFocus.Enabled = true);
+            AddSliderStep("Blur Focus filter Intensity", 0, 1, 1f, v => postProcessing.BlurFocus.Intensity = v);
+            AddStep("Disable Blur Focus filter", () => postProcessing.BlurFocus.Enabled = false);
+
             AddLabel("Compression filter");
             AddStep("Enable Compression filter", () => postProcessing.Compression.Enabled = true);
             AddSliderStep("Compression filter Intensity", 0, 1, 1f, v => postProcessing.Compression.Intensity = v);
             AddStep("Disable Compression filter", () => postProcessing.Compression.Enabled = false);
 
+            AddLabel("Contrast filter");
+            AddStep("Enable Contrast filter", () => postProcessing.Contrast.Enabled = true);
+            AddSliderStep("Contrast filter Intensity", 0, 1, 1f, v => postProcessing.Contrast.Intensity = v);
+            AddStep("Disable Contrast filter", () => postProcessing.Contrast.Enabled = false);
+
             AddLabel("Drawing filter");
             AddStep("Enable Drawing filter", () => postProcessing.Drawing.Enabled = true);
             AddSliderStep("Drawing filter Intensity", 0, 1, 1f, v => postProcessing.Drawing.Intensity = v);
             AddStep("Disable Drawing filter", () => postProcessing.Drawing.Enabled = false);
+
+            AddLabel("Edge Black Line TV filter");
+            AddStep("Enable Edge Black Line TV filter", () => postProcessing.EdgeBlackLine.Enabled = true);
+            AddStep("Disable Edge Black Line TV filter", () => postProcessing.EdgeBlackLine.Enabled = false);
 
             AddLabel("Eighties TV filter");
             AddStep("Enable Eighties TV filter", () => postProcessing.EightiesTv.Enabled = true);
@@ -80,6 +99,11 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddLabel("Funk filter");
             AddStep("Enable Funk filter", () => postProcessing.Funk.Enabled = true);
             AddStep("Disable Funk filter", () => postProcessing.Funk.Enabled = false);
+
+            AddLabel("Gaussian Blur filter");
+            AddStep("Enable Gaussian Blur filter", () => postProcessing.GaussianBlur.Enabled = true);
+            AddSliderStep("Gaussian Blur filter Intensity", 0, 1, 1f, v => postProcessing.GaussianBlur.Intensity = v);
+            AddStep("Disable Gaussian Blur filter", () => postProcessing.GaussianBlur.Enabled = false);
 
             AddLabel("Glitch filter");
             AddStep("Enable Glitch filter", () => postProcessing.Glitch.Enabled = true);
@@ -99,6 +123,11 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddStep("Enable Handheld filter", () => postProcessing.Handheld.Enabled = true);
             AddStep("Disable Handheld filter", () => postProcessing.Handheld.Enabled = false);
 
+            AddLabel("Hexagon Black filter");
+            AddStep("Enable Hexagon Black filter", () => postProcessing.HexagonBlack.Enabled = true);
+            AddSliderStep("Hexagon Black filter Intensity", 0, 1, 1f, v => postProcessing.HexagonBlack.Intensity = v);
+            AddStep("Disable Hexagon Black filter", () => postProcessing.HexagonBlack.Enabled = false);
+
             AddLabel("Invert filter");
             AddStep("Enable Invert filter", () => postProcessing.Invert.Enabled = true);
             AddStep("Disable Invert filter", () => postProcessing.Invert.Enabled = false);
@@ -108,6 +137,11 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddSliderStep("LED filter Intensity", 0, 1, 1f, v => postProcessing.Led.Intensity = v);
             AddStep("Disable LED filter", () => postProcessing.Led.Enabled = false);
 
+            AddLabel("Light Water filter");
+            AddStep("Enable Light Water filter", () => postProcessing.LightWater.Enabled = true);
+            AddSliderStep("Light Water filter Intensity", 0, 1, 1f, v => postProcessing.LightWater.Intensity = v);
+            AddStep("Disable Light Water filter", () => postProcessing.LightWater.Enabled = false);
+
             AddLabel("Neon filter");
             AddStep("Enable Neon filter", () => postProcessing.Neon.Enabled = true);
             AddStep("Disable Neon filter", () => postProcessing.Neon.Enabled = false);
@@ -115,6 +149,11 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddLabel("Night Vision filter");
             AddStep("Enable Night Vision filter", () => postProcessing.NightVision.Enabled = true);
             AddStep("Disable Night Vision filter", () => postProcessing.NightVision.Enabled = false);
+
+            AddLabel("Oil Paint filter");
+            AddStep("Enable Oil Paint filter", () => postProcessing.OilPaint.Enabled = true);
+            AddSliderStep("Oil Paint filter Intensity", 0, 1, 1f, v => postProcessing.OilPaint.Intensity = v);
+            AddStep("Disable Oil Paint filter", () => postProcessing.Pixelate.Enabled = false);
 
             AddLabel("Pixelate filter");
             AddStep("Enable Pixelate filter", () => postProcessing.Pixelate.Enabled = true);
@@ -125,6 +164,11 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddStep("Enable Pixel Snow filter", () => postProcessing.PixelSnow.Enabled = true);
             AddSliderStep("Pixel Snow filter Intensity", 0, 1, 1f, v => postProcessing.PixelSnow.Intensity = v);
             AddStep("Disable Pixel Snow filter", () => postProcessing.PixelSnow.Enabled = false);
+
+            AddLabel("Posterize filter");
+            AddStep("Enable Posterize filter", () => postProcessing.Posterize.Enabled = true);
+            AddSliderStep("Posterize filter Intensity", 0, 1, 1f, v => postProcessing.Posterize.Intensity = v);
+            AddStep("Disable Posterize filter", () => postProcessing.Posterize.Enabled = false);
 
             AddLabel("Rain filter");
             AddStep("Enable Rain filter", () => postProcessing.Rain.Enabled = true);
@@ -150,10 +194,19 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddSliderStep("Sepia filter Intensity", 0, 1, 1f, v => postProcessing.Sepia.Intensity = v);
             AddStep("Disable Sepia filter", () => postProcessing.Sepia.Enabled = false);
 
+            AddLabel("Sharpen filter");
+            AddStep("Enable Sharpen filter", () => postProcessing.Sharpen.Enabled = true);
+            AddSliderStep("Sharpen filter Intensity", 0, 1, 1f, v => postProcessing.Sharpen.Intensity = v);
+            AddStep("Disable Sharpen filter", () => postProcessing.Sharpen.Enabled = false);
+
             AddLabel("Static filter");
             AddStep("Enable Static filter", () => postProcessing.Static.Enabled = true);
             AddSliderStep("Static filter Intensity", 0, 1, 1f, v => postProcessing.Static.Intensity = v);
             AddStep("Disable Static filter", () => postProcessing.Static.Enabled = false);
+
+            AddLabel("Super Dot filter");
+            AddStep("Enable Super Dot filter", () => postProcessing.SuperDot.Enabled = true);
+            AddStep("Disable Super Dot filter", () => postProcessing.SuperDot.Enabled = false);
 
             AddLabel("Tunnel filter");
             AddStep("Enable Tunnel filter", () => postProcessing.Tunnel.Enabled = true);
