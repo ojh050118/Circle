@@ -5,12 +5,13 @@
 #include "sh_CircleUtils.h"
 
 layout(location = 2) in mediump vec2 v_TexCoord;
-layout(location = 3) in mediump vec2 v_TexRect;
+layout (location = 3) in mediump vec4 v_TexRect;
 
 layout(std140, set = 0, binding = 0) uniform m_FilterParameters
 {
     mediump float intensity;
     mediump float time;
+	mediump vec4 s_TexRect1;
 };
 
 layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
@@ -18,7 +19,6 @@ layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
 
 layout(set = 2, binding = 0) uniform mediump texture2D s_Texture1;
 layout(set = 2, binding = 1) uniform mediump sampler s_Sampler1;
-layout(set = 2, binding = 2) uniform mediump vec4 s_TexRect1;
 
 layout(location = 0) out vec4 o_Colour;
 
@@ -56,7 +56,7 @@ void main(void)
 	u_xlat4.y = u_xlat2.y * 0.4 + u_xlat3.y;
 	u_xlat2.x = v_TexCoord.x * 0.001 + u_xlat3.z;
 	u_xlat0.x += u_xlat1.x * intensity * 0.9 + texture(sampler2D(s_Texture1, s_Sampler1), getShaderTexturePosition(u_xlat4, texResolution, s_topLeft)).x * intensity * 0.9;
-	u_xlat0 = u_xlat0.xxxx + texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xx * vec2(0.05) + v_TexCoord));
+	u_xlat0 = u_xlat0.xxxx + texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xx * vec2(0.05) + v_TexCoord);
 	u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
 	u_xlat2.y = 0.0;
 	u_xlat2 = texture(sampler2D(s_Texture1, s_Sampler1), getShaderTexturePosition(u_xlat2.xy, texResolution, s_topLeft));

@@ -5,12 +5,13 @@
 #include "sh_CircleUtils.h"
 
 layout(location = 2) in mediump vec2 v_TexCoord;
-layout(location = 3) in mediump vec2 v_TexRect;
+layout (location = 3) in mediump vec4 v_TexRect;
 
 layout(std140, set = 0, binding = 0) uniform m_FilterParameters
 {
     mediump float intensity;
     mediump float time;
+	mediump vec4 s_TexRect1;
 };
 
 layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
@@ -18,7 +19,6 @@ layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
 
 layout(set = 2, binding = 0) uniform mediump texture2D s_Texture1;
 layout(set = 2, binding = 1) uniform mediump sampler s_Sampler1;
-layout(set = 2, binding = 2) uniform mediump vec4 s_TexRect1;
 
 layout(location = 0) out vec4 o_Colour;
 
@@ -29,7 +29,7 @@ void main(void)
 	vec2 texResolution = vec2(s_TexRect1[1] - s_TexRect1[0], s_TexRect1[3] - s_TexRect1[2]);
 	vec2 s_topLeft = vec2(s_TexRect1[1], s_TexRect1[3]);
 
-	vec3 u_xlat0;
+	vec3 u_xlat0 = vec3(0.0);
 	vec4 u_xlat1;
 	vec4 u_xlat2;
 	vec4 u_xlat3;
@@ -37,7 +37,7 @@ void main(void)
 	vec4 u_xlat5;
 	vec4 u_xlat6;
 	vec3 u_xlat7;
-	vec2 u_xlat14;
+	vec2 u_xlat14 = vec2(0.0);
 	float u_xlat16;
 
 	float _Value1 = 0.0008; //pencil size
