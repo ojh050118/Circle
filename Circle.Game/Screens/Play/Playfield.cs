@@ -2,13 +2,14 @@
 
 using System;
 using Circle.Game.Beatmaps;
+using Circle.Game.Rulesets.Graphics;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 
 namespace Circle.Game.Screens.Play
 {
-    public partial class Playfield : Container
+    public partial class Playfield : PostProcessingContainer
     {
         private readonly Beatmap currentBeatmap;
 

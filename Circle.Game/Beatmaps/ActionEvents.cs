@@ -31,6 +31,11 @@ namespace Circle.Game.Beatmaps
         public SpeedType? SpeedType { get; set; }
 
         /// <summary>
+        /// 필터 유형. 이벤트 타입이 <see cref="EventType.SetFilter"/>일때 사용가능합니다.
+        /// </summary>
+        public FilterType? Filter { get; set; }
+
+        /// <summary>
         /// 분당 비트 횟수.
         /// </summary>
         public float BeatsPerMinute { get; set; }
@@ -39,6 +44,21 @@ namespace Circle.Game.Beatmaps
         /// bpm 승수.
         /// </summary>
         public float BpmMultiplier { get; set; }
+
+        /// <summary>
+        /// 활성화 여부.
+        /// </summary>
+        public bool Enabled { get; set; }
+
+        /// <summary>
+        /// 강도.
+        /// </summary>
+        public float Intensity { get; set; }
+
+        /// <summary>
+        /// 다른 이벤트를 비활성화해야할지의 여부.
+        /// </summary>
+        public bool DisableOthers { get; set; }
 
         /// <summary>
         /// 카메라의 기준좌표. 이벤트 타입이 MoveCamera일때만 사용가능 합니다.
@@ -125,7 +145,8 @@ namespace Circle.Game.Beatmaps
         SetPlanetRotation,
         RepeatEvents,
         Other,
-        Pause
+        Pause,
+        SetFilter
     }
 
     public enum SpeedType
@@ -143,5 +164,49 @@ namespace Circle.Game.Beatmaps
         Global,
         RedPlanet,
         BluePlanet
+    }
+
+    public enum FilterType
+    {
+        None,
+        Grayscale,
+        Sepia,
+        Invert,
+        Vhs,
+        EightiesTv,
+        FiftiesTv,
+        Arcade,
+        Led,
+        Rain,
+        Blizzard,
+        PixelSnow,
+        Compression,
+        Glitch,
+        Pixelate,
+        Waves,
+        Static,
+        Grain,
+        MotionBlur,
+        Fisheye,
+        Aberration,
+        Drawing,
+        Neon,
+        Handheld,
+        NightVision,
+        Funk,
+        Tunnel,
+        Weird3D,
+        Blur,
+        BlurFocus,
+        GaussianBlur,
+        HexagonBlack,
+        Posterize,
+        Sharpen,
+        Contrast,
+        EdgeBlackLine,
+        OilPaint,
+        SuperDot,
+        WaterDrop,
+        LightWater
     }
 }

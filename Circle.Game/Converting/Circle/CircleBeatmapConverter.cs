@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System;
 using System.Collections.Generic;
 using Circle.Game.Beatmaps;
 using Circle.Game.Converting.Adofai;
@@ -56,6 +57,10 @@ namespace Circle.Game.Converting.Circle
                 {
                     Floor = action.Floor,
                     EventType = convertEventType(action.EventType),
+                    Filter = convertFilter(action.Filter),
+                    Enabled = action.Enabled,
+                    Intensity = action.Intensity,
+                    DisableOthers = action.DisableOthers,
                     RelativeTo = action.GetCameraMoveRelativeTo(),
                     BpmMultiplier = (float)action.BPMMultiplier,
                     BeatsPerMinute = (float)action.BeatsPerMinute,
@@ -87,6 +92,41 @@ namespace Circle.Game.Converting.Circle
             circle.Actions = actions.ToArray();
 
             return circle;
+        }
+
+        private FilterType convertFilter(string filter)
+        {
+            if (Enum.TryParse(filter, out FilterType filterType))
+                return filterType;
+
+            return FilterType.None;
+        }
+
+        private EventType convertEventType(Adofai.Elements.EventType eventType)
+        {
+            switch (eventType)
+            {
+                case Adofai.Elements.EventType.Twirl:
+                    return EventType.Twirl;
+
+                case Adofai.Elements.EventType.SetSpeed:
+                    return EventType.SetSpeed;
+
+                case Adofai.Elements.EventType.SetPlanetRotation:
+                    return EventType.SetPlanetRotation;
+
+                case Adofai.Elements.EventType.MoveCamera:
+                    return EventType.MoveCamera;
+
+                case Adofai.Elements.EventType.RepeatEvents:
+                    return EventType.RepeatEvents;
+
+                case Adofai.Elements.EventType.Pause:
+                    return EventType.Pause;
+
+                default:
+                    return EventType.Other;
+            }
         }
 
         private Easing convertEasing(Ease ease)
@@ -198,33 +238,6 @@ namespace Circle.Game.Converting.Circle
 
                 default:
                     return Easing.None;
-            }
-        }
-
-        private EventType convertEventType(Adofai.Elements.EventType eventType)
-        {
-            switch (eventType)
-            {
-                case Adofai.Elements.EventType.Twirl:
-                    return EventType.Twirl;
-
-                case Adofai.Elements.EventType.SetSpeed:
-                    return EventType.SetSpeed;
-
-                case Adofai.Elements.EventType.SetPlanetRotation:
-                    return EventType.SetPlanetRotation;
-
-                case Adofai.Elements.EventType.MoveCamera:
-                    return EventType.MoveCamera;
-
-                case Adofai.Elements.EventType.RepeatEvents:
-                    return EventType.RepeatEvents;
-
-                case Adofai.Elements.EventType.Pause:
-                    return EventType.Pause;
-
-                default:
-                    return EventType.Other;
             }
         }
     }

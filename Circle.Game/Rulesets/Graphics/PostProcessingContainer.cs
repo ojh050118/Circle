@@ -65,7 +65,7 @@ namespace Circle.Game.Rulesets.Graphics
 
         public IShader TextureShader { get; private set; } = null!;
 
-        public Color4 BackgroundColour => Color4.Black;
+        public Color4 BackgroundColour => Color4.Transparent;
 
         public DrawColourInfo? FrameBufferDrawColour => DrawColourInfo;
 

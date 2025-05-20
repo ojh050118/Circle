@@ -10,7 +10,7 @@ namespace Circle.Game.Converting.Adofai.Elements
     {
         public int Floor { get; set; }
         public EventType EventType { get; set; }
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
         public string TrackColor { get; set; }
         public string SecondaryTrackColor { get; set; }
         public TrackColorType TrackColorType { get; set; }
@@ -76,7 +76,9 @@ namespace Circle.Game.Converting.Adofai.Elements
         public double BeatsBehind { get; set; }
         public int EaseParts { get; set; }
         public int Strength { get; set; }
+        public string Filter { get; set; }
         public int Intensity { get; set; }
+        public bool DisableOthers { get; set; }
         public bool FadeOut { get; set; }
         public object Components { get; set; }
 
