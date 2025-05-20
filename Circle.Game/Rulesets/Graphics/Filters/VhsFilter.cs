@@ -1,5 +1,6 @@
-using Circle.Game.Rulesets.Graphics.Shaders;
+using System.Runtime.InteropServices;
 using osu.Framework.Graphics.Rendering;
+using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,7 +9,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         public float Intensity { get; set; }
         public float Time { get; set; }
 
-        private IUniformBuffer<IntensityTimeTextureRectParameters>? parameters;
+        private IUniformBuffer<VhsParameters>? parameters;
 
         public VhsFilter()
             : base("vhs", 2, "VHS")
@@ -19,11 +20,26 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         {
             base.UpdateUniforms(renderer);
 
-            parameters ??= renderer.CreateUniformBuffer<IntensityTimeTextureRectParameters>();
+            parameters ??= renderer.CreateUniformBuffer<VhsParameters>();
+
+            if (parameters == null)
+            {
+                parameters = renderer.CreateUniformBuffer<VhsParameters>();
+                parameters.Data = parameters.Data with { TextureRect1 = TextureRects![0], TextureRect2 = TextureRects![1] };
+            }
 
             parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        private record struct VhsParameters
+        {
+            public UniformFloat Intensity;
+            public UniformFloat Time;
+            public UniformVector4 TextureRect1;
+            public UniformVector4 TextureRect2;
         }
     }
 }
