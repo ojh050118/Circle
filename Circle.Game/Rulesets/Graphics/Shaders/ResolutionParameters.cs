@@ -7,6 +7,6 @@ namespace Circle.Game.Rulesets.Graphics.Shaders
     public record struct ResolutionParameters
     {
         public UniformVector2 Resolution;
-        private UniformPadding4 padding;
+        private UniformPadding8 padding;
     }
 }
