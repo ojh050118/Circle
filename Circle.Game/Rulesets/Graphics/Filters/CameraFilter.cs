@@ -6,7 +6,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public abstract class CameraFilter
     {
-        public bool Enabled { get; set; }
+        public virtual bool Enabled { get; set; }
 
         public Texture[]? Textures { get; set; }
 
@@ -16,7 +16,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public readonly string ShaderName;
 
-        protected CameraFilter(string shaderName, int textureCount = 0)
+        public readonly string? TextureName;
+
+        protected CameraFilter(string shaderName, int textureCount = 0, string? textureName = null)
         {
             ShaderName = shaderName;
 
@@ -25,6 +27,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
                 TextureCount = textureCount;
                 Textures = new Texture[TextureCount];
             }
+
+            if (textureName != null)
+                TextureName = textureName;
         }
 
         public abstract void UpdateUniforms(IRenderer renderer);

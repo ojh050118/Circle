@@ -12,7 +12,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         private IUniformBuffer<VhsParameters>? parameters;
 
         public VhsFilter()
-            : base("vhs", 2)
+            : base("vhs", 2, "VHS")
         {
         }
 

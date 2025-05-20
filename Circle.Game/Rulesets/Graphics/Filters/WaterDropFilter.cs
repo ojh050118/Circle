@@ -4,15 +4,15 @@ using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
-    public class WaterdropFilter : CameraFilter, IHasIntensity, IHasTime
+    public class WaterDropFilter : CameraFilter, IHasIntensity, IHasTime
     {
         public float Intensity { get; set; }
         public float Time { get; set; }
 
         private IUniformBuffer<WaterdropParameters>? parameters;
 
-        public WaterdropFilter()
-            : base("waterdrop", 1)
+        public WaterDropFilter()
+            : base("waterdrop", 1, "WaterDrop")
         {
         }
 

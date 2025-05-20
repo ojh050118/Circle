@@ -12,7 +12,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         private IUniformBuffer<RainParameters>? parameters;
 
         public RainFilter()
-            : base("rain", 1)
+            : base("rain", 1, "Rain")
         {
         }
 

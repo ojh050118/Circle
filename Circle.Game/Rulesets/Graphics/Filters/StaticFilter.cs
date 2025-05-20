@@ -12,7 +12,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         private IUniformBuffer<StaticParameters>? parameters;
 
         public StaticFilter()
-            : base("static")
+            : base("static", 1, "Static")
         {
         }
 

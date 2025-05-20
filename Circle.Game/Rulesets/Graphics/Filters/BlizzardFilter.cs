@@ -12,7 +12,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         private IUniformBuffer<BlizzardParameters>? parameters;
 
         public BlizzardFilter()
-            : base("blizzard", 1)
+            : base("blizzard", 1, "Blizzard")
         {
         }
 

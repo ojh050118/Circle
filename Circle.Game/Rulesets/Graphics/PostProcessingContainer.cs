@@ -7,8 +7,10 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.Rendering;
 using osu.Framework.Graphics.Shaders;
+using osu.Framework.Graphics.Textures;
 using osuTK;
 using osuTK.Graphics;
+using osuTK.Graphics.OpenGL;
 
 namespace Circle.Game.Rulesets.Graphics
 {
@@ -21,18 +23,33 @@ namespace Circle.Game.Rulesets.Graphics
 
         public readonly AberrationFilter Aberration;
         public readonly ArcadeFilter Arcade;
+        public readonly BlizzardFilter Blizzard;
         public readonly BloomFilter Bloom;
         public readonly CompressionFilter Compression;
+        public readonly DrawingFilter Drawing;
+        public readonly EightiesTvFilter EightiesTv;
         public new readonly EmptyFilter Empty;
+        public readonly FiftiesTvFilter FiftiesTv;
+        public readonly FisheyeFilter Fisheye;
         public readonly FunkFilter Funk;
         public readonly GlitchFilter Glitch;
         public readonly GrainFilter Grain;
         public readonly GrayscaleFilter Grayscale;
+        public readonly HandheldFilter Handheld;
         public readonly InvertFilter Invert;
         public readonly LedFilter Led;
         public readonly NeonFilter Neon;
         public readonly NightVisionFilter NightVision;
+        public readonly PixelateFilter Pixelate;
+        public readonly PixelSnowFilter PixelSnow;
+        public readonly RainFilter Rain;
+        public readonly ScreenScrollFilter ScreenScroll;
+        public readonly ScreenTilingFilter ScreenTiling;
         public readonly SepiaFilter Sepia;
+        public readonly StaticFilter Static;
+        public readonly TunnelFilter Tunnel;
+        public readonly VhsFilter Vhs;
+        public readonly WaterDropFilter WaterDrop;
         public readonly WavesFilter Waves;
         public readonly Weird3DFilter Weird3D;
 
@@ -54,30 +71,53 @@ namespace Circle.Game.Rulesets.Graphics
             {
                 Aberration ??= new AberrationFilter(),
                 Arcade ??= new ArcadeFilter(),
+                Blizzard ??= new BlizzardFilter(),
                 Bloom ??= new BloomFilter(),
                 Compression ??= new CompressionFilter(),
+                Drawing ??= new DrawingFilter(),
+                EightiesTv ??= new EightiesTvFilter(),
                 Empty ??= new EmptyFilter { Enabled = true },
+                FiftiesTv ??= new FiftiesTvFilter(),
+                Fisheye ??= new FisheyeFilter(),
                 Funk ??= new FunkFilter(),
                 Glitch ??= new GlitchFilter(),
                 Grain ??= new GrainFilter(),
                 Grayscale ??= new GrayscaleFilter(),
+                Handheld ??= new HandheldFilter(),
                 Invert ??= new InvertFilter(),
                 Led ??= new LedFilter(),
                 Neon ??= new NeonFilter(),
                 NightVision ??= new NightVisionFilter(),
+                Pixelate ??= new PixelateFilter(),
+                PixelSnow ??= new PixelSnowFilter(),
+                Rain ??= new RainFilter(),
+                ScreenScroll ??= new ScreenScrollFilter(),
+                ScreenTiling ??= new ScreenTilingFilter(),
                 Sepia ??= new SepiaFilter(),
+                Static ??= new StaticFilter(),
+                Tunnel ??= new TunnelFilter(),
+                Vhs ??= new VhsFilter(),
+                WaterDrop ??= new WaterDropFilter(),
                 Waves ??= new WavesFilter(),
                 Weird3D ??= new Weird3DFilter()
             });
         }
 
         [BackgroundDependencyLoader]
-        private void load(ShaderManager shaderManager)
+        private void load(ShaderManager shaderManager, LargeTextureStore textures)
         {
             TextureShader = shaderManager.Load(VertexShaderDescriptor.TEXTURE_2, FragmentShaderDescriptor.TEXTURE);
 
             foreach (var filter in Filters)
+            {
                 filter.Shader = shaderManager.Load(VertexShaderDescriptor.TEXTURE_2, filter.ShaderName);
+
+                if (filter.Textures == null)
+                    continue;
+
+                for (int i = 0; i < filter.TextureCount; i++)
+                    filter.Textures[i] = textures.Get($"Shader/{filter.TextureName}-{i}");
+            }
         }
 
         protected override void Update()
@@ -165,6 +205,21 @@ namespace Circle.Game.Rulesets.Graphics
 
                         if (filter is IHasResolution resolution)
                             resolution.Resolution = nextEffectBuffer.Size;
+
+                        if (filter.TextureCount > 0)
+                        {
+                            for (int i = 0; i < filter.TextureCount; i++)
+                            {
+                                int unit = i + 1;
+                                filter.Textures?[i].Bind((int)(TextureUnit.Texture0 + unit));
+                                filter.Shader.GetUniform<int>($"s_Texture{unit}").UpdateValue(ref unit);
+
+                                var textureRect = filter.Textures![i].GetTextureRect();
+                                var vector4 = new Vector4(textureRect.Left, textureRect.Right, textureRect.Top, textureRect.Bottom);
+
+                                filter.Shader.GetUniform<Vector4>($"s_TexRect{unit}").UpdateValue(ref vector4);
+                            }
+                        }
 
                         filter.UpdateUniforms(renderer);
 

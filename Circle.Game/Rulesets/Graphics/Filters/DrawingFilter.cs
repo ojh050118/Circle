@@ -12,7 +12,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         private IUniformBuffer<DrawingParameters>? parameters;
 
         public DrawingFilter()
-            : base("drawing", 1)
+            : base("drawing", 1, "Drawing")
         {
         }
 
