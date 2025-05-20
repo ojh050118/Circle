@@ -16,9 +16,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
+            base.UpdateUniforms(renderer);
+
             parameters ??= renderer.CreateUniformBuffer<TimeParameters>();
 
-            parameters.Data = new TimeParameters { Time = Time };
+            parameters.Data = parameters.Data with { Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

@@ -22,6 +22,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
+            base.UpdateUniforms(renderer);
+
             parameters ??= renderer.CreateUniformBuffer<BloomParameters>();
 
             parameters.Data = new BloomParameters { Intensity = Intensity, Threshold = Threshold, R = Color.R, G = Color.G, B = Color.B, Resolution = Resolution };

@@ -18,6 +18,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
+            base.UpdateUniforms(renderer);
+
             parameters ??= renderer.CreateUniformBuffer<TimeResolutionParameters>();
 
             parameters.Data = new TimeResolutionParameters { Time = Time, Resolution = Resolution };

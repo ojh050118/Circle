@@ -17,9 +17,12 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
+            base.UpdateUniforms(renderer);
+
             parameters ??= renderer.CreateUniformBuffer<IntensityTimeTextureRectParameters>();
 
-            parameters.Data = new IntensityTimeTextureRectParameters { Intensity = Intensity, Time = Time };
+            // TODO: TextureRect rr
+            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

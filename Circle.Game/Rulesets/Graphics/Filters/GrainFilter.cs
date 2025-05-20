@@ -18,8 +18,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
+            base.UpdateUniforms(renderer);
+
             parameters ??= renderer.CreateUniformBuffer<IntensityTimeParameters>();
-            parameters.Data = new IntensityTimeParameters { Intensity = Intensity, Time = Time };
+
+            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }
