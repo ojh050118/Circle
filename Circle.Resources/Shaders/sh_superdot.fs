@@ -31,7 +31,7 @@ void main(void)
     u_xlat0.xy = u_xlat0.xy * vec2(8.0);
     u_xlat6.xy = v_TexCoord * resolution - u_xlat0.xy;
     u_xlat0.xy = u_xlat0.xy / resolution;
-    u_xlat1 = texture(Sampler2D(m_Texture, m_Sampler), u_xlat0.xy);
+    u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xy);
     u_xlat0.xy = u_xlat6.xy * vec2(0.125);
     u_xlat6.xy = u_xlat6.xy * u_xlat0.xy;
     u_xlat2.xy = u_xlat0.xy * u_xlat6.xy;
