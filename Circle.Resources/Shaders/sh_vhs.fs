@@ -28,12 +28,13 @@ layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
-	vec2 frameResolution = vec2(v_TexRect[2] - v_TexRect[0], v_TexRect[3] - v_TexRect[1]);
-	vec2 framePixelPos = v_TexCoord/frameResolution;
-	vec2 texResolution = vec2(s_TexRect1[1] - s_TexRect1[0], s_TexRect1[3] - s_TexRect1[2]);
-	vec2 s_topLeft = vec2(s_TexRect1[1], s_TexRect1[3]);
-	vec2 texResolution2 = vec2(s_TexRect2[1] - s_TexRect2[0], s_TexRect2[3] - s_TexRect2[2]);
-	vec2 s_topLeft2 = vec2(s_TexRect2[1], s_TexRect2[3]);
+	vec2 frameResolution = v_TexRect.zw - v_TexRect.xy;
+	vec2 framePixelPos = (v_TexCoord - v_TexRect.xy) / frameResolution;
+	framePixelPos = vec2(framePixelPos.x, 1.0 - framePixelPos.y);
+	vec2 texResolution = s_TexRect1.zw - s_TexRect1.xy;
+	vec2 s_topLeft = s_TexRect1.xy;
+	vec2 texResolution2 = s_TexRect2.zw - s_TexRect2.xy;
+	vec2 s_topLeft2 = s_TexRect2.xy;
 
 	float adjustedTime = time / 15.0;
 
@@ -51,7 +52,7 @@ void main(void)
 	float u_xlat15;
 	float u_xlat16;
 
-	u_xlat0 = adjustedTime.xxxx * vec4(12.0, 64.0, 48.0, 20.0);
+	u_xlat0 = adjustedTime * vec4(12.0, 64.0, 48.0, 20.0);
 	u_xlat15 = dot(u_xlat0.ww, vec2(12.9898005, 78.2330017)) * 0.318471313;
 	u_xlatb1.x = u_xlat15 >= -u_xlat15;
 	u_xlat15 = fract(abs(u_xlat15));
@@ -73,12 +74,12 @@ void main(void)
 	u_xlat1.x = u_xlat1.z * 0.015625;
 	u_xlat0.x = (u_xlatb1.w ? u_xlat0.x : u_xlat10) + u_xlat15 * u_xlat1.x;
 	u_xlat10 = 1.0 - u_xlat0.x;
-	u_xlat1.y = adjustedTime.x * 0.4;
+	u_xlat1.y = adjustedTime * 0.4;
 	u_xlat15 = floor(v_TexCoord.y * 288.0);
 	u_xlat2.xw = vec2(u_xlat15) * vec2(0.00347222225, 0.00145833334);
 	u_xlat1.z = u_xlat2.x;
 	u_xlat6.x = sin(fract(sin(abs(fract(abs(dot(u_xlat1.yz, vec2(12.9898, 78.233)) * 0.318471313))) * 3.14) * 43758.5469));
-	u_xlat2.xyz = adjustedTime.xxx * vec3(128.0, 16.0, 0.013);
+	u_xlat2.xyz = adjustedTime * vec3(128.0, 16.0, 0.013);
 	u_xlat6.z = dot(u_xlat2.zw, vec2(12.9898005, 78.233));
 	u_xlat6.xz *= vec2(0.005, 0.318471313);
 	u_xlat16 = fract(abs(u_xlat6.z));
@@ -113,7 +114,7 @@ void main(void)
 	u_xlat0 = min(max(u_xlat1, vec4(0.08)), vec4(0.95));
 	u_xlatb1.xyz = lessThan(u_xlat0.wyzw, vec4(0.476190507, 0.476190507, 0.476190507, 0.0)).xyz;
 	u_xlat0.w *= 2.1;
-	u_xlat2.xy = adjustedTime.xx * vec2(30.0, 3.75);
+	u_xlat2.xy = adjustedTime * vec2(30.0, 3.75);
 	u_xlatb12.xy = greaterThanEqual(u_xlat2.xyxy, (-u_xlat2.xyxy)).xy;
 	u_xlat2.xy = fract(abs(u_xlat2.xy));
 

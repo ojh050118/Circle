@@ -8,7 +8,8 @@ namespace Circle.Game.Rulesets.Graphics.Shaders
     {
         public UniformFloat Intensity;
         public UniformFloat Time;
-        private readonly UniformPadding4 padding;
+        private UniformPadding8 padding;
         public UniformVector2 Resolution;
+        private UniformPadding8 padding2;
     }
 }

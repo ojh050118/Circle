@@ -44,7 +44,7 @@ void main(void)
 	u_xlat1.x -= sin(u_xlat4 * 0.0625 + u_xlat1.x) * 0.0625 + u_xlat4;
 	u_xlat8.x *= u_xlat1.x;
 	u_xlat1.y = u_xlat8.x * 0.03125 + u_xlat4 + v_TexCoord.y;
-	u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), getShaderTexturePosition(u_xlat1.xy, texResolution, s_topLeft));
+	u_xlat1 = texture(sampler2D(s_Texture1, s_Sampler1), getShaderTexturePosition(u_xlat1.xy, texResolution, s_topLeft));
 	u_xlat0.xz = u_xlat4 * vec2(0.5, 0.333333343);
 	u_xlat5.xy = sin(u_xlat0.xz) * u_xlat0.xz * vec2(0.25, 0.333333343) + vec2(1.0);
 	u_xlat1.x = max(u_xlat1.x * sin(u_xlat5.y * 0.1), 0.0);

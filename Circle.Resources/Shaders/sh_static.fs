@@ -24,10 +24,11 @@ layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
-	vec2 frameResolution = vec2(v_TexRect[2] - v_TexRect[0], v_TexRect[3] - v_TexRect[1]);
-	vec2 framePixelPos = v_TexCoord/frameResolution;
-	vec2 texResolution = vec2(s_TexRect1[1] - s_TexRect1[0], s_TexRect1[3] - s_TexRect1[2]);
-	vec2 s_topLeft = vec2(s_TexRect1[1], s_TexRect1[3]);
+	vec2 frameResolution = v_TexRect.zw - v_TexRect.xy;
+	vec2 framePixelPos = (v_TexCoord - v_TexRect.xy) / frameResolution;
+	framePixelPos = vec2(framePixelPos.x, 1.0 - framePixelPos.y);
+	vec2 texResolution = s_TexRect1.zw - s_TexRect1.xy;
+	vec2 s_topLeft = s_TexRect1.xy;
 
 	vec4 u_xlat0 = texture(sampler2D(s_Texture1, s_Sampler1), getShaderTexturePosition(framePixelPos + vec2(time) * vec2(10.0, 0.5), texResolution, s_topLeft));
 	vec4 u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);

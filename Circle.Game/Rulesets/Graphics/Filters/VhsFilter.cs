@@ -38,6 +38,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
         {
             public UniformFloat Intensity;
             public UniformFloat Time;
+            public UniformPadding8 Padding;
             public UniformVector4 TextureRect1;
             public UniformVector4 TextureRect2;
         }

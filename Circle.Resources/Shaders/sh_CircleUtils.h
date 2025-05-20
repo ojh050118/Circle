@@ -48,9 +48,51 @@ vec2 getShaderTexturePosition(vec2 value, vec2 texRes, vec2 topLeft)
     return topLeft - fract(value) * texRes;
 }
 
-vec2 getTileTexturePosition(vec2 value, vec2 texRes, vec2 topLeft)
+vec2 getTileTexturePosition(vec2 pixelPos, vec2 texRes, vec2 topLeft, vec2 offset)
 {
-    return topLeft - abs(texRes) * 0.1 - (fract(value) * 0.8 * texRes);
+    return topLeft + abs(texRes) * 0.1 - fract(pixelPos + offset) * 0.8 * texRes;
+}
+
+bool hasInnerGlow(int style)
+{
+    return style == 1 || style == 2;
+}
+
+bool hasOuterShadow(int style)
+{
+    return style < 3;
+}
+
+float getShadowColour(int style)
+{
+    // 0,3 -> 0.0
+    // rest -> 1.0
+    return float(style != 0 && style != 3);
+}
+
+float getBorderColour(int style)
+{
+    // 0 -> 0.5
+    // 3 -> 0.0
+    // rest -> 1.0
+    float styleIs0 = float(style == 0);
+    float styleIs3 = float(style == 3);
+    return styleIs0 * 0.5 + float(styleIs0 + styleIs3 == 0);
+}
+
+float getInnerColour(int style)
+{
+    // 1 -> 0.0
+    // 2 -> 0.5
+    // rest -> 1.0
+    float styleIs1 = float(style == 1);
+    float styleIs2 = float(style == 2);
+    return styleIs2 * 0.5 + float(styleIs1 + styleIs2 == 0);
+}
+
+vec4 samplePP(lowp texture2D m_Texture, lowp sampler m_Sampler, highp vec4 rect, highp vec2 pos)
+{
+    return texture(sampler2D(m_Texture, m_Sampler), vec2(pos.x, rect.w - (pos.y - rect.y)));
 }
 
 #endif
