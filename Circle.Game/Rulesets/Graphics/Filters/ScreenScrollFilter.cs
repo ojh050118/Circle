@@ -7,6 +7,22 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class ScreenScrollFilter : CameraFilter, IHasTime
     {
+        public override bool Enabled
+        {
+            get => enabled;
+            set
+            {
+                if (enabled == value)
+                    return;
+
+                if (value)
+                    StartTime = Time;
+
+                enabled = value;
+            }
+        }
+
+        private bool enabled;
         public float StartTime { get; set; }
 
         public float Time { get; set; }
