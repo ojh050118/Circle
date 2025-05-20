@@ -4,7 +4,7 @@
 #include "sh_Utils.h"
 
 layout(location = 2) in mediump vec2 v_TexCoord;
-layout(location = 3) in mediump vec2 v_TexRect;
+layout (location = 3) in mediump vec4 v_TexRect;
 
 layout(std140, set = 0, binding = 0) uniform m_FilterParameters
 {

@@ -7,7 +7,7 @@
 #define PI 3.1415926538
 
 layout(location = 2) in mediump vec2 v_TexCoord;
-layout(location = 3) in mediump vec2 v_TexRect;
+layout (location = 3) in mediump vec4 v_TexRect;
 
 layout(set = 0, binding = 0) uniform lowp texture2D m_Texture;
 layout(set = 0, binding = 1) uniform lowp sampler m_Sampler;
@@ -26,9 +26,9 @@ void main(void)
 
     float angle = angleBetween(vec2(0.5, 0.0), vec2(0.5, 1.0), vec2(0.5), pixelPos) + PI / 2.0; // in rad
 
-    vec2 sample = vec2(fract((distance(pixelPos, vec2(0.5)) * 1.1 + 0.45) * 0.9), 1.0 - angle / 2.0 / PI);
-    
-    o_Colour = texture(sampler2D(m_Texture, m_Sampler), sample * resolution);
+    vec2 sam = vec2(fract((distance(pixelPos, vec2(0.5)) * 1.1 + 0.45) * 0.9), 1.0 - angle / 2.0 / PI);
+
+    o_Colour = texture(sampler2D(m_Texture, m_Sampler), sam * resolution);
 }
 
 #endif
