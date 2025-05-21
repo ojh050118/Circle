@@ -18,7 +18,6 @@ namespace Circle.Game.Tests.Visual.PostProcessing
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
-                Size = new Vector2(0.8f),
                 Children = new Drawable[]
                 {
                     new Background(textureName: "bg1")
