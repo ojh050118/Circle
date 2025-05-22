@@ -7,6 +7,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class LedFilter : CameraFilter, IHasIntensity, IHasTime, IHasResolution
     {
+        public override bool Enabled => base.Enabled && Intensity > 10;
+
         public float Intensity { get; set; }
 
         public float IntensityForShader => MathF.Round(5 * Intensity / 100f);

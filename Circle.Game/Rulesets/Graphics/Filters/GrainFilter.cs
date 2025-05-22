@@ -7,7 +7,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
-        public float IntensityForShader => (float)(Intensity / 100f * 0.039999999105930328 - 0.019999999552965164);
+        public float IntensityForShader => Intensity / 100f;
 
         public float Time { get; set; }
 
@@ -24,7 +24,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityTimeParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time };
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

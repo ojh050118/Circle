@@ -5,6 +5,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class PosterizeFilter : CameraFilter, IHasIntensity
     {
+        public override bool Enabled => base.Enabled && Intensity > 0;
+
         public float Intensity { get; set; }
 
         public float IntensityForShader => Intensity / 100f * 20f;
