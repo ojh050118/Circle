@@ -152,7 +152,7 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddLabel("Oil Paint filter");
             AddStep("Enable Oil Paint filter", () => postProcessing.OilPaint.Enabled = true);
             AddSliderStep("Oil Paint filter Intensity", 0, 1, 1f, v => postProcessing.OilPaint.Intensity = v);
-            AddStep("Disable Oil Paint filter", () => postProcessing.Pixelate.Enabled = false);
+            AddStep("Disable Oil Paint filter", () => postProcessing.OilPaint.Enabled = false);
 
             AddLabel("Pixelate filter");
             AddStep("Enable Pixelate filter", () => postProcessing.Pixelate.Enabled = true);
@@ -183,10 +183,10 @@ namespace Circle.Game.Tests.Visual.PostProcessing
             AddStep("Disable Screen Scroll filter", () => postProcessing.ScreenScroll.Enabled = false);
 
             AddLabel("Screen Tiling filter");
-            AddStep("Enable Screen Tiling filter", () => postProcessing.ScreenScroll.Enabled = true);
+            AddStep("Enable Screen Tiling filter", () => postProcessing.ScreenTiling.Enabled = true);
             AddSliderStep("Screen Tiling filter Tiling.X", 0, 1, 1f, v => postProcessing.ScreenTiling.Tiling = postProcessing.ScreenTiling.Tiling with { X = v });
             AddSliderStep("Screen Tiling filter Tiling.Y", 0, 1, 1f, v => postProcessing.ScreenTiling.Tiling = postProcessing.ScreenTiling.Tiling with { Y = v });
-            AddStep("Disable Screen Tiling filter", () => postProcessing.ScreenScroll.Enabled = false);
+            AddStep("Disable Screen Tiling filter", () => postProcessing.ScreenTiling.Enabled = false);
 
             AddLabel("Sepia filter");
             AddStep("Enable Sepia filter", () => postProcessing.Sepia.Enabled = true);
