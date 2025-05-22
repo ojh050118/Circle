@@ -1,4 +1,4 @@
-namespace Circle.Game.Rulesets.Graphics
+namespace Circle.Game.Rulesets.Graphics.Shaders
 {
     public interface IHasIntensity
     {

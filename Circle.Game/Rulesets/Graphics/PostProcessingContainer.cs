@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Circle.Game.Rulesets.Graphics.Filters;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
