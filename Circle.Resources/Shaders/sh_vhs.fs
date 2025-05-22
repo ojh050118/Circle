@@ -11,18 +11,18 @@ layout(std140, set = 0, binding = 0) uniform m_FilterParameters
 {
     mediump float intensity;
     mediump float time;
-	mediump vec4 s_TexRect1;
-	mediump vec4 s_TexRect2;
+	mediump vec4 TexRect1;
+	mediump vec4 TexRect2;
 };
 
 layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
 layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
 
-layout(set = 2, binding = 0) uniform mediump texture2D s_Texture1;
-layout(set = 2, binding = 1) uniform mediump sampler s_Sampler1;
+layout (set = 2, binding = 0) uniform mediump texture2D m_Texture1;
+layout (set = 2, binding = 1) uniform mediump sampler m_Sampler1;
 
-layout(set = 3, binding = 0) uniform mediump texture2D s_Texture2;
-layout(set = 3, binding = 1) uniform mediump sampler s_Sampler2;
+layout (set = 3, binding = 0) uniform mediump texture2D m_Texture2;
+layout (set = 3, binding = 1) uniform mediump sampler m_Sampler2;
 
 layout(location = 0) out vec4 o_Colour;
 
@@ -31,10 +31,10 @@ void main(void)
 	vec2 frameResolution = v_TexRect.zw - v_TexRect.xy;
 	vec2 framePixelPos = (v_TexCoord - v_TexRect.xy) / frameResolution;
 	framePixelPos = vec2(framePixelPos.x, 1.0 - framePixelPos.y);
-	vec2 texResolution = s_TexRect1.zw - s_TexRect1.xy;
-	vec2 s_topLeft = s_TexRect1.xy;
-	vec2 texResolution2 = s_TexRect2.zw - s_TexRect2.xy;
-	vec2 s_topLeft2 = s_TexRect2.xy;
+	vec2 texResolution = TexRect1.zw - TexRect1.xy;
+	vec2 s_topLeft = TexRect1.xy;
+	vec2 texResolution2 = TexRect2.zw - TexRect2.xy;
+	vec2 s_topLeft2 = TexRect2.xy;
 
 	float adjustedTime = time / 15.0;
 
@@ -129,7 +129,7 @@ void main(void)
 	u_xlat2.x = 1.0 - u_xlat2.y * 0.125;
 	u_xlat3.x = v_TexCoord.x * 0.125 + u_xlat16;
 	u_xlat3.y = v_TexCoord.y * 0.125 + u_xlat2.x;
-	u_xlat4 = texture(sampler2D(s_Texture1, s_Sampler1), getShaderTexturePosition(u_xlat3.xy, texResolution, s_topLeft));
+	u_xlat4 = samplePP(m_Texture1, m_Sampler1, TexRect1, getShaderTexturePosition(u_xlat3.xy, texResolution, s_topLeft));
 	u_xlat7.xyz = vec3(1.0) - u_xlat0.xyz * vec3(1.05);
 	u_xlat0.xy = u_xlat0.yz * vec2(2.1);
 	u_xlat0.xyw *= u_xlat4.yzx;
@@ -139,7 +139,7 @@ void main(void)
 	u_xlat4.z = u_xlatb1.z ? u_xlat0.y : u_xlat7.z;
 	u_xlat3.z = 1.0 - v_TexCoord.y * 0.125 + u_xlat2.x;
 
-	o_Colour = vec4(vec3((1.0 - v_TexCoord.y) * intensity * 0.212) * texture(sampler2D(s_Texture2, s_Sampler2), getShaderTexturePosition(u_xlat3.xz, texResolution2, s_topLeft2)).xyz + u_xlat4.xyz, 1.0);
+	o_Colour = vec4(vec3((1.0 - v_TexCoord.y) * intensity * 0.212) * samplePP(m_Texture2, m_Sampler2, TexRect2, getShaderTexturePosition(u_xlat3.xz, texResolution2, s_topLeft2)).xyz + u_xlat4.xyz, 1.0);
 }
 
 #endif

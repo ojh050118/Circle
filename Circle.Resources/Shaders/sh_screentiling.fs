@@ -19,8 +19,8 @@ layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
-    vec2 resolution = vec2(v_TexRect[2] - v_TexRect[0], v_TexRect[1] - v_TexRect[3]);
-    vec2 pixelPos = v_TexCoord / resolution;
+    vec2 resolution = v_TexRect.zw - v_TexRect.xy;
+    vec2 pixelPos = (v_TexCoord - v_TexRect.xy) / resolution;
     
     o_Colour = texture(sampler2D(m_Texture, m_Sampler), fract(pixelPos * vec2(tilingX, tilingY)) * resolution);
 }

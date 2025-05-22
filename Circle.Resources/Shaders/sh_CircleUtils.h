@@ -45,7 +45,7 @@ bool almostEqual(vec2 p1, vec2 p2)
 
 vec2 getShaderTexturePosition(vec2 value, vec2 texRes, vec2 topLeft)
 {
-    return topLeft - fract(value) * texRes;
+    return topLeft + fract(value) * texRes;
 }
 
 vec2 getTileTexturePosition(vec2 pixelPos, vec2 texRes, vec2 topLeft, vec2 offset)
@@ -92,7 +92,7 @@ float getInnerColour(int style)
 
 vec4 samplePP(lowp texture2D m_Texture, lowp sampler m_Sampler, highp vec4 rect, highp vec2 pos)
 {
-    return texture(sampler2D(m_Texture, m_Sampler), pos);
+    return texture(sampler2D(m_Texture, m_Sampler), vec2(pos.x, rect.w - (pos.y - rect.y)));
 }
 
 #endif
