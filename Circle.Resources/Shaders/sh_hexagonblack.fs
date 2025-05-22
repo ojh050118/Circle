@@ -76,7 +76,7 @@ void main(void)
     u_xlat0.xy = vec2(u_xlat10) * vec2(0.0108253174, 0.00625000009) + u_xlat1.xy;
     u_xlat1.xy = (-v_TexCoord) * resolution + u_xlat0.xy;
     u_xlat0.xy = u_xlat0.xy / resolution;
-    u_xlat2 = texture(sampler2D(m_Texture, m_Sampler), v_TexRect, u_xlat0.xy);
+    u_xlat2 = texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xy);
     u_xlat0.x = dot(abs(u_xlat1.xy), vec2(0.5, 0.866025388));
     u_xlat0.x = max(abs(u_xlat1.x), u_xlat0.x);
     u_xlat5 = u_xlat10 * 0.00625000009 + -1.0;

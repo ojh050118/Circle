@@ -125,7 +125,7 @@ void main(void)
     u_xlat0 = u_xlat8 * u_xlat0;
     u_xlat0 = exp2(u_xlat0);
     u_xlat0 = u_xlatb12 ? u_xlat0 : u_xlat4.x;
-    u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), v_TexRect, u_xlat2.xy);
+    u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), u_xlat2.xy);
 
     o_Colour = vec4(u_xlat0) * u_xlat1;
 }
