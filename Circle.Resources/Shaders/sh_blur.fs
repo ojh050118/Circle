@@ -2,7 +2,6 @@
 #define BLUR_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -69,7 +68,7 @@ void main(void)
             u_xlat3.y = u_xlat0.y * u_xlat19;
             u_xlat9.xy = u_xlat3.xy + v_TexCoord;
             u_xlat19 = dot(u_xlat4.xyz, ImmCB_0_0_0[u_xlati18].xyz);
-            u_xlat5 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat9.xy);
+            u_xlat5 = texture(sampler2D(m_Texture, m_Sampler), u_xlat9.xy);
             u_xlat2.xzw = vec3(u_xlat19) * u_xlat5.xyz + u_xlat2.xzw;
             u_xlati18 = u_xlati15.y;
         }

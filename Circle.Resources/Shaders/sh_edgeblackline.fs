@@ -2,7 +2,6 @@
 #define EDGEBLACKLINE_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -66,7 +65,7 @@ void main(void)
             u_xlati6.xz = u_xlati6.xx + ivec2(1, int(0xFFFFFFFEu));
             u_xlat2.y = float(u_xlati6.z);
             u_xlat7.xz = u_xlat2.xy * vec2(0.01) + v_TexCoord;
-            u_xlat4 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat7.xz);
+            u_xlat4 = texture(sampler2D(m_Texture, m_Sampler), u_xlat7.xz);
             u_xlat3 = vec4(u_xlat12) * u_xlat4 + u_xlat3;
         }
         u_xlat0 = u_xlat3;

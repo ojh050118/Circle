@@ -2,7 +2,6 @@
 #define CONTRAST_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -19,7 +18,7 @@ layout (location = 0) out vec4 o_Colour;
 
 void main(void)
 {
-    vec3 col = samplePP(m_Texture, m_Sampler, v_TexRect, v_TexCoord).rgb - vec3(0.5);
+    vec3 col = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord).rgb - vec3(0.5);
     o_Colour = vec4(vec3(intensity) * col + vec3(0.5), 1.0);
 }
 

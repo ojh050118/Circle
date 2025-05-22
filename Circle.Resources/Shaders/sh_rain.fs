@@ -30,13 +30,16 @@ void main(void)
 	vec2 texResolution = TexRect1.zw - TexRect1.xy;
 	vec2 s_topLeft = TexRect1.xy;
 
+	vec2 m_TexCoord = v_TexCoord;
+	m_TexCoord.y = v_TexRect.w - (m_TexCoord.y - v_TexRect.y);
+
 	vec4 u_xlat0;
 	vec4 u_xlat1;
 	vec4 u_xlat2;
 	vec4 u_xlat3;
 	vec2 u_xlat4;
 
-	u_xlat0.xy = v_TexCoord * vec2(1.5);
+	u_xlat0.xy = m_TexCoord * vec2(1.5);
 	u_xlat0.x += 0.12 * u_xlat0.y;
 	u_xlat1.x = u_xlat0.x * 3.0 + 0.1;
 	u_xlat2.x = u_xlat1.x * 0.65 + 0.1;

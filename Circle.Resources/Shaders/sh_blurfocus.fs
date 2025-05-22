@@ -2,7 +2,6 @@
 #define BLURFOCUS_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -37,7 +36,7 @@ void main(void)
     {
         u_xlat10 = u_xlat9 / 2.0;
         u_xlat2.xy = u_xlat3.xy * vec2(u_xlat10) + v_TexCoord;
-        u_xlat2 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat2.xy);
+        u_xlat2 = texture(sampler2D(m_Texture, m_Sampler), u_xlat2.xy);
         u_xlat1.xyz = u_xlat1.xyz + u_xlat2.xyz;
         u_xlat9 += 0.2;
     }

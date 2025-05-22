@@ -2,7 +2,6 @@
 #define SUPERDOT_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in mediump vec2 v_TexCoord;
 layout (location = 3) in mediump vec4 v_TexRect;

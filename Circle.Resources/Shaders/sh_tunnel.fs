@@ -2,7 +2,6 @@
 #define TUNNEL_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 #undef PI
 #define PI 3.1415926538
@@ -28,7 +27,7 @@ void main(void)
     float angle = angleBetween(vec2(0.5, 0.0), vec2(0.5, 1.0), vec2(0.5), pixelPos) + PI / 2.0; // in rad
     vec2 sampleTarget = vec2(fract((distance(pixelPos, vec2(0.5)) * 1.1 + 0.45) * 0.9), 1.0 - angle / 2.0 / PI);
 
-    o_Colour = samplePP(m_Texture, m_Sampler, v_TexRect, sampleTarget * resolution);
+    o_Colour = texture(sampler2D(m_Texture, m_Sampler), sampleTarget * resolution);
 }
 
 #endif

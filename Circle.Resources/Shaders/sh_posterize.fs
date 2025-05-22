@@ -2,7 +2,6 @@
 #define POSTERIZE_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -22,7 +21,7 @@ void main(void)
     vec4 u_xlat0;
     float u_xlat1;
 
-    u_xlat0 = samplePP(m_Texture, m_Sampler, v_TexRect, v_TexCoord);
+    u_xlat0 = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
     u_xlat1 = 256.0 / intensity;
     u_xlat0 = u_xlat0 * vec4(u_xlat1);
     u_xlat0 = floor(u_xlat0);

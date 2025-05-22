@@ -2,7 +2,6 @@
 #define LIGHTWATER_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -126,7 +125,7 @@ void main(void)
     u_xlat0 = u_xlat8 * u_xlat0;
     u_xlat0 = exp2(u_xlat0);
     u_xlat0 = u_xlatb12 ? u_xlat0 : u_xlat4.x;
-    u_xlat1 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat2.xy);
+    u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), v_TexRect, u_xlat2.xy);
 
     o_Colour = vec4(u_xlat0) * u_xlat1;
 }

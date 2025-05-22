@@ -2,7 +2,6 @@
 #define SHARPEN_FS
 
 #include "sh_Utils.h"
-#include "sh_CircleUtils.h"
 
 layout (location = 2) in highp vec2 v_TexCoord;
 layout (location = 3) in highp vec4 v_TexRect;
@@ -35,11 +34,11 @@ void main(void)
     u_xlat1.x = 0.0;
     u_xlat2 = u_xlat1.yxxy + v_TexCoord.xyxy;
     u_xlat1 = v_TexCoord.xyxy - u_xlat1.yxxy;
-    u_xlat3 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat2.xy);
-    u_xlat2 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat2.zw);
-    u_xlat4 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat1.xy);
-    u_xlat1 = samplePP(m_Texture, m_Sampler, v_TexRect, u_xlat1.zw);
-    u_xlat5 = samplePP(m_Texture, m_Sampler, v_TexRect, v_TexCoord);
+    u_xlat3 = texture(sampler2D(m_Texture, m_Sampler), u_xlat2.xy);
+    u_xlat2 = texture(sampler2D(m_Texture, m_Sampler), u_xlat2.zw);
+    u_xlat4 = texture(sampler2D(m_Texture, m_Sampler), u_xlat1.xy);
+    u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), u_xlat1.zw);
+    u_xlat5 = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
     u_xlat6 = u_xlat4 + u_xlat5;
     u_xlat6 = u_xlat3 + u_xlat6;
     u_xlat6 = u_xlat1 + u_xlat6;

@@ -30,6 +30,9 @@ void main(void)
 	vec2 texResolution = TexRect1.zw - TexRect1.xy;
 	vec2 s_topLeft = TexRect1.xy;
 
+	vec2 m_TexCoord = v_TexCoord;
+	m_TexCoord.y = v_TexRect.w - (m_TexCoord.y - v_TexRect.y);
+
 	vec4 u_xlat0 = samplePP(m_Texture1, m_Sampler1, TexRect1, getShaderTexturePosition(framePixelPos + vec2(time) * vec2(10.0, 0.5), texResolution, s_topLeft));
 	vec4 u_xlat1 = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
 	o_Colour = vec4(intensity) * (u_xlat0 - u_xlat1) + u_xlat1;

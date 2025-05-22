@@ -36,6 +36,9 @@ void main(void)
 	vec2 texResolution2 = TexRect2.zw - TexRect2.xy;
 	vec2 s_topLeft2 = TexRect2.xy;
 
+	vec2 m_TexCoord = v_TexCoord;
+	m_TexCoord.y = v_TexRect.w - (m_TexCoord.y - v_TexRect.y);
+
 	float adjustedTime = time / 15.0;
 
 	vec4 u_xlat0;
@@ -58,24 +61,24 @@ void main(void)
 	u_xlat15 = fract(abs(u_xlat15));
 	u_xlat15 = fract(sin((u_xlatb1.x ? u_xlat15 : -u_xlat15) * 3.14) * 43758.5469);
 	u_xlat1.x = u_xlat15 * 15.0 + 0.06;
-	u_xlat15 = clamp((v_TexCoord.y - u_xlat15 * 15.0) * 33.3333359, 0.0, 1.0);
-	u_xlat1.x = clamp((v_TexCoord.y - u_xlat1.x) * 33.3333282, 0.0, 1.0);
+	u_xlat15 = clamp((m_TexCoord.y - u_xlat15 * 15.0) * 33.3333359, 0.0, 1.0);
+	u_xlat1.x = clamp((m_TexCoord.y - u_xlat1.x) * 33.3333282, 0.0, 1.0);
 	u_xlat6.x = 3.0 - u_xlat1.x * 2.0;
 	u_xlat1.x *= u_xlat1.x * u_xlat6.x;
 	u_xlat6.x = 3.0 - u_xlat15 * 2.0;
 	u_xlat15 *= u_xlat15;
 	u_xlat15 = u_xlat6.x * u_xlat15 - u_xlat1.x;
-	u_xlat1.xyz = sin(v_TexCoord.yyy * vec3(512.0, 512.0, 150.0) + u_xlat0.xyz);
-	u_xlat0.x = v_TexCoord.y - 0.05;
+	u_xlat1.xyz = sin(m_TexCoord.yyy * vec3(512.0, 512.0, 150.0) + u_xlat0.xyz);
+	u_xlat0.x = m_TexCoord.y - 0.05;
 	u_xlat10 = u_xlat0.x * u_xlat1.x + v_TexCoord.x;
-	u_xlatb1.xw = lessThan(v_TexCoord.yyyy, vec4(0.025, 0.0, 0.0, 0.015)).xw;
+	u_xlatb1.xw = lessThan(m_TexCoord.yyyy, vec4(0.025, 0.0, 0.0, 0.015)).xw;
 	u_xlat10 = u_xlatb1.x ? u_xlat10 : v_TexCoord.x;
 	u_xlat0.x = u_xlat0.x * u_xlat1.y + u_xlat10;
 	u_xlat1.x = u_xlat1.z * 0.015625;
 	u_xlat0.x = (u_xlatb1.w ? u_xlat0.x : u_xlat10) + u_xlat15 * u_xlat1.x;
 	u_xlat10 = 1.0 - u_xlat0.x;
 	u_xlat1.y = adjustedTime * 0.4;
-	u_xlat15 = floor(v_TexCoord.y * 288.0);
+	u_xlat15 = floor(m_TexCoord.y * 288.0);
 	u_xlat2.xw = vec2(u_xlat15) * vec2(0.00347222225, 0.00145833334);
 	u_xlat1.z = u_xlat2.x;
 	u_xlat6.x = sin(fract(sin(abs(fract(abs(dot(u_xlat1.yz, vec2(12.9898, 78.233)) * 0.318471313))) * 3.14) * 43758.5469));
@@ -128,7 +131,7 @@ void main(void)
 	u_xlat16 = u_xlat2.x * 0.125;
 	u_xlat2.x = 1.0 - u_xlat2.y * 0.125;
 	u_xlat3.x = v_TexCoord.x * 0.125 + u_xlat16;
-	u_xlat3.y = v_TexCoord.y * 0.125 + u_xlat2.x;
+	u_xlat3.y = m_TexCoord.y * 0.125 + u_xlat2.x;
 	u_xlat4 = samplePP(m_Texture1, m_Sampler1, TexRect1, getShaderTexturePosition(u_xlat3.xy, texResolution, s_topLeft));
 	u_xlat7.xyz = vec3(1.0) - u_xlat0.xyz * vec3(1.05);
 	u_xlat0.xy = u_xlat0.yz * vec2(2.1);
@@ -137,9 +140,9 @@ void main(void)
 	u_xlat4.x = u_xlatb1.x ? u_xlat0.w : u_xlat7.x;
 	u_xlat4.y = u_xlatb1.y ? u_xlat0.x : u_xlat7.y;
 	u_xlat4.z = u_xlatb1.z ? u_xlat0.y : u_xlat7.z;
-	u_xlat3.z = 1.0 - v_TexCoord.y * 0.125 + u_xlat2.x;
+	u_xlat3.z = 1.0 - m_TexCoord.y * 0.125 + u_xlat2.x;
 
-	o_Colour = vec4(vec3((1.0 - v_TexCoord.y) * intensity * 0.212) * samplePP(m_Texture2, m_Sampler2, TexRect2, getShaderTexturePosition(u_xlat3.xz, texResolution2, s_topLeft2)).xyz + u_xlat4.xyz, 1.0);
+	o_Colour = vec4(vec3((1.0 - m_TexCoord.y) * intensity * 0.212) * samplePP(m_Texture2, m_Sampler2, TexRect2, getShaderTexturePosition(u_xlat3.xz, texResolution2, s_topLeft2)).xyz + u_xlat4.xyz, 1.0);
 }
 
 #endif
