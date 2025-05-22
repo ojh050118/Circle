@@ -3,6 +3,7 @@ using System.Linq;
 using Circle.Game.Rulesets.Graphics.Filters;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.Rendering;
@@ -647,7 +648,8 @@ namespace Circle.Game.Rulesets.Graphics
                         filter.UpdateUniforms(renderer);
 
                         filter.Shader.Bind();
-                        renderer.DrawFrameBuffer(currentEffectBuffer, new RectangleF(0, 0, currentEffectBuffer.Texture.Width, currentEffectBuffer.Texture.Height), DrawColourInfo.Colour);
+                        renderer.DrawFrameBuffer(currentEffectBuffer, new RectangleF(0, 0, currentEffectBuffer.Texture.Width, currentEffectBuffer.Texture.Height),
+                            ColourInfo.SingleColour(Color4.White));
                         filter.Shader.Unbind();
                     }
                 }

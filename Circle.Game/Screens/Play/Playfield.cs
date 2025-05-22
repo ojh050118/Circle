@@ -2,6 +2,8 @@
 
 using System;
 using Circle.Game.Beatmaps;
+using Circle.Game.Graphics.UserInterface;
+using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Graphics;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -30,17 +32,21 @@ namespace Circle.Game.Screens.Play
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
-            Child = cameraContainer = new CameraContainer(currentBeatmap)
+            Children = new Drawable[]
             {
-                Content = new Container
+                new Background(TextureSource.External, beatmapInfo: currentBeatmap.BeatmapInfo),
+                cameraContainer = new CameraContainer(currentBeatmap)
                 {
-                    AutoSizeAxes = Axes.Both,
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Children = new Drawable[]
+                    Content = new Container
                     {
-                        tileContainer = new ObjectContainer(currentBeatmap),
-                        planetContainer = new PlanetContainer(currentBeatmap)
+                        AutoSizeAxes = Axes.Both,
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Children = new Drawable[]
+                        {
+                            tileContainer = new ObjectContainer(currentBeatmap),
+                            planetContainer = new PlanetContainer(currentBeatmap)
+                        }
                     }
                 }
             };
@@ -52,7 +58,17 @@ namespace Circle.Game.Screens.Play
             planetContainer.AddPlanetTransform();
             cameraContainer.AddCameraTransforms();
 
+            this.FilterToggleTo(FilterType.Arcade, true);
+            //this.FilterTo(FilterType.Led, 0.5f, 100f, Easing.OutQuint);
+
             base.LoadComplete();
+        }
+
+        private void addFilterTransform()
+        {
+            foreach (var tile in currentBeatmap.Tiles)
+            {
+            }
         }
     }
 }
