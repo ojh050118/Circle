@@ -8,6 +8,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     public class VhsFilter : CameraFilter, IHasIntensity, IHasTime
     {
         public float Intensity { get; set; }
+
+        public float IntensityForShader => Intensity / 100f;
+
         public float Time { get; set; }
 
         private IUniformBuffer<VhsParameters>? parameters;
@@ -23,7 +26,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<VhsParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time, TextureRect1 = TextureRects![0], TextureRect2 = TextureRects![1] };
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader, Time = Time, TextureRect1 = TextureRects![0], TextureRect2 = TextureRects![1] };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

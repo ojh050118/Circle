@@ -7,6 +7,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
+        public float IntensityForShader => Intensity / 100f + 1;
+
         private IUniformBuffer<IntensityParameters>? parameters;
 
         public ContrastFilter()
@@ -20,7 +22,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity };
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

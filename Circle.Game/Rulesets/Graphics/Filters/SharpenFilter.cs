@@ -6,7 +6,10 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class SharpenFilter : CameraFilter, IHasIntensity, IHasResolution
     {
-        public float Intensity { get; set; }
+        public float Intensity { get; set; } = 100f;
+
+        public float IntensityForShader => Intensity / 100f;
+
         public Vector2 Resolution { get; set; }
 
         private IUniformBuffer<IntensityResolutionParameters>? parameters;
@@ -22,7 +25,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityResolutionParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity, Resolution = Resolution };
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader, Resolution = Resolution };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

@@ -1,3 +1,4 @@
+using System;
 using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
 
@@ -6,6 +7,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     public class BlurFocusFilter : CameraFilter, IHasIntensity
     {
         public float Intensity { get; set; }
+
+        public float IntensityForShader => Math.Max(0.1f, Intensity / 100f);
 
         private IUniformBuffer<IntensityParameters>? parameters;
 
@@ -20,7 +23,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity };
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

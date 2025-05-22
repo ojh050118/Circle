@@ -1,3 +1,4 @@
+using System;
 using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
 using osuTK;
@@ -7,6 +8,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     public class LedFilter : CameraFilter, IHasIntensity, IHasTime, IHasResolution
     {
         public float Intensity { get; set; }
+
+        public float IntensityForShader => MathF.Round(5 * Intensity / 100f);
+
         public float Time { get; set; }
         public Vector2 Resolution { get; set; }
 
@@ -23,7 +27,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityTimeResolutionParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time, Resolution = Resolution };
+            parameters.Data = new IntensityTimeResolutionParameters { Intensity = IntensityForShader, Time = Time, Resolution = Resolution };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

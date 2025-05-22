@@ -7,6 +7,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
+        public float IntensityForShader => (float)(Intensity / 100f * 0.039999999105930328 - 0.019999999552965164);
+
         public float Time { get; set; }
 
         private IUniformBuffer<IntensityTimeParameters>? parameters;

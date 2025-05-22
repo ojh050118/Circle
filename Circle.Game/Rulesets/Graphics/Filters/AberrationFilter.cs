@@ -7,6 +7,8 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
+        public float IntensityForShader => (float)(Intensity / 100f * 0.039999999105930328 - 0.019999999552965164);
+
         private IUniformBuffer<IntensityParameters>? parameters;
 
         public AberrationFilter()
@@ -20,7 +22,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityParameters>();
 
-            parameters.Data = new IntensityParameters { Intensity = Intensity };
+            parameters.Data = new IntensityParameters { Intensity = IntensityForShader };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

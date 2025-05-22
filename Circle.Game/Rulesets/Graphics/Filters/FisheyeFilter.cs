@@ -5,7 +5,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class FisheyeFilter : CameraFilter, IHasIntensity
     {
-        public float Intensity { get; set; }
+        public float Intensity { get; set; } = 50f;
+
+        public float IntensityForShader => Intensity / 100f;
 
         private IUniformBuffer<IntensityParameters>? parameters;
 
@@ -20,7 +22,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<IntensityParameters>();
 
-            parameters.Data = parameters.Data with { Intensity = Intensity };
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

@@ -6,6 +6,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     public class LightWaterFilter : CameraFilter, IHasIntensity, IHasTime
     {
         public float Intensity { get; set; }
+
+        public float IntensityForShader => Intensity / 100f * 2.4f;
+
         public float Time { get; set; }
 
         private IUniformBuffer<IntensityTimeParameters>? parameters;
