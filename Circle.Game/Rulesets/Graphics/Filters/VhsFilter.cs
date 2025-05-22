@@ -22,13 +22,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
             parameters ??= renderer.CreateUniformBuffer<VhsParameters>();
 
-            if (parameters == null)
-            {
-                parameters = renderer.CreateUniformBuffer<VhsParameters>();
-                parameters.Data = parameters.Data with { TextureRect1 = TextureRects![0], TextureRect2 = TextureRects![1] };
-            }
-
-            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time };
+            parameters.Data = parameters.Data with { Intensity = Intensity, Time = Time, TextureRect1 = TextureRects![0], TextureRect2 = TextureRects![1] };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }
