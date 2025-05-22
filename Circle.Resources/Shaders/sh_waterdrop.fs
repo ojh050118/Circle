@@ -59,7 +59,7 @@ void main(void)
 	u_xlat1 = samplePP(m_Texture1, m_Sampler1, TexRect1, getShaderTexturePosition(u_xlat0.xy, texResolution, s_topLeft));
 	u_xlat0.xy = u_xlat1.xy / vec2(intensity);
 	u_xlat0.xy = (-u_xlat0.xy) + u_xlat6.xy;
-	u_xlat0.xy = (-u_xlat0.xy) * vec2(0.333333333) + m_TexCoord.xy;
+	u_xlat0.xy = (-u_xlat0.xy) * vec2(0.333333333) + v_TexCoord.xy;
 	u_xlat0 = texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xy);
 
 	o_Colour = vec4(u_xlat0.xyz, 1.0);
