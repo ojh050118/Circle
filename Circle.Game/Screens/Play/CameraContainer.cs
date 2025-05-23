@@ -181,7 +181,7 @@ namespace Circle.Game.Screens.Play
                                             Offset = cameraOffset,
                                             Rotation = cameraRotation,
                                             Zoom = cameraEvent.Zoom,
-                                            Easing = action.Ease
+                                            Easing = cameraEvent.Ease
                                         });
                                     }
                                 }
