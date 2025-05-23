@@ -1,12 +1,21 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef PIXELSNOW_FS
+#define PIXELSNOW_FS
 
-varying mediump vec2 v_TexCoord;
-varying mediump vec4 v_TexRect;
+#include "sh_Utils.h"
 
-uniform lowp sampler2D m_Sampler;
+layout(location = 2) in mediump vec2 v_TexCoord;
+layout (location = 3) in mediump vec4 v_TexRect;
 
-uniform mediump float intensity;
-uniform mediump float time;
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float intensity;
+    mediump float time;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
@@ -41,7 +50,7 @@ void main(void)
     u_xlat0.xy = clamp(u_xlat0.xy, 0.0, 1.0);
     u_xlat6 = u_xlat0.y * u_xlat0.y * (3.0 - u_xlat0.y * 2.0);
     u_xlat0.x *= u_xlat0.x * (3.0 - u_xlat0.x * 2.0);
-    u_xlat2 = toSRGB(texture2D(m_Sampler, v_TexCoord));
+    u_xlat2 = texture(sampler2D(m_Texture, m_Sampler), v_TexCoord);
     u_xlat3.xyz = vec3(1.0) - u_xlat2.xyz;
     u_xlat0.xzw = u_xlat0.xxx * u_xlat3.xyz + u_xlat2.xyz;
     u_xlat3.xyz = vec3(0.1, 1.0, 1.0) - u_xlat0.xzw;
@@ -116,5 +125,7 @@ void main(void)
     u_xlat0.xyz += vec3(u_xlat18) * u_xlat7.xyz;
     u_xlat0.xyz -= u_xlat2.xyz;
 
-    gl_FragColor = vec4(u_xlat0.xyz + u_xlat2.xyz, 1.0);
+    o_Colour = vec4(u_xlat0.xyz + u_xlat2.xyz, 1.0);
 }
+
+#endif

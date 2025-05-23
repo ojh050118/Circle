@@ -1,15 +1,25 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef EIGHTIESTV_FS
+#define EIGHTIESTV_FS
 
-varying vec2 v_TexCoord;
-varying vec4 v_TexRect;
+#include "sh_Utils.h"
 
-uniform sampler2D m_Sampler;
-uniform mediump vec2 resolution;
-uniform mediump float time;
+layout(location = 2) in mediump vec2 v_TexCoord;
+layout (location = 3) in mediump vec4 v_TexRect;
+
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float time;
+    mediump vec2 resolution;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
-    vec4 u_xlat0;
+	vec4 u_xlat0 = vec4(0.0);
     vec4 u_xlat1;
     bvec2 u_xlatb1;
     vec3 u_xlat3;
@@ -27,7 +37,7 @@ void main(void)
 	u_xlat0.y = -0.015;
 	u_xlat1.xyw = v_TexCoord.xyy + vec3(0.001);
 	u_xlat0.xy += u_xlat1.xy;
-	u_xlat0.xyz = toSRGB(texture2D(m_Sampler, u_xlat0.xy)).xyz * vec3(0.08, 0.05, 0.08) + toSRGB(texture2D(m_Sampler, u_xlat1.zw)).xyz + vec3(0.05);
+	u_xlat0.xyz = texture(sampler2D(m_Texture, m_Sampler), u_xlat0.xy).xyz * vec3(0.08, 0.05, 0.08) + texture(sampler2D(m_Texture, m_Sampler), u_xlat1.zw).xyz + vec3(0.05);
 	u_xlat0.xyz = clamp(u_xlat0.xyz * vec3(0.6) + u_xlat0.xyz * u_xlat0.xyz * vec3(0.4), 0.0, 1.0);
 	u_xlat1.xy = vec2(1.0) - v_TexCoord;
 	u_xlat0.xyz *= vec3(exp2(log2(u_xlat9 * u_xlat1.x * u_xlat1.y) * 0.3));
@@ -39,5 +49,7 @@ void main(void)
 	u_xlatb1.xy = lessThan(v_TexCoord.xyxx, vec4(0.0)).xy;
 	u_xlatb7.xy = lessThan(vec4(1.0), v_TexCoord.xyxy).xy;
 
-	gl_FragColor = vec4(u_xlat0.xyz * (1.0 - float(u_xlatb7.y || u_xlatb1.y || u_xlatb7.x || u_xlatb1.x)), 1.0);
+	o_Colour = vec4(u_xlat0.xyz * (1.0 - float(u_xlatb7.y || u_xlatb1.y || u_xlatb7.x || u_xlatb1.x)), 1.0);
 }
+
+#endif

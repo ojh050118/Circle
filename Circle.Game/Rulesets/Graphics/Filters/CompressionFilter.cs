@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,9 +7,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
+        public float IntensityForShader => Intensity / 100f;
+
         public float Time { get; set; }
 
-        private IUniformBuffer<CompressionParameters>? parameters;
+        private IUniformBuffer<IntensityTimeParameters>? parameters;
 
         public CompressionFilter()
             : base("compression")
@@ -19,18 +20,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<CompressionParameters>();
-            parameters.Data = new CompressionParameters { Intensity = Intensity, Time = Time };
+            base.UpdateUniforms(renderer);
+
+            parameters ??= renderer.CreateUniformBuffer<IntensityTimeParameters>();
+
+            parameters.Data = new IntensityTimeParameters { Intensity = IntensityForShader, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct CompressionParameters
-        {
-            public UniformFloat Intensity;
-            public UniformFloat Time;
-            public UniformPadding8 Padding;
         }
     }
 }

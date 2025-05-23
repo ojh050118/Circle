@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,7 +7,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
-        private IUniformBuffer<AberrationParameters>? parameters;
+        public float IntensityForShader => (float)(Intensity / 100f * 0.039999999105930328 - 0.019999999552965164);
+
+        private IUniformBuffer<IntensityParameters>? parameters;
 
         public AberrationFilter()
             : base("aberration")
@@ -17,18 +18,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<AberrationParameters>();
+            base.UpdateUniforms(renderer);
 
-            parameters.Data = new AberrationParameters { Intensity = Intensity };
+            parameters ??= renderer.CreateUniformBuffer<IntensityParameters>();
+
+            parameters.Data = new IntensityParameters { Intensity = IntensityForShader };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct AberrationParameters
-        {
-            public UniformFloat Intensity;
-            public UniformPadding12 Padding;
         }
     }
 }

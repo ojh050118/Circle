@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
 using osu.Framework.Graphics.Shaders.Types;
 using osuTK;
@@ -8,8 +9,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class BloomFilter : CameraFilter, IHasIntensity, IHasResolution
     {
+        public override bool Enabled => base.Enabled && Intensity > 0;
+
         public float Intensity { get; set; }
-        public float Threshold { get; set; }
+
+        public float IntensityForShader => Intensity / 100f;
+
+        public float Threshold { get; set; } = 0.5f;
         public Color4 Color { get; set; }
         public Vector2 Resolution { get; set; }
 
@@ -22,9 +28,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
+            base.UpdateUniforms(renderer);
+
             parameters ??= renderer.CreateUniformBuffer<BloomParameters>();
 
-            parameters.Data = new BloomParameters { Intensity = Intensity, Threshold = Threshold, R = Color.R, G = Color.G, B = Color.B, Resolution = Resolution };
+            parameters.Data = new BloomParameters { Intensity = IntensityForShader, Threshold = Threshold, R = Color.R, G = Color.G, B = Color.B, Resolution = Resolution };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
         }

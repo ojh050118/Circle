@@ -10,7 +10,7 @@ namespace Circle.Game.Converting.Adofai.Elements
     {
         public int Floor { get; set; }
         public EventType EventType { get; set; }
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
         public string TrackColor { get; set; }
         public string SecondaryTrackColor { get; set; }
         public TrackColorType TrackColorType { get; set; }
@@ -21,14 +21,14 @@ namespace Circle.Game.Converting.Adofai.Elements
         public SpeedType? SpeedType { get; set; }
         public double BeatsPerMinute { get; set; }
         public double BPMMultiplier { get; set; }
-        public int HitsoundVolume { get; set; }
+        public float HitsoundVolume { get; set; }
         public string BgImage { get; set; }
         public double Duration { get; set; }
         public FlashPlane Plane { get; set; }
         public string StartColor { get; set; }
         public string EndColor { get; set; }
-        public int StartOpacity { get; set; }
-        public int EndOpacity { get; set; }
+        public float StartOpacity { get; set; }
+        public float EndOpacity { get; set; }
         public int? Zoom { get; set; }
         public Ease Ease { get; set; }
         public DisplayMode BgDisplayMode { get; set; }
@@ -76,9 +76,15 @@ namespace Circle.Game.Converting.Adofai.Elements
         public double BeatsBehind { get; set; }
         public int EaseParts { get; set; }
         public int Strength { get; set; }
+        public string Filter { get; set; }
         public int Intensity { get; set; }
+        public bool DisableOthers { get; set; }
         public bool FadeOut { get; set; }
         public object Components { get; set; }
+        public string TargetType { get; set; }
+        public string TargetTag { get; set; }
+        public string FilterProperties { get; set; }
+        public string PlanetTailColor { get; set; }
 
         public Relativity? GetCameraMoveRelativeTo()
         {

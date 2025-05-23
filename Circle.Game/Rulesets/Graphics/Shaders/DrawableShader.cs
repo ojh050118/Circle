@@ -5,7 +5,7 @@ using osu.Framework.Graphics.Rendering;
 using osu.Framework.Graphics.Shaders;
 using osu.Framework.Graphics.Textures;
 
-namespace Circle.Game.Rulesets.Graphics
+namespace Circle.Game.Rulesets.Graphics.Shaders
 {
     public partial class DrawableShader : Drawable
     {

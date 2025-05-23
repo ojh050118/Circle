@@ -81,6 +81,9 @@ namespace Circle.Game.Converting.Json
                 {
                     case null:
                     case var t when t.IsPrimitive:
+                        if (type == typeof(bool))
+                            rawValue = element?.ToString()?.ToLowerInvariant() ?? rawValue;
+
                         break;
 
                     case var t when t == typeof(string):
@@ -139,6 +142,9 @@ namespace Circle.Game.Converting.Json
                     switch (propertyType)
                     {
                         case Type t when t.IsPrimitive:
+                            if (t == typeof(bool))
+                                rawValue = value.ToString()!.ToLowerInvariant();
+
                             break;
 
                         case Type t when t == typeof(string):

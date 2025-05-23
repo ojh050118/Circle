@@ -1,17 +1,22 @@
-using System.Runtime.InteropServices;
+using System;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 using osuTK;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
     public class LedFilter : CameraFilter, IHasIntensity, IHasTime, IHasResolution
     {
+        public override bool Enabled => base.Enabled && Intensity > 10;
+
         public float Intensity { get; set; }
+
+        public float IntensityForShader => MathF.Round(5 * Intensity / 100f);
+
         public float Time { get; set; }
         public Vector2 Resolution { get; set; }
 
-        private IUniformBuffer<LedParameters>? parameters;
+        private IUniformBuffer<IntensityTimeResolutionParameters>? parameters;
 
         public LedFilter()
             : base("led")
@@ -20,19 +25,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<LedParameters>();
+            base.UpdateUniforms(renderer);
 
-            parameters.Data = new LedParameters { Intensity = Intensity, Time = Time, Resolution = Resolution };
+            parameters ??= renderer.CreateUniformBuffer<IntensityTimeResolutionParameters>();
+
+            parameters.Data = new IntensityTimeResolutionParameters { Intensity = IntensityForShader, Time = Time, Resolution = Resolution };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct LedParameters
-        {
-            public UniformFloat Intensity;
-            public UniformFloat Time;
-            public UniformVector2 Resolution;
         }
     }
 }

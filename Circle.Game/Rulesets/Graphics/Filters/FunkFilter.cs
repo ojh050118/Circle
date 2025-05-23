@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,7 +7,7 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Time { get; set; }
 
-        private IUniformBuffer<FunkParameters>? parameters;
+        private IUniformBuffer<TimeParameters>? parameters;
 
         public FunkFilter()
             : base("funk")
@@ -17,18 +16,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<FunkParameters>();
+            base.UpdateUniforms(renderer);
 
-            parameters.Data = new FunkParameters { Time = Time };
+            parameters ??= renderer.CreateUniformBuffer<TimeParameters>();
+
+            parameters.Data = parameters.Data with { Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct FunkParameters
-        {
-            public UniformFloat Time;
-            public UniformPadding12 Padding;
         }
     }
 }

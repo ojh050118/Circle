@@ -1,13 +1,25 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef PIXELATE_FS
+#define PIXELATE_FS
 
-varying vec2 v_TexCoord;
-varying vec4 v_TexRect;
+#include "sh_Utils.h"
 
-uniform sampler2D m_Sampler;
-uniform float intensity;
+layout(location = 2) in mediump vec2 v_TexCoord;
+layout (location = 3) in mediump vec4 v_TexRect;
+
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float intensity;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
     vec3 u_xlat0 = vec3(128.0 / intensity, 512.0, 512.0);
-    gl_FragColor = toSRGB(texture2D(m_Sampler, floor(u_xlat0.yz * floor(u_xlat0.xx * v_TexCoord) / u_xlat0.xx) / u_xlat0.yz));
+    o_Colour = texture(sampler2D(m_Texture, m_Sampler), floor(u_xlat0.yz * floor(u_xlat0.xx * v_TexCoord) / u_xlat0.xx) / u_xlat0.yz);
 }
+
+#endif

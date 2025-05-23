@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,7 +7,9 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
-        private IUniformBuffer<GrayscaleParameters>? parameters;
+        public float IntensityForShader => Intensity / 100f;
+
+        private IUniformBuffer<IntensityParameters>? parameters;
 
         public GrayscaleFilter()
             : base("grayscale")
@@ -17,17 +18,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<GrayscaleParameters>();
-            parameters.Data = parameters.Data with { Intensity = Intensity };
+            base.UpdateUniforms(renderer);
+
+            parameters ??= renderer.CreateUniformBuffer<IntensityParameters>();
+
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct GrayscaleParameters
-        {
-            public UniformFloat Intensity;
-            public UniformPadding12 Padding;
         }
     }
 }

@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
+using Circle.Game.Rulesets.Graphics.Shaders;
 using osu.Framework.Graphics.Rendering;
-using osu.Framework.Graphics.Shaders.Types;
 
 namespace Circle.Game.Rulesets.Graphics.Filters
 {
@@ -8,9 +7,11 @@ namespace Circle.Game.Rulesets.Graphics.Filters
     {
         public float Intensity { get; set; }
 
+        public float IntensityForShader => Intensity / 100f * 10f;
+
         public float Time { get; set; }
 
-        private IUniformBuffer<WavesParameters>? parameters;
+        private IUniformBuffer<IntensityTimeParameters>? parameters;
 
         public WavesFilter()
             : base("waves")
@@ -19,18 +20,13 @@ namespace Circle.Game.Rulesets.Graphics.Filters
 
         public override void UpdateUniforms(IRenderer renderer)
         {
-            parameters ??= renderer.CreateUniformBuffer<WavesParameters>();
-            parameters.Data = new WavesParameters { Intensity = Intensity, Time = Time };
+            base.UpdateUniforms(renderer);
+
+            parameters ??= renderer.CreateUniformBuffer<IntensityTimeParameters>();
+
+            parameters.Data = parameters.Data with { Intensity = IntensityForShader, Time = Time };
 
             Shader.BindUniformBlock(@"m_FilterParameters", parameters);
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        private record struct WavesParameters
-        {
-            public UniformFloat Intensity;
-            public UniformFloat Time;
-            public UniformPadding8 Padding;
         }
     }
 }

@@ -1,24 +1,36 @@
-﻿#include "sh_Utils.h"
+﻿#ifndef SCREENSCROLL_FS
+#define SCREENSCROLL_FS
 
-varying mediump vec2 v_TexCoord;
-varying vec4 v_TexRect;
+#include "sh_Utils.h"
 
-uniform lowp sampler2D m_Sampler;
-uniform mediump float startX;
-uniform mediump float startY;
-uniform mediump float speedX;
-uniform mediump float speedY;
-uniform mediump float startTime;
-uniform mediump float time;
+layout(location = 2) in mediump vec2 v_TexCoord;
+layout (location = 3) in mediump vec4 v_TexRect;
+
+layout(std140, set = 0, binding = 0) uniform m_FilterParameters
+{
+    mediump float startTime;
+    mediump float time;
+    mediump float startX;
+    mediump float startY;
+    mediump float speedX;
+    mediump float speedY;
+};
+
+layout(set = 1, binding = 0) uniform lowp texture2D m_Texture;
+layout(set = 1, binding = 1) uniform lowp sampler m_Sampler;
+
+layout(location = 0) out vec4 o_Colour;
 
 void main(void)
 {
-	vec2 resolution = vec2(v_TexRect[2] - v_TexRect[0], v_TexRect[1] - v_TexRect[3]);
-	vec2 pixelPos = v_TexCoord/resolution;
+    vec2 resolution = v_TexRect.zw - v_TexRect.xy;
+    vec2 pixelPos = (v_TexCoord - v_TexRect.xy) / resolution;
 
 	float timeOffset = max(0, time - startTime) / 1000.0;
 	float xOffset = pixelPos.x - startX + timeOffset * speedX / 100.0;
 	float yOffset = pixelPos.y - startY + timeOffset * speedY / 100.0;
 
-	gl_FragColor = toSRGB(texture2D(m_Sampler, fract(vec2(xOffset, yOffset)) * resolution));
+	o_Colour = texture(sampler2D(m_Texture, m_Sampler), fract(vec2(xOffset, yOffset)) * resolution);
 }
+
+#endif

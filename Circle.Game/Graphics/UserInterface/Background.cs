@@ -24,11 +24,12 @@ namespace Circle.Game.Graphics.UserInterface
         private float dim;
         private Box dimBox;
 
-        public Background(TextureSource source = TextureSource.Internal, string textureName = @"")
+        public Background(TextureSource source = TextureSource.Internal, string textureName = @"", BeatmapInfo beatmapInfo = null)
         {
             this.source = source;
             TextureName = textureName;
             TextureSource = source;
+            BeatmapInfo = beatmapInfo;
             RelativeSizeAxes = Axes.Both;
         }
 
