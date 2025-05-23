@@ -70,6 +70,11 @@ namespace Circle.Game.Converting.Circle
                     AngleOffset = action.AngleOffset,
                     Position = action.Position,
                     Zoom = action.Zoom,
+                    Plane = action.Plane,
+                    StartColor = action.StartColor,
+                    StartOpacity = action.StartOpacity,
+                    EndColor = action.EndColor,
+                    EndOpacity = action.EndOpacity,
                     Repetitions = action.Repetitions,
                     Interval = action.Interval,
                     Tag = action.Tag,
@@ -126,6 +131,9 @@ namespace Circle.Game.Converting.Circle
 
                 case Adofai.Elements.EventType.SetFilter:
                     return EventType.SetFilter;
+
+                case Adofai.Elements.EventType.Flash:
+                    return EventType.Flash;
 
                 default:
                     return EventType.Other;

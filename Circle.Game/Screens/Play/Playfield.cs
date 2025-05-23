@@ -9,8 +9,10 @@ using Circle.Game.Rulesets;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Graphics;
 using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Video;
 
 namespace Circle.Game.Screens.Play
@@ -22,6 +24,9 @@ namespace Circle.Game.Screens.Play
         private CameraContainer cameraContainer;
         private PlanetContainer planetContainer;
         private ObjectContainer tileContainer;
+
+        private Box flashBackground;
+        private Box flashForeground;
 
         public Playfield(Beatmap beatmap)
         {
@@ -63,6 +68,13 @@ namespace Circle.Game.Screens.Play
                             planetContainer = new PlanetContainer(currentBeatmap)
                         }
                     }
+                },
+                flashForeground = new Box
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    RelativeSizeAxes = Axes.Both,
+                    Alpha = 0
                 }
             };
 
@@ -80,6 +92,14 @@ namespace Circle.Game.Screens.Play
                     PlaybackPosition = currentBeatmap.Metadata.VidOffset - currentBeatmap.Metadata.Offset - 60000 / currentBeatmap.Metadata.Bpm * currentBeatmap.Metadata.CountdownTicks,
                 });
             }
+
+            backgrounds.Add(flashBackground = new Box
+            {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+                RelativeSizeAxes = Axes.Both,
+                Alpha = 0
+            });
         }
 
         protected override void LoadComplete()
@@ -88,6 +108,7 @@ namespace Circle.Game.Screens.Play
             planetContainer.AddPlanetTransform();
             cameraContainer.AddCameraTransforms();
             addFilterTransforms();
+            addFlashTransforms();
 
             base.LoadComplete();
         }
@@ -178,6 +199,101 @@ namespace Circle.Game.Screens.Play
 
                     if (filter.Intensity.HasValue)
                         this.FilterTo(filter.FilterType, filter.Intensity.Value, filter.Duration, filter.Easing);
+                }
+            }
+
+            #endregion
+        }
+
+        private void addFlashTransforms()
+        {
+            var flashTransforms = new List<FlashTransform>();
+            var tiles = currentBeatmap.Tiles.ToArray();
+
+            #region Process flash transforms
+
+            for (int floor = 0; floor < tiles.Length; floor++)
+            {
+                var tile = tiles[floor];
+                float resolvedRotation = CalculationExtensions.InvertAngle(tile.Angle);
+
+                foreach (var action in tile.Actions)
+                {
+                    float angleOffset = CalculationExtensions.GetRelativeDuration(resolvedRotation, resolvedRotation + action.AngleOffset, tile.Bpm);
+
+                    switch (action.EventType)
+                    {
+                        case EventType.Flash:
+                            flashTransforms.Add(new FlashTransform
+                            {
+                                StartTime = tile.HitTime + angleOffset,
+                                Plane = action.Plane!.Value,
+                                StartColor = Color4Extensions.FromHex(action.StartColor!),
+                                StartOpacity = action.StartOpacity!.Value,
+                                EndColor = Color4Extensions.FromHex(action.EndColor!),
+                                EndOpacity = action.EndOpacity!.Value,
+                                Duration = tiles.GetRelativeDuration(resolvedRotation, floor, tile.Bpm) * action.Duration
+                            });
+
+                            break;
+
+                        case EventType.RepeatEvents:
+                            var flashEvents = Array.FindAll(tiles[action.Floor].Actions, a => a.EventType == EventType.Flash);
+                            double intervalBeat = 60000 / tile.Bpm * action.Interval;
+
+                            for (int i = 0; i < action.Repetitions; i++)
+                            {
+                                double startTime = tile.HitTime + intervalBeat * i;
+
+                                foreach (var flash in flashEvents)
+                                {
+                                    if (action.Tag != flash.EventTag)
+                                        continue;
+
+                                    // 이벤트 반복 목표태그와 일치하는 모든 필터 설정 이벤트를 추가합니다.
+                                    flashTransforms.Add(new FlashTransform
+                                    {
+                                        StartTime = startTime + angleOffset,
+                                        Plane = flash.Plane!.Value,
+                                        StartColor = Color4Extensions.FromHex(flash.StartColor!),
+                                        StartOpacity = flash.StartOpacity!.Value,
+                                        EndColor = Color4Extensions.FromHex(flash.EndColor!),
+                                        EndOpacity = flash.EndOpacity!.Value,
+                                        Duration = tiles.GetRelativeDuration(resolvedRotation, floor, tile.Bpm) * flash.Duration
+                                    });
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Register flash transforms
+
+            foreach (var filter in flashTransforms.OrderBy(a => a.StartTime))
+            {
+                switch (filter.Plane)
+                {
+                    case FlashPlane.Background:
+                        using (flashBackground.BeginAbsoluteSequence(filter.StartTime, false))
+                        {
+                            flashBackground.FadeColour(filter.StartColor).FadeColour(filter.EndColor, filter.Duration);
+                            flashBackground.FadeTo(filter.StartOpacity / 100).FadeTo(filter.EndOpacity / 100, filter.Duration);
+                        }
+
+                        break;
+
+                    case FlashPlane.Foreground:
+                        using (flashForeground.BeginAbsoluteSequence(filter.StartTime, false))
+                        {
+                            flashForeground.FadeColour(filter.StartColor).FadeColour(filter.EndColor, filter.Duration);
+                            flashForeground.FadeTo(filter.StartOpacity / 100).FadeTo(filter.EndOpacity / 100, filter.Duration);
+                        }
+
+                        break;
                 }
             }
 
