@@ -124,6 +124,9 @@ namespace Circle.Game.Converting.Circle
                 case Adofai.Elements.EventType.Pause:
                     return EventType.Pause;
 
+                case Adofai.Elements.EventType.SetFilter:
+                    return EventType.SetFilter;
+
                 default:
                     return EventType.Other;
             }
