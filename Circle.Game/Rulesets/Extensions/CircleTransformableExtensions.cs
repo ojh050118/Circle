@@ -148,7 +148,7 @@ namespace Circle.Game.Rulesets.Extensions
             switch (filterType)
             {
                 case FilterType.Grayscale:
-                    return postprocessing.TransformTo(nameof(postprocessing.GrainIntensity), intensity, duration, easing);
+                    return postprocessing.TransformTo(nameof(postprocessing.GrayscaleIntensity), intensity, duration, easing);
 
                 case FilterType.Sepia:
                     return postprocessing.TransformTo(nameof(postprocessing.SepiaIntensity), intensity, duration, easing);
