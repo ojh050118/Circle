@@ -36,6 +36,11 @@ namespace Circle.Game.Beatmaps
         public FilterType? Filter { get; set; }
 
         /// <summary>
+        /// 이벤트 활성화 여부.
+        /// </summary>
+        public bool? Active { get; set; }
+
+        /// <summary>
         /// 분당 비트 횟수.
         /// </summary>
         public float BeatsPerMinute { get; set; }
