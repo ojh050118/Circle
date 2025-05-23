@@ -32,6 +32,8 @@
         PlaySound,
         ChangeTrack,
         Pause,
-        ScaleMargin
+        ScaleMargin,
+        SetFilterAdvanced,
+        ScalePlanets
     }
 }
