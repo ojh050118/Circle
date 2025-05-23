@@ -34,6 +34,7 @@
         Pause,
         ScaleMargin,
         SetFilterAdvanced,
-        ScalePlanets
+        ScalePlanets,
+        SetObject
     }
 }

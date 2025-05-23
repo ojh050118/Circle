@@ -34,6 +34,7 @@ namespace Circle.Game.IO
                 filterTrailingComma(ref text);
                 addComma(ref text);
                 ensureJsonString(ref text);
+                text = text.Replace("\\\\\"", string.Empty);
 
                 AdofaiFile = JsonSerializer.Deserialize<AdofaiBeatmap>(text, options);
             }
