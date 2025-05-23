@@ -3,6 +3,7 @@
 using System;
 using System.Text.Json.Serialization;
 using Circle.Game.Converting.Json;
+using JetBrains.Annotations;
 using osu.Framework.Graphics;
 using osu.Framework.Utils;
 
@@ -111,6 +112,18 @@ namespace Circle.Game.Beatmaps
         /// </summary>
         public double Interval { get; set; }
 
+        public FlashPlane? Plane { get; set; }
+
+        [CanBeNull]
+        public string StartColor { get; set; }
+
+        public float? StartOpacity { get; set; }
+
+        [CanBeNull]
+        public string EndColor { get; set; }
+
+        public float? EndOpacity { get; set; }
+
         /// <summary>
         /// 이벤트의 식별명. '이벤트 반복'과 '조건부 이벤트'에 사용됩니다.
         /// </summary>
@@ -151,7 +164,8 @@ namespace Circle.Game.Beatmaps
         RepeatEvents,
         Other,
         Pause,
-        SetFilter
+        SetFilter,
+        Flash
     }
 
     public enum SpeedType
@@ -169,6 +183,12 @@ namespace Circle.Game.Beatmaps
         Global,
         RedPlanet,
         BluePlanet
+    }
+
+    public enum FlashPlane
+    {
+        Background,
+        Foreground
     }
 
     public enum FilterType
