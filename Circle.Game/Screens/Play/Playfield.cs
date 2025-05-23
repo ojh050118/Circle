@@ -3,11 +3,11 @@
 using System;
 using Circle.Game.Beatmaps;
 using Circle.Game.Graphics.UserInterface;
-using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Graphics;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Video;
 
 namespace Circle.Game.Screens.Play
 {
@@ -27,14 +27,25 @@ namespace Circle.Game.Screens.Play
         public Action OnComplete { get; set; }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(BeatmapManager beatmapManager)
         {
+            Container backgrounds;
+
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
             Children = new Drawable[]
             {
-                new Background(TextureSource.External, beatmapInfo: currentBeatmap.BeatmapInfo),
+                backgrounds = new Container
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Children = new Drawable[]
+                    {
+                        new Background(TextureSource.External, beatmapInfo: currentBeatmap.BeatmapInfo),
+                    }
+                },
                 cameraContainer = new CameraContainer(currentBeatmap)
                 {
                     Content = new Container
@@ -50,6 +61,21 @@ namespace Circle.Game.Screens.Play
                     }
                 }
             };
+
+            var stream = beatmapManager.GetWorkingBeatmap(currentBeatmap.BeatmapInfo).GetVideo();
+
+            if (stream != null)
+            {
+                backgrounds.Add(new Video(stream, false)
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    FillMode = FillMode.Fill,
+                    RelativeSizeAxes = Axes.Both,
+                    Loop = false,
+                    PlaybackPosition = currentBeatmap.Metadata.VidOffset - currentBeatmap.Metadata.Offset - 60000 / currentBeatmap.Metadata.Bpm * currentBeatmap.Metadata.CountdownTicks,
+                });
+            }
         }
 
         protected override void LoadComplete()
@@ -58,17 +84,7 @@ namespace Circle.Game.Screens.Play
             planetContainer.AddPlanetTransform();
             cameraContainer.AddCameraTransforms();
 
-            this.FilterToggleTo(FilterType.Arcade, true);
-            //this.FilterTo(FilterType.Led, 0.5f, 100f, Easing.OutQuint);
-
             base.LoadComplete();
-        }
-
-        private void addFilterTransform()
-        {
-            foreach (var tile in currentBeatmap.Tiles)
-            {
-            }
         }
     }
 }

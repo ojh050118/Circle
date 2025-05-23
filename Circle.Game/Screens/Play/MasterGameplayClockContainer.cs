@@ -8,7 +8,6 @@ using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Video;
 using osu.Framework.Logging;
 
 namespace Circle.Game.Screens.Play
@@ -32,10 +31,7 @@ namespace Circle.Game.Screens.Play
 
         private readonly Bindable<bool> playbackRateValid = new Bindable<bool>(true);
 
-        private readonly double countdownDuration;
         private readonly double gameplayStartTime;
-
-        private FrameStabilityContainer container;
 
         private bool isStarted;
 
@@ -48,7 +44,6 @@ namespace Circle.Game.Screens.Play
             : base(new TrackVirtual(track.Length), applyOffsets: true, requireDecoupling: true)
         {
             this.gameplayStartTime = gameplayStartTime;
-            this.countdownDuration = countdownDuration;
 
             GameplayStartTime = gameplayStartTime;
             StartTime = gameplayStartTime;
@@ -61,7 +56,6 @@ namespace Circle.Game.Screens.Play
         {
             Children = new Drawable[]
             {
-                container = new FrameStabilityContainer(workingBeatmap.Value.Metadata.VidOffset + gameplayStartTime - countdownDuration),
                 new FrameStabilityContainer(gameplayStartTime)
                 {
                     Child = new InputManager
@@ -72,21 +66,6 @@ namespace Circle.Game.Screens.Play
                     }
                 }
             };
-
-            var stream = workingBeatmap.Value.GetVideo();
-
-            if (stream != null)
-            {
-                container.Add(new Video(stream, false)
-                {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    FillMode = FillMode.Fill,
-                    RelativeSizeAxes = Axes.Both,
-                    Loop = false,
-                    PlaybackPosition = workingBeatmap.Value.Metadata.VidOffset + gameplayStartTime - countdownDuration,
-                });
-            }
 
             // 음악 시작 시간보다 한 박자 먼저 시작됩니다.
             Seek(gameplayStartTime);
