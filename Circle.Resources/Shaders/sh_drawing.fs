@@ -47,7 +47,7 @@ void main(void)
 	float _Value1 = 0.0008; //pencil size
 
 	u_xlat0.y = _Value1;
-	u_xlat1 = u_xlat0.yxxy + m_TexCoord.xyxy;
+	u_xlat1 = u_xlat0.yxxy + v_TexCoord.xyxy;
 	u_xlat0.x = time * 10.0;
 	u_xlat0.y = cos(u_xlat0.x) * 0.02;
 	u_xlat0.x = sin(u_xlat0.x) * 0.02;
@@ -65,7 +65,7 @@ void main(void)
 	u_xlat7.x = 19.0;
 	u_xlat0.x = dot(vec4(exp2(log2(u_xlat4.z * u_xlat4.y * u_xlat4.x) * u_xlat7.x)), vec4(1.0));
 	u_xlat14.y = -_Value1;
-	u_xlat4 = u_xlat3.xyxy * vec4(0.0078125) + u_xlat14.yxxy + m_TexCoord.xyxy;
+	u_xlat4 = u_xlat3.xyxy * vec4(0.0078125) + u_xlat14.yxxy + v_TexCoord.xyxy;
 	u_xlat3 = samplePP(m_Texture1, m_Sampler1, TexRect1, getShaderTexturePosition(u_xlat3.xy + m_TexCoord, texResolution, s_topLeft));
 	u_xlat6 = texture(sampler2D(m_Texture, m_Sampler), u_xlat4.xy);
 	u_xlat4 = texture(sampler2D(m_Texture, m_Sampler), u_xlat4.zw);
