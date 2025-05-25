@@ -1,11 +1,10 @@
 ﻿namespace Circle.Game.Screens.Play
 {
-    public enum GamePlayState
+    public enum GameplayState
     {
         NotPlaying,
         Ready,
         Playing,
-        Pause,
         Fail,
         Complete
     }
