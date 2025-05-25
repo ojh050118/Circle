@@ -240,14 +240,14 @@ namespace Circle.Game.Screens.Play
             {
                 float countdown = beat * tick;
 
-                if (gameplayTime - countdown * 2 >= 0)
+                if (gameplayTime - countdown >= 0)
                 {
-                    gameMusic.SetOffset(gameplayTime + countdown, countdown * 2);
+                    gameMusic.SetOffset(gameplayTime - countdown, countdown);
                     gameMusic.Resume();
                 }
                 else
                 {
-                    gameMusic.SetOffset(gameplayTime + countdown, countdown);
+                    gameMusic.SetOffset(gameplayTime - countdown, countdown);
                     gameMusic.Resume(countdown);
                 }
 
