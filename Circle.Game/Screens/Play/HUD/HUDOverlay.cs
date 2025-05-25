@@ -53,7 +53,7 @@ namespace Circle.Game.Screens.Play.HUD
                     Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 64),
                     GlowColour = colours.TransparentBlack
                 },
-                progress = new GameplayProgress(tiles.Count() - 1)
+                progress = new GameplayProgress(tiles.Count())
                 {
                     Anchor = Anchor.BottomCentre,
                     Origin = Anchor.BottomCentre,
