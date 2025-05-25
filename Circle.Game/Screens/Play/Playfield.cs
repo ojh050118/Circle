@@ -8,6 +8,7 @@ using Circle.Game.Graphics.UserInterface;
 using Circle.Game.Rulesets;
 using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Graphics;
+using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
@@ -21,6 +22,8 @@ namespace Circle.Game.Screens.Play
     {
         private readonly Beatmap currentBeatmap;
 
+        private readonly Tile[] tiles;
+
         private CameraContainer cameraContainer;
         private PlanetContainer planetContainer;
         private ObjectContainer tileContainer;
@@ -31,6 +34,7 @@ namespace Circle.Game.Screens.Play
         public Playfield(Beatmap beatmap)
         {
             currentBeatmap = beatmap;
+            tiles = beatmap.Tiles.ToArray();
         }
 
         public Action OnComplete { get; set; }
@@ -89,7 +93,7 @@ namespace Circle.Game.Screens.Play
                     FillMode = FillMode.Fill,
                     RelativeSizeAxes = Axes.Both,
                     Loop = false,
-                    PlaybackPosition = currentBeatmap.Metadata.VidOffset - currentBeatmap.Metadata.Offset - 60000 / currentBeatmap.Metadata.Bpm * currentBeatmap.Metadata.CountdownTicks,
+                    PlaybackPosition = currentBeatmap.Metadata.VidOffset - currentBeatmap.Metadata.Offset,
                 });
             }
 
@@ -106,11 +110,20 @@ namespace Circle.Game.Screens.Play
         {
             tileContainer.AddTileTransforms();
             planetContainer.AddPlanetTransform();
+            // planetContainer.AddPlanetStartTransform();
             cameraContainer.AddCameraTransforms();
             addFilterTransforms();
             addFlashTransforms();
 
             base.LoadComplete();
+        }
+
+        public void HandleInput(int beatIndex, double timingPoint)
+        {
+            if (beatIndex == 0)
+                return;
+
+            //planetContainer.MovePlanet(tiles[beatIndex - 1], tiles[beatIndex]);
         }
 
         private void addFilterTransforms()
@@ -134,7 +147,7 @@ namespace Circle.Game.Screens.Play
                         case EventType.SetFilter:
                             filterTransforms.Add(new FilterTransform
                             {
-                                StartTime = tile.HitTime + angleOffset,
+                                StartTime = tile.StartTime + angleOffset,
                                 Enabled = action.Enabled,
                                 FilterType = action.Filter!.Value,
                                 Intensity = action.Intensity,
@@ -151,7 +164,7 @@ namespace Circle.Game.Screens.Play
 
                             for (int i = 0; i < action.Repetitions; i++)
                             {
-                                double startTime = tile.HitTime + intervalBeat * i;
+                                double startTime = tile.StartTime + intervalBeat * i;
 
                                 foreach (var filter in filterEvents)
                                 {
@@ -226,7 +239,7 @@ namespace Circle.Game.Screens.Play
                         case EventType.Flash:
                             flashTransforms.Add(new FlashTransform
                             {
-                                StartTime = tile.HitTime + angleOffset,
+                                StartTime = tile.StartTime + angleOffset,
                                 Plane = action.Plane!.Value,
                                 StartColor = Color4Extensions.FromHex(action.StartColor!),
                                 StartOpacity = action.StartOpacity!.Value,
@@ -243,7 +256,7 @@ namespace Circle.Game.Screens.Play
 
                             for (int i = 0; i < action.Repetitions; i++)
                             {
-                                double startTime = tile.HitTime + intervalBeat * i;
+                                double startTime = tile.StartTime + intervalBeat * i;
 
                                 foreach (var flash in flashEvents)
                                 {
@@ -289,6 +302,7 @@ namespace Circle.Game.Screens.Play
                     case FlashPlane.Foreground:
                         using (flashForeground.BeginAbsoluteSequence(filter.StartTime, false))
                         {
+                            // TODO: 페이드 아웃이 몇몇 맵에선 이상함;; 조사해야함
                             flashForeground.FadeColour(filter.StartColor).FadeColour(filter.EndColor, filter.Duration);
                             flashForeground.FadeTo(filter.StartOpacity / 100).FadeTo(filter.EndOpacity / 100, filter.Duration);
                         }

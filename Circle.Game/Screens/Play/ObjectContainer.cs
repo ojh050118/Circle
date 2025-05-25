@@ -39,9 +39,9 @@ namespace Circle.Game.Screens.Play
             for (int i = frontVisibilityCount; i < tiles.Length; i++)
             {
                 bpm = tiles[i - frontVisibilityCount].Bpm;
-                Children[i].LifetimeStart = tiles[i - frontVisibilityCount].HitTime;
+                Children[i].LifetimeStart = tiles[i - frontVisibilityCount].StartTime;
 
-                using (Children[i].BeginAbsoluteSequence(tiles[i - frontVisibilityCount].HitTime, false))
+                using (Children[i].BeginAbsoluteSequence(tiles[i - frontVisibilityCount].StartTime, false))
                     Children[i].FadeTo(0.45f, 60000 / bpm, Easing.Out);
             }
 
@@ -52,8 +52,8 @@ namespace Circle.Game.Screens.Play
 
                 if (i > backVisibilityCount - 1)
                 {
-                    Children[i - backVisibilityCount].LifetimeEnd = tiles[i].HitTime + 60000 / bpm;
-                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tiles[i].HitTime, false))
+                    Children[i - backVisibilityCount].LifetimeEnd = tiles[i].StartTime + 60000 / bpm;
+                    using (Children[i - backVisibilityCount].BeginAbsoluteSequence(tiles[i].StartTime, false))
                         Children[i - backVisibilityCount].FadeOut(60000 / bpm, Easing.Out).Then().Expire();
                 }
             }

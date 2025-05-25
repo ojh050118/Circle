@@ -144,7 +144,7 @@ namespace Circle.Game.Screens.Play
                             // 특정 시간에 카메라 변환을 해야함을 알리는데 사용됩니다.
                             cameraTransforms.Add(new CameraTransform
                             {
-                                StartTime = tiles[floor].HitTime + angleOffset,
+                                StartTime = tiles[floor].StartTime + angleOffset,
                                 Duration = tiles.GetRelativeDuration(resolvedRotation, floor, bpm) * action.Duration,
                                 Position = specificPosition0,
                                 Offset = cameraOffset,
@@ -162,7 +162,7 @@ namespace Circle.Game.Screens.Play
                             // 이벤트를 일정한 주기로 반복 횟수만큼 추가합니다.
                             for (int i = 1; i <= action.Repetitions; i++)
                             {
-                                double startTime = tiles[floor].HitTime + intervalBeat * i;
+                                double startTime = tiles[floor].StartTime + intervalBeat * i;
 
                                 foreach (var cameraEvent in cameraEvents)
                                 {
@@ -195,7 +195,7 @@ namespace Circle.Game.Screens.Play
                 {
                     cameraTransforms.Add(new CameraTransform
                     {
-                        StartTime = tiles[floor].HitTime,
+                        StartTime = tiles[floor].StartTime,
                         Duration = 400 + 60 / bpm * 500,
                         Position = position,
                         Offset = null,
