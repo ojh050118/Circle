@@ -37,8 +37,6 @@ namespace Circle.Game.Screens.Play
             tiles = beatmap.Tiles.ToArray();
         }
 
-        public Action OnComplete { get; set; }
-
         [BackgroundDependencyLoader]
         private void load(BeatmapManager beatmapManager)
         {
@@ -110,7 +108,6 @@ namespace Circle.Game.Screens.Play
         {
             tileContainer.AddTileTransforms();
             planetContainer.AddPlanetTransform();
-            // planetContainer.AddPlanetStartTransform();
             cameraContainer.AddCameraTransforms();
             addFilterTransforms();
             addFlashTransforms();
@@ -129,7 +126,6 @@ namespace Circle.Game.Screens.Play
         private void addFilterTransforms()
         {
             var filterTransforms = new List<FilterTransform>();
-            var tiles = currentBeatmap.Tiles.ToArray();
 
             #region Process filter transforms
 
@@ -221,7 +217,6 @@ namespace Circle.Game.Screens.Play
         private void addFlashTransforms()
         {
             var flashTransforms = new List<FlashTransform>();
-            var tiles = currentBeatmap.Tiles.ToArray();
 
             #region Process flash transforms
 

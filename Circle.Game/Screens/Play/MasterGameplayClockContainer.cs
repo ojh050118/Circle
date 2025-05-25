@@ -1,10 +1,14 @@
 #nullable disable
 
 using System;
+using System.Linq;
 using Circle.Game.Beatmaps;
+using Circle.Game.Rulesets.Objects;
 using Circle.Game.Rulesets.UI;
+using Circle.Game.Screens.Play.HUD;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Audio.Track;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -25,50 +29,89 @@ namespace Circle.Game.Screens.Play
             Precision = 0.01,
         };
 
-        public Playfield Playfield;
+        public GameplayState State { get; private set; }
+
+        protected Playfield Playfield;
+        private HUDOverlay hud;
 
         internal bool ShouldValidatePlaybackRate { get; init; }
 
         private readonly Bindable<bool> playbackRateValid = new Bindable<bool>(true);
 
-        private readonly double gameplayStartTime;
-
         private bool isStarted;
 
+        private readonly WorkingBeatmap beatmap;
         private Track track;
+        private Sample hitSound;
 
-        [Resolved]
-        private Bindable<WorkingBeatmap> workingBeatmap { get; set; }
+        private Tile[] tiles;
+        private int floor;
+        private bool autoplay = true;
 
-        public MasterGameplayClockContainer(BeatmapInfo info, double gameplayStartTime, double countdownDuration, Track track)
-            : base(new TrackVirtual(track.Length), applyOffsets: true, requireDecoupling: true)
+        public MasterGameplayClockContainer(WorkingBeatmap working, double gameplayStartTime, Track track)
+            : base(new TrackVirtual(double.MaxValue), applyOffsets: true, requireDecoupling: true)
         {
-            this.gameplayStartTime = gameplayStartTime;
+            beatmap = working;
 
             GameplayStartTime = gameplayStartTime;
             StartTime = gameplayStartTime;
 
+            // TODO: 이거 정말 이래야해요?
             this.track = new TrackVirtual(track.Length);
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(AudioManager audioManager)
         {
+            tiles = beatmap.Beatmap.Tiles.ToArray();
+            hitSound = audioManager.Samples.Get(@"normal-hitnormal.wav");
+
             Children = new Drawable[]
             {
-                new FrameStabilityContainer(gameplayStartTime)
+                new FrameStabilityContainer(GameplayStartTime)
                 {
-                    Child = new InputManager
+                    Children = new Drawable[]
                     {
-                        RelativeSizeAxes = Axes.Both,
-                        Beatmap = workingBeatmap.Value.Beatmap,
-                        Child = Playfield = new Playfield(workingBeatmap.Value.Beatmap)
+                        Playfield = new Playfield(beatmap.Beatmap),
+                        new InputManager(beatmap.Beatmap)
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            OnInputReceived = Playfield.HandleInput
+                        }
                     }
-                }
+                },
+                hud = new HUDOverlay(beatmap.Beatmap),
             };
 
             // 음악 시작 시간보다 한 박자 먼저 시작됩니다.
-            Seek(gameplayStartTime);
+            Seek(GameplayStartTime);
+        }
+
+        protected override void LoadComplete()
+        {
+        }
+
+        protected override void Update()
+        {
+            if (!autoplay || floor >= tiles.Length)
+                return;
+
+            if (CurrentTime >= tiles[floor].EndTime)
+            {
+                hitSound?.Play();
+
+                if (autoplay)
+                {
+                    floor++;
+                    hud.UpdateProgress(floor);
+                }
+            }
+
+            if (floor >= tiles.Length)
+            {
+                hud.Complete();
+                State = GameplayState.Complete;
+            }
         }
 
         public override void Start()
@@ -77,6 +120,16 @@ namespace Circle.Game.Screens.Play
 
             if (!isStarted)
                 isStarted = true;
+
+            State = GameplayState.Playing;
+            hud.Start();
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+
+            State = GameplayState.NotPlaying;
         }
 
         public void Skip()
