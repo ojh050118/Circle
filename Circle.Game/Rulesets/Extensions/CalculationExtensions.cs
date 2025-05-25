@@ -70,15 +70,13 @@ namespace Circle.Game.Rulesets.Extensions
             float destRotation = NormalizeAngle(targetAngle);
             float startRotation = NormalizeAngle(prevAngle);
 
-            // 각도를 이전 타일의 반대 방향으로 설정합니다.
-            // 미드스핀 타일에 행성이 머물지 않기때문에, 각도를 변경하지 않습니다.
-            if (targetType != TileType.Midspin && prevType != TileType.Midspin)
-                startRotation = InvertAngle(startRotation);
-            else if (targetType == TileType.Midspin && prevType == TileType.Midspin) // TODO: 이전과 현재가 미드스핀일 때 예상치 못한 문제가 생기는 듯. 타일 정보에 미드스핀 타일은 이전 각도의 값을 가지고 있도록 하기.
-                startRotation += InvertAngle(startRotation);
-
             if (targetType == TileType.Midspin)
                 return startRotation;
+
+            // 각도를 이전 타일의 반대 방향으로 설정합니다.
+            // 미드스핀 타일에 행성이 머물지 않기때문에, 각도를 변경하지 않습니다.
+            if (prevType != TileType.Midspin)
+                startRotation = InvertAngle(startRotation);
 
             // 올바른 방향으로 회전할 수 있도록 합니다.
             if (clockwise)
