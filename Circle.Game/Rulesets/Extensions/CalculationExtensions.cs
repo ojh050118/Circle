@@ -155,15 +155,22 @@ namespace Circle.Game.Rulesets.Extensions
             if (targetAngle == 999)
                 return TileType.Midspin;
 
-            // 다음 타일이 없으면 원형 타일입니다.
-            // 이전타일과 반대방향이면 원형 타일입니다.
-            if (!nextAngle.HasValue || Math.Abs(targetAngle - prevAngle) == 180)
+            if (nextAngle.HasValue)
+            {
+                // 미드스핀 타일의 앞 타일은 항상 길이가 짧은 타일입니다.
+                // 라운드 타일의 앞 타일은 항상 길이가 짧은 타일입니다.
+                if (nextAngle.Value == 999 || Math.Abs(nextAngle.Value - targetAngle) == 180)
+                    return TileType.Short;
+            }
+            else
+            {
+                // 다음 타일이 없으면 원형 타일입니다.
                 return TileType.Circular;
+            }
 
-            // 미드스핀 타일의 앞 타일은 항상 길이가 짧은 타일입니다.
-            // 라운드 타일의 앞 타일은 항상 길이가 짧은 타일입니다.
-            if (nextAngle.Value == 999 || Math.Abs(nextAngle.Value - targetAngle) == 180)
-                return TileType.Short;
+            // 이전타일과 반대방향이면 원형 타일입니다.
+            if (Math.Abs(targetAngle - prevAngle) == 180)
+                return TileType.Circular;
 
             return TileType.Normal;
         }
