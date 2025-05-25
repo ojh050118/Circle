@@ -37,6 +37,9 @@ namespace Circle.Game.Rulesets.Extensions
                 var tileType = CalculationExtensions.GetTileType(prevRawAngle, angle, nextAngle);
                 var actions = Array.FindAll(beatmap.Actions, a => a.Floor == floor);
 
+                if (tileType == TileType.Midspin)
+                    positionOffset -= CalculationExtensions.GetNextTilePosition(prevAngle);
+
                 // Apply twirl
                 if (actions.Any(a => a.EventType == EventType.Twirl))
                     clockwise = !clockwise;
@@ -77,10 +80,6 @@ namespace Circle.Game.Rulesets.Extensions
                         if (floor + 1 < angles.Length)
                             positionOffset += CalculationExtensions.GetNextTilePosition(angle);
 
-                        break;
-
-                    case TileType.Midspin:
-                        positionOffset -= CalculationExtensions.GetNextTilePosition(prevAngle);
                         break;
                 }
 

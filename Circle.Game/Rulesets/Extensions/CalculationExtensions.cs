@@ -67,8 +67,8 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>회전방향을 고려한 시작 각도 값.</returns>
         public static float ComputeStartRotation(TileType prevType, float prevAngle, TileType targetType, float targetAngle, bool clockwise)
         {
-            float destRotation = NormalizeAngle(targetAngle);
             float startRotation = NormalizeAngle(prevAngle);
+            float destRotation = NormalizeAngle(targetAngle);
 
             if (targetType == TileType.Midspin)
                 return startRotation;

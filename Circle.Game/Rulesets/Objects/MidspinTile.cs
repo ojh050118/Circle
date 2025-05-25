@@ -11,8 +11,6 @@ namespace Circle.Game.Rulesets.Objects
     {
         public MidspinTile()
         {
-            // TODO: 미드스핀 타일 사이즈 점검
-            Size = new Vector2(50);
             Child = new Container
             {
                 RelativeSizeAxes = Axes.Both,
