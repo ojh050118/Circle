@@ -17,7 +17,7 @@ namespace Circle.Game.Screens.Play.HUD
     {
         private readonly Beatmap beatmap;
 
-        private GlowingSpriteText complete;
+        private GlowingSpriteText statusText;
         private IEnumerable<Tile> tiles;
         private GameplayProgress progress;
 
@@ -31,6 +31,8 @@ namespace Circle.Game.Screens.Play.HUD
         {
             tiles = beatmap.Tiles;
 
+            string title = string.IsNullOrEmpty(beatmap.Metadata.Artist) && string.IsNullOrEmpty(beatmap.Metadata.Song) ? string.Empty : $"{beatmap.Metadata.Artist} - {beatmap.Metadata.Song}";
+
             RelativeSizeAxes = Axes.Both;
             Children = new Drawable[]
             {
@@ -39,11 +41,11 @@ namespace Circle.Game.Screens.Play.HUD
                     Anchor = Anchor.TopCentre,
                     Origin = Anchor.TopCentre,
                     Margin = new MarginPadding { Top = 30 },
-                    Text = string.IsNullOrEmpty(beatmap.Metadata.Artist) && string.IsNullOrEmpty(beatmap.Metadata.Song) ? string.Empty : $"{beatmap.Metadata.Artist} - {beatmap.Metadata.Song}",
+                    Text = title,
                     Font = CircleFont.Default.With(weight: FontWeight.Bold, size: 34),
                     GlowColour = colours.TransparentBlack
                 },
-                complete = new GlowingSpriteText
+                statusText = new GlowingSpriteText
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
@@ -72,14 +74,15 @@ namespace Circle.Game.Screens.Play.HUD
             int tick = beatmap.Metadata.CountdownTicks;
             startUntilTime /= tick;
 
-            for (int i = 0; i < tick; i++)
+            for (int i = tick - 1; i >= 0; i--)
             {
-                using (complete.BeginDelayedSequence(startUntilTime * i, false))
+                using (statusText.BeginDelayedSequence(startUntilTime * (tick - i), false))
                 {
-                    string text = i + 1 == tick ? "Go!" : (tick - i - 1).ToString();
-                    complete.TransformTo("Text", (LocalisableString)text);
-                    complete.ScaleTo(1.3f).Delay(100).ScaleTo(1, startUntilTime, Easing.Out);
-                    complete.FadeTo(1).Delay(100).FadeOut(startUntilTime, Easing.Out);
+                    string text = i == 0 ? "Go!" : $"{i}";
+
+                    statusText.TransformTo("Text", (LocalisableString)text);
+                    statusText.ScaleTo(1.3f).Delay(100).ScaleTo(1, startUntilTime, Easing.Out);
+                    statusText.FadeTo(1).Delay(100).FadeOut(startUntilTime, Easing.Out);
                 }
             }
         }
@@ -91,8 +94,8 @@ namespace Circle.Game.Screens.Play.HUD
 
         public void Complete()
         {
-            complete.Text = "Congratulations!";
-            complete.Alpha = 1;
+            statusText.Text = "Congratulations!";
+            statusText.Alpha = 1;
             progress.Increase();
         }
     }
