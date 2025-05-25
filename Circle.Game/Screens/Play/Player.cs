@@ -98,6 +98,83 @@ namespace Circle.Game.Screens.Play
             currentBeatmap = workingBeatmap;
         }
 
+        [BackgroundDependencyLoader]
+        private void load(GameHost host, AudioManager audio, CircleColour colours, BeatmapManager beatmapManager)
+        {
+            parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
+            textureSource = background.TextureSource;
+            textureName = background.TextureName;
+            tiles = currentBeatmap.Beatmap.Tiles.GetEnumerator();
+            sampleHit = audio.Samples.Get("normal-hitnormal.wav");
+
+            gameMusic = new GameplayMusicController(currentBeatmap.BeatmapInfo);
+
+            InternalChildren = new Drawable[]
+            {
+                masterGameplayClockContainer = new MasterGameplayClockContainer(currentBeatmap.BeatmapInfo, currentBeatmap.Metadata.Offset - beat * tick, currentBeatmap.Track),
+                hud = new HUDOverlay(currentBeatmap.Beatmap),
+                gameMusic
+            };
+
+            if (!host.CanExit)
+            {
+                AddInternal(new IconButton
+                {
+                    Anchor = Anchor.TopRight,
+                    Origin = Anchor.TopRight,
+                    Margin = new MarginPadding(30),
+                    Size = new Vector2(50),
+                    Icon = FontAwesome.Solid.Pause,
+                    Action = onPaused
+                });
+            }
+
+            masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            tiles.MoveNext();
+            tiles.MoveNext();
+            localConfig.SetValue(CircleSetting.Parallax, false);
+            gameMusic.SetOffset(currentBeatmap.Metadata.Offset, beat * tick);
+            musicController.CurrentTrack.VolumeTo(0, 500, Easing.Out)
+                           .Then()
+                           .Schedule(() =>
+                           {
+                               musicController.Stop();
+                               playState = GamePlayState.Ready;
+                           });
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            if (playState == GamePlayState.Complete)
+                return;
+
+            // TODO: HUD Container를 MasterGameplayClockContainer으로 이동해야함
+            if (masterGameplayClockContainer.CurrentTime >= tiles.Current!.StartTime)
+            {
+                if (tiles.MoveNext())
+                {
+                    hud.UpdateProgress(floor);
+                    floor++;
+                }
+                else
+                {
+                    playState = GamePlayState.Complete;
+                    dialog.BlockInputAction = false;
+                    hud.Complete();
+                }
+
+                sampleHit?.Play();
+            }
+        }
+
         public override void OnExit()
         {
             if (playState == GamePlayState.Playing)
@@ -108,7 +185,7 @@ namespace Circle.Game.Screens.Play
 
             musicController.CurrentTrack.DelayUntilTransformsFinished().Schedule(() =>
             {
-                musicController.SeekTo(gameTime - 1000);
+                musicController.SeekTo(gameTime + tick * beat - 1000);
                 musicController.CurrentTrack.VolumeTo(1, 200, Easing.Out);
                 musicController.Play();
             });
@@ -132,23 +209,6 @@ namespace Circle.Game.Screens.Play
             base.OnResuming(e);
         }
 
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            tiles.MoveNext();
-            tiles.MoveNext();
-            localConfig.SetValue(CircleSetting.Parallax, false);
-            gameMusic.SetOffset(gameTime, beat * tick);
-            musicController.CurrentTrack.VolumeTo(0, 500, Easing.Out)
-                           .Then()
-                           .Schedule(() =>
-                           {
-                               musicController.Stop();
-                               playState = GamePlayState.Ready;
-                           });
-        }
-
         protected override bool OnClick(ClickEvent e)
         {
             updateState();
@@ -164,65 +224,6 @@ namespace Circle.Game.Screens.Play
             updateState();
 
             return base.OnKeyDown(e);
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            if (playState == GamePlayState.Complete)
-                return;
-
-            if (masterGameplayClockContainer.CurrentTime >= tiles.Current!.HitTime)
-            {
-                if (tiles.MoveNext())
-                {
-                    hud.UpdateProgress(floor);
-                    floor++;
-                }
-                else
-                {
-                    playState = GamePlayState.Complete;
-                    dialog.BlockInputAction = false;
-                    hud.Complete();
-                }
-
-                sampleHit?.Play();
-            }
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(GameHost host, AudioManager audio, CircleColour colours, BeatmapManager beatmapManager)
-        {
-            parallaxEnabled = localConfig.Get<bool>(CircleSetting.Parallax);
-            textureSource = background.TextureSource;
-            textureName = background.TextureName;
-            tiles = currentBeatmap.Beatmap.Tiles.GetEnumerator();
-            sampleHit = audio.Samples.Get("normal-hitnormal.wav");
-
-            gameMusic = new GameplayMusicController(currentBeatmap.BeatmapInfo);
-
-            InternalChildren = new Drawable[]
-            {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(currentBeatmap.BeatmapInfo, currentBeatmap.Metadata.Offset, beat * tick, currentBeatmap.Track),
-                hud = new HUDOverlay(currentBeatmap.Beatmap),
-                gameMusic
-            };
-
-            if (!host.CanExit)
-            {
-                AddInternal(new IconButton
-                {
-                    Anchor = Anchor.TopRight,
-                    Origin = Anchor.TopRight,
-                    Margin = new MarginPadding(30),
-                    Size = new Vector2(50),
-                    Icon = FontAwesome.Solid.Pause,
-                    Action = onPaused
-                });
-            }
-
-            masterGameplayClockContainer.Playfield.OnComplete = () => playState = GamePlayState.Complete;
         }
 
         private void updateState()
@@ -302,13 +303,13 @@ namespace Circle.Game.Screens.Play
 
                 if (gameTime - countdown * 2 >= 0)
                 {
-                    gameMusic.SetOffset(gameTime, countdown * 2);
+                    gameMusic.SetOffset(gameTime + countdown, countdown * 2);
                     gameMusic.Resume();
                     hud.Countdown(countdown);
                 }
                 else
                 {
-                    gameMusic.SetOffset(gameTime, countdown);
+                    gameMusic.SetOffset(gameTime + countdown, countdown);
                     gameMusic.Resume(countdown);
                     hud.Countdown(gameMusic.TimeUntilPlay + countdown);
                 }
