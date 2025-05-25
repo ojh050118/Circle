@@ -76,7 +76,7 @@ namespace Circle.Game.Screens.Play.HUD
 
             for (int i = tick - 1; i >= 0; i--)
             {
-                using (statusText.BeginDelayedSequence(startUntilTime * (tick - i), false))
+                using (statusText.BeginDelayedSequence(startUntilTime * (tick - i - 1), false))
                 {
                     string text = i == 0 ? "Go!" : $"{i}";
 
