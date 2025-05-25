@@ -24,7 +24,7 @@ namespace Circle.Game.Graphics.Containers
         /// </summary>
         public double TimeSinceLastBeat { get; private set; }
 
-        public int BeatIndex { get; private set; }
+        public int BeatIndex { get; protected set; }
 
         protected readonly Tile[] Tiles;
 
