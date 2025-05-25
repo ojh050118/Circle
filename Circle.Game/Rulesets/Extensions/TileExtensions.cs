@@ -16,17 +16,17 @@ namespace Circle.Game.Rulesets.Extensions
             var tiles = new Tile[angles.Length];
 
             float bpm = beatmap.Metadata.Bpm;
-            float countdownDuration = beatmap.Metadata.CountdownTicks * (60000 / bpm);
+            double countdownDuration = beatmap.Metadata.CountdownDuration;
 
             var positionOffset = Vector2.Zero;
-            double startTimeOffset = beatmap.Metadata.Offset - countdownDuration;
-            double hitTimeOffset = beatmap.Metadata.Offset;
+            double startTimeOffset = 0;
+            double hitTimeOffset = beatmap.Metadata.Offset + countdownDuration; // 첫 타일은 따로 처리
 
             var prevTileType = TileType.Normal;
             bool clockwise = true;
             var easing = Easing.None;
 
-            float prevAngle = angles.FirstOrDefault() - CalculationExtensions.GetTimeBasedRotation(startTimeOffset, hitTimeOffset, beatmap.Metadata.Bpm);
+            float prevAngle = angles.FirstOrDefault() - CalculationExtensions.GetTimeBasedRotation(startTimeOffset, hitTimeOffset, bpm);
             float prevRawAngle = beatmap.AngleData.FirstOrDefault(); // 미드스핀 타일과 다음 타일이 반대방향일 때 잘못된 타일타입 반환을 막기위해 필요합니다.
 
             for (int floor = 0; floor < angles.Length; floor++)
@@ -69,8 +69,6 @@ namespace Circle.Game.Rulesets.Extensions
                     Easing = easing
                 };
 
-                startTimeOffset = hitTimeOffset;
-
                 switch (tileType)
                 {
                     case TileType.Normal:
@@ -86,6 +84,7 @@ namespace Circle.Game.Rulesets.Extensions
                         break;
                 }
 
+                startTimeOffset = hitTimeOffset;
                 prevAngle = angle;
                 prevRawAngle = angles[floor];
                 prevTileType = tileType;
