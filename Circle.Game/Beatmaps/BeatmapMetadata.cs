@@ -121,6 +121,8 @@ namespace Circle.Game.Beatmaps
         /// </summary>
         public Easing PlanetEasing { get; set; }
 
+        public double CountdownDuration => CountdownTicks * 60000 / Bpm;
+
         public bool Equals(BeatmapMetadata other)
         {
             if (ReferenceEquals(this, other)) return true;
