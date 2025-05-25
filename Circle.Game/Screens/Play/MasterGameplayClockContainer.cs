@@ -54,7 +54,7 @@ namespace Circle.Game.Screens.Play
             beatmap = working;
 
             GameplayStartTime = gameplayStartTime;
-            StartTime = gameplayStartTime;
+            StartTime = working.Beatmap.Metadata.CountdownDuration;
 
             // TODO: 이거 정말 이래야해요?
             this.track = new TrackVirtual(track.Length);

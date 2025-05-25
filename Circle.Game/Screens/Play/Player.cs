@@ -72,7 +72,7 @@ namespace Circle.Game.Screens.Play
 
             InternalChildren = new Drawable[]
             {
-                masterGameplayClockContainer = new MasterGameplayClockContainer(currentBeatmap, 0, currentBeatmap.Track),
+                masterGameplayClockContainer = new MasterGameplayClockContainer(currentBeatmap, currentBeatmap.Metadata.Offset, currentBeatmap.Track),
                 gameMusic = new GameplayMusicController(currentBeatmap.BeatmapInfo)
             };
 

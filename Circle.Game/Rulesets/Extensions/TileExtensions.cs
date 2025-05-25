@@ -19,7 +19,7 @@ namespace Circle.Game.Rulesets.Extensions
             double countdownDuration = beatmap.Metadata.CountdownDuration;
 
             var positionOffset = Vector2.Zero;
-            double startTimeOffset = 0;
+            double startTimeOffset = beatmap.Metadata.Offset;
             double hitTimeOffset = beatmap.Metadata.Offset + countdownDuration; // 첫 타일은 따로 처리
 
             var prevTileType = TileType.Normal;

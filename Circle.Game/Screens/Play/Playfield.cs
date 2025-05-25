@@ -91,7 +91,7 @@ namespace Circle.Game.Screens.Play
                     FillMode = FillMode.Fill,
                     RelativeSizeAxes = Axes.Both,
                     Loop = false,
-                    PlaybackPosition = currentBeatmap.Metadata.VidOffset - currentBeatmap.Metadata.Offset,
+                    PlaybackPosition = currentBeatmap.Metadata.VidOffset - currentBeatmap.Metadata.Offset - currentBeatmap.Metadata.CountdownDuration,
                 });
             }
 
