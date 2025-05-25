@@ -3,6 +3,7 @@
 using System.Linq;
 using Circle.Game.Beatmaps;
 using Circle.Game.Configuration;
+using Circle.Game.Rulesets.Extensions;
 using Circle.Game.Rulesets.Objects;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -28,15 +29,17 @@ namespace Circle.Game.Screens.Play
         public void AddTileTransforms()
         {
             float bpm;
-            var tiles = currentBeatmap.Tiles.ToArray();
+            var tiles = currentBeatmap.Tiles.ToList();
             int frontVisibilityCount = config.Get<int>(CircleSetting.TileFrontDistance);
             int backVisibilityCount = config.Get<int>(CircleSetting.TileBackDistance);
 
-            for (int i = frontVisibilityCount; i < tiles.Length; i++)
+            tiles.Add(tiles.Last());
+
+            for (int i = frontVisibilityCount; i < tiles.Count; i++)
                 Children[i].Alpha = 0;
 
             // Fade in
-            for (int i = frontVisibilityCount; i < tiles.Length; i++)
+            for (int i = frontVisibilityCount; i < tiles.Count; i++)
             {
                 bpm = tiles[i - frontVisibilityCount].Bpm;
                 Children[i].LifetimeStart = tiles[i - frontVisibilityCount].StartTime;
@@ -46,7 +49,7 @@ namespace Circle.Game.Screens.Play
             }
 
             // Fade out
-            for (int i = 0; i < tiles.Length; i++)
+            for (int i = 0; i < tiles.Count; i++)
             {
                 bpm = tiles[i].Bpm;
 
@@ -114,6 +117,13 @@ namespace Circle.Game.Screens.Play
                         break;
                 }
             }
+
+            Add(new CircularTile
+            {
+                Position = tiles[^1].Position + CalculationExtensions.GetNextTilePosition(tiles[^1].Angle),
+                Rotation = tiles[^1].Angle,
+                Tile = tiles[^1]
+            });
         }
     }
 }
