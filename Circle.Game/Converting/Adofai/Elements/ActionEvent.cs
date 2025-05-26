@@ -14,7 +14,7 @@ namespace Circle.Game.Converting.Adofai.Elements
         public string TrackColor { get; set; }
         public string SecondaryTrackColor { get; set; }
         public TrackColorType TrackColorType { get; set; }
-        public LegacyTrackStyle TrackStyle { get; set; }
+        public TrackStyle TrackStyle { get; set; }
         public ColorPulseType TrackColorPulse { get; set; }
         public int TrackPulseLength { get; set; }
         public double TrackColorAnimDuration { get; set; }
