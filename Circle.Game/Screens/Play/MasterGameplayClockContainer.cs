@@ -13,6 +13,7 @@ using osu.Framework.Audio.Track;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Logging;
+using osu.Framework.Threading;
 
 namespace Circle.Game.Screens.Play
 {
@@ -119,10 +120,22 @@ namespace Circle.Game.Screens.Play
             base.Start();
 
             if (!isStarted)
+            {
                 isStarted = true;
+                hud.Start();
+            }
 
             State = GameplayState.Playing;
+        }
+
+        public ScheduledDelegate Resume(double countdown)
+        {
+            if (IsRunning)
+                return null;
+
+            State = GameplayState.Ready;
             hud.Start();
+            return Scheduler.AddDelayed(Start, countdown);
         }
 
         public override void Stop()

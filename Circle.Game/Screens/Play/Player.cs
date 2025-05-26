@@ -115,7 +115,7 @@ namespace Circle.Game.Screens.Play
 
         public override void OnExit()
         {
-            if (masterGameplayClockContainer.State == GameplayState.Playing)
+            if (masterGameplayClockContainer.State == GameplayState.Playing || masterGameplayClockContainer.State == GameplayState.Ready)
             {
                 onPaused();
                 return;
@@ -251,10 +251,7 @@ namespace Circle.Game.Screens.Play
                     gameMusic.Resume(countdown);
                 }
 
-                scheduledDelegate = Scheduler.AddDelayed(() =>
-                {
-                    masterGameplayClockContainer.Start();
-                }, countdown);
+                scheduledDelegate = masterGameplayClockContainer.Resume(countdown);
             });
         }
     }
