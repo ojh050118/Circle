@@ -200,7 +200,7 @@ namespace Circle.Game.Rulesets.Extensions
 
         public static Vector2 ToVector2(this float?[] arr)
         {
-            if (arr == null)
+            if (arr == null || arr.Length < 2)
                 return Vector2.Zero;
 
             return new Vector2(-arr[0] ?? 0, arr[1] ?? 0);

@@ -97,16 +97,19 @@ namespace Circle.Game.Screens.Play
                 prevTile = tile;
             }
 
+            if (prevTile == null)
+                return;
+
             switch (rotating)
             {
                 case PlanetState.Fire:
-                    using (BluePlanet.BeginAbsoluteSequence(prevTile!.EndTime, false))
-                        BluePlanet.Spin(prevTile.Duration * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle);
+                    using (BluePlanet.BeginAbsoluteSequence(prevTile.EndTime, false))
+                        BluePlanet.Spin(60000 / prevTile.Bpm * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle);
                     break;
 
                 case PlanetState.Ice:
-                    using (RedPlanet.BeginAbsoluteSequence(prevTile!.EndTime, false))
-                        RedPlanet.Spin(prevTile.Duration * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle);
+                    using (RedPlanet.BeginAbsoluteSequence(prevTile.EndTime, false))
+                        RedPlanet.Spin(60000 / prevTile.Bpm * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle);
                     break;
             }
         }

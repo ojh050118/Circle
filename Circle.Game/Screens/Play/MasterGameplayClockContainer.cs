@@ -97,9 +97,11 @@ namespace Circle.Game.Screens.Play
             if (!autoplay || floor >= tiles.Length)
                 return;
 
-            if (CurrentTime >= tiles[floor].EndTime)
+            if (CurrentTime >= tiles[floor].StartTime)
             {
-                hitSound?.Play();
+                // 첫번째 타일은 무시합니다.
+                if (floor > 0)
+                    hitSound?.Play();
 
                 if (autoplay)
                 {
