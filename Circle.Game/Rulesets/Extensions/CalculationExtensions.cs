@@ -160,6 +160,11 @@ namespace Circle.Game.Rulesets.Extensions
                 if (nextAngle.Value == 999 || Math.Abs(nextAngle.Value - targetAngle) == 180)
                     return TileType.Short;
             }
+            else
+            {
+                // 다음 타일이 없으면 원형 타일입니다.
+                return TileType.Circular;
+            }
 
             // 이전타일과 반대방향이면 원형 타일입니다.
             if (Math.Abs(targetAngle - prevAngle) == 180)
@@ -176,7 +181,7 @@ namespace Circle.Game.Rulesets.Extensions
         /// <returns>반전된 값의 각도 데이터.</returns>
         public static float[] ConvertAngles(float[] targetAngleData)
         {
-            float[] convertedData = new float[targetAngleData.Length];
+            float[] convertedData = new float[targetAngleData.Length + 1];
 
             for (int i = 0; i < targetAngleData.Length; i++)
             {
@@ -189,6 +194,7 @@ namespace Circle.Game.Rulesets.Extensions
                 convertedData[i] = NormalizeAngle(targetAngleData[i] * -1);
             }
 
+            convertedData[^1] = convertedData[^2];
             return convertedData;
         }
 

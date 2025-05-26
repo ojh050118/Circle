@@ -97,36 +97,16 @@ namespace Circle.Game.Screens.Play
                 prevTile = tile;
             }
 
-            if (prevTile == null)
-                return;
-
-            using (BeginAbsoluteSequence(prevTile.EndTime, false))
-                this.MoveTo(prevTile.Position + CalculationExtensions.GetNextTilePosition(prevTile.Angle));
-
             switch (rotating)
             {
                 case PlanetState.Fire:
-                    using (BluePlanet.BeginAbsoluteSequence(prevTile.EndTime, false))
-                        BluePlanet.ExpandTo(0);
-
-                    using (RedPlanet.BeginAbsoluteSequence(prevTile.EndTime, false))
-                    {
-                        RedPlanet.ExpandTo(1);
-                        RedPlanet.Spin(60000 / prevTile.Bpm * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle + 180);
-                    }
-
+                    using (BluePlanet.BeginAbsoluteSequence(prevTile!.EndTime, false))
+                        BluePlanet.Spin(prevTile.Duration * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle);
                     break;
 
                 case PlanetState.Ice:
-                    using (RedPlanet.BeginAbsoluteSequence(prevTile.EndTime, false))
-                        RedPlanet.ExpandTo(0);
-
-                    using (BluePlanet.BeginAbsoluteSequence(prevTile.EndTime, false))
-                    {
-                        BluePlanet.ExpandTo(1);
-                        BluePlanet.Spin(60000 / prevTile.Bpm * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle + 180);
-                    }
-
+                    using (RedPlanet.BeginAbsoluteSequence(prevTile!.EndTime, false))
+                        RedPlanet.Spin(prevTile.Duration * 2, prevTile.Clockwise ? RotationDirection.Clockwise : RotationDirection.Counterclockwise, prevTile.Angle);
                     break;
             }
         }
